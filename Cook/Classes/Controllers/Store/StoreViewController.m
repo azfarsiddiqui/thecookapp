@@ -339,7 +339,7 @@
     [self.view addSubview:self.searchFieldView];
     
     self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
-    self.backButton.transform = CGAffineTransformMakeTranslation(20.0, 0.0);
+    self.backButton.transform = CGAffineTransformMakeTranslation((self.view.bounds.size.width / 2.0), 0.0);
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
@@ -406,6 +406,7 @@
     if (searchMode) {
         self.searchViewController.view.alpha = 0.0;
         self.searchViewController.view.hidden = NO;
+        self.backButton.transform = CGAffineTransformMakeTranslation((self.view.bounds.size.width / 2.0), 0.0);
     }
     
     [UIView animateWithDuration:0.3
@@ -417,7 +418,7 @@
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
                          self.backButton.alpha = searchMode ? 1.0 : 0.0;
                          self.friendsButton.alpha = searchMode ? 0.0 : 1.0;
-                         self.backButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
+                         self.backButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation((self.view.bounds.size.width / 2.0), 0.0);
                          self.currentStoreCollectionViewController.view.alpha = searchMode ? 0.0 : 1.0;
                          self.searchViewController.view.alpha = searchMode ? 1.0 : 0.0;
                      }
@@ -436,20 +437,35 @@
     if (friendsMode) {
         self.friendsViewController.view.alpha = 0.0;
         self.friendsViewController.view.hidden = NO;
+        self.backButton.transform = CGAffineTransformMakeTranslation(-(self.view.bounds.size.width / 2.0), 0.0);
+        self.friendsTabView.transform = CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
     }
     
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.35
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
+                         
+                         // Store tabs.
                          self.storeTabView.alpha = friendsMode ? 0.0 : 1.0;
-                         self.searchFieldView.alpha = friendsMode ? 0.0 : 1.0;
-                         self.friendsButton.alpha = friendsMode ? 0.0 : 1.0;
-                         self.searchFieldView.transform = friendsMode ? CGAffineTransformMakeTranslation([self searchStartOffset] + 50.0, 0.0) : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
-                         self.friendsButton.transform = friendsMode ? CGAffineTransformMakeTranslation(-20.0, 0.0) : CGAffineTransformIdentity;
+                         self.storeTabView.transform = friendsMode ? CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
+                         
+                         // Friends tab.
                          self.friendsTabView.alpha = friendsMode ? 1.0 : 0.0;
+                         self.friendsTabView.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
+                         
+                         // Search field.
+                         self.searchFieldView.alpha = friendsMode ? 0.0 : 1.0;
+                         self.searchFieldView.transform = friendsMode ? CGAffineTransformMakeTranslation([self searchStartOffset] + (self.view.bounds.size.width / 2.0), 0.0) : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
+                         
+                         // Friends button.
+                         self.friendsButton.alpha = friendsMode ? 0.0 : 1.0;
+                         self.friendsButton.transform = friendsMode ? CGAffineTransformMakeTranslation((self.view.bounds.size.width / 2.0), 0.0) : CGAffineTransformIdentity;
+                         
+                         // Back button.
                          self.backButton.alpha = friendsMode ? 1.0 : 0.0;
-                         self.backButton.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
+                         self.backButton.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(-(self.view.bounds.size.width / 2.0), 0.0);
+                         
                          self.currentStoreCollectionViewController.view.alpha = friendsMode ? 0.0 : 1.0;
                          self.friendsViewController.view.alpha = friendsMode ? 1.0 : 0.0;
                      }
