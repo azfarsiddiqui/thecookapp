@@ -68,7 +68,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #define kMaxTitleWidth          780.0
 #define kMaxStoryWidth          600.0
 #define kMaxLeftWidth           240.0
-#define kMaxRightWidth          480.0
+#define kMaxRightWidth          470.0
 #define kMaxMethodHeight        300.0
 #define kDividerWidth           600.0
 #define kIngredientDividerWidth 170.0
@@ -653,7 +653,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     else if (self.editMode)
     {
-        tagsString = [NSMutableString stringWithString:@"ENTER TAGS"];
+        tagsString = [NSMutableString stringWithString:@"TAGS"];
     }
     else
     {
@@ -1142,10 +1142,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Method.
     [self enableEditModeOnView:self.methodLabel editMode:editMode
                  minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 8.0,
-                     defaultEditInsets.left - 5.0,
+                     defaultEditInsets.top + 12.0,
+                     defaultEditInsets.left,
                      defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right - 20.0,
+                     defaultEditInsets.right
                  }
                toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
                   padDirection:EditPadDirectionBottom];

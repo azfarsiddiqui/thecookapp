@@ -26,7 +26,7 @@
 
 @implementation RecipeIngredientsView
 
-#define kRowGap         3.0
+#define kRowGap         12.0
 #define kCompactRowGap  0.0
 
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth {
@@ -124,7 +124,7 @@
     if (!_paragraphAttributes) {
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-        paragraphStyle.lineSpacing = self.compact ? 0.0 : 8.0;
+        paragraphStyle.lineSpacing = self.compact ? 0.0 : 4.0;
         paragraphStyle.alignment = self.textAlignment;
         _paragraphAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [Theme ingredientsListFont], NSFontAttributeName,
