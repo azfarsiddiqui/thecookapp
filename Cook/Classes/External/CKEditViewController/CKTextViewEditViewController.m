@@ -23,7 +23,7 @@
 #define kTextViewMinHeight      232.0
 #define kTextViewWidth          780.0
 #define kKeyboardDefaultFrame   CGRectMake(0.0, 396.0, 1024.0, 352.0)
-#define kTextViewAdjustments    UIEdgeInsetsMake(0.0, 0.0, 20.0, 0.0)
+#define kTextViewAdjustments    UIEdgeInsetsMake(0.0, 0.0, 50.0, 0.0)
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {

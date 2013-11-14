@@ -1145,7 +1145,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      defaultEditInsets.top + 8.0,
                      defaultEditInsets.left - 5.0,
                      defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right - 20.0,
+                     defaultEditInsets.right - 10.0,
                  }
                toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
                   padDirection:EditPadDirectionBottom];
