@@ -166,8 +166,11 @@
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error {
     if ([[CKServerManager sharedInstance] noConnectionError:error]) {
         [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
-        [self showActivity:NO];
+    } else {
+        [[CardViewHelper sharedInstance] showCardText:@"UNABLE TO FETCH BOOKS" subtitle:@"PLEASE TRY AGAIN LATER"
+                                                 view:self.collectionView show:YES center:self.collectionView.center];
     }
+    [self showActivity:NO];
 }
 
 - (void)showNoBooksCard {

@@ -58,14 +58,12 @@
             }
             
             // Start on the edge of the screen.
-            CGFloat translateOffset = self.collectionView.bounds.size.width - initialAttributes.frame.origin.x;
+            CGFloat translateOffset = self.collectionView.bounds.size.width - 60.0;
             
             // Make books further apart so that they slide in at different distances.
-            translateOffset += itemIndexPath.item * (initialAttributes.frame.size.width * 2.0);
+            translateOffset += itemIndexPath.item * (initialAttributes.frame.size.width * 3.0);
             
             CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, translateOffset, 0.0, 0.0);
-//            CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
-            // initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
             initialAttributes.transform3D = translateTransform;
             initialAttributes.alpha = 1.0;
         }
@@ -91,28 +89,6 @@
     self.insertedIndexPaths = nil;
     self.deletedIndexPaths = nil;
 }
-
-//- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
-//                                 withScrollingVelocity:(CGPoint)velocity {
-//    CGFloat offsetAdjustment = MAXFLOAT;
-//    CGFloat horizontalCenter = proposedContentOffset.x + (CGRectGetWidth(self.collectionView.bounds) / 2.0);
-//    
-//    CGRect targetRect = CGRectMake(proposedContentOffset.x,
-//                                   0.0,
-//                                   self.collectionView.bounds.size.width,
-//                                   self.collectionView.bounds.size.height);
-//    
-//    NSArray* array = [self layoutAttributesForElementsInRect:targetRect];
-//    for (UICollectionViewLayoutAttributes* layoutAttributes in array) {
-//        CGFloat itemHorizontalCenter = layoutAttributes.center.x;
-//        if (ABS(itemHorizontalCenter - horizontalCenter) < ABS(offsetAdjustment)) {
-//            offsetAdjustment = itemHorizontalCenter - horizontalCenter;
-//        }
-//    }
-//    
-//    CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
-//    return targetContentOffset;
-//}
 
 #pragma mark - Private methods
 
