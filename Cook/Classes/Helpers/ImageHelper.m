@@ -28,7 +28,10 @@
 }
 
 + (CGSize)profileSize {
-    return (CGSize) { 512.0, 512.0 };
+    if ([[AppHelper sharedInstance] screenScale] == 1)
+        return (CGSize) { 128.0, 128.0 };
+    else
+        return (CGSize) { 512.0, 512.0 };
 }
 
 + (CGSize)blurredSize {
