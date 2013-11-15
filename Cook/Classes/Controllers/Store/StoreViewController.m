@@ -414,6 +414,7 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
+                         self.storeTabView.transform = searchMode ? CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
                          self.searchFieldView.backgroundView.alpha = searchMode ? 1.0 : 0.0;
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
                          self.backButton.alpha = searchMode ? 1.0 : 0.0;
