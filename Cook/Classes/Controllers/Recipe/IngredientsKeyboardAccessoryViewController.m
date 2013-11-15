@@ -23,6 +23,8 @@
 
 #define kHeight 56.0
 #define kCellId @"CellId"
+#define kSavedIndexItemKey @"IngredientsKeyboardIndexItem"
+#define kSavedIndexSectionKey @"IngredientsKeyboardIndexSection"
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
@@ -64,6 +66,11 @@
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [self.collectionView registerClass:[IngredientsKeyboardAccessoryCell class] forCellWithReuseIdentifier:kCellId];
+    
+    NSInteger savedIndexItem = [[[NSUserDefaults standardUserDefaults] objectForKey:kSavedIndexItemKey] integerValue];
+    NSInteger savedIndexSection = [[[NSUserDefaults standardUserDefaults] objectForKey:kSavedIndexSectionKey] integerValue];
+    NSIndexPath *savedIndex = [NSIndexPath indexPathForItem:savedIndexItem inSection:savedIndexSection];
+    [self.collectionView scrollToItemAtIndexPath:savedIndex atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
 }
 
 - (NSArray *)allUnitOfMeasureOptions {
@@ -137,7 +144,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     IngredientsKeyboardAccessoryCell *cell = (IngredientsKeyboardAccessoryCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
     
     NSArray *ingredientsInfo = [self.keyboardIngredientsInfo objectAtIndex:indexPath.section];
@@ -145,6 +151,17 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     [cell configureText:[ingredient valueForKey:@"Value"]];
     
     return cell;
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSArray *visibleIndexes = [self.collectionView indexPathsForVisibleItems];
+    NSIndexPath *firstIndexPath = [visibleIndexes objectAtIndex:0];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:firstIndexPath.item] forKey:kSavedIndexItemKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:firstIndexPath.section] forKey:kSavedIndexSectionKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
