@@ -447,7 +447,10 @@
 - (NSString *)shareTextWithURL:(BOOL)showUrl showTwitter:(BOOL)showTwitter {
     NSMutableString *shareText = [NSMutableString new];
     if ([self.recipe.name CK_containsText]) {
-        [shareText appendString:[self.recipe.name CK_mixedCase]];
+        NSMutableString *recipeTitle = [NSMutableString stringWithString:[self.recipe.name CK_mixedCase]];
+        [recipeTitle replaceOccurrencesOfString:[NSString CK_lineBreakString] withString:@" " options:0 range:NSMakeRange(0, [recipeTitle length])];
+        [recipeTitle replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0, [recipeTitle length])];
+        [shareText appendString:recipeTitle];
     } else {
         [shareText appendFormat:@"Check out %@ recipe", [self.recipe isOwner] ? @"my" : @"this"];
     }
