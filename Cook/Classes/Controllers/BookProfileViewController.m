@@ -65,7 +65,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor lightGrayColor];
-    
+    [[CKPhotoManager sharedInstance] removeImageForKey:kTempBookImageKey];
     // Register photo loading events.
     [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
