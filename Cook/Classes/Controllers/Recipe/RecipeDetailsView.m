@@ -659,17 +659,29 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     {
         tagsString = [NSMutableString stringWithString:@""];
     }
+
     NSAttributedString *tagsDisplay = [self attributedTextForText:tagsString font:[Theme tagsFont] colour:[Theme tagsNameColor]];
     self.tagsLabel.attributedText = tagsDisplay;
     self.tagsLabel.numberOfLines = 1;
     
     CGSize size = [self.tagsLabel sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
-    self.tagsLabel.frame = CGRectIntegral((CGRect){
-        floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0,
-        self.layoutOffset.y + 20,
-        size.width > kWidth ? kWidth : size.width,
-        size.height
-    });
+    if (!self.editMode) {
+        self.tagsLabel.frame = CGRectIntegral((CGRect){
+            floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0,
+            self.layoutOffset.y + 20,
+            size.width > kWidth ? kWidth : size.width,
+            size.height
+        });
+    } else {
+        //UGLY, autolayout this sucker to center properly later
+        UIImage *tagIconImage = [UIImage imageNamed:@"cook_customise_icon_tag"];
+        self.tagsLabel.frame = CGRectIntegral((CGRect){
+            (floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0) + tagIconImage.size.width/2,
+            self.layoutOffset.y + 20,
+            size.width > kWidth ? kWidth : size.width,
+            size.height
+        });
+    }
 }
 
 - (void)updateStory {
