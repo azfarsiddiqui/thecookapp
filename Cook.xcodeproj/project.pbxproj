@@ -335,6 +335,8 @@
 		76558EC617BFD27500644036 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC217BFD27500644036 /* cook_keyboard_autosuggest_btn.png */; };
 		76558EC717BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC317BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png */; };
 		76558ECB17BFD4CB00644036 /* ingredientsKeyboard.plist in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC817BFD3E600644036 /* ingredientsKeyboard.plist */; };
+		765769EC18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2.png in Resources */ = {isa = PBXBuildFile; fileRef = 765769EA18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2.png */; };
+		765769ED18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 765769EB18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2@2x.png */; };
 		765D8CB7181622A400741164 /* cook_dash_library_selected_btn_blank.png in Resources */ = {isa = PBXBuildFile; fileRef = 765D8CB5181622A400741164 /* cook_dash_library_selected_btn_blank.png */; };
 		765D8CB8181622A400741164 /* cook_dash_library_selected_btn_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 765D8CB6181622A400741164 /* cook_dash_library_selected_btn_blank@2x.png */; };
 		76647FF417E147D000A690D6 /* cook_book_library_profile_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76647FF217E147D000A690D6 /* cook_book_library_profile_overlay.png */; };
@@ -1809,6 +1811,8 @@
 		76558EC217BFD27500644036 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
 		76558EC317BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_btn@2x.png"; sourceTree = "<group>"; };
 		76558EC817BFD3E600644036 /* ingredientsKeyboard.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ingredientsKeyboard.plist; sourceTree = "<group>"; };
+		765769EA18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_thanksgiving2.png; sourceTree = "<group>"; };
+		765769EB18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_featured_thanksgiving2@2x.png"; sourceTree = "<group>"; };
 		765D8CB5181622A400741164 /* cook_dash_library_selected_btn_blank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_selected_btn_blank.png; sourceTree = "<group>"; };
 		765D8CB6181622A400741164 /* cook_dash_library_selected_btn_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_selected_btn_blank@2x.png"; sourceTree = "<group>"; };
 		76647FF217E147D000A690D6 /* cook_book_library_profile_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_library_profile_overlay.png; sourceTree = "<group>"; };
@@ -3719,6 +3723,8 @@
 				764A75D3183354110003594E /* cook_book_graphic_featured_usa@2x.png */,
 				764A75D4183354110003594E /* cook_book_graphic_featured_vegetarian.png */,
 				764A75D5183354110003594E /* cook_book_graphic_featured_vegetarian@2x.png */,
+				765769EA18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2.png */,
+				765769EB18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2@2x.png */,
 			);
 			path = featured_books;
 			sourceTree = "<group>";
@@ -5755,6 +5761,7 @@
 				F613C66A17DF4F7E00A5962A /* cook_customise_photo_filter_icon_outdoor.png in Resources */,
 				7654E09017B2724900446BC6 /* cook_edit_bg_blank@2x.png in Resources */,
 				762D0AB71785919900E5947B /* cook_book_graphic_sushi@2x.png in Resources */,
+				765769ED18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2@2x.png in Resources */,
 				761951D51793B8FD008AB495 /* cook_book_inner_icon_share_dark.png in Resources */,
 				F6C6772E182371B0000897A6 /* cook_library_icon_facebook.png in Resources */,
 				F60C570217E3309E00912544 /* cook_dash_settings_icon_twitter_onpress.png in Resources */,
@@ -6350,6 +6357,7 @@
 				F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */,
 				7664801917E149ED00A690D6 /* cook_book_inner_icon_small_likes_on_green@2x.png in Resources */,
 				767EEA2717BDBF62001E7D0B /* cook_login_btn_bottom_full@2x.png in Resources */,
+				765769EC18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2.png in Resources */,
 				7667999117AA9FCE001C5E8D /* cook_book_inner_category_blank@2x.png in Resources */,
 				767EEA2617BDBF62001E7D0B /* cook_login_btn_bottom_full.png in Resources */,
 				76A10AB617CB02180051751F /* cook_login_icon_facebook.png in Resources */,
@@ -6846,7 +6854,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -6859,7 +6867,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CE4DC20E-01B7-48B2-B26A-53051D426D67";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AAB70D06-8386-41E2-94A9-DB43397597AD";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -6927,7 +6935,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -6940,7 +6948,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CE4DC20E-01B7-48B2-B26A-53051D426D67";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AAB70D06-8386-41E2-94A9-DB43397597AD";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
