@@ -17,6 +17,7 @@
 #import "UIImage+Scale.h"
 #import "UIDevice+Hardware.h"
 #import "ViewHelper.h"
+#import "SDImageCache.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate, UIAlertViewDelegate>
@@ -103,6 +104,10 @@
     self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
     self.activityView.center = [self parentView].center;
     [[self parentView] addSubview:self.activityView];
+    
+    //Free up as much memory as possible
+    [[SDImageCache sharedImageCache] clearMemory];
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     // Square?
     if (self.type == CKPhotoPickerImageTypeSquare) {
