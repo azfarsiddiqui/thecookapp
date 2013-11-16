@@ -90,6 +90,16 @@
     }
 }
 
+- (void)purgeData {
+    [self unloadData];
+    [self.books removeAllObjects];
+    [self.bookCoverImages removeAllObjects];
+    [self.bookCovers removeAllObjects];
+    self.books = nil;
+    self.bookCoverImages = nil;
+    self.bookCovers = nil;
+}
+
 - (void)loadBooks {
     
     if (self.books && [self.books count] > 0) {

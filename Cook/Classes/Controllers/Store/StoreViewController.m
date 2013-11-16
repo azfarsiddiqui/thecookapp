@@ -36,6 +36,7 @@
 
 // Keep states.
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL enabled;
 
 // Friends
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
@@ -66,6 +67,8 @@
 - (void)dealloc {
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterFollowUpdated:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
+                                                  object:[UIApplication sharedApplication]];
 }
 
 - (void)viewDidLoad {
@@ -85,12 +88,19 @@
     [self initFriends];
     
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
+    
+    // Register for notification that app did enter background
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didEnterBackground)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:[UIApplication sharedApplication]];
 }
 
 - (void)enable:(BOOL)enable {
     if (enable && !self.currentStoreCollectionViewController) {
         [self.storeTabView selectFeatured];
     }
+    self.enabled = enable;
 }
 
 - (CGFloat)visibleHeight {
@@ -536,6 +546,32 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    [self unloadData];
+}
+
+- (UIImage *)imageForFriendsButtonSelected:(BOOL)selected {
+    return selected ? [UIImage imageNamed:@"cook_library_icons_friends_off.png"] : [UIImage imageNamed:@"cook_library_icons_friends.png"];
+}
+
+- (void)didEnterBackground {
+    if (!self.enabled) {
+        [self purgeData];
+    }
+}
+
+- (void)purgeData {
+    [self.friendsViewController purgeData];
+    [self.categoriesViewController purgeData];
+    [self.featuredViewController purgeData];
+    [self.worldViewController purgeData];
+    [self.searchViewController purgeData];
+    if (self.searchMode) {
+        [self enableSearchMode:NO];
+    }
+    self.currentStoreCollectionViewController = nil;
+}
+
+- (void)unloadData {
     [self.categoriesViewController unloadData];
     [self.featuredViewController unloadData];
     [self.worldViewController unloadData];
@@ -546,10 +582,6 @@
         [self enableSearchMode:NO];
     }
     self.currentStoreCollectionViewController = nil;
-}
-
-- (UIImage *)imageForFriendsButtonSelected:(BOOL)selected {
-    return selected ? [UIImage imageNamed:@"cook_library_icons_friends_off.png"] : [UIImage imageNamed:@"cook_library_icons_friends.png"];
 }
 
 @end

@@ -33,6 +33,7 @@
 - (void)loadData;
 - (void)unloadData;
 - (void)unloadDataCompletion:(void(^)())completion;
+- (void)purgeData;
 - (void)loadBooks;
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
