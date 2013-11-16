@@ -25,6 +25,7 @@
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) BOOL dataLoaded;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL loading;
 @property (nonatomic, strong) NSMutableArray *books;
 
 - (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate;

@@ -19,7 +19,8 @@
 @implementation SearchStoreCollectionViewController
 
 - (void)loadData {
-    // Empty implementation.
+    [super loadData];
+    [self showActivity:NO];
 }
 
 - (void)searchByKeyword:(NSString *)keyword {

@@ -68,7 +68,10 @@
 }
 
 - (void)loadData {
-    // Subclasses to extend.
+    if (self.loading) {
+        return;
+    }
+    self.loading = YES;
     [self showActivity:YES];
     [self hideMessageCard];
 }
@@ -79,15 +82,7 @@
 
 - (void)unloadDataCompletion:(void(^)())completion {
     DLog(@"Unloading Books [%d]", [self.books count]);
-    [self hideMessageCard];
     self.dataLoaded = NO;
-    
-//    [self.books removeAllObjects];
-//    self.books = nil;
-//    [self.bookCoverImages removeAllObjects];
-//    [self.bookCovers removeAllObjects];
-//    self.dataLoaded = NO;
-    
     [self.collectionView reloadData];
     
     if (completion != nil) {
@@ -147,6 +142,7 @@
         [self reloadBooks];
         [self showNoBooksCard];
         self.animating = NO;
+        self.loading = NO;
     }
     
 }
@@ -164,6 +160,7 @@
         [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
     } completion:^(BOOL finished) {
         self.animating = NO;
+        self.loading = NO;
     }];
 }
 

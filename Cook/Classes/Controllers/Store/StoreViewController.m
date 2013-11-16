@@ -357,11 +357,16 @@
         if (self.currentStoreCollectionViewController == storeCollectionViewController) {
             
             // Reload data for current tab if tapped again.
-            [storeCollectionViewController unloadDataCompletion:^{
-                [storeCollectionViewController loadData];
-            }];
+            if (!storeCollectionViewController.loading) {
+                [storeCollectionViewController unloadDataCompletion:^{
+                    [storeCollectionViewController loadData];
+                }];
+            }
             
         } else {
+            
+            // Unload existing data on the targeted tab.
+            [storeCollectionViewController unloadData];
             
             // Fade between controllers.
             [UIView animateWithDuration:0.1
@@ -372,8 +377,7 @@
                              }
                              completion:^(BOOL finished) {
                                  
-                                 // Unload the existing data.
-                                 [self.currentStoreCollectionViewController unloadData];
+                                 // Hide the existing tab.
                                  self.currentStoreCollectionViewController.view.hidden = YES;
                                  
                                  // Show the selected one.
@@ -417,9 +421,12 @@
     self.animating = YES;
     
     if (searchMode) {
+        [self.searchViewController unloadData];
         self.searchViewController.view.alpha = 0.0;
         self.searchViewController.view.hidden = NO;
         self.backButton.transform = CGAffineTransformMakeTranslation((self.view.bounds.size.width / 2.0), 0.0);
+    } else {
+        [self.currentStoreCollectionViewController unloadData];
     }
     
     [UIView animateWithDuration:0.3
@@ -443,8 +450,8 @@
                          if (searchMode) {
                              [self.searchViewController loadBooks];
                          } else {
-                             [self.searchViewController unloadData];
                              self.searchViewController.view.hidden = YES;
+                             [self.currentStoreCollectionViewController loadBooks];
                          }
                          
                          self.animating = NO;
@@ -458,10 +465,13 @@
     self.animating = YES;
     
     if (friendsMode) {
+        [self.friendsViewController unloadData];
         self.friendsViewController.view.alpha = 0.0;
         self.friendsViewController.view.hidden = NO;
         self.backButton.transform = CGAffineTransformMakeTranslation(-(self.view.bounds.size.width / 2.0), 0.0);
         self.friendsTabView.transform = CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
+    } else {
+        [self.currentStoreCollectionViewController unloadData];
     }
     
     [UIView animateWithDuration:0.35
@@ -497,10 +507,8 @@
                          self.friendsMode = friendsMode;
                          
                          if (friendsMode) {
-                             [self.currentStoreCollectionViewController unloadData];
                              [self.friendsViewController loadBooks];
                          } else {
-                             [self.friendsViewController unloadData];
                              [self.currentStoreCollectionViewController loadBooks];
                              self.friendsViewController.view.hidden = YES;
                          }
