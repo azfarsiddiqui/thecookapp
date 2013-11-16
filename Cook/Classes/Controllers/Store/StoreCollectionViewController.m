@@ -104,8 +104,10 @@
     
     if (self.books && [self.books count] > 0) {
         
-        // First check above to make sure it has been loaded.
-        [self loadBooks:self.books];
+        [self showActivity:YES];
+        
+        // Load books in next runloop to ensure spinner gets shown.
+        [self performSelector:@selector(loadBooks:) withObject:self.books afterDelay:0.0];
         
     } else {
         
@@ -120,8 +122,6 @@
     self.animating = YES;
     
     DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
-    
-    [self showActivity:NO];
     
     // Hide any message cards.
     [self hideMessageCard];
@@ -146,9 +146,11 @@
             return snapshotImage;
         }]];
         
+        [self showActivity:NO];
         [self insertBooks];
         
     } else {
+        [self showActivity:NO];
         [self reloadBooks];
         [self showNoBooksCard];
         self.animating = NO;
