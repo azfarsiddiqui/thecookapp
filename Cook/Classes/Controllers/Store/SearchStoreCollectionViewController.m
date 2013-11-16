@@ -18,6 +18,10 @@
 
 @implementation SearchStoreCollectionViewController
 
+- (void)loadData {
+    // Empty implementation.
+}
+
 - (void)searchByKeyword:(NSString *)keyword {
     DLog(@"keyword: %@", keyword);
     

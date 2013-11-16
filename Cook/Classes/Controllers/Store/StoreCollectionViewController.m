@@ -80,19 +80,40 @@
 - (void)unloadDataCompletion:(void(^)())completion {
     DLog(@"Unloading Books [%d]", [self.books count]);
     [self hideMessageCard];
-    [self.books removeAllObjects];
-    self.books = nil;
-    [self.bookCoverImages removeAllObjects];
-    [self.bookCovers removeAllObjects];
     self.dataLoaded = NO;
     
+//    [self.books removeAllObjects];
+//    self.books = nil;
+//    [self.bookCoverImages removeAllObjects];
+//    [self.bookCovers removeAllObjects];
+//    self.dataLoaded = NO;
+    
     [self.collectionView reloadData];
+    
     if (completion != nil) {
         completion();
     }
 }
 
+- (void)loadBooks {
+    
+    if (self.books && [self.books count] > 0) {
+        
+        // First check above to make sure it has been loaded.
+        [self loadBooks:self.books];
+        
+    } else {
+        
+        [self loadData];
+    }
+}
+
 - (void)loadBooks:(NSArray *)books {
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
     DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
     
     [self showActivity:NO];
@@ -105,7 +126,6 @@
     
     if ([books count] > 0) {
         
-        BOOL reloadBooks = [self.books count] > 0;
         self.books = [NSMutableArray arrayWithArray:books];
         
         // Gather book covers.
@@ -121,15 +141,12 @@
             return snapshotImage;
         }]];
         
-        if (reloadBooks) {
-            [self reloadBooks];
-        } else {
-            [self insertBooks];
-        }
+        [self insertBooks];
         
     } else {
         [self reloadBooks];
         [self showNoBooksCard];
+        self.animating = NO;
     }
     
 }
@@ -142,7 +159,12 @@
     NSArray *insertIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
         return [NSIndexPath indexPathForItem:index inSection:0];
     }];
-    [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+    
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+    } completion:^(BOOL finished) {
+        self.animating = NO;
+    }];
 }
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
@@ -217,7 +239,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [self.books count];
+    return self.dataLoaded ? [self.books count] : 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView

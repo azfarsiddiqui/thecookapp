@@ -34,6 +34,9 @@
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
 
+// Keep states.
+@property (nonatomic, assign) BOOL animating;
+
 // Friends
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
 
@@ -344,12 +347,16 @@
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
     
+    if (self.animating) {
+        return;
+    }
+    
     // Fade out the current VC.
     if (self.currentStoreCollectionViewController) {
         
         if (self.currentStoreCollectionViewController == storeCollectionViewController) {
             
-            // Just show again.
+            // Reload data for current tab if tapped again.
             [storeCollectionViewController unloadDataCompletion:^{
                 [storeCollectionViewController loadData];
             }];
@@ -398,11 +405,17 @@
                          storeCollectionViewController.view.alpha = 1.0;
                      }
                      completion:^(BOOL finished) {
-                         [storeCollectionViewController loadData];
+                         [storeCollectionViewController loadBooks];
+                         self.animating = NO;
                      }];
 }
 
 - (void)enableSearchMode:(BOOL)searchMode {
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
     if (searchMode) {
         self.searchViewController.view.alpha = 0.0;
         self.searchViewController.view.hidden = NO;
@@ -427,14 +440,23 @@
                          self.searchMode = searchMode;
                          [self.searchFieldView focus:searchMode];
                          
-                         if (!searchMode) {
+                         if (searchMode) {
+                             [self.searchViewController loadBooks];
+                         } else {
+                             [self.searchViewController unloadData];
                              self.searchViewController.view.hidden = YES;
                          }
                          
+                         self.animating = NO;
                      }];
 }
 
 - (void)enableFriendsMode:(BOOL)friendsMode {
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
     if (friendsMode) {
         self.friendsViewController.view.alpha = 0.0;
         self.friendsViewController.view.hidden = NO;
@@ -467,6 +489,7 @@
                          self.backButton.alpha = friendsMode ? 1.0 : 0.0;
                          self.backButton.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(-(self.view.bounds.size.width / 2.0), 0.0);
                          
+                         // Current tab.
                          self.currentStoreCollectionViewController.view.alpha = friendsMode ? 0.0 : 1.0;
                          self.friendsViewController.view.alpha = friendsMode ? 1.0 : 0.0;
                      }
@@ -474,11 +497,15 @@
                          self.friendsMode = friendsMode;
                          
                          if (friendsMode) {
-                             [self.friendsViewController loadData];
+                             [self.currentStoreCollectionViewController unloadData];
+                             [self.friendsViewController loadBooks];
                          } else {
                              [self.friendsViewController unloadData];
+                             [self.currentStoreCollectionViewController loadBooks];
                              self.friendsViewController.view.hidden = YES;
                          }
+                         
+                         self.animating = NO;
                          
                      }];
 }

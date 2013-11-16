@@ -50,19 +50,6 @@
     }
 }
 
-- (void)insertBooks {
-    
-    NSMutableArray *insertIndexPaths = [NSMutableArray arrayWithArray:[self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
-        return [NSIndexPath indexPathForItem:index inSection:0];
-    }]];
-    
-//    if (self.books && ![[CKUser currentUser] isFacebookUser]) {
-//        [insertIndexPaths addObject:[NSIndexPath indexPathForItem:[insertIndexPaths count] inSection:0]];
-//    }
-    
-    [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
-}
-
 - (void)signInFacebook {
     CKUser *currentUser = [CKUser currentUser];
     if (![currentUser isFacebookUser]) {
