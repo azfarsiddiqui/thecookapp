@@ -546,7 +546,7 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    [self unloadData];
+    [self purgeData];
 }
 
 - (UIImage *)imageForFriendsButtonSelected:(BOOL)selected {
