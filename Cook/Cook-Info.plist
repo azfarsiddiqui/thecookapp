@@ -45,7 +45,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.3.3</string>
+	<string>1.3.4</string>
 	<key>FacebookAppID</key>
 	<string>289425251158959</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -82,6 +82,8 @@
 			<string>{768, 1024}</string>
 		</dict>
 	</array>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -94,8 +96,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
-	<key>UIPrerenderedIcon</key>
 	<true/>
 </dict>
 </plist>
