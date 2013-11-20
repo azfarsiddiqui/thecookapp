@@ -18,13 +18,9 @@
 @implementation SuggestedStoreCollectionViewController
 
 - (void)loadData {
-    
-    // TODO
-    [self loadBooks:@[]];
-    return;
+    [super loadData];
     
     if ([[CKUser currentUser] isSignedIn]) {
-        [super loadData];
         [CKBook facebookSuggestedBooksForUser:[CKUser currentUser]
                                       success:^(NSArray *suggestedBooks) {
                                           [self loadBooks:suggestedBooks];
@@ -33,6 +29,8 @@
                                           DLog(@"Error: %@", [error localizedDescription]);
                                           [self showNoConnectionCardIfApplicableError:error];
                                       }];
+    } else {
+        [self loadBooks:@[]];
     }
 }
 

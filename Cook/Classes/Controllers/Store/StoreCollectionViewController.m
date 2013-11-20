@@ -81,9 +81,12 @@
 }
 
 - (void)unloadDataCompletion:(void(^)())completion {
-    DLog(@"Unloading Books [%d]", [self.books count]);
-    self.dataLoaded = NO;
-    [self.collectionView reloadData];
+    
+    if (self.dataLoaded) {
+        DLog(@"Unloading Books [%d]", [self.books count]);
+        self.dataLoaded = NO;
+        [self.collectionView reloadData];
+    }
     
     if (completion != nil) {
         completion();

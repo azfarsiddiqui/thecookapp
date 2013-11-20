@@ -207,12 +207,23 @@
 + (void)facebookSuggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
                               failure:(ObjectFailureBlock)failure {
     
+    NSArray *facebookFriendIds = [user.facebookFriends count] > 0 ? user.facebookFriends : @[];
     [PFCloud callFunctionInBackground:@"facebookSuggestedBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion], @"friendIds" : @[] }
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion], @"friendIds" : facebookFriendIds }
                                 block:^(NSDictionary *booksResults, NSError *error) {
                                     
                                     if (!error) {
-                                        [self processStoreBooksFromResults:booksResults success:success failure:failure];
+                                        [self processStoreBooksFromResults:booksResults
+                                                                   success:^(NSArray *books){
+                                                                       
+                                                                       // Annotate them to be suggested books.
+                                                                       [books each:^(CKBook *book) {
+                                                                           book.status = kBookStatusFBSuggested;
+                                                                       }];
+                                                                       
+                                                                       success(books);
+                                                                       
+                                                                   } failure:failure];
                                     } else {
                                         DLog(@"Error loading friends/suggested books: %@", [error localizedDescription]);
                                     }
