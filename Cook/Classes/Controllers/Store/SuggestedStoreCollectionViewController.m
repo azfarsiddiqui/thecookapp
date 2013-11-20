@@ -8,28 +8,36 @@
 
 #import "SuggestedStoreCollectionViewController.h"
 #import "CKBook.h"
+#import "CKUser.h"
 #import "CardViewHelper.h"
 
-@interface SuggestedStoreCollectionViewController ()
+@interface SuggestedStoreCollectionViewController () <UICollectionViewDelegateFlowLayout>
 
 @end
 
 @implementation SuggestedStoreCollectionViewController
 
 - (void)loadData {
-    [super loadData];
-    [CKBook suggestedBooksForUser:[CKUser currentUser]
-                         success:^(NSArray *featuredBooks) {
-                             [self loadBooks:featuredBooks];
-                         }
-                         failure:^(NSError *error) {
-                             DLog(@"Error: %@", [error localizedDescription]);
-                             [self showNoConnectionCardIfApplicableError:error];
-                         }];
+    
+    // TODO
+    [self loadBooks:@[]];
+    return;
+    
+    if ([[CKUser currentUser] isSignedIn]) {
+        [super loadData];
+        [CKBook facebookSuggestedBooksForUser:[CKUser currentUser]
+                                      success:^(NSArray *suggestedBooks) {
+                                          [self loadBooks:suggestedBooks];
+                                      }
+                                      failure:^(NSError *error) {
+                                          DLog(@"Error: %@", [error localizedDescription]);
+                                          [self showNoConnectionCardIfApplicableError:error];
+                                      }];
+    }
 }
 
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO SUGGESTIONS" subtitle:@"MORE WAYS TO FIND FRIENDS SOON"
+    [[CardViewHelper sharedInstance] showCardText:@"NO SUGGESTIONS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 

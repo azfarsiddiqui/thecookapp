@@ -8,6 +8,7 @@
 
 #import "StoreViewController.h"
 #import "FriendsStoreCollectionViewController.h"
+#import "SuggestedStoreCollectionViewController.h"
 #import "CategoriesStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
 #import "WorldStoreCollectionViewController.h"
@@ -15,11 +16,11 @@
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
-#import "StoreUnitTabView.h"
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 #import "CKSearchFieldView.h"
 #import "ViewHelper.h"
+#import "StoreUnitTabView.h"
 
 @interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate,
     CKSearchFieldViewDelegate>
@@ -37,9 +38,8 @@
 // Keep states.
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL enabled;
-
-// Friends
-@property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
+@property (nonatomic, assign) NSUInteger selectedStoreTabIndex;
+@property (nonatomic, assign) NSUInteger selectedFriendsTabIndex;
 
 // Search
 @property (nonatomic, strong) CKSearchFieldView *searchFieldView;
@@ -48,8 +48,10 @@
 @property (nonatomic, assign) BOOL searchMode;
 
 // Friends
+@property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
+@property (nonatomic, strong) SuggestedStoreCollectionViewController *suggestedViewController;
 @property (nonatomic, strong) UIButton *friendsButton;
-@property (nonatomic, strong) StoreUnitTabView *friendsTabView;
+@property (nonatomic, strong) StoreTabView *friendsTabView;
 @property (nonatomic, assign) BOOL friendsMode;
 
 @end
@@ -98,7 +100,10 @@
 
 - (void)enable:(BOOL)enable {
     if (enable && !self.currentStoreCollectionViewController) {
-        [self.storeTabView selectFeatured];
+        
+         // Featured
+        [self.storeTabView selectTabAtIndex:1];
+        
     }
     self.enabled = enable;
 }
@@ -117,16 +122,43 @@
 
 #pragma mark - StoreTabView methods
 
-- (void)storeTabSelectedCategories {
-    [self selectedStoreCollectionViewController:self.categoriesViewController];
-}
-
-- (void)storeTabSelectedFeatured {
-    [self selectedStoreCollectionViewController:self.featuredViewController];
-}
-
-- (void)storeTabSelectedWorld {
-    [self selectedStoreCollectionViewController:self.worldViewController];
+- (void)storeTabView:(StoreTabView *)storeTabView selectedTabAtIndex:(NSInteger)tabIndex {
+    
+    if (storeTabView == self.storeTabView) {
+        
+        // Remember the store tab index so we can return to it via Friends.
+        self.selectedStoreTabIndex = tabIndex;
+        
+        switch (tabIndex) {
+            case 0:
+                [self selectedStoreCollectionViewController:self.categoriesViewController];
+                break;
+            case 1:
+                [self selectedStoreCollectionViewController:self.featuredViewController];
+                break;
+            case 2:
+                [self selectedStoreCollectionViewController:self.worldViewController];
+                break;
+            default:
+                break;
+        }
+    } else if (storeTabView == self.friendsTabView) {
+        
+        // Remember the friends tab index so we can return to it via Friends.
+        self.selectedFriendsTabIndex = tabIndex;
+        
+        switch (tabIndex) {
+            case 0:
+                [self selectedStoreCollectionViewController:self.friendsViewController];
+                break;
+            case 1:
+                [self selectedStoreCollectionViewController:self.suggestedViewController];
+                break;
+            default:
+                break;
+        }
+    }
+    
 }
 
 #pragma mark - StoreCollectionViewControllerDelegate methods
@@ -193,6 +225,13 @@
     return _friendsViewController;
 }
 
+- (SuggestedStoreCollectionViewController *)suggestedViewController {
+    if (!_suggestedViewController) {
+        _suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self];
+    }
+    return _suggestedViewController;
+}
+
 - (CKSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
         _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:390.0 delegate:self];
@@ -216,12 +255,35 @@
     return _friendsButton;
 }
 
-- (StoreUnitTabView *)friendsTabView {
+- (StoreTabView *)storeTabView {
+    if (!_storeTabView) {
+        NSArray *tabViews = @[
+                              [[StoreUnitTabView alloc] initWithText:@"COLLECTIONS"
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_categories.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_categories_off.png"]],
+                              [[StoreUnitTabView alloc] initWithText:@"FEATURED"
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_featured_off.png"]],
+                              [[StoreUnitTabView alloc] initWithText:@"WORLD"
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_world.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_world_off.png"]]
+                              ];
+        _storeTabView = [[StoreTabView alloc] initWithUnitTabViews:tabViews delegate:self];
+    }
+    return _storeTabView;
+}
+
+- (StoreTabView *)friendsTabView {
     if (!_friendsTabView) {
-        _friendsTabView = [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
-                                                            icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
-                                                         offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]];
-        [_friendsTabView select:YES];
+        NSArray *tabViews = @[
+                              [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
+                              [[StoreUnitTabView alloc] initWithText:@"SUGGESTIONS"
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
+                              ];
+        _friendsTabView = [[StoreTabView alloc] initWithUnitTabViews:tabViews delegate:self];
     }
     return _friendsTabView;
 }
@@ -291,6 +353,13 @@
     [self.view addSubview:self.friendsViewController.view];
     [self.storeCollectionViewControllers addObject:self.friendsViewController];
     
+    // Suggested.
+    self.suggestedViewController.view.frame = self.categoriesViewController.view.frame;
+    self.suggestedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.suggestedViewController.view.hidden = YES;
+    [self.view addSubview:self.suggestedViewController.view];
+    [self.storeCollectionViewControllers addObject:self.suggestedViewController];
+    
     // Search.
     self.searchViewController.view.frame = self.categoriesViewController.view.frame;
     self.searchViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
@@ -300,13 +369,13 @@
 }
 
 - (void)initTabs {
-    StoreTabView *storeTabView = [[StoreTabView alloc] initWithDelegate:self];
-    storeTabView.frame = CGRectMake(floorf((self.view.bounds.size.width - storeTabView.frame.size.width) / 2.0),
-                                    kShelfTopOffset - storeTabView.frame.size.height,
-                                    storeTabView.frame.size.width,
-                                    storeTabView.frame.size.height);
-    [self.view addSubview:storeTabView];
-    self.storeTabView = storeTabView;
+    self.storeTabView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - self.storeTabView.frame.size.width) / 2.0),
+        kShelfTopOffset - self.storeTabView.frame.size.height,
+        self.storeTabView.frame.size.width,
+        self.storeTabView.frame.size.height
+    };
+    [self.view addSubview:self.storeTabView];
 }
 
 - (void)initFriends {
@@ -475,9 +544,6 @@
     self.animating = YES;
     
     if (friendsMode) {
-        [self.friendsViewController unloadData];
-        self.friendsViewController.view.alpha = 0.0;
-        self.friendsViewController.view.hidden = NO;
         self.backButton.transform = CGAffineTransformMakeTranslation(-(self.view.bounds.size.width / 2.0), 0.0);
         self.friendsTabView.transform = CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
     } else {
@@ -511,20 +577,18 @@
                          
                          // Current tab.
                          self.currentStoreCollectionViewController.view.alpha = friendsMode ? 0.0 : 1.0;
-                         self.friendsViewController.view.alpha = friendsMode ? 1.0 : 0.0;
+                         
                      }
                      completion:^(BOOL finished) {
                          self.friendsMode = friendsMode;
                          
                          if (friendsMode) {
-                             [self.friendsViewController loadBooks];
+                             [self.friendsTabView selectTabAtIndex:self.selectedFriendsTabIndex];
                          } else {
-                             [self.currentStoreCollectionViewController loadBooks];
-                             self.friendsViewController.view.hidden = YES;
+                             [self.storeTabView selectTabAtIndex:self.selectedStoreTabIndex];
                          }
                          
                          self.animating = NO;
-                         
                      }];
 }
 
@@ -560,11 +624,7 @@
 }
 
 - (void)purgeData {
-    [self.friendsViewController purgeData];
-    [self.categoriesViewController purgeData];
-    [self.featuredViewController purgeData];
-    [self.worldViewController purgeData];
-    [self.searchViewController purgeData];
+    [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(purgeData)];
     if (self.searchMode) {
         [self enableSearchMode:NO];
     }
@@ -572,11 +632,7 @@
 }
 
 - (void)unloadData {
-    [self.categoriesViewController unloadData];
-    [self.featuredViewController unloadData];
-    [self.worldViewController unloadData];
-    [self.friendsViewController unloadData];
-    [self.searchViewController unloadData];
+    [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(unloadData)];
     [self.searchFieldView clearSearch];
     if (self.searchMode) {
         [self enableSearchMode:NO];
