@@ -67,6 +67,7 @@
 #define kShellBottomShadowHeight    48.0
 
 - (void)dealloc {
+    [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterFollowUpdated:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
@@ -77,7 +78,6 @@
     [super viewDidLoad];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    
     [self initBackground];
 }
 
@@ -89,6 +89,7 @@
     [self initSearch];
     [self initFriends];
     
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     
     // Register for notification that app did enter background
@@ -620,7 +621,12 @@
     [self enableFriendsMode:!self.friendsMode];
 }
 
+- (void)loggedIn:(NSNotification *)notification {
+    [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedIn)];
+}
+
 - (void)loggedOut:(NSNotification *)notification {
+    [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedOut)];
     [self purgeData];
 }
 
@@ -638,6 +644,8 @@
     [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(purgeData)];
     if (self.searchMode) {
         [self enableSearchMode:NO];
+    } else if (self.friendsMode) {
+        [self enableFriendsMode:NO];
     }
     self.currentStoreCollectionViewController = nil;
 }
