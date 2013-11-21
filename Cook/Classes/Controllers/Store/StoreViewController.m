@@ -640,6 +640,10 @@
 }
 
 - (void)loggedIn:(NSNotification *)notification {
+    
+    // Unload any data.
+    [self.currentStoreCollectionViewController unloadData];
+    
     [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedIn)];
 }
 
@@ -665,6 +669,8 @@
     } else if (self.friendsMode) {
         [self enableFriendsMode:NO];
     }
+    
+    [self.currentStoreCollectionViewController unloadData];
     self.currentStoreCollectionViewController = nil;
 }
 
