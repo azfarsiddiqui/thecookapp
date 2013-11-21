@@ -19,9 +19,9 @@
 
 - (void)loadData {
     
-    if ([[CKUser currentUser] isSignedIn]) {
+    if ([self.currentUser isSignedIn]) {
         [super loadData];
-        [CKBook friendsBooksForUser:[CKUser currentUser]
+        [CKBook friendsBooksForUser:self.currentUser
                             success:^(NSArray *friendsSuggestedBooks) {
                                 [self loadBooks:friendsSuggestedBooks];
                             }

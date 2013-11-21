@@ -207,9 +207,14 @@
 + (void)facebookSuggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
                               failure:(ObjectFailureBlock)failure {
     
-    NSArray *facebookFriendIds = [user.facebookFriends count] > 0 ? user.facebookFriends : @[];
+    [self facebookSuggestedBooksForFacebookIds:user.facebookFriends success:success failure:failure];
+}
+
++ (void)facebookSuggestedBooksForFacebookIds:(NSArray *)facebookIds success:(ListObjectsSuccessBlock)success
+                                     failure:(ObjectFailureBlock)failure {
+    
     [PFCloud callFunctionInBackground:@"facebookSuggestedBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion], @"friendIds" : facebookFriendIds }
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion], @"friendIds" : facebookIds }
                                 block:^(NSDictionary *booksResults, NSError *error) {
                                     
                                     if (!error) {

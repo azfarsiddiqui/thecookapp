@@ -20,6 +20,7 @@
 #import "CardViewHelper.h"
 #import "CKPhotoManager.h"
 #import "CKBookCover.h"
+#import "CKUser.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookViewControllerDelegate>
 
@@ -42,6 +43,7 @@
 - (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[StoreFlowLayout alloc] init]]) {
         self.delegate = delegate;
+        self.currentUser = [CKUser currentUser];
     }
     return self;
 }
@@ -215,6 +217,14 @@
     [[CardViewHelper sharedInstance] hideCardInView:self.collectionView];
 }
 
+- (void)isLoggedIn {
+    self.currentUser = [CKUser currentUser];
+}
+
+- (void)isLoggedOut {
+    self.currentUser = nil;
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -306,7 +316,6 @@
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = [self.books objectAtIndex:indexPath.item];
-    CKUser *currentUser = [CKUser currentUser];
     
     // Remove the book immediately.
     [self.books removeObjectAtIndex:indexPath.item];
@@ -317,7 +326,7 @@
     
     // Then follow in the background.
     __weak CKBook *weakBook = book;
-    [book addFollower:currentUser
+    [book addFollower:self.currentUser
               success:^{
                   [EventHelper postFollow:YES book:weakBook];
               } failure:^(NSError *error) {
