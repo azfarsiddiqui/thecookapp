@@ -23,7 +23,7 @@
 #import "StoreUnitTabView.h"
 
 @interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate,
-    CKSearchFieldViewDelegate>
+    CKSearchFieldViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIImageView *bottomShadowView;
 
@@ -189,6 +189,18 @@
     [self.searchViewController unloadData];
 }
 
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    // Recognise taps only when store mode is enabled.
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        return self.enabled;
+    }
+    
+    return YES;
+}
+
 #pragma mark - Properties
 
 - (CategoriesStoreCollectionViewController *)categoriesViewController {
@@ -317,6 +329,12 @@
     [self.view addSubview:bottomShadowView];
     [self.view sendSubviewToBack:bottomShadowView];
     self.bottomShadowView = bottomShadowView;
+    
+    // Register tap on shadow.
+    self.bottomShadowView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    tapGesture.delegate = self;
+    [self.bottomShadowView addGestureRecognizer:tapGesture];
 }
 
 - (void)initStores {
@@ -657,6 +675,10 @@
         [self enableSearchMode:NO];
     }
     self.currentStoreCollectionViewController = nil;
+}
+
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    [self.delegate benchtopRequested];
 }
 
 @end

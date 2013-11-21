@@ -20,6 +20,7 @@
 - (void)deleteModeToggled:(BOOL)deleteMode;
 - (BOOL)benchtopInLibrary;
 - (BOOL)benchtopInSettings;
+- (void)benchtopRequested;
 
 @optional
 - (void)benchtopFirstTimeLaunched;
