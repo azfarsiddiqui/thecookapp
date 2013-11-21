@@ -397,6 +397,14 @@
     return [UIColor colorWithHexString:@"EAEAEA"];
 }
 
++ (UIFont *)tagLabelFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:16];
+}
+
++ (UIColor *)tagLabelColor {
+    return [UIColor colorWithHexString:@"555555"];
+}
+
 #pragma mark - Social view.
 
 + (UIFont *)recipeCommenterFont {

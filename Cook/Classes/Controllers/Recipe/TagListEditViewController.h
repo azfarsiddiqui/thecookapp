@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKListEditViewController.h"
 #import "CKRecipeTag.h"
+#import "CKEditViewController.h"
 
-@interface TagListEditViewController : CKListEditViewController
+@interface TagListEditViewController : CKEditViewController
 
-- (id)initWithEditView:(UIView *)editView
-              delegate:(id<CKEditViewControllerDelegate>)delegate
-              allItems:(NSArray *)allItems
-                 selectedItems:(NSArray *)selectedItems
+
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
+         selectedItems:(NSArray *)selectedItems
          editingHelper:(CKEditingViewHelper *)editingHelper;
-- (void)updateCellsWithTagArray:(NSArray *)allItems;
+
+//- (void)updateCellsWithTagArray:(NSArray *)allItems;
 
 @end

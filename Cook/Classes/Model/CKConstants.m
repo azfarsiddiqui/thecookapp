@@ -150,6 +150,9 @@ NSString *const kRecipePinPage                  = @"page";
 
 NSString *const kRecipeTagModelName             = @"RecipeTag";
 NSString *const kRecipeTagDisplayNames          = @"displayNames";
+NSString *const kRecipeTagCategory              = @"category";
+NSString *const kRecipeTagOrderIndex            = @"orderIndex";
+NSString *const kRecipeTagImageType             = @"iconType";
 
 #pragma mark - Activity class
 

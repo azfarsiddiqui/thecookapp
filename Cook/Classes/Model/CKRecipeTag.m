@@ -14,6 +14,11 @@
 
 #define DEFAULT_LANGUAGE @"en"
 
+//TEST METHOD
++ (void)tagWithName:(NSString *)name category:(NSInteger)categoryIndex order:(NSInteger)orderIndex imageType:(NSString *)imageType {
+    
+}
+
 + (void)tagListWithSuccess:(GetTagsSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     PFQuery *query = [PFQuery queryWithClassName:kRecipeTagModelName];
@@ -53,6 +58,26 @@
         localisedString = [JSON valueForKey:DEFAULT_LANGUAGE];
     }
     return [localisedString uppercaseString];
+}
+
+- (NSInteger)categoryIndex {
+    [self.parseObject fetchIfNeeded];
+    NSNumber *categoryNumber = [self.parseObject objectForKey:kRecipeTagCategory];
+    return [categoryNumber integerValue];
+}
+
+- (NSInteger)orderIndex {
+    [self.parseObject fetchIfNeeded];
+    NSNumber *categoryNumber = [self.parseObject objectForKey:kRecipeTagOrderIndex];
+    return [categoryNumber integerValue];
+}
+
+- (NSString *)imageType {
+    [self.parseObject fetchIfNeeded];
+    NSString *imageType = [self.parseObject objectForKey:kRecipeTagImageType];
+    if (!imageType)
+        return @"";
+    return imageType;
 }
 
 - (BOOL)isEqual:(CKRecipeTag *)object

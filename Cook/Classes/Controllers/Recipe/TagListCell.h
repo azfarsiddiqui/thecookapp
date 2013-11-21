@@ -6,12 +6,19 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKListCell.h"
+#import <UIKit/UIKit.h>
 
 @class CKRecipeTag;
 
-@interface TagListCell : CKListCell
+@interface TagListCell : UICollectionViewCell
+
+#define kItemHeight 115
+#define kItemWidth 105
 
 @property (nonatomic, strong) CKRecipeTag *recipeTag;
+
+//+ (CGSize)cellSize;
+
+- (void)configureTag:(CKRecipeTag *)recipeTag;
 
 @end

@@ -15,6 +15,9 @@ typedef void(^GetTagsSuccessBlock)(NSArray *tags);
 @interface CKRecipeTag : CKModel
 
 @property (nonatomic, readonly) NSString *displayName;
+@property (nonatomic, readonly) NSInteger categoryIndex;
+@property (nonatomic, readonly) NSInteger orderIndex;
+@property (nonatomic, readonly) NSString *imageType;
 
 + (void)tagListWithSuccess:(GetTagsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 

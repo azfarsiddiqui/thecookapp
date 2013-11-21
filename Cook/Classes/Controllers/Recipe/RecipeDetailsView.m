@@ -211,17 +211,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.editViewController = editViewController;
         
     } else if (editingView == self.tagsLabel) {
-        TagListEditViewController *editViewController = [[TagListEditViewController alloc] initWithEditView:self.tagsLabel delegate:self allItems:nil selectedItems:self.recipeDetails.tags editingHelper:self.editingHelper];
-        editViewController.canAddItems = NO;
-        editViewController.canDeleteItems = NO;
-        editViewController.canReorderItems = NO;
+        TagListEditViewController *editViewController = [[TagListEditViewController alloc] initWithEditView:self.tagsLabel delegate:self selectedItems:self.recipeDetails.tags editingHelper:self.editingHelper];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
-        [CKRecipeTag tagListWithSuccess:^(NSArray *tags) {
-            [editViewController updateCellsWithTagArray:tags];
-      } failure:^(NSError *error) {
-          DLog(@"%@", error.description);
-      }];
     } else if (editingView == self.storyLabel) {
         
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView

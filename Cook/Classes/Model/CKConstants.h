@@ -149,6 +149,9 @@ extern NSString *const kRecipePinPage;
 
 extern NSString *const kRecipeTagModelName;
 extern NSString *const kRecipeTagDisplayNames;
+extern NSString *const kRecipeTagCategory;
+extern NSString *const kRecipeTagOrderIndex;
+extern NSString *const kRecipeTagImageType;
 
 #pragma mark - Activity class
 

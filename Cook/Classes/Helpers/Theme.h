@@ -122,6 +122,8 @@
 + (UIColor *)editCookColour;
 
 + (UIColor *)dividerRuleColour;
++ (UIFont *)tagLabelFont;
++ (UIColor *)tagLabelColor;
 
 #pragma mark - Social view.
 
