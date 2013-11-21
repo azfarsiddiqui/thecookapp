@@ -66,9 +66,8 @@
     [self.foodTypeCollectionView reloadData];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
+- (void)targetTextEditingViewDidAppear:(BOOL)appear {
+    [super targetTextEditingViewDidAppear:appear];
     [self.view addSubview:self.containerView];
     [self.containerView addSubview:self.mealTypeCollectionView];
     [self.containerView addSubview:self.cookTypeCollectionView];
@@ -98,7 +97,7 @@
     [self.containerView addSubview:line2];
     [self.containerView addSubview:line3];
     
-//    self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
+    //    self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mealTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.cookTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.allergyTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -150,11 +149,11 @@
                                                                    attribute:NSLayoutAttributeCenterX
                                                                   multiplier:1.f constant:0.f]];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:line1
-                                                                 attribute:NSLayoutAttributeCenterX
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.containerView
-                                                                 attribute:NSLayoutAttributeCenterX
-                                                                multiplier:1.f constant:0.f]];
+                                                                   attribute:NSLayoutAttributeCenterX
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.containerView
+                                                                   attribute:NSLayoutAttributeCenterX
+                                                                  multiplier:1.f constant:0.f]];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:line2
                                                                    attribute:NSLayoutAttributeCenterX
                                                                    relatedBy:NSLayoutRelationEqual
@@ -247,6 +246,10 @@
     //Configure cell with RecipeTag
     if (recipeTag) {
         [cell configureTag:recipeTag];
+    }
+    
+    if ([self.selectedItems containsObject:recipeTag]) {
+        [cell setSelected:YES];
     }
     return cell;
 }
