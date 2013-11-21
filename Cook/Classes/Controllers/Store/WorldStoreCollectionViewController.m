@@ -17,7 +17,7 @@
 
 - (void)loadData {
     [super loadData];
-    [CKBook worldBooksForUser:[CKUser currentUser]
+    [CKBook worldBooksForUser:self.currentUser
                       success:^(NSArray *featuredBooks) {
                           [self loadBooks:featuredBooks];
                       }

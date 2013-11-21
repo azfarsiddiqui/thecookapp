@@ -8,19 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class StoreTabView;
+
 @protocol StoreTabViewDelegate
 
-- (void)storeTabSelectedCategories;
-- (void)storeTabSelectedFeatured;
-- (void)storeTabSelectedWorld;
+- (void)storeTabView:(StoreTabView *)storeTabView selectedTabAtIndex:(NSInteger)tabIndex;
 
 @end
 
 @interface StoreTabView : UIView
 
-- (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate;
-- (void)selectCategories;
-- (void)selectFeatured;
-- (void)selectWorld;
+- (id)initWithUnitTabViews:(NSArray *)storeUnitTabViews delegate:(id<StoreTabViewDelegate>)delegate;
+- (void)selectTabAtIndex:(NSInteger)tabIndex;
 
 @end

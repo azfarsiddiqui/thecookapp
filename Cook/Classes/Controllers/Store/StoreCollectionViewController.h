@@ -10,6 +10,7 @@
 #import "StoreBookCoverViewCell.h"
 
 @class CKBook;
+@class CKUser;
 
 @protocol StoreCollectionViewControllerDelegate
 
@@ -22,6 +23,7 @@
 #define kCellId         @"StoreBookCellId"
 #define kStoreSection   0
 
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) BOOL dataLoaded;
 @property (nonatomic, assign) BOOL animating;
@@ -43,6 +45,10 @@
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error;
 - (void)showNoBooksCard;
 - (void)hideMessageCard;
+
+// Lifecyle of logged in/out
+- (void)isLoggedIn;
+- (void)isLoggedOut;
 
 //Subclass accessed methods and properties
 @property (nonatomic, strong) UICollectionViewCell *selectedBookCell;

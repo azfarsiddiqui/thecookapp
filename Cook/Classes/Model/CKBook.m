@@ -191,49 +191,48 @@
         return;
     }
     
-    // Friends query.
-    PFQuery *friendsQuery = [PFQuery queryWithClassName:kUserFriendModelName];
-    [friendsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
-    [friendsQuery whereKey:kUserFriendAttrConnected equalTo:[NSNumber numberWithBool:YES]];
-    [friendsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-    [friendsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseUserFriends, NSError *error) {
-        
-        if (!error) {
-            
-            // Get friends' user references.
-            NSArray *friends = [parseUserFriends collect:^id(PFObject *parseUserFriend) {
-                return [parseUserFriend objectForKey:kUserFriendFriend];
-            }];
-            
-            // Make another query for friends' books.
-            PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
-            [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
-            [friendsBooksQuery includeKey:kUserModelForeignKeyName];
-            [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friends];
-            [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
-                if (!error) {
-                    
-                    [self annotateFollowedBooks:parseBooks
-                                           user:user
-                                        success:^(NSArray *annotatedBooks) {
-                                            success(annotatedBooks);
-                                        }
-                                        failure:^(NSError *error) {
-                                            failure(error);
-                                        }];
-                    
-                } else {
-                    DLog(@"Error loading user friends: %@", [error localizedDescription]);
-                    failure(error);
-                }
-            }];
+    [PFCloud callFunctionInBackground:@"friendsBooks"
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *booksResults, NSError *error) {
+                                    
+                                    if (!error) {
+                                        [self processStoreBooksFromResults:booksResults success:success failure:failure];
+                                    } else {
+                                        DLog(@"Error loading friends/suggested books: %@", [error localizedDescription]);
+                                    }
+                                }];
+    
+}
 
-        } else {
-            DLog(@"Error loading user friends: %@", [error localizedDescription]);
-            failure(error);
-        }
-        
-    }];
++ (void)facebookSuggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
+                              failure:(ObjectFailureBlock)failure {
+    
+    [self facebookSuggestedBooksForFacebookIds:user.facebookFriends success:success failure:failure];
+}
+
++ (void)facebookSuggestedBooksForFacebookIds:(NSArray *)facebookIds success:(ListObjectsSuccessBlock)success
+                                     failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"facebookSuggestedBooks"
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion], @"friendIds" : facebookIds }
+                                block:^(NSDictionary *booksResults, NSError *error) {
+                                    
+                                    if (!error) {
+                                        [self processStoreBooksFromResults:booksResults
+                                                                   success:^(NSArray *books){
+                                                                       
+                                                                       // Annotate them to be suggested books.
+                                                                       [books each:^(CKBook *book) {
+                                                                           book.status = kBookStatusFBSuggested;
+                                                                       }];
+                                                                       
+                                                                       success(books);
+                                                                       
+                                                                   } failure:failure];
+                                    } else {
+                                        DLog(@"Error loading friends/suggested books: %@", [error localizedDescription]);
+                                    }
+                                }];
     
 }
 
@@ -276,47 +275,6 @@
                                         DLog(@"Error loading friends/suggested books: %@", [error localizedDescription]);
                                     }
                                 }];
-}
-
-+ (void)suggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    
-    // No friends for guest-user.
-    if (!user) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            success(nil);
-        });
-        return;
-    }
-    
-    // Facebook friends.
-    NSArray *facebookFriends = [user.parseUser objectForKey:kUserAttrFacebookFriends];
-    
-    // Suggested query based on Facebook friends.
-    PFQuery *friendsQuery = [PFUser query];
-    [friendsQuery whereKey:kUserAttrFacebookId containedIn:facebookFriends];
-    
-    // Suggested books query.
-    PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
-    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
-    [friendsBooksQuery includeKey:kUserModelForeignKeyName];
-    [friendsBooksQuery whereKey:kUserModelForeignKeyName matchesQuery:friendsQuery];
-    [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
-        if (!error) {
-            
-            // Filter out already-friends books.
-            [self filterFriendsBooks:parseBooks
-                                user:user
-                             success:^(NSArray *suggestedBooks) {
-                                 success(suggestedBooks);
-                             }
-                             failure:^(NSError *error)  {
-                                 failure(error);
-                             }];
-        } else {
-            DLog(@"Error loading user friends: %@", [error localizedDescription]);
-            failure(error);
-        }
-    }];
 }
 
 #pragma mark - Store books.
