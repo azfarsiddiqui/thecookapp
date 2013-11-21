@@ -45,7 +45,9 @@
                                           [self showNoConnectionCardIfApplicableError:error];
                                       }];
         
-    } else if (FBSession.activeSession.isOpen) {
+    } else if ([self.currentUser isSignedIn] && FBSession.activeSession.isOpen) {
+        
+        // Only fetch when signed in.
         [self fetchFacebookFriends];
     }
 }
@@ -54,6 +56,24 @@
     [[CardViewHelper sharedInstance] showCardText:@"NO SUGGESTIONS"
                                          subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
                                              view:self.collectionView show:YES center:self.collectionView.center];
+}
+
+- (void)isLoggedIn {
+    [super isLoggedIn];
+    
+    // Make sure we reload to remove FB+ if applicable.
+    [self.collectionView reloadData];
+}
+
+- (void)isLoggedOut {
+    [super isLoggedOut];
+    
+    if (self.facebookConnected) {
+        [FBSession.activeSession closeAndClearTokenInformation];
+        self.facebookConnected = NO;
+    }
+    
+    [self.collectionView reloadData];
 }
 
 #pragma mark - FacebookSuggestionButtonViewDelegate methods
@@ -67,7 +87,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    if (!self.facebookConnected && ![self.currentUser isFacebookUser]) {
+    if ([self showFacebookFetchIcon]) {
         return 1;
     } else {
         return [super collectionView:collectionView numberOfItemsInSection:section];
@@ -82,7 +102,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
     CGSize headerSize = CGSizeZero;
 
-    if (!self.facebookConnected && ![self.currentUser isFacebookUser]) {
+    if ([self showFacebookFetchIcon]) {
+        
         headerSize = (CGSize) {
             floorf((collectionView.bounds.size.width - self.facebookButtonView.frame.size.width) / 2.0) - floorf(self.facebookButtonView.frame.size.width / 2.0) + 18,
             0.0
@@ -94,7 +115,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (!self.facebookConnected && ![self.currentUser isFacebookUser]) {
+    if ([self showFacebookFetchIcon]) {
         return NO;
     } else {
         return YES;
@@ -104,7 +125,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (!self.facebookConnected && ![self.currentUser isFacebookUser]) {
+    if ([self showFacebookFetchIcon]) {
         return self.facebookButtonView.frame.size;
     } else {
         return [StoreBookCoverViewCell cellSize];
@@ -116,7 +137,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     UICollectionViewCell *cell = nil;
     
-    if (!self.facebookConnected && ![self.currentUser isFacebookUser]) {
+    if ([self showFacebookFetchIcon]) {
         
         CKContentContainerCell *facebookCell = (CKContentContainerCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kFacebookCellId
                                                                                                                    forIndexPath:indexPath];
@@ -142,9 +163,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)connectAndFetchFacebookFriends {
     
-    // Load a pre-cached token if available.
-    [FBSession openActiveSessionWithAllowLoginUI:NO];
-    
     if (FBSession.activeSession.isOpen) {
         [self fetchFacebookFriends];
     } else {
@@ -153,7 +171,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                       completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
                                           if (session.isOpen) {
                                               [self fetchFacebookFriends];
-                                          } else {
+                                          } else if (status == FBSessionStateClosedLoginFailed) {
                                               [self handleFacebookError:error];
                                           }
                                       }];
@@ -201,6 +219,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         [ViewHelper alertWithTitle:@"Couldn't Connect" message:nil];
     }
+}
+
+- (BOOL)showFacebookFetchIcon {
+    return ([self.currentUser isSignedIn] && !self.facebookConnected && ![self.currentUser isFacebookUser]);
 }
 
 @end
