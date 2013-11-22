@@ -247,7 +247,7 @@
 
 - (CKSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
-        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:390.0 delegate:self];
+        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:410.0 delegate:self];
     }
     return _searchFieldView;
 }
@@ -624,7 +624,7 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return -315.0;
+    return -floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0);
 }
 
 - (void)backTapped {
