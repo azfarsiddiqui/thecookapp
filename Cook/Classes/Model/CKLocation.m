@@ -36,6 +36,17 @@
     return [[CKLocation alloc] initWithParseObject:parseLocation];
 }
 
+- (NSString *)displayName {
+    NSString *countryName = [self.parseObject objectForKey:kLocationCountry];
+    
+    // Fallback to country code if country displayName not found.
+    if (![countryName CK_containsText]) {
+        countryName = [[self.parseObject objectForKey:kLocationCountryCode] uppercaseString];
+    }
+    
+    return countryName;
+}
+
 #pragma mark - Properties
 
 

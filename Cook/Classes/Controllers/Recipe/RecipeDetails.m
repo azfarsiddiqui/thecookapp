@@ -233,6 +233,10 @@
     
 }
 
+- (NSDate *)createdDateTime {
+    return self.originalRecipe.createdDateTime;
+}
+
 #pragma mark - Private methods
 
 - (BOOL)ingredientsChangedForIngredients:(NSArray *)ingredients {
