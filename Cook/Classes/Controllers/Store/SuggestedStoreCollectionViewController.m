@@ -219,6 +219,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         [ViewHelper alertWithTitle:@"Couldn't Connect" message:nil];
     }
+    [self.facebookButtonView enableActivity:NO];
 }
 
 - (BOOL)showFacebookFetchIcon {
