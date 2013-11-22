@@ -293,8 +293,8 @@
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
                               [[StoreUnitTabView alloc] initWithText:@"SUGGESTIONS"
-                                                                icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
-                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_suggestions.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_suggestions_off.png"]],
                               ];
         _friendsTabView = [[StoreTabView alloc] initWithUnitTabViews:tabViews delegate:self];
     }
