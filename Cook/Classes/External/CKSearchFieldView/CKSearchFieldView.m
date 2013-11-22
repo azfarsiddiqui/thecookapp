@@ -100,7 +100,11 @@
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    return [self.delegate searchFieldShouldFocus];
+    BOOL shouldFocus = [self.delegate searchFieldShouldFocus];
+    if (shouldFocus) {
+        [self updateCloseButton];
+    }
+    return shouldFocus;
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
@@ -144,8 +148,11 @@
         shouldChange = YES;
     }
     
-    
+    // Remember search term.
     self.currentSearch = self.textField.text;
+    
+    [self updateCloseButton];
+    
     return shouldChange;
 }
 
@@ -162,8 +169,8 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_library_icons_clear.png"]
-                               selectedImage:[UIImage imageNamed:@"cook_library_icons_clear_off.png"]
+        _closeButton = [self buttonWithImage:[self imageForCloseOffState:YES]
+                               selectedImage:[self imageForCloseOffState:YES]
                                       target:self selector:@selector(clearTapped)];
     }
     return _closeButton;
@@ -173,6 +180,10 @@
 
 - (UIImage *)imageForSearchSelected:(BOOL)selected {
     return selected ? [UIImage imageNamed:@"cook_library_icons_search_off.png"] : [UIImage imageNamed:@"cook_library_icons_search.png"];
+}
+
+- (UIImage *)imageForCloseOffState:(BOOL)offState {
+    return offState ? [UIImage imageNamed:@"cook_library_icons_clear_off.png"] : [UIImage imageNamed:@"cook_library_icons_clear.png"];
 }
 
 - (NSString *)currentText {
@@ -207,6 +218,16 @@
     button.userInteractionEnabled = (target != nil && selector != nil);
     button.autoresizingMask = UIViewAutoresizingNone;
     return button;
+}
+
+- (void)updateCloseButton {
+    
+    // Check empty text and clear button.
+    if ([self.textField.text length] > 0) {
+        [self.closeButton setBackgroundImage:[self imageForCloseOffState:NO] forState:UIControlStateNormal];
+    } else {
+        [self.closeButton setBackgroundImage:[self imageForCloseOffState:YES] forState:UIControlStateNormal];
+    }
 }
 
 @end
