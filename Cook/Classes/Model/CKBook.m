@@ -21,6 +21,8 @@
 
 @implementation CKBook
 
+@synthesize titleRecipe = _titleRecipe;
+
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
@@ -459,6 +461,24 @@
             failure(error);
         }
     }];
+}
+
+- (CKRecipe *)titleRecipe {
+    if (!_titleRecipe) {
+        PFObject *parseRecipe = [self.parseObject objectForKey:kBookAttrTitleRecipe];
+        if (parseRecipe) {
+            _titleRecipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
+        }
+    }
+    return _titleRecipe;
+}
+
+- (void)setTitleRecipe:(CKRecipe *)titleRecipe {
+    if (titleRecipe) {
+        [self.parseObject setObject:titleRecipe.parseObject forKey:kBookAttrTitleRecipe];
+    } else {
+        [self.parseObject removeObjectForKey:kBookAttrTitleRecipe];
+    }
 }
 
 #pragma mark - Searches
