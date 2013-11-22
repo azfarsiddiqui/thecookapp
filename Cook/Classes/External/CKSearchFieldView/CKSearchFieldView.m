@@ -26,7 +26,7 @@
 @implementation CKSearchFieldView
 
 #define kTextFont       [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
-#define kContentInsets  (UIEdgeInsets){ 10.0, 20.0, 10.0, 20.0 }
+#define kContentInsets  (UIEdgeInsets){ 10.0, 24.0, 10.0, 20.0 }
 
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKSearchFieldViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
