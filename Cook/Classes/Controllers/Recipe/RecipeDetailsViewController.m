@@ -40,6 +40,7 @@
 #import "CKLocation.h"
 #import "PinRecipeViewController.h"
 #import "CKBookManager.h"
+#import "ProfileViewController.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -272,6 +273,14 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (BOOL)recipeDetailsViewAddMode {
     return self.addMode;
+}
+
+- (void)recipeDetailsProfileTapped:(ProfileViewController *)bookViewController {
+    [self hideButtons];
+    bookViewController.closeBlock = ^(BOOL isClosed){
+        [self updateButtons];
+    };
+    [bookViewController showOverlayOnViewController:self];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods

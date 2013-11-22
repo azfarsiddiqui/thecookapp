@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @class RecipeDetails;
+@class ProfileViewController;
 
 @protocol RecipeDetailsViewDelegate <NSObject>
 
 - (void)recipeDetailsViewEditing:(BOOL)editing;
 - (void)recipeDetailsViewUpdated;
 - (BOOL)recipeDetailsViewAddMode;
+- (void)recipeDetailsProfileTapped:(ProfileViewController *)bookViewController;
 
 @end
 

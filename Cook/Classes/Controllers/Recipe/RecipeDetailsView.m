@@ -25,6 +25,7 @@
 #import "CKBook.h"
 #import "DataHelper.h"
 #import "CKRecipeTag.h"
+#import "ProfileViewController.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -35,7 +36,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionTopBottom
 };
 
-@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
+@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, weak) id<RecipeDetailsViewDelegate> delegate;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -59,6 +60,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, strong) UIView *addDetailsCardView;
+
+@property (nonatomic, strong) ProfileViewController *profileViewController;
 
 @end
 
@@ -105,6 +108,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     return self;
 }
+
 
 - (void)enableEditMode:(BOOL)editMode {
     DLog();
@@ -466,6 +470,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                 profileSize:ProfileViewSizeSmall];
         }
         profilePhotoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        profilePhotoView.delegate = self;
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
         
@@ -1324,6 +1329,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      completion:^(BOOL finished) {
                          [self.addDetailsCardView removeFromSuperview];
                      }];
+}
+
+#pragma mark - CKProfilePhotoView delegate
+
+- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
+    ProfileViewController *storeBookViewController = [[ProfileViewController alloc] initWithUser:user];
+    self.profileViewController = storeBookViewController;
+    [self.delegate recipeDetailsProfileTapped:storeBookViewController];
 }
 
 @end

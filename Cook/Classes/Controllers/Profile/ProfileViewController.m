@@ -25,10 +25,17 @@
 @property (nonatomic, strong) UIView *summaryContainerView;
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
 @property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
 @property (nonatomic, strong) CKStoreBookCoverView *bookCoverView;
 @property (nonatomic, assign) BOOL dataLoaded;
+
+//Background handlers for modal view, can't use ckNavigationController's convenience methods
+@property (nonatomic, assign) BOOL isModal;
+@property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIView *backgroundOverlayView;
+@property (nonatomic, strong) UIView *topShadowView;
 
 @end
 
@@ -37,12 +44,23 @@
 #define kBookViewContentInsets  (UIEdgeInsets){ 50.0, 100.0, 50.0, 50.0 }
 #define kBookViewSize           (CGSize){ 840.0, 614.0 }
 #define kBookSummaryGap         20.0
+#define kOverlayAlpha           0.5
 
 - (id)initWithUser:(CKUser *)user {
     if (self = [super init]) {
         self.user = user;
+        self.isModal = NO;
     }
     return self;
+}
+
+// Modal appearance only
+- (void)showOverlayOnViewController:(UIViewController *)parentController {
+    self.isModal = YES;
+    [parentController.view addSubview:self.view];
+    [self displayOverlay:YES completion:^(BOOL finished) {
+        [self loadData];
+    }];
 }
 
 - (void)viewDidLoad {
@@ -50,8 +68,11 @@
     
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(backTapped:)];
-    if (self.cookNavigationController) {
+    if (self.cookNavigationController || self.isModal) {
         self.backButton.alpha = 0.0;
+    }
+    if (self.isModal) {
+        self.summaryContainerView.alpha = 0.0;
     }
     [self.view addSubview:self.summaryContainerView];
     
@@ -151,6 +172,37 @@
     return _summaryContainerView;
 }
 
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
+        self.closeButton.frame = CGRectMake(self.backButton.frame.origin.x, self.backButton.frame.origin.y, self.closeButton.frame.size.width, self.closeButton.frame.size.height);
+        self.closeButton.alpha = 0.0;
+        [self.view addSubview:self.closeButton];
+    }
+    return _closeButton;
+}
+
+- (UIView *)backgroundOverlayView {
+    if (!_backgroundOverlayView) {
+        _backgroundOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _backgroundOverlayView.alpha = 0.0;
+        _backgroundOverlayView.backgroundColor = [UIColor blackColor];
+        [self.view addSubview:_backgroundOverlayView];
+        [self.view sendSubviewToBack:_backgroundOverlayView];
+    }
+    return _backgroundOverlayView;
+}
+
+- (UIImageView *)backgroundImageView {
+    if (!_backgroundImageView) {
+        _backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        _backgroundImageView.alpha = 0.0;
+        [self.view addSubview:_backgroundImageView];
+        [self.view insertSubview:_backgroundImageView aboveSubview:_backgroundOverlayView];
+    }
+    return _backgroundImageView;
+}
+
 #pragma mark - Private methods
 
 - (void)loadData {
@@ -207,6 +259,8 @@
     self.bookCoverView.alpha = 0.0;
     [self.summaryContainerView addSubview:self.bookCoverView];
     
+    self.backgroundImageView.alpha = 0.0;
+    
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -219,19 +273,70 @@
                      }];
 }
 
+//For display from NavigationController only
 - (void)backTapped:(id)sender {
+    if (self.closeBlock)
+        self.closeBlock(YES);
     [self.cookNavigationController popViewControllerAnimated:YES];
+}
+
+//For modal display only
+- (void)displayOverlay:(BOOL)doShow completion:(void (^)(BOOL finished))completionBlock {
+    // Transition the imageView overlay in.
+    self.closeButton.alpha = doShow ? 0.0 : 1.0;
+//    self.topShadowView.alpha = doShow ? 0.0 : 1.0;
+    if (doShow) {
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+    } else {
+        [EventHelper unregisterPhotoLoading:self];
+    }
+    [UIView animateWithDuration:0.3
+                          delay:0.1
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.backgroundOverlayView.alpha = doShow ? kOverlayAlpha : 0.0;
+                         self.summaryContainerView.alpha = doShow ? 1.0 : 0.0;
+                         self.closeButton.alpha = doShow ? 1.0 : 0.0;
+                         self.backgroundImageView.alpha = doShow ? 1.0: 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         //Init topSahdowView after backgroundView initialised
+                         self.topShadowView = [ViewHelper topShadowViewForView:self.view subtle:NO];
+                         self.topShadowView.alpha = 0.0;
+                         [self.view insertSubview:self.topShadowView aboveSubview:_backgroundImageView];
+                         
+                         if (completionBlock) {
+                             completionBlock(finished);
+                         }
+                     }];
+}
+
+- (void)closeTapped:(id)sender {
+    [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationCurveEaseOut animations:^{
+        [self.bookCoverView showActionButton:NO animated:NO];
+        self.summaryContainerView.alpha = 0.0;
+        self.backgroundImageView.alpha = 0.0;
+        [self displayOverlay:NO completion:nil];
+//        self.imageOverlayView.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        [self.view removeFromSuperview];
+        if (self.closeBlock)
+            self.closeBlock(YES);
+    }];
 }
 
 - (void)loadBookCoverPhotoImage {
     if ([self.book hasCoverPhoto]) {
         DLog(@"Loading book cover photo");
         
-        if (self.cookNavigationController) {
-            CGSize size = self.cookNavigationController.backgroundImageView.bounds.size;
+        if (self.cookNavigationController || self.isModal) {
+            CGSize size;
+            if (self.cookNavigationController)
+                size = self.cookNavigationController.backgroundImageView.bounds.size;
+            else if (self.isModal)
+                size = self.view.bounds.size;
             [[CKPhotoManager sharedInstance] imageForBook:self.book size:size];
         }
-        
     }
 }
 
@@ -253,6 +358,25 @@
 }
 
 - (void)loadImage:(UIImage *)image {
+    if (self.isModal) {
+        self.backgroundImageView.image = image;
+        
+        if (self.backgroundImageView.alpha == 0.0) {
+            
+            // Fade it in.
+            [UIView animateWithDuration:0.6
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 if (self.isModal) {
+                                     self.topShadowView.alpha = 1.0;
+                                 }
+                                 self.backgroundImageView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+        }
+    }
     if (self.cookNavigationController) {
         [self.cookNavigationController loadBackgroundImage:image];
     }
