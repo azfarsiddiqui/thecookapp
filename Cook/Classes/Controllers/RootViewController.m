@@ -196,6 +196,12 @@
     [self peekDashByOffset:-30.0];
 }
 
+- (void)benchtopRequested {
+    if (self.benchtopLevel != kBenchtopLevel) {
+        [self snapToLevel:kBenchtopLevel];
+    }
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {

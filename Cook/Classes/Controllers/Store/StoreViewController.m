@@ -23,7 +23,7 @@
 #import "StoreUnitTabView.h"
 
 @interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate,
-    CKSearchFieldViewDelegate>
+    CKSearchFieldViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIImageView *bottomShadowView;
 
@@ -189,6 +189,18 @@
     [self.searchViewController unloadData];
 }
 
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    // Recognise taps only when store mode is enabled.
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        return self.enabled;
+    }
+    
+    return YES;
+}
+
 #pragma mark - Properties
 
 - (CategoriesStoreCollectionViewController *)categoriesViewController {
@@ -235,7 +247,7 @@
 
 - (CKSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
-        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:390.0 delegate:self];
+        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:410.0 delegate:self];
     }
     return _searchFieldView;
 }
@@ -281,8 +293,8 @@
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
                               [[StoreUnitTabView alloc] initWithText:@"SUGGESTIONS"
-                                                                icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
-                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_suggestions.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_suggestions_off.png"]],
                               ];
         _friendsTabView = [[StoreTabView alloc] initWithUnitTabViews:tabViews delegate:self];
     }
@@ -317,6 +329,12 @@
     [self.view addSubview:bottomShadowView];
     [self.view sendSubviewToBack:bottomShadowView];
     self.bottomShadowView = bottomShadowView;
+    
+    // Register tap on shadow.
+    self.bottomShadowView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    tapGesture.delegate = self;
+    [self.bottomShadowView addGestureRecognizer:tapGesture];
 }
 
 - (void)initStores {
@@ -606,7 +624,7 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return -315.0;
+    return -floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0);
 }
 
 - (void)backTapped {
@@ -622,6 +640,10 @@
 }
 
 - (void)loggedIn:(NSNotification *)notification {
+    
+    // Unload any data.
+    [self.currentStoreCollectionViewController unloadData];
+    
     [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedIn)];
 }
 
@@ -647,6 +669,8 @@
     } else if (self.friendsMode) {
         [self enableFriendsMode:NO];
     }
+    
+    [self.currentStoreCollectionViewController unloadData];
     self.currentStoreCollectionViewController = nil;
 }
 
@@ -657,6 +681,10 @@
         [self enableSearchMode:NO];
     }
     self.currentStoreCollectionViewController = nil;
+}
+
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    [self.delegate benchtopRequested];
 }
 
 @end

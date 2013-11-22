@@ -12,6 +12,7 @@
 
 @class CKBook;
 @class CKCategory;
+@class CKRecipe;
 
 typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
                                        NSDate *bookLastAccessedDate);
@@ -42,6 +43,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL featured;
 @property (nonatomic, assign) BookStatus status;
 @property (nonatomic, assign) BOOL guest;
+@property (nonatomic, strong) CKRecipe *titleRecipe;
 
 // Cover photos.
 @property (nonatomic, strong) PFFile *coverPhotoFile;

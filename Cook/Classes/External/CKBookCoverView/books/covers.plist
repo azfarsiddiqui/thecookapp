@@ -204,7 +204,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_neutral.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_brown</string>
+			<string>cook_book_edge_neutral</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_neutral</string>
 			<key>Hex</key>

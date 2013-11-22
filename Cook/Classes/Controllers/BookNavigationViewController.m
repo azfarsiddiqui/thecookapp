@@ -1569,20 +1569,28 @@
         
     }];
     
-    // Get the highest ranked recipe among the highest ranked recipes.
+    // Chose a featured recipe for the book title.
     self.featuredRecipe = nil;
-    [self.pageCoverRecipes each:^(NSString *page, CKRecipe *recipe) {
-        if (![page isEqualToString:self.likesPageName]) {
-            if (self.featuredRecipe) {
-                if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
+    
+    // Get book title recipe if any.
+    if (self.book.titleRecipe) {
+        self.featuredRecipe = self.book.titleRecipe;
+    }
+    
+    // Get the highest ranked recipe among the highest ranked recipes.
+    if (!self.featuredRecipe) {
+        [self.pageCoverRecipes each:^(NSString *page, CKRecipe *recipe) {
+            if (![page isEqualToString:self.likesPageName]) {
+                if (self.featuredRecipe) {
+                    if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
+                        self.featuredRecipe = recipe;
+                    }
+                } else {
                     self.featuredRecipe = recipe;
                 }
-            } else {
-                self.featuredRecipe = recipe;
             }
-        }
-    }];
-    
+        }];
+    }
 }
 
 - (CKRecipe *)highestRankedRecipeForPage:(NSString *)page excludePins:(BOOL)excludePins {
