@@ -25,7 +25,7 @@
 #define kElementsGap    100.0
 #define kIconLabelGap   8.0
 #define kLabelFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16.0]
-#define kLabelColour    [UIColor colorWithHexString:@"505050"]
+#define kLabelColour    [UIColor colorWithHexString:@"A0A0A0"]
 #define kContentInsets  (UIEdgeInsets){ 0.0, 25.0, 0.0, 0.0 }
 
 - (id)init {

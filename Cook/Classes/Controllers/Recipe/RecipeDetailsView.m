@@ -948,7 +948,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 
 - (void)updateFrame {
-    CGRect frame = (CGRect){ 0.0, 0.0, kWidth, 0.0 };
+    CGRect frame = (CGRect){ kContentInsets.top, 0.0, kWidth, 0.0 };
     for (UIView *subview in self.subviews) {
         
         // Bypass editing boxes as they could jut out from the parent view.
@@ -1160,6 +1160,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                   padDirection:EditPadDirectionBottom];
     
     // Add mode, add
+    [self.addDetailsCardView removeFromSuperview];
     if ([self.delegate recipeDetailsViewAddMode]) {
         
         if (self.editMode) {
@@ -1175,10 +1176,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             methodBoxView.alpha = 0.0;
             
             [self addSubview:self.addDetailsCardView];
-        } else {
-            [self.addDetailsCardView removeFromSuperview];
         }
-        
     }
 }
 

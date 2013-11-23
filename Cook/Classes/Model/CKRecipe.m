@@ -30,6 +30,7 @@
 
 @synthesize book = _book;
 @synthesize user = _user;
+@synthesize geoLocation = _geoLocation;
 @synthesize recipeImage = _recipeImage;
 @synthesize ingredients = _ingredients;
 
@@ -643,15 +644,20 @@
 
 - (void)setGeoLocation:(CKLocation *)geoLocation {
     if (geoLocation) {
+        _geoLocation = geoLocation;
         [self.parseObject setObject:geoLocation.parseObject forKey:kLocationModelForeignKeyName];
     } else {
+        _geoLocation = nil;
         [self.parseObject removeObjectForKey:kLocationModelForeignKeyName];
     }
 }
 
 - (CKLocation *)geoLocation {
-    PFObject *parseLocationObject = [self.parseObject objectForKey:kLocationModelForeignKeyName];
-    return (parseLocationObject != nil) ? [[CKLocation alloc] initWithParseObject:parseLocationObject] :  nil;
+    if (!_geoLocation) {
+        PFObject *parseLocationObject = [self.parseObject objectForKey:kLocationModelForeignKeyName];
+        _geoLocation = (parseLocationObject != nil) ? [[CKLocation alloc] initWithParseObject:parseLocationObject] :  nil;
+    }
+    return _geoLocation;
 }
 
 - (void)setIngredients:(NSArray *)ingredients {

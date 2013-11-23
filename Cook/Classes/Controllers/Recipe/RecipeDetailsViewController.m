@@ -70,6 +70,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIImageView *contentImageView;
 @property (nonatomic, strong) RecipeDetailsView *recipeDetailsView;
 @property (nonatomic, strong) RecipeFooterView *recipeFooterView;
+@property (nonatomic, strong) UIImageView *recipeFooterDividerView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, assign) SnapViewport currentViewport;
@@ -132,7 +133,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   80.0
-#define kFooterBottomGap    20.0
+#define kFooterTopGap       25.0
+#define kFooterBottomGap    25.0
 #define kDragRatio          0.9
 #define kIconGap            18.0
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
@@ -2039,6 +2041,15 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Footer?
     if (!self.addMode) {
+        
+        // Divider?
+        if ([self.recipeDetails hasServes] || [self.recipeDetails hasMethod] || [self.recipeDetails hasIngredients]) {
+            [self.recipeFooterDividerView removeFromSuperview];
+            self.recipeFooterDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
+            self.recipeFooterDividerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        }
+        
+        // Footer.
         if (!self.recipeFooterView) {
             self.recipeFooterView = [[RecipeFooterView alloc] init];
             self.recipeFooterView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
@@ -2047,8 +2058,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.recipeFooterView updateFooterWithRecipeDetails:self.recipeDetails];
         
         CGSize contentSize = self.recipeDetailsView.frame.size;
-        contentSize.height += self.recipeFooterView.frame.size.height + kFooterBottomGap;
-        contentSize.height = MAX(contentSize.height, 768.0 - self.recipeFooterView.frame.size.height - kContentTopOffset + kFooterBottomGap); // UGH need to force 768.0 as autoresize hasn't kicked in for scrollView yet.
+        contentSize.height += (self.recipeFooterDividerView ? kFooterTopGap : 0.0) + self.recipeFooterView.frame.size.height + kFooterBottomGap;
+        contentSize.height = MAX(contentSize.height, 768.0 - kContentTopOffset); // UGH need to force 768.0 as autoresize hasn't kicked in for scrollView yet.
         self.scrollView.contentSize = contentSize;
         self.recipeFooterView.frame = (CGRect){
             floorf((self.scrollView.bounds.size.width - self.recipeFooterView.frame.size.width) / 2.0),
@@ -2057,7 +2068,22 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             self.recipeFooterView.frame.size.height
         };
         
+        // Position the divider.
+        if (self.recipeFooterDividerView) {
+            self.recipeFooterDividerView.frame = (CGRect){
+                floorf((self.scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
+                self.recipeFooterView.frame.origin.y - kFooterTopGap,
+                self.recipeDetailsView.frame.size.width,
+                self.recipeFooterDividerView.frame.size.height
+            };
+            [self.scrollView addSubview:self.recipeFooterDividerView];
+        }
+        
     } else {
+        [self.recipeFooterDividerView removeFromSuperview];
+        self.recipeFooterDividerView = nil;
+        [self.recipeFooterView removeFromSuperview];
+        self.recipeFooterView = nil;
         self.scrollView.contentSize = self.recipeDetailsView.frame.size;
     }
     
