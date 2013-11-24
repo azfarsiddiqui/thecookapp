@@ -11,5 +11,6 @@
 @interface CKLocation : CKModel
 
 + (CKLocation *)locationWithCoreLocation:(CLLocation *)location placemark:(CLPlacemark *)placemark;
+- (NSString *)displayName;
 
 @end

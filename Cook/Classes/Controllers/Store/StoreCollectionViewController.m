@@ -155,6 +155,7 @@
         [self insertBooks];
         
     } else {
+        [self purgeData];
         [self showActivity:NO];
         [self reloadBooks];
         [self showNoBooksCard];

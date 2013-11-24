@@ -26,6 +26,7 @@
 - (void)searchByKeyword:(NSString *)keyword {
     DLog(@"keyword: %@", keyword);
     
+    [self hideMessageCard];
     [self unloadData];
     [self showActivity:YES];
     [AnalyticsHelper trackEventName:@"Searched" params:nil];

@@ -202,6 +202,8 @@
     } else {
         [self.textField resignFirstResponder];
     }
+    
+    [self updateCloseButton];
     [self.delegate searchFieldViewClearRequested];
 }
 

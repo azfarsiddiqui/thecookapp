@@ -186,7 +186,8 @@
 }
 
 - (void)searchFieldViewClearRequested {
-    [self.searchViewController unloadData];
+    [self.searchViewController purgeData];
+    [self.searchViewController reloadBooks];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
