@@ -1719,6 +1719,13 @@
             self.backdropScrollView.contentOffset.y
         };
         
+    } else if (self.collectionView.contentOffset.x > self.collectionView.contentSize.width - self.collectionView.bounds.size.width) {
+        
+        self.backdropScrollView.contentOffset = (CGPoint) {
+            (self.backdropScrollView.contentSize.width - self.backdropScrollView.bounds.size.width) + (self.collectionView.contentOffset.x - self.collectionView.contentSize.width + self.collectionView.bounds.size.width),
+            self.backdropScrollView.contentOffset.y
+        };
+    
     } else  {
         
         self.backdropScrollView.contentOffset = (CGPoint) {

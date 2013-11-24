@@ -21,6 +21,9 @@
 
 @implementation PagingBenchtopBackgroundView
 
+#define kLeftEdgeWhiteGap       50.0
+#define kRightEdgeWhiteGap      50.0
+
 + (CGFloat)minBlendAlpha {
     return 0.58;
 }
@@ -94,6 +97,8 @@
     NSMutableArray *colourLocations = [NSMutableArray arrayWithCapacity:[self.colours count]];
     [gradientColours addObject:self.leftEdgeColour];
     [colourLocations addObject:@0.0];
+    [gradientColours addObject:self.leftEdgeColour];
+    [colourLocations addObject:@(kLeftEdgeWhiteGap / self.bounds.size.width)];
     
     // Loop through and create the gradient points.
     for (NSInteger colourIndex = 0; colourIndex < [self.colours count]; colourIndex++) {
@@ -117,6 +122,8 @@
     }
     
     // Ends with white.
+    [gradientColours addObject:self.rightEdgeColour];
+    [colourLocations addObject:@((self.bounds.size.width - kRightEdgeWhiteGap) / self.bounds.size.width)];
     [gradientColours addObject:self.rightEdgeColour];
     [colourLocations addObject:@1.0];
     
