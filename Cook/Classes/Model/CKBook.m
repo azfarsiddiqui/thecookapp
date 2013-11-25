@@ -429,7 +429,20 @@
                                         NSMutableDictionary *pageRecipes = [NSMutableDictionary dictionary];
                                         [parsePageRecipes each:^(NSString *page, NSArray *parseRecipes) {
                                             NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
-                                                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
+                                                
+                                                // User will be populated for non-owned recipes, like pins.
+                                                PFUser *parseOwner = [parseRecipe objectForKey:kUserModelForeignKeyName];
+                                                if (parseOwner && ![parseOwner.objectId isEqualToString:self.user.objectId]) {
+                                                    
+                                                    return [CKRecipe recipeForParseRecipe:parseRecipe
+                                                                                     user:[CKUser userWithParseUser:parseOwner]
+                                                                                     book:self];
+                                                } else {
+                                                    
+                                                    // Otherwise these are my recipes.
+                                                    return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
+                                                }
+                                                
                                             }];
                                            [pageRecipes setObject:recipes forKey:page];
                                         }];
