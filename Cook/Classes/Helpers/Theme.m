@@ -516,4 +516,10 @@
     return [UIColor darkGrayColor];
 }
 
+#pragma mark - Text input text colour.
+
++ (UIColor *)textInputTintColour {
+    return [UIColor colorWithHexString:@"56b7f0"];
+}
+
 @end

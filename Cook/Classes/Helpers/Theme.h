@@ -168,5 +168,9 @@
 + (UIFont *)cardViewSubtitleFont;
 + (UIColor *)cardViewSubtitleColour;
 
+#pragma mark - Text input tint colour.
+
++ (UIColor *)textInputTintColour;
+
 @end
 

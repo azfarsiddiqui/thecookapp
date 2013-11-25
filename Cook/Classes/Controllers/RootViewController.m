@@ -23,6 +23,7 @@
 #import "BookTitleViewController.h"
 #import "DashboardTutorialViewController.h"
 #import "ImageHelper.h"
+#import "ViewHelper.h"
 
 @interface RootViewController () <WelcomeViewControllerDelegate, BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate,
@@ -89,6 +90,9 @@
     // Register login/logout events.
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerStatusBarChange:self selector:@selector(statusBarChanged:)];
+    
+    // App-wide tint colour.
+    [ViewHelper configureTextInputTintColour];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

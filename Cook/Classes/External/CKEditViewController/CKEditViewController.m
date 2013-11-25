@@ -22,6 +22,9 @@
 @property (nonatomic, assign) NSNumber *headlessNumber;
 @property (nonatomic, assign) UIOffset headlessTransformOffset;
 
+// To remember the existing text tint colours.
+@property (nonatomic, strong) UIColor *appTextInputColour;
+
 @end
 
 @implementation CKEditViewController
@@ -30,6 +33,11 @@
 #define kHeadlessScale  0.9
 
 - (void)dealloc {
+    
+    // Restore app tint colour.
+    [CKEditingViewHelper setTextInputTintColour:self.appTextInputColour];
+    
+    // Unsubscribe from keyboard.
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
@@ -54,6 +62,21 @@
         // Register for keyboard events.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardDidHideNotification object:nil];
+        
+        // Text input tint colour.
+        self.appTextInputColour = [CKEditingViewHelper existingAppTextInputColour];
+        
+        if (self.white) {
+            
+            // White background uses our blue as caret colour.
+            [CKEditingViewHelper setTextInputTintColour:[UIColor colorWithHexString:@"56b7f0"]];
+            
+        } else {
+            
+            // Dark background uses the white caret colour.
+            [CKEditingViewHelper setTextInputTintColour:[UIColor whiteColor]];
+        }
+        
     }
     return self;
 }

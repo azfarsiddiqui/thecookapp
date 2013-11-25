@@ -321,4 +321,14 @@
     [alertView show];
 }
 
+#pragma mark - Text input tint colour
+
++ (void)configureTextInputTintColour {
+    [self setTextInputTintColour:[Theme textInputTintColour]];
+}
+
++ (void)setTextInputTintColour:(UIColor *)colour {
+    [CKEditingViewHelper setTextInputTintColour:colour];
+}
+
 @end
