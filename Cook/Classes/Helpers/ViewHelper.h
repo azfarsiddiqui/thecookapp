@@ -74,4 +74,8 @@
 // Alerts
 + (void)alertWithTitle:(NSString *)title message:(NSString *)message;
 
+// Tint colour
++ (void)configureTextInputTintColour;
++ (void)setTextInputTintColour:(UIColor *)colour;
+
 @end
