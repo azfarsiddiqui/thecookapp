@@ -148,7 +148,7 @@
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[mealCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line1]-(rightInset)-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(50)-[cookCollection]-|" options:0 metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[cookCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line2]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[allergyCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line3]-(rightInset)-|" options:0 metrics:metrics views:views]];
