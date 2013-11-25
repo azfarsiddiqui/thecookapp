@@ -23,8 +23,6 @@ typedef void(^BookManagerRecipesFailureBlock)(NSError *error);
 - (void)holdMyCurrentBook:(CKBook *)book;
 
 // To handle loading/processing of recipes within a book.
-- (void)recipesForBook:(CKBook *)book success:(BookManagerRecipesSuccessBlock)success
-               failure:(BookManagerRecipesFailureBlock)failure;
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(void (^)())completion;
 - (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(void (^)())completion;
 - (void)updateWithPage:(NSString *)page completion:(void (^)())completion;
