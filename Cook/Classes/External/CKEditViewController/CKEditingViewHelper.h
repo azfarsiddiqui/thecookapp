@@ -71,4 +71,9 @@
 + (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target
                      selector:(SEL)selector;
 
+// Text input tint colour.
++ (UIColor *)existingAppTextInputColour;
++ (void)setTextInputTintColour:(UIColor *)colour;
++ (void)resetTextInputTintColour;
+
 @end

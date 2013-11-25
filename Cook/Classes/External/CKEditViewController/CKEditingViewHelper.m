@@ -234,6 +234,24 @@
     return button;
 }
 
+#pragma mark - Tint colour
+
++ (UIColor *)existingAppTextInputColour {
+    
+    // Just pick the textfield's tint colour.
+    return [[UITextField appearance] tintColor];
+}
+
++ (void)setTextInputTintColour:(UIColor *)colour {
+    [[UITextView appearance] setTintColor:colour];
+    [[UITextField appearance] setTintColor:colour];
+}
+
++ (void)resetTextInputTintColour {
+    [[UITextView appearance] setTintColor:nil];
+    [[UITextField appearance] setTintColor:nil];
+}
+
 #pragma mark - Private methods
 
 - (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
