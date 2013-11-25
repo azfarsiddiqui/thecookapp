@@ -645,9 +645,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         {
             if (tag.objectId)
             {
+//                [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX)
+//                                        options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+//                                     attributes:@{ NSFontAttributeName : self.textViewFont }
+//                                        context:nil].size.height;
+                NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
+                CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(kWidth, CGFLOAT_MAX)
+                                                             options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                          attributes:@{ NSFontAttributeName : self.tagsLabel.font }
+                                                            context:nil];
                 //Append spaces and tag name
                 if ([tagsString length] > 0)
-                    [tagsString appendString:@"   "];
+                    [tagsString appendString:@" • "];
                 [tagsString appendString:[tag displayName]];
             }
         }
