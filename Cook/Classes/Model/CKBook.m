@@ -422,6 +422,7 @@
                                         
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSDictionary *parsePageRecipes = [recipeResults objectForKey:@"pageRecipes"];
+                                        NSDictionary *pageBatches = [recipeResults objectForKey:@"pageBatches"];
                                         NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
                                         
@@ -452,7 +453,53 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:nil book:nil];
                                         }];
                                         
-                                        success(parseBook, pageRecipes, likedRecipes, accessDate);
+                                        success(parseBook, pageRecipes, pageBatches, likedRecipes, accessDate);
+                                        
+                                    } else {
+                                        DLog(@"Error loading recipes: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
+- (void)recipesForPage:(NSString *)page batchIndex:(NSInteger)batchIndex success:(PageRecipesSuccessBlock)success
+               failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"pageRecipes_v1_3"
+                       withParameters:@{
+                                        @"bookId" : self.objectId,
+                                        @"userId" : self.user.objectId,
+                                        @"page" : page,
+                                        @"batchIndex" : @(batchIndex)
+                                        }
+                                block:^(NSDictionary *recipeResults, NSError *error) {
+                                    if (!error) {
+                                        
+                                        PFObject *parseBook = [recipeResults objectForKey:@"book"];
+                                        NSArray *parseRecipes = [recipeResults objectForKey:@"recipes"];
+                                        NSInteger batchIndex = [recipeResults objectForKey:@"batchIndex"];
+                                        NSString *page = [recipeResults objectForKey:@"page"];
+                                        
+                                        // Wrap the recipes in our model.
+                                        NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
+                                            
+                                            // User will be populated for non-owned recipes, like pins.
+                                            PFUser *parseOwner = [parseRecipe objectForKey:kUserModelForeignKeyName];
+                                            if (parseOwner && ![parseOwner.objectId isEqualToString:self.user.objectId]) {
+                                                
+                                                return [CKRecipe recipeForParseRecipe:parseRecipe
+                                                                                 user:[CKUser userWithParseUser:parseOwner]
+                                                                                 book:self];
+                                            } else {
+                                                
+                                                // Otherwise these are my recipes.
+                                                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
+                                            }
+                                            
+                                        }];
+                                    
+                                        DLog(@"Loaded more recipes[%d] for page[%@] batchIndex[%d]", [recipes count], page, batchIndex);
+                                        success([CKBook bookWithParseObject:parseBook], page, batchIndex, recipes);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);

@@ -19,6 +19,9 @@
 - (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page distanceTravelled:(CGFloat)distance;
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page;
 - (void)bookContentViewControllerShowNavigationView:(BOOL)show;
+- (NSInteger)bookContentViewControllerNumBatchesForPage:(NSString *)page;
+- (NSInteger)bookContentViewControllerCurrentBatchIndexForPage:(NSString *)page;
+- (void)bookContentViewControllerLoadMoreForPage:(NSString *)page;
 
 @end
 
@@ -32,5 +35,6 @@
 - (CGPoint)currentScrollOffset;
 - (void)setScrollOffset:(CGPoint)scrollOffset;
 - (void)applyOverlayAlpha:(CGFloat)alpha;
+- (void)loadMoreRecipes:(NSArray *)recipes;
 
 @end

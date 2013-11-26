@@ -14,7 +14,9 @@
 @class CKCategory;
 @class CKRecipe;
 
-typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSDictionary *pageRecipes, NSArray *likedRecipes, NSDate *bookLastAccessedDate);
+typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
+                                       NSArray *likedRecipes, NSDate *bookLastAccessedDate);
+typedef void(^PageRecipesSuccessBlock)(CKBook *book, NSString *page, NSInteger batchindex, NSArray *recipes);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
 typedef void(^FriendsAndSuggestedBooksSuccessBlock)(NSArray *friendsBooks, NSArray *suggestedBooks);
 typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, BOOL followed, NSUInteger recipeCount,
@@ -58,6 +60,8 @@ typedef enum {
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 - (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)recipesForPage:(NSString *)page batchIndex:(NSInteger)batchIndex success:(PageRecipesSuccessBlock)success
+               failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Searches

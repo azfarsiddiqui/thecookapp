@@ -42,7 +42,7 @@
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSString *page;
-@property (nonatomic, strong) NSMutableArray *recipes;
+@property (nonatomic, strong) NSArray *recipes;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) BookContentTitleView *contentTitleView;
@@ -105,7 +105,7 @@
 }
 
 - (void)loadData {
-    self.recipes = [NSMutableArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
+    self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
 }
 
@@ -136,6 +136,27 @@
 
 - (void)applyOverlayAlpha:(CGFloat)alpha {
     self.overlayView.alpha = alpha;
+}
+
+- (void)loadMoreRecipes:(NSArray *)recipes {
+    
+    // Gather the index paths to insert.
+    NSInteger startIndex = [self.recipes count];
+    NSArray *indexPathsToInsert = [recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+        return [NSIndexPath indexPathForItem:(startIndex + recipeIndex) inSection:0];
+    }];
+    DLog(@">>> INSERTING %@", indexPathsToInsert);
+    
+    // Model updates.
+    self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
+    
+    // UI updates after invalidating layout.
+    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+    } completion:^(BOOL finished) {
+    }];
+    
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
@@ -381,13 +402,12 @@
     NSString *cellId = [self cellIdentifierForGridType:gridType];
     
     BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
-    
     [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
     
-//    recipeCell.alpha = 0.0;
-//    [UIView animateWithDuration:0.2*indexPath.row animations:^{
-//        recipeCell.alpha = 1.0;
-//    }];
+    // Load more?
+    if (indexPath.item == ([self.recipes count] - 1)) {
+        [self.delegate bookContentViewControllerLoadMoreForPage:self.page];
+    }
     
     return recipeCell;
 }
