@@ -17,6 +17,7 @@
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
 #import "AnalyticsHelper.h"
+#import "UIDevice+Hardware.h"
 
 @interface RecipeShareViewController () <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate>
 
@@ -109,24 +110,12 @@
     UILabel *shareTitleLabel = [[UILabel alloc] init];
     [shareTitleLabel setBackgroundColor:[UIColor clearColor]];
     shareTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    shareTitleLabel.textAlignment = NSTextAlignmentCenter;
+//    shareTitleLabel.textAlignment = NSTextAlignmentCenter;
     shareTitleLabel.text = @"SHARE RECIPE";
     shareTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:40.0];
     shareTitleLabel.textColor = [UIColor whiteColor];
+    [shareTitleLabel sizeToFit];
     [middleContentView addSubview:shareTitleLabel];
-    
-    UILabel *bottomLabel = [[UILabel alloc] init];
-    [bottomLabel setBackgroundColor:[UIColor clearColor]];
-    bottomLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    bottomLabel.textAlignment = NSTextAlignmentLeft;
-    bottomLabel.text = @"SHARING YOUR RECIPE WILL CREATE A PUBLICLY VISIBLE COPY ON THE WEB";
-    bottomLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
-    bottomLabel.textColor = [UIColor whiteColor];
-    [self.view addSubview:bottomLabel];
-    UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
-    lockImageView.backgroundColor = [UIColor clearColor];
-    lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:lockImageView];
     
     { //Setting up constraints to space buttons in content view
         NSDictionary *metrics = @{@"height":@110.0, @"width":@110.0, @"titleHeight":@38.0, @"spacing":@10.0};
@@ -138,8 +127,43 @@
         NSString *buttonConstraints = @"|[facebook(width)]-spacing-[twitter(facebook)]-spacing-[mail(facebook)]-spacing-[message(facebook)]";
         [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
         [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title(titleHeight)]-[facebook(height)]" options:0 metrics:metrics views:views]];
-        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title(400)]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
+        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
+        [middleContentView addConstraint:[NSLayoutConstraint constraintWithItem:shareTitleLabel
+                                                              attribute:NSLayoutAttributeCenterX
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:middleContentView
+                                                              attribute:NSLayoutAttributeCenterX
+                                                             multiplier:1.f constant:0.f]];
     }
+    
+    //Only show disclaimer if owner of recipe
+    UILabel *bottomLabel = [[UILabel alloc] init];
+    [bottomLabel setBackgroundColor:[UIColor clearColor]];
+    bottomLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    bottomLabel.textAlignment = NSTextAlignmentLeft;
+    bottomLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+    bottomLabel.textColor = [UIColor whiteColor];
+    [self.view addSubview:bottomLabel];
+    UIImageView *lockImageView;
+    
+    if ([self.recipe.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
+        bottomLabel.text = @"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB";
+        lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
+    } else {
+        bottomLabel.text = @"REPORT INAPPROPRIATE CONTENT";
+        lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_report"]];
+        UITapGestureRecognizer *reportGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reportPressed:)];
+        [bottomLabel addGestureRecognizer:reportGesture];
+        UITapGestureRecognizer *reportGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reportPressed:)];
+        [lockImageView addGestureRecognizer:reportGesture2];
+        bottomLabel.userInteractionEnabled = YES;
+        lockImageView.userInteractionEnabled = YES;
+    }
+    
+    lockImageView.backgroundColor = [UIColor clearColor];
+    lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:lockImageView];
+    
     { //Setting up constraints to space label and lock at bottom
         NSDictionary *metrics = @{@"width":@39.0, @"height":@39.0};
         NSDictionary *views = NSDictionaryOfVariableBindings(bottomLabel, lockImageView);
@@ -152,7 +176,6 @@
                                                               attribute:NSLayoutAttributeCenterX
                                                              multiplier:1.f constant:0.f]];
     }
-    
     
     // Attach actions to buttons
 	[self.facebookShareButton addTarget:self action:@selector(facebookShareTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -462,6 +485,30 @@
     }
     
     return shareText;
+}
+
+- (void)reportPressed:(id)sender {
+    if ([MFMailComposeViewController canSendMail])
+    {
+        MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
+        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+        NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
+        NSString *versionString = [NSString stringWithFormat:@"Version: %@", minorVersion];
+        
+        CKUser *currentUser = [CKUser currentUser];
+        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : @"None"];
+        NSString *badRecipeString = [NSString stringWithFormat:@"Reported Recipe ID: %@ \n Reported Recipe Name: %@", self.recipe.objectId, self.recipe.name];
+        
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@", versionString, userDisplay, badRecipeString];
+        
+        [mailDialog setToRecipients:@[@"report@thecookapp.com"]];
+        [mailDialog setSubject:@"Report a Recipe to Cook"];
+        [mailDialog setMessageBody:shareBody isHTML:NO];
+        mailDialog.mailComposeDelegate = self;
+        [self presentViewController:mailDialog animated:YES completion:nil];
+    }
+    else
+        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
 @end
