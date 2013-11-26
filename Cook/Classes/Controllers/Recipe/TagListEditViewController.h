@@ -9,8 +9,17 @@
 #import "CKRecipeTag.h"
 #import "CKEditViewController.h"
 
-@interface TagListEditViewController : CKEditViewController
+typedef enum {
+    kMealTagType = 0,
+    kCookTagType = 1,
+    kAllergyTagType = 2,
+    kFoodTagType = 3
+//    kFoodTagType2 = 4,
+//    kFoodTagType3 = 5,
+//    kFoodTagType4 = 6,
+} TagType;
 
+@interface TagListEditViewController : CKEditViewController
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          selectedItems:(NSArray *)selectedItems

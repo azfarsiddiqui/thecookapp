@@ -49,6 +49,19 @@
                 return (obj1.categoryIndex * 1000 + obj1.orderIndex) < (obj2.categoryIndex * 1000 + obj2.orderIndex) ? NSOrderedAscending : NSOrderedDescending;
             }];
             [self reloadCollectionViews];
+            //Programatically select all items in array or preselected tags
+            [self.selectedItems enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:idx inSection:0];
+                if (obj.categoryIndex == kMealTagType) {
+                    [self.mealTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
+                } else if (obj.categoryIndex == kCookTagType) {
+                    [self.cookTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
+                } else if (obj.categoryIndex == kAllergyTagType) {
+                    [self.cookTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
+                } else if (obj.categoryIndex == kFoodTagType) {
+                    [self.foodTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
+                }
+            }];
         } failure:^(NSError *error) {
             //Show error message and dismiss
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -215,12 +228,6 @@
     return YES;
 }
 
-#pragma mark - UIScrollViewDelegate methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-}
-
 #pragma mark - UICollectionView datasource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -248,9 +255,6 @@
         [cell configureTag:recipeTag];
     }
     
-    if ([self.selectedItems containsObject:recipeTag]) {
-        [cell setSelected:YES];
-    }
     return cell;
 }
 
@@ -279,6 +283,10 @@
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
@@ -382,13 +390,13 @@
 
 - (NSInteger)categoryForCollectionView:(UICollectionView *)collectionView {
     if ([collectionView isEqual:self.mealTypeCollectionView]) {
-        return 0;
+        return kMealTagType;
     } else if ([collectionView isEqual:self.cookTypeCollectionView]) {
-        return 1;
+        return kCookTagType;
     } else if ([collectionView isEqual:self.allergyTypeCollectionView]) {
-        return 2;
+        return kAllergyTagType;
     } else if ([collectionView isEqual:self.foodTypeCollectionView]) {
-        return 3;
+        return kFoodTagType;
     } else {
 //        [NSException raise:@"Invalid Collection" format:@"Invalid collectionview match"];
         return -1; //Shouldn't hit this
