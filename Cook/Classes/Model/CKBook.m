@@ -423,6 +423,7 @@
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSDictionary *parsePageRecipes = [recipeResults objectForKey:@"pageRecipes"];
                                         NSDictionary *pageBatches = [recipeResults objectForKey:@"pageBatches"];
+                                        NSDictionary *pageRecipeCount = [recipeResults objectForKey:@"pageRecipeCount"];
                                         NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
                                         
@@ -453,7 +454,7 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:nil book:nil];
                                         }];
                                         
-                                        success(parseBook, pageRecipes, pageBatches, likedRecipes, accessDate);
+                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, likedRecipes, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);

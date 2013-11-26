@@ -45,6 +45,7 @@
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *likedRecipes;
 @property (nonatomic, strong) NSMutableArray *recipePins;
+@property (nonatomic, strong) NSMutableDictionary *pageRecipeCount;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageBatches;
 @property (nonatomic, strong) NSMutableDictionary *pageCurrentBatches;
@@ -254,7 +255,7 @@
     }]];
     
     // Remember the page.
-    self.self.saveOrUpdatedPage = recipePin.page;
+    self.saveOrUpdatedPage = recipePin.page;
     
     // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
     self.bookUpdatedBlock = completion;
@@ -269,6 +270,7 @@
     // Remove the recipes in the page.
     [self.pageRecipes removeObjectForKey:page];
     [self.pageBatches removeObjectForKey:page];
+    [self.pageRecipeCount removeObjectForKey:page];
     [self.pageCurrentBatches removeObjectForKey:page];
     
     // Remove references to the pinned recipe.
@@ -302,6 +304,8 @@
     [self.pageRecipes removeObjectForKey:fromPage];
     [self.pageBatches setObject:[self.pageBatches objectForKey:fromPage] forKey:page];
     [self.pageBatches removeObjectForKey:fromPage];
+    [self.pageRecipeCount setObject:[self.pageRecipeCount objectForKey:fromPage] forKey:page];
+    [self.pageRecipeCount removeObjectForKey:fromPage];
     [self.pageCurrentBatches setObject:[self.pageCurrentBatches objectForKey:fromPage] forKey:page];
     [self.pageCurrentBatches removeObjectForKey:fromPage];
     
@@ -537,8 +541,7 @@
 }
 
 - (NSInteger)bookTitleNumRecipesForPage:(NSString *)page {
-    NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
-    return [pageRecipes count];
+    return [[self.pageRecipeCount objectForKey:page] integerValue];
 }
 
 - (void)bookTitleSelectedPage:(NSString *)page {
@@ -989,7 +992,7 @@
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                    NSArray *likedRecipes, NSDate *lastAccessedDate) {
+                                    NSDictionary *pageRecipeCount, NSArray *likedRecipes, NSDate *lastAccessedDate) {
         
         if (parseBook) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
@@ -1004,7 +1007,7 @@
         }
         self.bookLastAccessedDate = lastAccessedDate;
         
-        [self processRecipes:pageRecipes pageBatches:pageBatches likedRecipes:likedRecipes];
+        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount likedRecipes:likedRecipes];
         
     } failure:^(NSError *error) {
         
@@ -1013,11 +1016,12 @@
 }
 
 - (void)processRecipes:(NSDictionary *)pageRecipes pageBatches:(NSDictionary *)pageBatches
-          likedRecipes:(NSArray *)likedRecipes {
+            pageCounts:(NSDictionary *)pageCounts likedRecipes:(NSArray *)likedRecipes {
     
     // Loop through to initialise each recipe.
     self.pageRecipes = [NSMutableDictionary new];
     self.pageBatches = [NSMutableDictionary dictionaryWithDictionary:pageBatches];
+    self.pageRecipeCount = [NSMutableDictionary dictionaryWithDictionary:pageCounts];
     self.pageCurrentBatches = [NSMutableDictionary new];
     
     for (NSString *page in pageRecipes) {
