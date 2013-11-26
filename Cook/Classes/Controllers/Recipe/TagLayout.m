@@ -32,8 +32,8 @@
     
     if (!attributes.representedElementKind) {
         
-        CGFloat leftFadeOffset = contentOffset.x + 30;
-        CGFloat rightFadeOffset = contentOffset.x + bounds.size.width - 30;
+        CGFloat leftFadeOffset = contentOffset.x + 10;
+        CGFloat rightFadeOffset = contentOffset.x + bounds.size.width - 10;
         CGFloat minAlpha = 0.0;
         CGFloat fadeRate = 1.5;
         
