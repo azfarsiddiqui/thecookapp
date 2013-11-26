@@ -43,7 +43,6 @@
 @property (nonatomic, strong) NSString *saveOrUpdatedPage;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
-@property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableArray *likedRecipes;
 @property (nonatomic, strong) NSMutableArray *recipePins;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
@@ -196,20 +195,23 @@
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
+    NSString *page = recipe.page;
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
+    
     // Check if this was a new/updated recipe.
-    NSInteger foundIndex = [self.recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
     if (foundIndex != -1) {
         
         // Replace the recipe if it's only been updated.
-        [self.recipes replaceObjectAtIndex:foundIndex withObject:recipe];
+        [recipes replaceObjectAtIndex:foundIndex withObject:recipe];
         
     } else {
         
         // Add to the front of the list if this was a new recipe.
-        [self.recipes insertObject:recipe atIndex:0];
+        [recipes insertObject:recipe atIndex:0];
         
     }
     
@@ -226,8 +228,10 @@
 - (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with deleted recipe [%@][%@]", recipe.name, recipe.page);
     
-    // Remove the recipes.
-    [self.recipes removeObject:recipe];
+    // Remove the recipe.
+    NSString *page = recipe.page;
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
+    [recipes removeObject:recipe];
     
     // Remember the recipe that was actioned.
     self.saveOrUpdatedRecipe = recipe;
@@ -261,9 +265,7 @@
     DLog(@"Updating layout with deleted page [%@]", page);
     
     // Remove the recipes in the page.
-    self.recipes = [NSMutableArray arrayWithArray:[self.recipes reject:^BOOL(CKRecipe *recipe) {
-        return [recipe.page CK_equalsIgnoreCase:page];
-    }]];
+    [self.pageRecipes removeObjectForKey:page];
     
     // Remove references to the pinned recipe.
     self.recipePins = [NSMutableArray arrayWithArray:[self.recipePins reject:^BOOL(CKRecipePin *existingRecipePin) {
@@ -283,15 +285,16 @@
     DLog(@"Updating layout with renamed page [%@] fromPage[%@]", page, fromPage);
     
     // Rename the page in existing recipes..
-    NSArray *recipesToRename = [self.recipes select:^BOOL(CKRecipe *recipe) {
-        return [recipe.page CK_equalsIgnoreCase:fromPage];
-    }];
+    NSMutableArray *recipesToRename = [self.pageRecipes objectForKey:fromPage];
     
     // Renaming the recipes locally, as server-side has already occured.
     DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
     [recipesToRename each:^(CKRecipe *recipe) {
         recipe.page = page;
     }];
+    
+    [self.pageRecipes removeObjectForKey:fromPage];
+    [self.pageRecipes setObject:recipesToRename forKey:page];
     
     // Rename the page in existing pins..
     NSArray *pinnedRecipesToRename = [self.recipePins select:^BOOL(CKRecipePin *recipePin) {
@@ -938,9 +941,9 @@
     DLog();
     
     // Fetch all recipes for the book, and categorise them.
-    [self.book bookRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
-                                    
+    [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSArray *likedRecipes,
                                     NSDate *lastAccessedDate) {
+        
         if (parseBook) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
             self.book = refreshedBook;
@@ -954,7 +957,7 @@
         }
         self.bookLastAccessedDate = lastAccessedDate;
         
-        [self processRecipes:recipes likedRecipes:likedRecipes recipePins:recipePins];
+        [self processRecipes:pageRecipes likedRecipes:likedRecipes];
         
     } failure:^(NSError *error) {
         
@@ -962,15 +965,21 @@
     }];
 }
 
-- (void)processRecipes:(NSArray *)recipes likedRecipes:(NSArray *)likedRecipes recipePins:(NSArray *)recipePins {
-    self.recipes = [NSMutableArray arrayWithArray:recipes];
+- (void)processRecipes:(NSDictionary *)pageRecipes likedRecipes:(NSArray *)likedRecipes {
+    
+    // Loop through to initialise each recipe.
+    self.pageRecipes = [NSMutableDictionary new];
+    for (NSString *page in pageRecipes) {
+        NSMutableArray *recipes = [NSMutableArray arrayWithArray:[pageRecipes objectForKey:page]];
+        [self.pageRecipes setObject:recipes forKey:page];
+    }
+    
+    self.pageRecipes = [NSMutableDictionary dictionaryWithDictionary:pageRecipes];
     self.likedRecipes = [NSMutableArray arrayWithArray:likedRecipes];
-    self.recipePins = [NSMutableArray arrayWithArray:recipePins];
     [self loadRecipes];
 }
 
 - (void)loadRecipes {
-    self.pageRecipes = [NSMutableDictionary dictionary];
     self.pagesContainingUpdatedRecipes = [NSMutableDictionary dictionary];
     self.pageHeaderViews = [NSMutableDictionary dictionary];
     
@@ -980,33 +989,22 @@
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
     
-    // Sort it here.
-    [self.recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
-        return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
-    }];
-    
-    // Loop through and gather recipes for each page.
-    for (CKRecipe *recipe in self.recipes) {
+    // Loop through to initialise each recipe.
+    for (NSString *page in self.pageRecipes) {
         
-        NSString *page = recipe.page;
-        
-        // Collect recipes into their corresponding pages.
-        NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
-        if (!pageRecipes) {
-            pageRecipes = [NSMutableArray array];
-            [self.pageRecipes setObject:pageRecipes forKey:page];
-        }
-        [pageRecipes addObject:recipe];
-        
-        // Update social cache.
-        [[CKSocialManager sharedInstance] configureRecipe:recipe];
-        
-        // Is this a new recipe?
-        if (self.bookLastAccessedDate
-            && ([recipe.createdDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+        NSArray *recipes = [self.pageRecipes objectForKey:page];
+        for (CKRecipe *recipe in recipes) {
             
-            // Mark the page as new.
-            [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
+            // Update social cache.
+            [[CKSocialManager sharedInstance] configureRecipe:recipe];
+            
+            // Is this a new recipe?
+            if (self.bookLastAccessedDate
+                && ([recipe.createdDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+                
+                // Mark the page as new.
+                [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
+            }
         }
     }
     
@@ -1016,9 +1014,6 @@
         [self.pages addObject:self.likesPageName];
         [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
     }
-    
-    // Process pins.
-    [self processPins];
     
     // Process rankings.
     [self processRanks];

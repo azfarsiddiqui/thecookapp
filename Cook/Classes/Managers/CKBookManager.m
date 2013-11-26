@@ -56,26 +56,6 @@
     self.myBook = book;
 }
 
-#pragma mark - TODO Complete loading/processing of recipes for a book.
-
-- (void)recipesForBook:(CKBook *)book success:(BookManagerRecipesSuccessBlock)success
-               failure:(BookManagerRecipesFailureBlock)failure {
-    
-    // Fetch all recipes for the book, and categorise them.
-    [book bookRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
-                               NSDate *lastAccessedDate) {
-        
-        CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
-        [self processRecipes:recipes likedRecipes:likedRecipes lastAccessedDate:lastAccessedDate book:refreshedBook];
-        
-        success(refreshedBook);
-        
-    } failure:^(NSError *error) {
-        DLog(@"Error %@", [error localizedDescription]);
-        failure(error);
-    }];
-}
-
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(void (^)())completion {
     
 }
