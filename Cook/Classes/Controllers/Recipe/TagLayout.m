@@ -42,10 +42,18 @@
             CGFloat effectiveDistance = 100.0;
             CGFloat distance = MIN(leftFadeOffset - frame.origin.x, effectiveDistance);
             attributes.alpha = MAX(minAlpha, 1.0 - fadeRate * (distance / effectiveDistance));
+            CATransform3D flipCellTransform = CATransform3DMakeRotation(M_PI/3 * (attributes.alpha - 1), 0.0f, -1.0f, 0.0f);
+            CGFloat zDistance = 1000;
+            flipCellTransform.m34 = 1 / zDistance;
+            attributes.transform3D = flipCellTransform;
         } else if (frame.origin.x + frame.size.width >= rightFadeOffset) {
             CGFloat effectiveDistance = 100.0;
             CGFloat distance = MIN((frame.origin.x + frame.size.width) - rightFadeOffset, effectiveDistance);
             attributes.alpha = MAX(minAlpha, 1.0 - fadeRate * (distance / effectiveDistance));
+            CATransform3D flipCellTransform = CATransform3DMakeRotation(-M_PI/3 * (attributes.alpha - 1), 0.0f, -1.0f, 0.0f);
+            CGFloat zDistance = 1000;
+            flipCellTransform.m34 = 1 / zDistance;
+            attributes.transform3D = flipCellTransform;
         } else {
             attributes.alpha = 1.0;
         }
