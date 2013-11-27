@@ -20,22 +20,18 @@
 
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UICollectionView *mealTypeCollectionView;
-@property (nonatomic, strong) UICollectionView *cookTypeCollectionView;
 @property (nonatomic, strong) UICollectionView *allergyTypeCollectionView;
 @property (nonatomic, strong) UICollectionView *foodTypeCollectionView;
 @property (nonatomic, strong) UILabel *titleCountLabel;
 
+@property (nonatomic) CGPoint targetContentOffset;
+@property (nonatomic) CGFloat targetVelocity;
+
+@property (nonatomic, strong) UIPageControl *pageControl;
+
 @end
 
 @implementation TagListEditViewController
-
-#define kTagCellID          @"TagCell"
-#define kTagSectionHeadID   @"TagSectionHeader"
-#define kTagSectionFootID   @"TagSectionFooter"
-#define kSize               CGSizeMake(884.0, 678.0)
-#define kContentInsets      UIEdgeInsetsMake(45.0, -20.0, 40.0, -20.0)
-#define kSectionHeadWidth   80.0
-#define kSectionFootWidth   40.0
 
 //top, left, bottom, right
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate selectedItems:(NSArray *)selectedItems editingHelper:(CKEditingViewHelper *)editingHelper
@@ -54,10 +50,8 @@
                 NSIndexPath *indexPath = [NSIndexPath indexPathForItem:idx inSection:0];
                 if (obj.categoryIndex == kMealTagType) {
                     [self.mealTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
-                } else if (obj.categoryIndex == kCookTagType) {
-                    [self.cookTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
                 } else if (obj.categoryIndex == kAllergyTagType) {
-                    [self.cookTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
+                    [self.allergyTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
                 } else if (obj.categoryIndex == kFoodTagType) {
                     [self.foodTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
                 }
@@ -74,7 +68,6 @@
 
 - (void)reloadCollectionViews {
     [self.mealTypeCollectionView reloadData];
-    [self.cookTypeCollectionView reloadData];
     [self.allergyTypeCollectionView reloadData];
     [self.foodTypeCollectionView reloadData];
 }
@@ -83,7 +76,6 @@
     [super targetTextEditingViewDidAppear:appear];
     [self.view addSubview:self.containerView];
     [self.containerView addSubview:self.mealTypeCollectionView];
-    [self.containerView addSubview:self.cookTypeCollectionView];
     [self.containerView addSubview:self.allergyTypeCollectionView];
     [self.containerView addSubview:self.foodTypeCollectionView];
     
@@ -110,13 +102,16 @@
     [self.containerView addSubview:line2];
     [self.containerView addSubview:line3];
     
+    self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectZero];
+    self.pageControl.pageIndicatorTintColor = [UIColor grayColor];
+    self.pageControl.currentPageIndicatorTintColor = [UIColor blueColor];
+    [self.containerView addSubview:self.pageControl];
+    
     //    self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mealTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.cookTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.allergyTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.foodTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mealTypeCollectionView.clipsToBounds = NO;
-    self.cookTypeCollectionView.clipsToBounds = NO;
     self.allergyTypeCollectionView.clipsToBounds = NO;
     self.foodTypeCollectionView.clipsToBounds = NO;
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -127,7 +122,6 @@
     line3.translatesAutoresizingMaskIntoConstraints = NO;
     
     NSDictionary *views = @{@"mealCollection":self.mealTypeCollectionView,
-                            @"cookCollection":self.cookTypeCollectionView,
                             @"allergyCollection":self.allergyTypeCollectionView,
                             @"foodCollection":self.foodTypeCollectionView,
                             @"titleLabel":titleLabel,
@@ -141,6 +135,7 @@
                               @"topInset":[NSNumber numberWithFloat:kContentInsets.top],
                               @"bottomInset":[NSNumber numberWithFloat:kContentInsets.bottom],
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
+                              @"lastCollectionHeight":[NSNumber numberWithFloat:kItemHeight*2.1],
                               @"lineBottomSpacing":@15.0,
                               @"lineTopSpacing":@5.0,
                               @"lineHeight":@1};
@@ -148,12 +143,10 @@
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[mealCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line1]-(rightInset)-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[cookCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line2]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[allergyCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line3]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[foodCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-30-[mealCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[cookCollection(collectionHeight)]-(lineBottomSpacing)-[line2(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(lineBottomSpacing)-[line3(lineHeight)]-(lineTopSpacing)-[foodCollection(collectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-30-[mealCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(lineBottomSpacing)-[line3(lineHeight)]-(lineTopSpacing)-[foodCollection(lastCollectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
     
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleAlignView
                                                                    attribute:NSLayoutAttributeCenterX
@@ -167,12 +160,6 @@
                                                                       toItem:self.containerView
                                                                    attribute:NSLayoutAttributeCenterX
                                                                   multiplier:1.f constant:0.f]];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:line2
-                                                                   attribute:NSLayoutAttributeCenterX
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.containerView
-                                                                   attribute:NSLayoutAttributeCenterX
-                                                                  multiplier:1.f constant:0.f]];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:line3
                                                                    attribute:NSLayoutAttributeCenterX
                                                                    relatedBy:NSLayoutRelationEqual
@@ -180,12 +167,6 @@
                                                                    attribute:NSLayoutAttributeCenterX
                                                                   multiplier:1.f constant:0.f]];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.mealTypeCollectionView
-                                                                   attribute:NSLayoutAttributeCenterX
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.containerView
-                                                                   attribute:NSLayoutAttributeCenterX
-                                                                  multiplier:1.f constant:0.f]];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.cookTypeCollectionView
                                                                    attribute:NSLayoutAttributeCenterX
                                                                    relatedBy:NSLayoutRelationEqual
                                                                       toItem:self.containerView
@@ -311,14 +292,17 @@
     CKRecipeTag *selectedTag = [self recipeTagWithIndexPath:indexPath collectionView:collectionView];
     if ([self.selectedItems containsObject:selectedTag])
         [self.selectedItems removeObject:selectedTag];
-//    [self.selectedItems enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
-//        DLog(@"Selected Name: %@|%@, PArsed Name: %@|%@", selectedTag.displayName, selectedTag.objectId, obj.displayName, obj.objectId);
-//        if ([obj.objectId isEqual:selectedTag.objectId]) {
-//            [self.selectedItems removeObject:obj];
-//            return;
-//        }
-//    }];
     self.titleCountLabel.text = [NSString stringWithFormat:@"%i", [self.selectedItems count]];
+}
+
+#pragma mark - UIScrollViewDelegate methods
+//
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    CGFloat pageWidth = kSize.width;
+    int page = floor((scrollView.contentOffset.x - (pageWidth/2)) / pageWidth) + 1;
+    self.pageControl.currentPage = page;
+    
+    
 }
 
 #pragma mark - Properties
@@ -326,8 +310,8 @@
 - (UIView *)containerView {
     if (!_containerView) {
         //TODO: BUG IN ROTATE VIEW FRAME, hardcoding get around it.
-        _containerView = [[UIView alloc] initWithFrame:CGRectMake(floorf((1024 - kSize.width) / 2.0),
-                                                                 floorf((768 - kSize.height) / 2.0),
+        _containerView = [[UIView alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - kSize.width) / 2.0),
+                                                                 floorf((self.view.bounds.size.height - kSize.height) / 2.0),
                                                                  kSize.width,
                                                                  kSize.height)];
         _containerView.backgroundColor = [UIColor clearColor];
@@ -340,13 +324,6 @@
         _mealTypeCollectionView = [self generateCollectionView];
     }
     return _mealTypeCollectionView;
-}
-
-- (UICollectionView *)cookTypeCollectionView {
-    if (!_cookTypeCollectionView) {
-        _cookTypeCollectionView = [self generateCollectionView];
-    }
-    return _cookTypeCollectionView;
 }
 
 - (UICollectionView *)allergyTypeCollectionView {
@@ -364,7 +341,6 @@
 }
 
 #pragma mark - Private methods
-
 
 - (UICollectionView *)generateCollectionView {
     TagLayout *flowLayout = [[TagLayout alloc] init];
@@ -391,8 +367,6 @@
 - (NSInteger)categoryForCollectionView:(UICollectionView *)collectionView {
     if ([collectionView isEqual:self.mealTypeCollectionView]) {
         return kMealTagType;
-    } else if ([collectionView isEqual:self.cookTypeCollectionView]) {
-        return kCookTagType;
     } else if ([collectionView isEqual:self.allergyTypeCollectionView]) {
         return kAllergyTagType;
     } else if ([collectionView isEqual:self.foodTypeCollectionView]) {

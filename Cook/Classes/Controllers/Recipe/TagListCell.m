@@ -124,6 +124,12 @@
     } else if ([self.recipeTag.imageType isEqualToString:@"condiment"]) {
         self.tagIconView.image = [UIImage imageNamed:@"cook_tags_condiment_off"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_condiment_on"];
+    } else if ([self.recipeTag.imageType isEqualToString:@"meat"]) {
+        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_meat_off"];
+        self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_meat_on"];
+    } else if ([self.recipeTag.imageType isEqualToString:@"ingredient"]) {
+        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_ingredient_off"];
+        self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_ingredient_on"];
     } else {
         self.tagIconView.image = [UIImage imageNamed:@"cook_tags_meal_off"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_meal_on"];
