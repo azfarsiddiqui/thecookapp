@@ -292,13 +292,6 @@
     CKRecipeTag *selectedTag = [self recipeTagWithIndexPath:indexPath collectionView:collectionView];
     if ([self.selectedItems containsObject:selectedTag])
         [self.selectedItems removeObject:selectedTag];
-//    [self.selectedItems enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
-//        DLog(@"Selected Name: %@|%@, PArsed Name: %@|%@", selectedTag.displayName, selectedTag.objectId, obj.displayName, obj.objectId);
-//        if ([obj.objectId isEqual:selectedTag.objectId]) {
-//            [self.selectedItems removeObject:obj];
-//            return;
-//        }
-//    }];
     self.titleCountLabel.text = [NSString stringWithFormat:@"%i", [self.selectedItems count]];
 }
 
@@ -312,31 +305,13 @@
     
 }
 
-//- (void) scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-//{
-//    if ([(UICollectionView *)scrollView isEqual:self.foodTypeCollectionView]) {
-//        CGPoint targetPoint = CGPointMake(targetContentOffset->x, targetContentOffset->y);
-//        *targetContentOffset = [self nearestPagePointFromPoint:targetPoint];
-//    }
-//}
-//
-//
-//
-//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-//    
-//    if ([scrollView isEqual:self.foodTypeCollectionView])
-//    {
-//        [scrollView setContentOffset:[self nearestPagePointFromPoint:scrollView.contentOffset] animated:YES];
-//    }
-//}
-
 #pragma mark - Properties
 
 - (UIView *)containerView {
     if (!_containerView) {
         //TODO: BUG IN ROTATE VIEW FRAME, hardcoding get around it.
-        _containerView = [[UIView alloc] initWithFrame:CGRectMake(floorf((1024 - kSize.width) / 2.0),
-                                                                 floorf((768 - kSize.height) / 2.0),
+        _containerView = [[UIView alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - kSize.width) / 2.0),
+                                                                 floorf((self.view.bounds.size.height - kSize.height) / 2.0),
                                                                  kSize.width,
                                                                  kSize.height)];
         _containerView.backgroundColor = [UIColor clearColor];
@@ -366,47 +341,6 @@
 }
 
 #pragma mark - Private methods
-
-//- (CGPoint)nearestPagePointFromPoint:(CGPoint)offsetPoint {
-//    NSInteger count = 0;
-//    for (CKRecipeTag *obj in self.items) {
-//        if (obj.categoryIndex == [self categoryForCollectionView:self.foodTypeCollectionView]) {
-//            count++;
-//        }
-//    }
-//    //    CGFloat contentWidth = kSize.width - kContentInsets.left - kContentInsets.right - kSectionHeadWidth -kSectionFootWidth - 30;
-//    
-//    //This is the index of the "page" that we will be landing at
-//    NSUInteger nearestIndex = (NSUInteger)(offsetPoint.x / kItemWidth + 0.5f);
-//    
-//    //Just to make sure we don't scroll past your content
-//    nearestIndex = MAX( MIN( nearestIndex, count - 1 ), 0 );
-//    
-//    //This is the actual x position in the scroll view
-//    CGFloat xOffset = nearestIndex * kItemWidth;
-//    
-//    //I've found that scroll views will "stick" unless this is done
-//    xOffset = xOffset==0?1:xOffset;
-//    
-//    //Tell the scroll view to land on our page
-//    return CGPointMake(xOffset, offsetPoint.y);
-//}
-//
-//- (NSInteger)nearestIndexFromPoint:(CGPoint)offsetPoint {
-//    NSInteger count = 0;
-//    for (CKRecipeTag *obj in self.items) {
-//        if (obj.categoryIndex == [self categoryForCollectionView:self.foodTypeCollectionView]) {
-//            count++;
-//        }
-//    }
-//    //    CGFloat contentWidth = kSize.width - kContentInsets.left - kContentInsets.right - kSectionHeadWidth -kSectionFootWidth - 30;
-//    
-//    //This is the index of the "page" that we will be landing at
-//    NSUInteger nearestIndex = (NSUInteger)(offsetPoint.x / kItemWidth + 0.5f);
-//    
-//    //Just to make sure we don't scroll past your content
-//    return MAX( MIN( nearestIndex, count - 1 ), 0 );
-//}
 
 - (UICollectionView *)generateCollectionView {
     TagLayout *flowLayout = [[TagLayout alloc] init];
