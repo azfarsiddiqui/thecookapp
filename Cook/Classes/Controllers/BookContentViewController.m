@@ -145,7 +145,6 @@
     NSArray *indexPathsToInsert = [recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
         return [NSIndexPath indexPathForItem:(startIndex + recipeIndex) inSection:0];
     }];
-    DLog(@">>> INSERTING %@", indexPathsToInsert);
     
     // Model updates.
     self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
