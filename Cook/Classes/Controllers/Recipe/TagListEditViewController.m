@@ -24,19 +24,14 @@
 @property (nonatomic, strong) UICollectionView *foodTypeCollectionView;
 @property (nonatomic, strong) UILabel *titleCountLabel;
 
+@property (nonatomic) CGPoint targetContentOffset;
+@property (nonatomic) CGFloat targetVelocity;
+
 @property (nonatomic, strong) UIPageControl *pageControl;
 
 @end
 
 @implementation TagListEditViewController
-
-#define kTagCellID          @"TagCell"
-#define kTagSectionHeadID   @"TagSectionHeader"
-#define kTagSectionFootID   @"TagSectionFooter"
-#define kSize               CGSizeMake(884.0, 678.0)
-#define kContentInsets      UIEdgeInsetsMake(45.0, 0.0, 40.0, 0.0)
-#define kSectionHeadWidth   60.0
-#define kSectionFootWidth   60.0
 
 //top, left, bottom, right
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate selectedItems:(NSArray *)selectedItems editingHelper:(CKEditingViewHelper *)editingHelper
@@ -308,50 +303,32 @@
 }
 
 #pragma mark - UIScrollViewDelegate methods
-
+//
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGFloat pageWidth = kSize.width;
     int page = floor((scrollView.contentOffset.x - (pageWidth/2)) / pageWidth) + 1;
     self.pageControl.currentPage = page;
+    
+    
 }
 
-- (void) scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-{
-    if ([(UICollectionView *)scrollView isEqual:self.foodTypeCollectionView]) {
-        NSInteger count = 0;
-        for (CKRecipeTag *obj in self.items) {
-            if (obj.categoryIndex == [self categoryForCollectionView:self.foodTypeCollectionView]) {
-                count++;
-            }
-        }
-        CGFloat contentWidth = kSize.width - kContentInsets.left - kContentInsets.right - kSectionHeadWidth -kSectionFootWidth - 30;
-        
-        //This is the index of the "page" that we will be landing at
-        NSUInteger nearestIndex = (NSUInteger)(targetContentOffset->x / contentWidth + 0.5f);
-        
-        //Just to make sure we don't scroll past your content
-        nearestIndex = MAX( MIN( nearestIndex, count - 1 ), 0 );
-        
-        //This is the actual x position in the scroll view
-        CGFloat xOffset = nearestIndex * contentWidth;
-        
-        //I've found that scroll views will "stick" unless this is done
-        xOffset = xOffset==0?1:xOffset;
-        
-        //Tell the scroll view to land on our page
-        *targetContentOffset = CGPointMake(xOffset, targetContentOffset->y);
-    }
-}
-
-- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if( !decelerate )
-    {
-        NSUInteger currentIndex = (NSUInteger)(scrollView.contentOffset.x / scrollView.bounds.size.width);
-        
-        [scrollView setContentOffset:CGPointMake(scrollView.bounds.size.width * currentIndex, 0) animated:YES];
-    }
-}
+//- (void) scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+//{
+//    if ([(UICollectionView *)scrollView isEqual:self.foodTypeCollectionView]) {
+//        CGPoint targetPoint = CGPointMake(targetContentOffset->x, targetContentOffset->y);
+//        *targetContentOffset = [self nearestPagePointFromPoint:targetPoint];
+//    }
+//}
+//
+//
+//
+//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+//    
+//    if ([scrollView isEqual:self.foodTypeCollectionView])
+//    {
+//        [scrollView setContentOffset:[self nearestPagePointFromPoint:scrollView.contentOffset] animated:YES];
+//    }
+//}
 
 #pragma mark - Properties
 
@@ -390,6 +367,46 @@
 
 #pragma mark - Private methods
 
+//- (CGPoint)nearestPagePointFromPoint:(CGPoint)offsetPoint {
+//    NSInteger count = 0;
+//    for (CKRecipeTag *obj in self.items) {
+//        if (obj.categoryIndex == [self categoryForCollectionView:self.foodTypeCollectionView]) {
+//            count++;
+//        }
+//    }
+//    //    CGFloat contentWidth = kSize.width - kContentInsets.left - kContentInsets.right - kSectionHeadWidth -kSectionFootWidth - 30;
+//    
+//    //This is the index of the "page" that we will be landing at
+//    NSUInteger nearestIndex = (NSUInteger)(offsetPoint.x / kItemWidth + 0.5f);
+//    
+//    //Just to make sure we don't scroll past your content
+//    nearestIndex = MAX( MIN( nearestIndex, count - 1 ), 0 );
+//    
+//    //This is the actual x position in the scroll view
+//    CGFloat xOffset = nearestIndex * kItemWidth;
+//    
+//    //I've found that scroll views will "stick" unless this is done
+//    xOffset = xOffset==0?1:xOffset;
+//    
+//    //Tell the scroll view to land on our page
+//    return CGPointMake(xOffset, offsetPoint.y);
+//}
+//
+//- (NSInteger)nearestIndexFromPoint:(CGPoint)offsetPoint {
+//    NSInteger count = 0;
+//    for (CKRecipeTag *obj in self.items) {
+//        if (obj.categoryIndex == [self categoryForCollectionView:self.foodTypeCollectionView]) {
+//            count++;
+//        }
+//    }
+//    //    CGFloat contentWidth = kSize.width - kContentInsets.left - kContentInsets.right - kSectionHeadWidth -kSectionFootWidth - 30;
+//    
+//    //This is the index of the "page" that we will be landing at
+//    NSUInteger nearestIndex = (NSUInteger)(offsetPoint.x / kItemWidth + 0.5f);
+//    
+//    //Just to make sure we don't scroll past your content
+//    return MAX( MIN( nearestIndex, count - 1 ), 0 );
+//}
 
 - (UICollectionView *)generateCollectionView {
     TagLayout *flowLayout = [[TagLayout alloc] init];
