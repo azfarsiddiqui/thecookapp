@@ -1019,8 +1019,8 @@
         [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount likedRecipes:likedRecipes];
         
     } failure:^(NSError *error) {
-        
         DLog(@"Error %@", [error localizedDescription]);
+        [self.titleViewController configureError:error];
     }];
 }
 
