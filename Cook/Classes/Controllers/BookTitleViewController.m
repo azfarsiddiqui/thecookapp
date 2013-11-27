@@ -190,6 +190,10 @@
     }
 }
 
+- (void)configureError:(NSError *)error {
+    [self.activityView stopAnimating];
+}
+
 #pragma mark - BookPageViewController methods
 
 - (void)showIntroCard:(BOOL)show {
