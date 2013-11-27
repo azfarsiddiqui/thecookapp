@@ -29,6 +29,8 @@
 #import "CardViewHelper.h"
 #import "EventHelper.h"
 #import "BookNavigationView.h"
+#import "CKActivityIndicatorView.h"
+#import "CKContentContainerCell.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
@@ -42,10 +44,11 @@
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSString *page;
-@property (nonatomic, strong) NSMutableArray *recipes;
+@property (nonatomic, strong) NSArray *recipes;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) BookContentTitleView *contentTitleView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 // Editing.
 @property (nonatomic, strong) UIButton *deleteButton;
@@ -65,8 +68,9 @@
 
 @implementation BookContentViewController
 
-#define kRecipeCellId       @"RecipeCellId"
-#define kContentHeaderId    @"ContentHeaderId"
+#define kRecipeCellId       @"RecipeCell"
+#define kContentHeaderId    @"ContentHeader"
+#define kLoadMoreCellId     @"LoadMoreCell"
 
 - (void)dealloc {
     [EventHelper unregisterSocialUpdates:self];
@@ -95,17 +99,12 @@
     [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-}
-
 - (void)viewDidDisappear:(BOOL)animated {
     self.recipes = nil;
 }
 
 - (void)loadData {
-    self.recipes = [NSMutableArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
+    self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
 }
 
@@ -136,6 +135,36 @@
 
 - (void)applyOverlayAlpha:(CGFloat)alpha {
     self.overlayView.alpha = alpha;
+}
+
+- (void)loadMoreRecipes:(NSArray *)recipes {
+    
+    // Delete spinner cell.
+    NSIndexPath *activityDeleteIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
+    
+    // Gather the index paths to insert.
+    NSInteger startIndex = [self.recipes count];
+    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+        return [NSIndexPath indexPathForItem:(startIndex + recipeIndex) inSection:0];
+    }]];
+    
+    // Model updates.
+    self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
+    
+    // Reinsert spinner cell if there are more.
+    if ([self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page]) {
+        NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
+        [indexPathsToInsert addObject:activityInsertIndexPath];
+    }
+    
+    // UI updates after invalidating layout.
+    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteItemsAtIndexPaths:@[activityDeleteIndexPath]];
+        [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+    } completion:^(BOOL finished) {
+    }];
+    
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
@@ -256,6 +285,14 @@
     };
 }
 
+- (CGSize)bookContentGridLayoutFooterSize {
+    return self.activityView.frame.size;
+}
+
+- (BOOL)bookContentGridLayoutLoadMoreEnabled {
+    return [self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page];
+}
+
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {
@@ -368,43 +405,74 @@
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
-    if (!self.isFastForward) //Don't load recipes if fast forward
+    
+    if (!self.isFastForward) {//Don't load recipes if fast forward
         numItems = [self.recipes count];
+        
+        if ([self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page]) {
+            numItems += 1;
+        }
+    }
+    
     return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    BookContentGridType gridType = [self gridTypeForRecipe:recipe];
-    NSString *cellId = [self cellIdentifierForGridType:gridType];
-    
-    BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
-    
-    [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
-    
-//    recipeCell.alpha = 0.0;
-//    [UIView animateWithDuration:0.2*indexPath.row animations:^{
-//        recipeCell.alpha = 1.0;
-//    }];
-    
-    return recipeCell;
+    UICollectionViewCell *cell = nil;
+    if (indexPath.item < [self.recipes count]) {
+        
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+        BookContentGridType gridType = [self gridTypeForRecipe:recipe];
+        NSString *cellId = [self cellIdentifierForGridType:gridType];
+        
+        BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
+                                                                                                              forIndexPath:indexPath];
+        [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
+        
+        // Load more?
+        if (indexPath.item == ([self.recipes count] - 1)) {
+            [self.delegate bookContentViewControllerLoadMoreForPage:self.page];
+        }
+        
+        cell = recipeCell;
+        
+    } else {
+        
+        // Spinner.
+        CKContentContainerCell *activityCell = (CKContentContainerCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kLoadMoreCellId
+                                                                                                                        forIndexPath:indexPath];
+        [self.activityView removeFromSuperview];
+        [activityCell configureContentView:self.activityView];
+        if (![self.activityView isAnimating]) {
+            [self.activityView startAnimating];
+        }
+        
+        cell = activityCell;
+    }
+    return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
            viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
-    UICollectionReusableView *reusableView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId forIndexPath:indexPath];
-    if (!self.contentTitleView.superview) {
-        self.contentTitleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        self.contentTitleView.frame = (CGRect){
-            floorf((reusableView.bounds.size.width - self.contentTitleView.frame.size.width) / 2.0),
-            floorf((reusableView.bounds.size.height - self.contentTitleView.frame.size.height) / 2.0),
-            self.contentTitleView.frame.size.width,
-            self.contentTitleView.frame.size.height
-        };
-        [reusableView addSubview:self.contentTitleView];
+    UICollectionReusableView *reusableView = nil;
+    
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
+        reusableView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                               withReuseIdentifier:kContentHeaderId forIndexPath:indexPath];
+        if (!self.contentTitleView.superview) {
+            self.contentTitleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+            self.contentTitleView.frame = (CGRect){
+                floorf((reusableView.bounds.size.width - self.contentTitleView.frame.size.width) / 2.0),
+                floorf((reusableView.bounds.size.height - self.contentTitleView.frame.size.height) / 2.0),
+                self.contentTitleView.frame.size.width,
+                self.contentTitleView.frame.size.height
+            };
+            [reusableView addSubview:self.contentTitleView];
+        }
     }
     
     return reusableView;
@@ -444,6 +512,13 @@
     return _deleteButton;
 }
 
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+        _activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _activityView;
+}
 
 #pragma mark - Private 
 
@@ -474,8 +549,8 @@
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeSmall]];
     [self.collectionView registerClass:[BookRecipeGridExtraSmallCell class]
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeExtraSmall]];
-    
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
+    [self.collectionView registerClass:[CKContentContainerCell class] forCellWithReuseIdentifier:kLoadMoreCellId];
 }
 
 - (void)initOverlay {

@@ -1767,8 +1767,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Enable save mode to hide all buttons and show black overlay.
         [self enableSaveMode:YES];
         
-        // If there was an existing geoLocation, delete it. A new location will be set if needed.
-        if (existingLocation != nil) {
+        // If there was an existing geoLocation, delete it if it has changed. A new location will be set if needed.
+        if (existingLocation != nil && [self.recipeDetails locationUpdated]) {
             
             // Delete this location eventually.
             [existingLocation deleteEventually];

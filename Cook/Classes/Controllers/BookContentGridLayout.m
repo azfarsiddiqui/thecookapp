@@ -35,6 +35,7 @@
 #define kCellsStartOffset   700.0
 #define kHeaderCellsGap     200.0
 #define kHeaderCellsMinGap  40.0
+#define kCellsFooterGap     50.0
 
 + (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
     CGSize size = CGSizeZero;
@@ -95,6 +96,12 @@
     // Now go ahead and figure it out.
     offset.vertical = kCellsStartOffset;
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
+    
+    // Minus the footer spinner if enabled.
+    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
+        numItems -= 1;
+    }
+    
     CGFloat maxHeight = 0.0;
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
         
@@ -122,6 +129,13 @@
     
     // Resolve the contentSize.
     contentSize.height += maxHeight;
+    
+    // Load more?
+    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
+        contentSize.height += kCellsFooterGap;
+        contentSize.height += [self.delegate bookContentGridLayoutFooterSize].height;
+    }
+    
     contentSize.height += kContentInsets.bottom;
     contentSize.height = MAX(contentSize.height, self.collectionView.bounds.size.height);
     
@@ -147,6 +161,7 @@
     
     [self buildHeaderLayout];
     [self buildGridLayout];
+    [self buildFooterLayout];
     
     // Mark layout as generated.
     self.layoutCompleted = YES;
@@ -162,7 +177,7 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray* layoutAttributes = [NSMutableArray array];
     
-    // Header cells.
+    // Header/footer cells.
     for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
         if (CGRectIntersectsRect(rect, attributes.frame)) {
             [layoutAttributes addObject:attributes];
@@ -216,6 +231,31 @@
     return headerAttributes;
 }
 
+- (void)buildFooterLayout {
+    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
+        
+        NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
+        NSIndexPath *footerIndexPath = [NSIndexPath indexPathForItem:(numItems - 1) inSection:0];
+        UICollectionViewLayoutAttributes *footerAttributes = [self footerLayoutAttributesForIndexPath:footerIndexPath];
+        [self.itemsLayoutAttributes addObject:footerAttributes];
+        [self.indexPathItemAttributes setObject:footerAttributes forKey:footerIndexPath];
+    }
+}
+
+- (UICollectionViewLayoutAttributes *)footerLayoutAttributesForIndexPath:(NSIndexPath *)footerIndexPath {
+    CGSize footerSize = [self.delegate bookContentGridLayoutFooterSize];
+    
+    CGFloat maxColumnHeight = [self maxHeightForColumns];
+    UICollectionViewLayoutAttributes *footerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:footerIndexPath];
+    footerAttributes.frame = (CGRect){
+        floorf((self.collectionView.bounds.size.width - footerSize.width) / 2.0),
+        maxColumnHeight + kCellsFooterGap,
+        footerSize.width,
+        footerSize.height
+    };
+    return footerAttributes;
+}
+
 - (void)buildGridLayout {
     
     // Set up the column offsets.
@@ -229,6 +269,12 @@
     
     // Now go ahead and figure it out.
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
+    
+    // Minus the footer spinner if enabled.
+    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
+        numItems -= 1;
+    }
+    
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
         
         // Get the gridType and size.
