@@ -504,6 +504,15 @@
     return [[self.pageCurrentBatches objectForKey:page] integerValue];
 }
 
+- (BOOL)bookContentViewControllerLoadMoreEnabledForPage:(NSString *)page {
+    NSInteger numBatches = [[self.pageBatches objectForKey:page] integerValue];
+    NSInteger currentBatchIndex = [[self.pageCurrentBatches objectForKey:page] integerValue];
+    NSInteger requestedBatchIndex = currentBatchIndex + 1;
+    
+    // Enabled if the requested batch index is within the number of batches.
+    return (requestedBatchIndex < numBatches);
+}
+
 - (void)bookContentViewControllerLoadMoreForPage:(NSString *)page {
     NSInteger numBatches = [[self.pageBatches objectForKey:page] integerValue];
     NSInteger currentBatchIndex = [[self.pageCurrentBatches objectForKey:page] integerValue];

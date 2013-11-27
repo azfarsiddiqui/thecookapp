@@ -21,6 +21,7 @@
 - (void)bookContentViewControllerShowNavigationView:(BOOL)show;
 - (NSInteger)bookContentViewControllerNumBatchesForPage:(NSString *)page;
 - (NSInteger)bookContentViewControllerCurrentBatchIndexForPage:(NSString *)page;
+- (BOOL)bookContentViewControllerLoadMoreEnabledForPage:(NSString *)page;
 - (void)bookContentViewControllerLoadMoreForPage:(NSString *)page;
 
 @end
