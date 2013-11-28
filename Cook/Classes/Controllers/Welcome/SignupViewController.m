@@ -320,11 +320,6 @@
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:64];
-        _titleLabel.textColor = [UIColor whiteColor];
-        _titleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-        _titleLabel.shadowOffset = CGSizeMake(0.0, 2.0);
     }
     return _titleLabel;
 }
@@ -332,12 +327,7 @@
 - (UILabel *)forgotLabel {
     if (!_forgotLabel) {
         _forgotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _forgotLabel.backgroundColor = [UIColor clearColor];
-        _forgotLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:64];
-        _forgotLabel.textColor = [UIColor whiteColor];
-        _forgotLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-        _forgotLabel.shadowOffset = CGSizeMake(0.0, 2.0);
-        _forgotLabel.text = @"RESET PASSWORD";
+        _forgotLabel.attributedText = [self attributedTextForTitleLabelWithText:@"RESET PASSWORD"];
         [_forgotLabel sizeToFit];
     }
     return _forgotLabel;
@@ -366,12 +356,7 @@
 - (UIButton *)footerToggleButton {
     if (!_footerToggleButton) {
         _footerToggleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _footerToggleButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14];
-        _footerToggleButton.titleLabel.shadowOffset = CGSizeMake(0.0, 2.0);
         _footerToggleButton.userInteractionEnabled = YES;
-        [_footerToggleButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2] forState:UIControlStateNormal];
-        [_footerToggleButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_footerToggleButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.2] forState:UIControlStateHighlighted];
         [_footerToggleButton addTarget:self action:@selector(toggleButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _footerToggleButton;
@@ -380,13 +365,8 @@
 - (UIButton *)footerForgotButton {
     if (!_footerForgotButton) {
         _footerForgotButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _footerForgotButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14];
-        _footerForgotButton.titleLabel.shadowOffset = CGSizeMake(0.0, 2.0);
         _footerForgotButton.userInteractionEnabled = YES;
-        [_footerForgotButton setTitle:@"FORGOT PASSWORD" forState:UIControlStateNormal];
-        [_footerForgotButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2] forState:UIControlStateNormal];
-        [_footerForgotButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_footerForgotButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.2] forState:UIControlStateHighlighted];
+        [_footerForgotButton setAttributedTitle:[self attributedTextForFooterLabelWithText:@"FORGOT PASSWORD"] forState:UIControlStateNormal];
         [_footerForgotButton addTarget:self action:@selector(forgotButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerForgotButton sizeToFit];
         
@@ -604,7 +584,7 @@
     if (!self.titleLabel.superview) {
         [self.scrollView addSubview:self.titleLabel];
     }
-    self.titleLabel.text = [self titleForSignUp:self.signUpMode];
+    self.titleLabel.attributedText = [self attributedTextForTitleLabelWithText:[self titleForSignUp:self.signUpMode]];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = [self titleFrameForSignUp:self.signUpMode];
     
@@ -631,7 +611,7 @@
 }
 
 - (void)updateHeaderTextForSignUp:(BOOL)signUp {
-    self.titleLabel.text = [self titleForSignUp:signUp];
+    self.titleLabel.attributedText = [self attributedTextForTitleLabelWithText:[self titleForSignUp:self.signUpMode]];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = [self titleFrameForSignUp:signUp];
 }
@@ -640,7 +620,7 @@
     if (!self.footerToggleButton.superview) {
         [self.scrollView addSubview:self.footerToggleButton];
     }
-    [self.footerToggleButton setTitle:[self footerTextForSignUp:signUp] forState:UIControlStateNormal];
+    [self.footerToggleButton setAttributedTitle:[self attributedTextForFooterLabelWithText:[self footerTextForSignUp:signUp]] forState:UIControlStateNormal];
     [self.footerToggleButton sizeToFit];
     self.footerToggleButton.backgroundColor = [UIColor clearColor];
     self.footerToggleButton.frame = (CGRect){
@@ -1126,6 +1106,37 @@
         }
         
     }];
+}
+
+- (NSAttributedString *)attributedTextForTitleLabelWithText:(NSString *)text {
+    return [[NSAttributedString alloc] initWithString:text
+                                           attributes:[self textAttributesForFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:64]
+                                                                  paragraphBefore:0.0]];
+}
+
+- (NSAttributedString *)attributedTextForFooterLabelWithText:(NSString *)text {
+    return [[NSAttributedString alloc] initWithString:text
+                                           attributes:[self textAttributesForFont:[UIFont fontWithName:@"BrandonGrotesque-Medium" size:14]
+                                                                  paragraphBefore:0.0]];
+}
+
+- (NSDictionary *)textAttributesForFont:(UIFont *)font paragraphBefore:(CGFloat)paragraphBefore {
+    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    paragraphStyle.paragraphSpacingBefore = paragraphBefore;
+    
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.08];
+    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+    shadow.shadowBlurRadius = 3.0;
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            font, NSFontAttributeName,
+            [UIColor whiteColor], NSForegroundColorAttributeName,
+            paragraphStyle, NSParagraphStyleAttributeName,
+            shadow, NSShadowAttributeName,
+            nil];
 }
 
 @end

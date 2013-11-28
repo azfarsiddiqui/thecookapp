@@ -170,6 +170,31 @@
     return [self.textField resignFirstResponder];
 }
 
+- (NSAttributedString *)attributedTextForPlaceholderWithText:(NSString *)text {
+    return [[NSAttributedString alloc] initWithString:text
+                                           attributes:[self textAttributesForFont:kPlaceholderFont textAlignment:NSTextAlignmentCenter]];
+}
+
+- (NSDictionary *)textAttributesForFont:(UIFont *)font textAlignment:(NSTextAlignment)textAlignment {
+    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    paragraphStyle.paragraphSpacingBefore = 0.0;
+    paragraphStyle.alignment = textAlignment;
+    
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.08];
+    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+    shadow.shadowBlurRadius = 3.0;
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            font, NSFontAttributeName,
+            [UIColor whiteColor], NSForegroundColorAttributeName,
+            paragraphStyle, NSParagraphStyleAttributeName,
+            shadow, NSShadowAttributeName,
+            nil];
+}
+
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -226,13 +251,13 @@
         textField.textAlignment = NSTextAlignmentCenter;
         textField.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         textField.backgroundColor = [UIColor clearColor];
-        textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
         textField.returnKeyType = self.submit ? UIReturnKeyGo : UIReturnKeyNext;
         textField.text = @"";
         textField.keyboardType = UIKeyboardTypeEmailAddress;
         textField.autocapitalizationType = self.autoCapitalise ? UITextAutocapitalizationTypeWords : UITextAutocapitalizationTypeNone;
         textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        
         [textField setSecureTextEntry:self.password];
         [textField sizeToFit];
         _textField = textField;
@@ -243,14 +268,8 @@
 - (UILabel *)placeholderLabel {
     if (!_placeholderLabel) {
         UILabel *placeholderLabel = [[UILabel alloc] initWithFrame:self.textField.bounds];
-        placeholderLabel.textAlignment = NSTextAlignmentCenter;
-        placeholderLabel.font = kPlaceholderFont;
-        placeholderLabel.textColor = kPlaceholderColour;
-        placeholderLabel.text = self.placeholder;
+        placeholderLabel.attributedText = [self attributedTextForPlaceholderWithText:self.placeholder];
         placeholderLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        placeholderLabel.backgroundColor = [UIColor clearColor];
-        placeholderLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-        placeholderLabel.shadowOffset = CGSizeMake(0.0, 2.0);
         _placeholderLabel = placeholderLabel;
     }
     return _placeholderLabel;
