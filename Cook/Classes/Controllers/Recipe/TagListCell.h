@@ -12,9 +12,6 @@
 
 @interface TagListCell : UICollectionViewCell
 
-#define kItemHeight 115
-#define kItemWidth 95
-
 @property (nonatomic, strong) CKRecipeTag *recipeTag;
 
 //+ (CGSize)cellSize;

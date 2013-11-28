@@ -79,6 +79,8 @@
     [self.containerView addSubview:self.allergyTypeCollectionView];
     [self.containerView addSubview:self.foodTypeCollectionView];
     
+    self.scrollView.scrollEnabled = NO;
+    
     UIView *titleAlignView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.containerView addSubview:titleAlignView];
     
@@ -101,11 +103,6 @@
     [self.containerView addSubview:line1];
     [self.containerView addSubview:line2];
     [self.containerView addSubview:line3];
-    
-    self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectZero];
-    self.pageControl.pageIndicatorTintColor = [UIColor grayColor];
-    self.pageControl.currentPageIndicatorTintColor = [UIColor blueColor];
-    [self.containerView addSubview:self.pageControl];
     
     //    self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mealTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;

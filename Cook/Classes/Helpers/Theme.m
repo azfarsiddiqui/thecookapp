@@ -398,11 +398,11 @@
 }
 
 + (UIFont *)tagLabelFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:16];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:15];
 }
 
 + (UIColor *)tagLabelColor {
-    return [UIColor colorWithHexString:@"555555"];
+    return [UIColor colorWithHexString:@"888888"];
 }
 
 #pragma mark - Social view.
