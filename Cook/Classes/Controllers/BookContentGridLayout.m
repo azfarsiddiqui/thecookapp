@@ -8,6 +8,7 @@
 
 #import "BookContentGridLayout.h"
 #import "ViewHelper.h"
+#import "NSString+Utilities.h"
 #import "BookNavigationView.h"
 
 @interface BookContentGridLayout ()
@@ -35,7 +36,7 @@
 #define kCellsStartOffset   700.0
 #define kHeaderCellsGap     200.0
 #define kHeaderCellsMinGap  40.0
-#define kCellsFooterGap     50.0
+#define kCellsFooterGap     12.0
 
 + (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
     CGSize size = CGSizeZero;
@@ -95,12 +96,7 @@
     
     // Now go ahead and figure it out.
     offset.vertical = kCellsStartOffset;
-    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
-    
-    // Minus the footer spinner if enabled.
-    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
-        numItems -= 1;
-    }
+    NSInteger numItems = [self.delegate bookContentGridLayoutNumItems];
     
     CGFloat maxHeight = 0.0;
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
@@ -232,10 +228,12 @@
 }
 
 - (void)buildFooterLayout {
-    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
+    NSInteger numItems = [self.delegate bookContentGridLayoutNumItems];
+    
+    if (numItems > 0 && [self.delegate bookContentGridLayoutLoadMoreEnabled]
+        && ![self.delegate bookContentGridLayoutFastForwardEnabled]) {
         
-        NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
-        NSIndexPath *footerIndexPath = [NSIndexPath indexPathForItem:(numItems - 1) inSection:0];
+        NSIndexPath *footerIndexPath = [NSIndexPath indexPathForItem:numItems inSection:0];
         UICollectionViewLayoutAttributes *footerAttributes = [self footerLayoutAttributesForIndexPath:footerIndexPath];
         [self.itemsLayoutAttributes addObject:footerAttributes];
         [self.indexPathItemAttributes setObject:footerAttributes forKey:footerIndexPath];
@@ -268,12 +266,7 @@
     }
     
     // Now go ahead and figure it out.
-    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
-    
-    // Minus the footer spinner if enabled.
-    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
-        numItems -= 1;
-    }
+    NSInteger numItems = [self.delegate bookContentGridLayoutNumItems];
     
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
         
