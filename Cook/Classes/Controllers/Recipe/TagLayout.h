@@ -13,8 +13,10 @@
 #define kTagSectionFootID   @"TagSectionFooter"
 #define kSize               CGSizeMake(884.0, 678.0)
 #define kContentInsets      UIEdgeInsetsMake(45.0, 0.0, 40.0, 0.0)
-#define kSectionHeadWidth   60.0
-#define kSectionFootWidth   60.0
+#define kSectionHeadWidth   75.0
+#define kSectionFootWidth   75.0
+#define kItemHeight 115
+#define kItemWidth 90
 
 @interface TagLayout : UICollectionViewFlowLayout
 

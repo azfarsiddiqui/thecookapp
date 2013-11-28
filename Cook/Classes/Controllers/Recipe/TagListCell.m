@@ -17,6 +17,8 @@
 @property (nonatomic, strong) UILabel *tagLabel;
 @property (nonatomic, strong) UIImageView *tagIconView;
 @property (nonatomic, strong) UIImageView *tagIconSelectedView;
+@property (nonatomic, strong) UIImage *normalImage;
+@property (nonatomic, strong) UIImage *highlightedImage;
 @property (nonatomic, strong) UIView *iconView;
 
 @end
@@ -56,10 +58,9 @@
     }];
 }
 
-//- (void)setHighlighted:(BOOL)highlighted {
-//    self.tagIconView.hidden = !highlighted;
-//    self.tagIconSelectedView.hidden = highlighted;
-//}
+- (void)setHighlighted:(BOOL)highlighted {
+    self.tagIconView.image = highlighted ? self.highlightedImage : self.normalImage;
+}
 
 - (void)configureTag:(CKRecipeTag *)recipeTag {
     self.tagLabel.text = [recipeTag.displayName uppercaseString];
@@ -104,36 +105,47 @@
 
 - (void)configImageForType:(NSString *)imageType {
     if ([self.recipeTag.imageType isEqualToString:@"savoury"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_savoury_off"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_savoury_on"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_savoury_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_savoury_on_onpress"];
     } else if ([self.recipeTag.imageType isEqualToString:@"drink"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_drink_off"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_drink_on"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_drink_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_drink_on_onpress"];
     } else if ([self.recipeTag.imageType isEqualToString:@"health"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_health_off"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_health_on"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_health_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_health_on_onpress"];
     } else if ([self.recipeTag.imageType isEqualToString:@"method"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_method_off"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_method_on"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_method_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_method_on_onpress"];
     } else if ([self.recipeTag.imageType isEqualToString:@"meal"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_meal_off"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_meal_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_meal_on_onpress"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_meal_on"];
     } else if ([self.recipeTag.imageType isEqualToString:@"bake"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_bake_off"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_bake_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_bake_on_onpress"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_bake_on"];
     } else if ([self.recipeTag.imageType isEqualToString:@"condiment"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_condiment_off"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_condiment_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_condiment_on_onpress"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_condiment_on"];
     } else if ([self.recipeTag.imageType isEqualToString:@"meat"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_meat_off"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_meat_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_meat_on_onpress"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_meat_on"];
     } else if ([self.recipeTag.imageType isEqualToString:@"ingredient"]) {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_ingredient_off"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_ingredient_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_ingredient_on_onpress"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_ingredient_on"];
     } else {
-        self.tagIconView.image = [UIImage imageNamed:@"cook_tags_meal_off"];
+        self.normalImage = [UIImage imageNamed:@"cook_tags_meal_off"];
+        self.highlightedImage = [UIImage imageNamed:@"cook_tags_meal_on_onpress"];
         self.tagIconSelectedView.image = [UIImage imageNamed:@"cook_tags_meal_on"];
     }
+    self.tagIconView.image = self.normalImage;
 }
 
 #pragma mark - Properties

@@ -15,11 +15,13 @@
 
 @implementation TagLayout
 
+
+
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
     CGPoint contentOffset = self.collectionView.contentOffset;
     CGRect bounds = self.collectionView.bounds;
-
+    
     for (UICollectionViewLayoutAttributes *attribute in layoutAttributes)
     {
         [self applyTagsFading:attribute contentOffset:contentOffset bounds:bounds];
@@ -29,35 +31,46 @@
 
 - (void)applyTagsFading:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
                      bounds:(CGRect)bounds {
+    attributes.size = CGSizeMake(kItemWidth, kItemHeight);
     
     if (!attributes.representedElementKind) {
         
-        CGFloat leftFadeOffset = contentOffset.x + 10;
-        CGFloat rightFadeOffset = contentOffset.x + bounds.size.width - 10;
+        CGFloat leftFadeOffset = contentOffset.x + 70;
+        CGFloat rightFadeOffset = contentOffset.x + bounds.size.width - 70;
         CGFloat minAlpha = 0.0;
-        CGFloat fadeRate = 1.5;
+        CGFloat fadeRate = 1.0;
         
         CGRect frame = attributes.frame;
         if (frame.origin.x <= leftFadeOffset) {
-            CGFloat effectiveDistance = 100.0;
+            CGFloat effectiveDistance = 320.0;
             CGFloat distance = MIN(leftFadeOffset - frame.origin.x, effectiveDistance);
-            attributes.alpha = MAX(minAlpha, 1.0 - fadeRate * (distance / effectiveDistance));
-            CATransform3D flipCellTransform = CATransform3DMakeRotation(M_PI/3 * (attributes.alpha - 1), 0.0f, -1.0f, 0.0f);
+            CGFloat alphaNum = [self easeInWithInput:MAX(minAlpha,(1-fadeRate * (distance / effectiveDistance)))];
+            attributes.alpha = alphaNum > 0.1 ? alphaNum : 0;
+            CATransform3D flipCellTransform = CATransform3DMakeRotation(MIN(M_PI_2 * (attributes.alpha - 1), 0), 0.0f, -1.0f, 0.0f);
             CGFloat zDistance = 1000;
             flipCellTransform.m34 = 1 / zDistance;
+            flipCellTransform = CATransform3DTranslate(flipCellTransform, 0.0f, 0.0f,MIN(kItemWidth * fabs(1- attributes.alpha), 10));
             attributes.transform3D = flipCellTransform;
+//            attributes.size.width = 
         } else if (frame.origin.x + frame.size.width >= rightFadeOffset) {
-            CGFloat effectiveDistance = 100.0;
+            CGFloat effectiveDistance = 320.0;
             CGFloat distance = MIN((frame.origin.x + frame.size.width) - rightFadeOffset, effectiveDistance);
-            attributes.alpha = MAX(minAlpha, 1.0 - fadeRate * (distance / effectiveDistance));
-            CATransform3D flipCellTransform = CATransform3DMakeRotation(-M_PI/3 * (attributes.alpha - 1), 0.0f, -1.0f, 0.0f);
+            CGFloat alphaNum = [self easeInWithInput:MAX(minAlpha,(1-fadeRate * (distance / effectiveDistance)))];
+            attributes.alpha = MAX(minAlpha, alphaNum);
+            CATransform3D flipCellTransform = CATransform3DMakeRotation(MAX(-M_PI_2 * (attributes.alpha - 1),0), 0.0f, -1.0f, 0.0f);
             CGFloat zDistance = 1000;
             flipCellTransform.m34 = 1 / zDistance;
+            flipCellTransform = CATransform3DTranslate(flipCellTransform, 0.0f, 0.0f,MIN(kItemWidth * fabs(1- attributes.alpha), 10));
             attributes.transform3D = flipCellTransform;
         } else {
             attributes.alpha = 1.0;
         }
     }
+}
+
+- (CGFloat)easeInWithInput:(CGFloat)t  {
+//    DLog(@"T is : %f", t);
+    return powf(4, (4*t - 4));
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
