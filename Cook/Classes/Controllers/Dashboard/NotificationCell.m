@@ -271,9 +271,11 @@
     } else if ([notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
         text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]) {
-        text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
+        text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\".", [actionUser friendlyName], notification.recipe.name];
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
-        text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
+        text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\".", [actionUser friendlyName], notification.recipe.name];
+    } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
+        text = [NSString stringWithFormat:@"%@ added your recipe \"%@\" to their book.", [actionUser friendlyName], notification.recipe.name];
     }
     
     return text;
