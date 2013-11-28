@@ -1020,7 +1020,9 @@
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
-        [self.titleViewController configureError:error];
+        
+        // Attempt to reload data.
+        [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
     }];
 }
 
