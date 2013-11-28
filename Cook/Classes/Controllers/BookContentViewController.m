@@ -269,6 +269,10 @@
     DLog();
 }
 
+- (NSInteger)bookContentGridLayoutNumItems {
+    return self.isFastForward ? 0 : [self.recipes count];
+}
+
 - (NSInteger)bookContentGridLayoutNumColumns {
     return 3;
 }
@@ -291,6 +295,10 @@
 
 - (BOOL)bookContentGridLayoutLoadMoreEnabled {
     return [self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page];
+}
+
+- (BOOL)bookContentGridLayoutFastForwardEnabled {
+    return self.isFastForward;
 }
 
 #pragma mark - CKSaveableContent methods
@@ -407,9 +415,11 @@
     NSInteger numItems = 0;
     
     if (!self.isFastForward) {//Don't load recipes if fast forward
+        
         numItems = [self.recipes count];
         
-        if ([self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page]) {
+        // Spinner only if there are more than one recipes.
+        if ([self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page] && numItems > 0) {
             numItems += 1;
         }
     }
@@ -438,7 +448,7 @@
         
         cell = recipeCell;
         
-    } else {
+    } else if ([self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page] && indexPath.item == [self.recipes count]) {
         
         // Spinner.
         CKContentContainerCell *activityCell = (CKContentContainerCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kLoadMoreCellId

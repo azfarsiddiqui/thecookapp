@@ -53,5 +53,7 @@
 - (void)setValidated:(BOOL)validated message:(NSString *)message;
 - (void)focusTextFieldView:(BOOL)focus;
 - (void)setText:(NSString *)text;
+- (NSAttributedString *)attributedTextForPlaceholderWithText:(NSString *)text;
+- (NSDictionary *)textAttributesForFont:(UIFont *)font textAlignment:(NSTextAlignment)textAlignment;
 
 @end

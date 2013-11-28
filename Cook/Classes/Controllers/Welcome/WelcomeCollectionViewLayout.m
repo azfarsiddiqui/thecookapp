@@ -26,7 +26,8 @@
 #define kWelcomeSection     0
 #define kCreateSection      1
 #define kCollectSection     2
-#define kSignUpSection      3
+#define kLibrarySection     3
+#define kSignUpSection      4
 
 - (id)initWithDataSource:(id<WelcomeCollectionViewLayoutDataSource>)dataSource {
     if (self = [super init]) {
@@ -176,6 +177,10 @@
             frame.origin.x = pageOffset + floorf((size.width - pageHeaderSize.width) / 2.0);
             frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
             break;
+        case kLibrarySection:
+            frame.origin.x = pageOffset + floorf((size.width - pageHeaderSize.width) / 2.0);
+            frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
+            break;
         case kSignUpSection:
             frame.origin.x = pageOffset + floorf((size.width - pageHeaderSize.width) / 2.0);
             frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
@@ -220,6 +225,9 @@
             break;
         case kCollectSection:
             [self buildCollectAdornments];
+            break;
+        case kLibrarySection:
+            [self buildLibraryAdornments];
             break;
         case kSignUpSection:
             [self buildSignUpAdornments];
@@ -282,8 +290,8 @@
     NSIndexPath *leftIndexPath = [NSIndexPath indexPathForItem:0 inSection:kCollectSection];
     CGSize leftSize = [self.dataSource sizeOfAdornmentForIndexPath:leftIndexPath];
     UICollectionViewLayoutAttributes *leftLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:leftIndexPath];
-    leftLayoutAttributes.frame = CGRectMake(pageOffset - kAdornmentOffset,
-                                            floorf((size.height - leftSize.height) / 2.0),
+    leftLayoutAttributes.frame = CGRectMake(pageOffset,
+                                            size.height - 225.0,
                                             leftSize.width,
                                             leftSize.height);
     [self.itemsLayoutAttributes addObject:leftLayoutAttributes];
@@ -293,12 +301,27 @@
     NSIndexPath *rightIndexPath = [NSIndexPath indexPathForItem:1 inSection:kCollectSection];
     CGSize rightSize = [self.dataSource sizeOfAdornmentForIndexPath:rightIndexPath];
     UICollectionViewLayoutAttributes *rightLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:rightIndexPath];
-    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width + kAdornmentOffset,
-                                             floorf((size.height - rightSize.height) / 2.0),
+    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width,
+                                             size.height - 225.0,
                                              rightSize.width,
                                              rightSize.height);
     [self.itemsLayoutAttributes addObject:rightLayoutAttributes];
     [self.indexPathItemAttributes setObject:rightLayoutAttributes forKey:rightIndexPath];
+}
+
+- (void)buildLibraryAdornments {
+    CGFloat pageOffset = [self pageOffsetForPage:kLibrarySection];
+    
+    // Top/center adornment.
+    NSIndexPath *topIndexPath = [NSIndexPath indexPathForItem:0 inSection:kLibrarySection];
+    CGSize topSize = [self.dataSource sizeOfAdornmentForIndexPath:topIndexPath];
+    UICollectionViewLayoutAttributes *topLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:topIndexPath];
+    topLayoutAttributes.frame = CGRectMake(pageOffset,
+                                           0.0,
+                                           topSize.width,
+                                           topSize.height);
+    [self.itemsLayoutAttributes addObject:topLayoutAttributes];
+    [self.indexPathItemAttributes setObject:topLayoutAttributes forKey:topIndexPath];
 }
 
 - (void)buildSignUpAdornments {
@@ -318,6 +341,9 @@
                 break;
             case kCollectSection:
                 [self applyPagingEffectsForCollectWithAttributes:attributes];
+                break;
+            case kLibrarySection:
+                [self applyPagingEffectsForLibraryWithAttributes:attributes];
                 break;
             case kSignUpSection:
                 [self applyPagingEffectsForSignUpWithAttributes:attributes];
@@ -421,20 +447,54 @@
         
         CGFloat translateRatio = 0.0;
         if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            
             translateRatio = 0.4;
             attributes.alpha = [self alphaForTitleLabelForPage:kCollectSection origin:attributes.center.x
                                                     leftOffset:400.0
                                                    rightOffset:400.0];
-        } else if (indexPath.item == 1) {
+            CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+            CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
+            attributes.transform3D = translate;
+            
+        } else if (indexPath.item == 0 || indexPath.item == 1) {
             translateRatio = 0.5;
-        } else if (indexPath.item == 0) {
-            translateRatio = 0.4;
+            CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+            CATransform3D translate = CATransform3DMakeTranslation(distance, ABS(distance * 0.5), 0.0);
+            attributes.transform3D = translate;
         }
         
-        // CGFloat distanceCap = self.collectionView.bounds.size.width;
-        CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
-        CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
-        attributes.transform3D = translate;
+    } else {
+        attributes.transform3D = CATransform3DIdentity;
+        attributes.alpha = 1.0;
+    }
+}
+
+- (void)applyPagingEffectsForLibraryWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat startOffset = [self pageOffsetForPage:kCreateSection];
+    CGFloat pageOffset = [self pageOffsetForPage:kLibrarySection];
+    
+    if (self.collectionView.contentOffset.x >= startOffset - floorf(self.collectionView.bounds.size.width / 2.0)) {
+        
+        CGFloat translateRatio = 0.0;
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            translateRatio = 0.4;
+            attributes.alpha = [self alphaForTitleLabelForPage:kLibrarySection origin:attributes.center.x
+                                                    leftOffset:400.0
+                                                   rightOffset:400.0];
+            
+            CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+            CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
+            attributes.transform3D = translate;
+            
+        } else if (indexPath.item == 0) {
+            
+            // Library shelf
+            CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+            CATransform3D translate = CATransform3DMakeTranslation(distance, -ABS(distance * 0.5), 0.0);
+            attributes.transform3D = translate;
+        }
+        
         
     } else {
         attributes.transform3D = CATransform3DIdentity;
@@ -443,8 +503,7 @@
 }
 
 - (void)applyPagingEffectsForSignUpWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    NSIndexPath *indexPath = attributes.indexPath;
-    CGFloat startOffset = [self pageOffsetForPage:kCollectSection];
+    CGFloat startOffset = [self pageOffsetForPage:kLibrarySection];
     CGFloat pageOffset = [self pageOffsetForPage:kSignUpSection];
     
     if (self.collectionView.contentOffset.x >= startOffset - floorf(self.collectionView.bounds.size.width / 2.0)) {
@@ -455,10 +514,6 @@
             attributes.alpha = [self alphaForTitleLabelForPage:kSignUpSection origin:attributes.center.x
                                                     leftOffset:400.0
                                                    rightOffset:400.0];
-        } else if (indexPath.item == 1) {
-            translateRatio = 0.5;
-        } else if (indexPath.item == 0) {
-            translateRatio = 0.4;
         }
         
         // CGFloat distanceCap = self.collectionView.bounds.size.width;

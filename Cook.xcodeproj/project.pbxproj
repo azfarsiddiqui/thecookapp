@@ -938,6 +938,8 @@
 		76B78A5918110A7C0074068A /* cook_dash_icons_customise_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A4918110A7C0074068A /* cook_dash_icons_customise_blue@2x.png */; };
 		76B78A5A18110A7C0074068A /* cook_dash_icons_customise_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A4A18110A7C0074068A /* cook_dash_icons_customise_gray.png */; };
 		76B78A5B18110A7C0074068A /* cook_dash_icons_customise_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A4B18110A7C0074068A /* cook_dash_icons_customise_gray@2x.png */; };
+		76BBF555184605BB004B3F70 /* cook_login_library.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BBF553184605BB004B3F70 /* cook_login_library.png */; };
+		76BBF556184605BB004B3F70 /* cook_login_library@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BBF554184605BB004B3F70 /* cook_login_library@2x.png */; };
 		76BE36DE171788D6000C0755 /* BookTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BE36DD171788D6000C0755 /* BookTitleViewController.m */; };
 		76BE37321717A8E9000C0755 /* CKEditingViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BE372A1717A8E9000C0755 /* CKEditingViewHelper.m */; };
 		76BE37361717A8E9000C0755 /* cook_customise_textbox_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BE37301717A8E9000C0755 /* cook_customise_textbox_white.png */; };
@@ -2569,6 +2571,8 @@
 		76B78A4918110A7C0074068A /* cook_dash_icons_customise_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_customise_blue@2x.png"; sourceTree = "<group>"; };
 		76B78A4A18110A7C0074068A /* cook_dash_icons_customise_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise_gray.png; sourceTree = "<group>"; };
 		76B78A4B18110A7C0074068A /* cook_dash_icons_customise_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_customise_gray@2x.png"; sourceTree = "<group>"; };
+		76BBF553184605BB004B3F70 /* cook_login_library.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_login_library.png; sourceTree = "<group>"; };
+		76BBF554184605BB004B3F70 /* cook_login_library@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_library@2x.png"; sourceTree = "<group>"; };
 		76BE36DC171788D6000C0755 /* BookTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitleViewController.h; sourceTree = "<group>"; };
 		76BE36DD171788D6000C0755 /* BookTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitleViewController.m; sourceTree = "<group>"; };
 		76BE37291717A8E9000C0755 /* CKEditingViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingViewHelper.h; sourceTree = "<group>"; };
@@ -3974,6 +3978,8 @@
 				767EEA1D17BDBF62001E7D0B /* cook_login_mybook@2x.png */,
 				767EEA1E17BDBF62001E7D0B /* cook_login_rightstack.png */,
 				767EEA1F17BDBF62001E7D0B /* cook_login_rightstack@2x.png */,
+				76BBF553184605BB004B3F70 /* cook_login_library.png */,
+				76BBF554184605BB004B3F70 /* cook_login_library@2x.png */,
 				767EEA2017BDBF62001E7D0B /* cook_login_textfield.png */,
 				767EEA2117BDBF62001E7D0B /* cook_login_textfield@2x.png */,
 				767EEA4817BDE57C001E7D0B /* cook_login_rightarrow.png */,
@@ -6218,6 +6224,7 @@
 				769BFDF4177B170E00332B5D /* cook_dash_shelves@2x.png in Resources */,
 				768E74FA17D612C500502C19 /* cook_btns_accept_onpress.png in Resources */,
 				7647854517A697D800387A7B /* cook_customise_privacy_picker@2x.png in Resources */,
+				76BBF556184605BB004B3F70 /* cook_login_library@2x.png in Resources */,
 				76F6449916F152C200F86223 /* cook_dash_library_profile_icon_friendrequest.png in Resources */,
 				F60C570517E3309E00912544 /* cook_dash_settings_icon_twitter@2x.png in Resources */,
 				F66B0555184590F600684CE0 /* cook_tags_ingredient_off.png in Resources */,
@@ -6735,6 +6742,7 @@
 				767EEA2617BDBF62001E7D0B /* cook_login_btn_bottom_full.png in Resources */,
 				76A10AB617CB02180051751F /* cook_login_icon_facebook.png in Resources */,
 				766E43D017DEDC0D006B2495 /* cook_book_inner_icon_add_neutral@2x.png in Resources */,
+				76BBF555184605BB004B3F70 /* cook_login_library.png in Resources */,
 				766E43DD17DEDC0D006B2495 /* cook_book_inner_icon_add_onpress_red.png in Resources */,
 				76B3AEB2174B2BAA001B4661 /* cook_customise_colour_picker_gray@2x.png in Resources */,
 				76B3AEB3174B2BAA001B4661 /* cook_customise_colour_picker_green.png in Resources */,

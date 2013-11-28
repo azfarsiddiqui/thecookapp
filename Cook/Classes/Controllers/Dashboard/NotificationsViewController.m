@@ -158,6 +158,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
+               || [notificationName isEqualToString:kUserNotificationTypeLike]
                || [notificationName isEqualToString:kUserNotificationTypeLike]) {
         
         CKRecipe *recipe = notification.recipe;
@@ -338,7 +339,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (NSArray *)acceptedNotificationNames {
-    return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment, kUserNotificationTypeLike];
+    return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment,
+             kUserNotificationTypeLike, kUserNotificationTypePin];
 }
 
 - (BOOL)notificationActionInProgressForNotification:(CKUserNotification *)notification {

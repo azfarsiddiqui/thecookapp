@@ -19,10 +19,12 @@ typedef NS_ENUM(NSUInteger, BookContentGridType) {
 
 - (void)bookContentGridLayoutDidFinish;
 - (NSInteger)bookContentGridLayoutNumColumns;
+- (NSInteger)bookContentGridLayoutNumItems;
 - (BookContentGridType)bookContentGridTypeForItemAtIndex:(NSInteger)itemIndex;
 - (CGSize)bookContentGridLayoutHeaderSize;
 - (CGSize)bookContentGridLayoutFooterSize;
 - (BOOL)bookContentGridLayoutLoadMoreEnabled;
+- (BOOL)bookContentGridLayoutFastForwardEnabled;
 
 @end
 

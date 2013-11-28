@@ -171,3 +171,4 @@ extern NSString *const kUserNotificationTypeFriendRequest;
 extern NSString *const kUserNotificationTypeFriendAccept;
 extern NSString *const kUserNotificationTypeComment;
 extern NSString *const kUserNotificationTypeLike;
+extern NSString *const kUserNotificationTypePin;
