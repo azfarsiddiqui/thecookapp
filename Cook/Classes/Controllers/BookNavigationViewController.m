@@ -44,7 +44,6 @@
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *likedRecipes;
-@property (nonatomic, strong) NSMutableArray *recipePins;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipeCount;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageBatches;
@@ -250,9 +249,12 @@
     DLog(@"Updating layout with unpinned recipe [%@]", recipePin.recipe.objectId);
     
     // Remove references to the pinned recipe.
-    self.recipePins = [NSMutableArray arrayWithArray:[self.recipePins reject:^BOOL(CKRecipePin *existingRecipePin) {
-        return [recipePin.objectId isEqualToString:existingRecipePin.objectId];
+    NSString *page = recipePin.page;
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
+    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKRecipe *recipe) {
+        return [recipePin.recipe.objectId isEqualToString:recipe.objectId];
     }]];
+    [self.pageRecipes setObject:recipes forKey:page];
     
     // Remember the page.
     self.saveOrUpdatedPage = recipePin.page;
@@ -272,11 +274,6 @@
     [self.pageBatches removeObjectForKey:page];
     [self.pageRecipeCount removeObjectForKey:page];
     [self.pageCurrentBatches removeObjectForKey:page];
-    
-    // Remove references to the pinned recipe.
-    self.recipePins = [NSMutableArray arrayWithArray:[self.recipePins reject:^BOOL(CKRecipePin *existingRecipePin) {
-        return [existingRecipePin.page isEqualToString:page];
-    }]];
     
     // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
     self.bookUpdatedBlock = completion;
@@ -308,17 +305,6 @@
     [self.pageRecipeCount removeObjectForKey:fromPage];
     [self.pageCurrentBatches setObject:[self.pageCurrentBatches objectForKey:fromPage] forKey:page];
     [self.pageCurrentBatches removeObjectForKey:fromPage];
-    
-    // Rename the page in existing pins..
-    NSArray *pinnedRecipesToRename = [self.recipePins select:^BOOL(CKRecipePin *recipePin) {
-        return [recipePin.page CK_equalsIgnoreCase:fromPage];
-    }];
-    
-    // Renaming the recipe pins locally, as server-side has already occured.
-    DLog(@"Renaming [%d] recipePins to [%@]", [pinnedRecipesToRename count], page);
-    [pinnedRecipesToRename each:^(CKRecipePin *recipePin) {
-        recipePin.page = page;
-    }];
     
     // Remember the recipe that was actioned.
     self.saveOrUpdatedPage = page;
@@ -1552,57 +1538,6 @@
                              [self.saveButton removeFromSuperview];
                          }
                      }];
-}
-
-// Process each RecipePin and splice each recipe into the appropriate pages.
-- (void)processPins {
-    if ([self.recipePins count] > 0) {
-        
-        for (CKRecipePin *recipePin in self.recipePins) {
-            
-            NSString *page = recipePin.page;
-            CKRecipe *pinnedRecipe = recipePin.recipe;
-            NSDate *pinnedDate = recipePin.createdDateTime;
-            
-            // Only process for book pages.
-            if ([self.pages containsObject:page]) {
-
-                NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
-                
-                if (!pageRecipes) {
-                    pageRecipes = [NSMutableArray array];
-                    [pageRecipes addObject:pinnedRecipe];
-                    [self.pageRecipes setObject:pageRecipes forKey:page];
-
-                } else {
-                    
-                    // Splice the pinnedRecipes based on their pinnedDate.
-                    __block BOOL added = NO;
-                    
-                    NSMutableArray *updatedPageRecipes = [NSMutableArray arrayWithArray:pageRecipes];
-                    [pageRecipes enumerateObjectsUsingBlock:^(CKRecipe *recipe, NSUInteger recipeIndex, BOOL *stop) {
-                        
-                        // If the pinnedRecipe is newer than the current recipe, then splice it in.
-                        NSDate *recipeUpdatedDate = recipe.modelUpdatedDateTime;
-                        if ([pinnedDate compare:recipeUpdatedDate] == NSOrderedDescending) {
-                            [updatedPageRecipes insertObject:pinnedRecipe atIndex:recipeIndex];
-                            added = YES;
-                            *stop = YES;
-                        }
-                    }];
-                    
-                    // Still not added, then add to the end.
-                    if (!added) {
-                        [updatedPageRecipes addObject:pinnedRecipe];
-                    }
-                    
-                    // Update page recipes.
-                    [self.pageRecipes setObject:updatedPageRecipes forKey:page];
-                }
-            }
-            
-        }
-    }
 }
 
 - (void)processRanks {
