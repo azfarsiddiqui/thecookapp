@@ -69,6 +69,10 @@
     return [UIScreen mainScreen].scale;
 }
 
+- (BOOL)isRetina {
+    return ([self screenScale] == 2.0);
+}
+
 - (NSArray *)keyboardIngredients {
     return [NSArray arrayWithContentsOfFile:[[[NSBundle mainBundle] resourcePath]
                                              stringByAppendingPathComponent:@"ingredientsKeyboard.plist"]];

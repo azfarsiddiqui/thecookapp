@@ -301,10 +301,10 @@
 
 - (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex {
     CKBook *book = [self.books objectAtIndex:bookIndex];
-    if (book.illustrationImageFile) {
+    if ([book hasRemoteImage]) {
         
         // Load the full image remotely.
-        [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:book.illustrationImageFile.url]
+        [[CKPhotoManager sharedInstance] imageForUrl:[book remoteImageUrl]
                                                 size:[CKBookCover coverImageSize]];
     }
 }
@@ -378,12 +378,12 @@
             
             // Find the matching book index.
             NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *book) {
-                return [receivedPhotoName isEqualToString:[book.illustrationImageFile.url lowercaseString]];
+                return [receivedPhotoName isEqualToString:[[[book remoteImageUrl] absoluteString] lowercaseString]];
             }];
             
             if (bookIndex != -1) {
                 CKBook *book = [self.books objectAtIndex:bookIndex];
-                NSString *photoName = [book.illustrationImageFile.url lowercaseString];
+                NSString *photoName = [[[book remoteImageUrl] absoluteString] lowercaseString];
                 if ([photoName isEqualToString:receivedPhotoName]) {
                     
                     // Load the book cover image.

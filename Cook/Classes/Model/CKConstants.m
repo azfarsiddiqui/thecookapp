@@ -68,6 +68,7 @@ NSString *const kBookAttrCoverPhoto             = @"coverPhoto";
 NSString *const kBookAttrCoverPhotoThumb        = @"coverPhotoThumb";
 NSString *const kBookAttrIllustration           = @"illustration";
 NSString *const kBookAttrIllustrationImage      = @"illustrationImage";
+NSString *const kBookAttrIllustrationLowImage   = @"illustrationLowImage";
 NSString *const kBookAttrCaption                = @"caption";
 NSString *const kBookAttrNumRecipes             = @"numRecipes";
 NSString *const kBookAttrPages                  = @"pages";

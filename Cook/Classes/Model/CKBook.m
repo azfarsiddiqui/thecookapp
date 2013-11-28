@@ -540,6 +540,40 @@
     }
 }
 
+- (BOOL)hasRemoteImage {
+    BOOL hasRemoteImage = NO;
+    BOOL retina = [[AppHelper sharedInstance] isRetina];
+    
+    if (retina) {
+        
+        hasRemoteImage = (self.illustrationImageFile != nil);
+        
+    } else {
+        
+        // Fallsback on retina.
+        hasRemoteImage = (self.illustrationLowImageFile != nil) || (self.illustrationImageFile != nil);
+        
+    }
+    
+    return hasRemoteImage;
+}
+
+- (NSURL *)remoteImageUrl {
+    BOOL retina = [[AppHelper sharedInstance] isRetina];
+    NSString *urlString = nil;
+    if (retina) {
+        
+        urlString = self.illustrationImageFile.url;
+        
+    } else {
+        
+        // Fallsback on retina.
+        urlString = (self.illustrationLowImageFile == nil) ? self.illustrationImageFile.url : self.illustrationLowImageFile.url;
+        
+    }
+    return [NSURL URLWithString:urlString];
+}
+
 #pragma mark - Searches
 
 + (void)searchBooksByKeyword:(NSString *)keyword success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -776,6 +810,18 @@
 
 - (PFFile *)illustrationImageFile {
     return [self.parseObject objectForKey:kBookAttrIllustrationImage];
+}
+
+- (void)setIllustrationLowImageFile:(PFFile *)illustrationLowImageFile {
+    if (illustrationLowImageFile) {
+        [self.parseObject setObject:illustrationLowImageFile forKey:kBookAttrIllustrationLowImage];
+    } else {
+        [self.parseObject removeObjectForKey:kBookAttrIllustrationLowImage];
+    }
+}
+
+- (PFFile *)illustrationLowImageFile {
+    return [self.parseObject objectForKey:kBookAttrIllustrationLowImage];
 }
 
 #pragma mark - CKModel
