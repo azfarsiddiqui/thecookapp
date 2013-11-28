@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
 @property (nonatomic, strong) NSMutableArray *columnOffsets;
 @property (nonatomic, assign) CGSize contentSize;
+@property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 
 @property (nonatomic, assign) CGFloat cellStartOffset;
 @property (nonatomic, assign) CGFloat headerStartOffset;
@@ -36,7 +37,7 @@
 #define kCellsStartOffset   700.0
 #define kHeaderCellsGap     200.0
 #define kHeaderCellsMinGap  40.0
-#define kCellsFooterGap     12.0
+#define kFooterInsets       (UIEdgeInsets){ 5.0, 0.0, 10.0, 0.0 }
 
 + (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
     CGSize size = CGSizeZero;
@@ -128,8 +129,9 @@
     
     // Load more?
     if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
-        contentSize.height += kCellsFooterGap;
+        contentSize.height += kFooterInsets.top;
         contentSize.height += [self.delegate bookContentGridLayoutFooterSize].height;
+        contentSize.height += kFooterInsets.bottom;
     }
     
     contentSize.height += kContentInsets.bottom;
@@ -152,8 +154,8 @@
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.supplementaryLayoutAttributes = [NSMutableArray array];
-    self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    self.insertedIndexPaths = [NSMutableArray array];
     
     [self buildHeaderLayout];
     [self buildGridLayout];
@@ -164,6 +166,24 @@
     
     // Inform end of layout prep.
     [self.delegate bookContentGridLayoutDidFinish];
+}
+
+- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
+    [super prepareForCollectionViewUpdates:updateItems];
+    
+    self.insertedIndexPaths = [NSMutableArray array];
+    
+    for (UICollectionViewUpdateItem *updateItem in updateItems) {
+        if (updateItem.updateAction == UICollectionUpdateActionInsert) {
+            [self.insertedIndexPaths addObject:updateItem.indexPathAfterUpdate];
+        }
+    }
+}
+
+- (void)finalizeCollectionViewUpdates {
+    [super finalizeCollectionViewUpdates];
+    [self.insertedIndexPaths removeAllObjects];
+    self.insertedIndexPaths = nil;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
@@ -201,6 +221,27 @@
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
     return [self.indexPathItemAttributes objectForKey:indexPath];
 }
+
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    
+    // Must call super
+    UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+    
+    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
+        
+        // only change attributes on inserted cells
+        if (!attributes) {
+            attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+        }
+        
+        // Configure attributes ...
+        attributes.alpha = 0.0;
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, 10.0, 0.0);
+    }
+    
+    return attributes;
+}
+
 
 #pragma mark - Private methods
 
@@ -247,7 +288,7 @@
     UICollectionViewLayoutAttributes *footerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:footerIndexPath];
     footerAttributes.frame = (CGRect){
         floorf((self.collectionView.bounds.size.width - footerSize.width) / 2.0),
-        maxColumnHeight + kCellsFooterGap,
+        maxColumnHeight + kFooterInsets.top,
         footerSize.width,
         footerSize.height
     };
