@@ -159,7 +159,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
-               || [notificationName isEqualToString:kUserNotificationTypeLike]) {
+               || [notificationName isEqualToString:kUserNotificationTypePin]) {
         
         CKRecipe *recipe = notification.recipe;
         if (recipe) {
