@@ -230,7 +230,7 @@
     if (!self.delegate) {
         return;
     }
-    self.alpha = 0.5;
+    self.profileImageView.alpha = 0.5;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -241,9 +241,9 @@
     UITouch *touch = [touches anyObject];
     
     if (CGRectContainsPoint(self.bounds, [touch locationInView:self])) {
-        self.alpha = 0.5;
+        self.profileImageView.alpha = 0.5;
     } else {
-        self.alpha = 1.0;
+        self.profileImageView.alpha = 1.0;
     }
 }
 
@@ -251,11 +251,11 @@
     if (!self.delegate) {
         return;
     }
-    self.alpha = 1.0;
+    self.profileImageView.alpha = 1.0;
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    self.alpha = 1.0;
+    self.profileImageView.alpha = 1.0;
 }
 
 #pragma mark - Properties

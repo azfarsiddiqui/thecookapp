@@ -97,6 +97,7 @@
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     
     self.dividerView.alpha = editMode ? 0.0 : 1.0;
+    self.profilePhotoView.delegate = editMode ? self : nil;
     
     if (editMode) {
         
@@ -349,9 +350,6 @@
                                              kContentInsets.top,
                                              self.profilePhotoView.frame.size.width,
                                              self.profilePhotoView.frame.size.height);
-    if ([self.book isOwner]) {
-        self.profilePhotoView.delegate = self;
-    }
     [self addSubview:self.profilePhotoView];
     
     // User name
