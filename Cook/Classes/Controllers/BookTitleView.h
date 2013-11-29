@@ -12,7 +12,6 @@
 
 @interface BookTitleView : UIView
 
-- (id)initWithBook:(CKBook *)book;
 - (id)initWithTitle:(NSString *)title subtitle:(NSString *)subtitle;
 
 @end

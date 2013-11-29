@@ -724,6 +724,7 @@
 		768E750117D612C500502C19 /* cook_btns_ignore@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 768E74F917D612C500502C19 /* cook_btns_ignore@2x.png */; };
 		7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationPickerViewController.m */; };
 		769226051647863A00752128 /* IllustrationBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* IllustrationBookCell.m */; };
+		7692830C1848B9F3002D9E8A /* BookTitlePhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692830B1848B9F3002D9E8A /* BookTitlePhotoView.m */; };
 		7692C749177807A200A5CA5C /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* BenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
 		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
@@ -2334,6 +2335,8 @@
 		7692260116474D4600752128 /* IllustrationPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationPickerViewController.m; sourceTree = "<group>"; };
 		769226031647863900752128 /* IllustrationBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationBookCell.h; sourceTree = "<group>"; };
 		769226041647863A00752128 /* IllustrationBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationBookCell.m; sourceTree = "<group>"; };
+		7692830A1848B9F3002D9E8A /* BookTitlePhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitlePhotoView.h; sourceTree = "<group>"; };
+		7692830B1848B9F3002D9E8A /* BookTitlePhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitlePhotoView.m; sourceTree = "<group>"; };
 		7692C745177807A200A5CA5C /* BenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewController.h; sourceTree = "<group>"; };
 		7692C746177807A200A5CA5C /* BenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopViewController.m; sourceTree = "<group>"; };
 		7692C747177807A200A5CA5C /* PagingCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingCollectionViewLayout.h; sourceTree = "<group>"; };
@@ -5294,6 +5297,8 @@
 				76D2BF5817B8BB5700BA46A1 /* BookContentCell.m */,
 				76888D0D17CF7D5900904F15 /* BookTitleView.h */,
 				76888D0E17CF7D5900904F15 /* BookTitleView.m */,
+				7692830A1848B9F3002D9E8A /* BookTitlePhotoView.h */,
+				7692830B1848B9F3002D9E8A /* BookTitlePhotoView.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -7011,6 +7016,7 @@
 				76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */,
 				7635A2CE17A9F2A0002F30F2 /* IngredientListEditViewController.m in Sources */,
 				7684618D1814FFD500C621DC /* CKBookInfoView.m in Sources */,
+				7692830C1848B9F3002D9E8A /* BookTitlePhotoView.m in Sources */,
 				76381CA716685A7500404FB1 /* FeaturedStoreCollectionViewController.m in Sources */,
 				76708FE1181228410065DE51 /* CKRecipePin.m in Sources */,
 				F64E465B17DA0DE600F99A5A /* CKPhotoFilterSliderView.m in Sources */,

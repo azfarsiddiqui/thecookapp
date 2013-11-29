@@ -589,6 +589,10 @@
     return ([self.likesPageName length] > 0);
 }
 
+- (void)bookTitleProfileRequested {
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+}
+
 #pragma mark - BookPagingStackLayoutDelegate methods
 
 - (void)bookNavigationLayoutDidFinish {

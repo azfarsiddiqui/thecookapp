@@ -10,7 +10,7 @@
 #import "CKBook.h"
 #import "CKBookCover.h"
 #import "Theme.h"
-#import "BookTitleView.h"
+#import "BookTitlePhotoView.h"
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "ImageHelper.h"
@@ -25,7 +25,6 @@
 #import "CKPhotoManager.h"
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
-//#import "CKTextFieldEditViewController.h"
 #import "CKPageTitleEditViewController.h"
 #import "CardViewHelper.h"
 #import "NSString+Utilities.h"
@@ -33,7 +32,7 @@
 #import "CKProgressView.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
-    CKEditViewControllerDelegate>
+    CKEditViewControllerDelegate, BooKTitlePhotoViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
@@ -45,7 +44,7 @@
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) BookTitleView *bookTitleView;
+@property (nonatomic, strong) BookTitlePhotoView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CKProgressView *progressView;
 
@@ -219,6 +218,12 @@
         [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
     }
     
+}
+
+#pragma mark - BooKTitlePhotoViewDelegate methods
+
+- (void)bookTitlePhotoViewProfileTapped {
+    [self.delegate bookTitleProfileRequested];
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -451,9 +456,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 #pragma mark - Properties
 
-- (BookTitleView *)bookTitleView {
+- (BookTitlePhotoView *)bookTitleView {
     if (!_bookTitleView) {
-        _bookTitleView = [[BookTitleView alloc] initWithBook:self.book];
+        _bookTitleView = [[BookTitlePhotoView alloc] initWithBook:self.book delegate:self];
     }
     return _bookTitleView;
 }

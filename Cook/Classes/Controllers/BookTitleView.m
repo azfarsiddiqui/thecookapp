@@ -9,7 +9,6 @@
 #import "BookTitleView.h"
 #import "CKMaskedLabel.h"
 #import "CKBook.h"
-#import "CKUserProfilePhotoView.h"
 #import "Theme.h"
 #import "DataHelper.h"
 #import "NSString+Utilities.h"
@@ -17,7 +16,6 @@
 @interface BookTitleView ()
 
 @property (nonatomic, strong) CKMaskedLabel *maskedLabel;
-@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *subtitle;
 
@@ -28,33 +26,6 @@
 #define kTitleFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50.0]
 #define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:24.0]
 #define kLabelInsets    (UIEdgeInsets) { 44.0, 62.0, 31.0, 62.0 }
-
-- (id)initWithBook:(CKBook *)book {
-    if (self = [self initWithTitle:book.author subtitle:book.name]) {
-        
-        // Profile photo view.
-        self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:book.user profileSize:ProfileViewSizeLarge];
-        self.profilePhotoView.frame = (CGRect){
-            floorf((self.bounds.size.width - self.profilePhotoView.frame.size.width) / 2.0),
-            -55.0,
-            self.profilePhotoView.frame.size.width,
-            self.profilePhotoView.frame.size.height
-        };
-        [self addSubview:self.profilePhotoView];
-        
-        // Profile photo frame.
-        UIImageView *frameImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_title_profile_overlay.png"]];
-        frameImageView.frame = (CGRect){
-            floorf((self.profilePhotoView.bounds.size.width - frameImageView.frame.size.width) / 2.0),
-            -5.0,
-            frameImageView.frame.size.width,
-            frameImageView.frame.size.height
-        };
-        [self.profilePhotoView addSubview:frameImageView];
-
-    }
-    return self;
-}
 
 - (id)initWithTitle:(NSString *)title subtitle:(NSString *)subtitle {
     if (self = [super initWithFrame:CGRectZero]) {

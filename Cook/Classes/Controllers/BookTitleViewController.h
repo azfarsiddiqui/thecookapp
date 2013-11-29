@@ -22,6 +22,7 @@
 - (void)bookTitleAddedPage:(NSString *)page;
 - (BOOL)bookTitleIsNewForPage:(NSString *)page;
 - (BOOL)bookTitleHasLikes;
+- (void)bookTitleProfileRequested;
 
 @end
 
