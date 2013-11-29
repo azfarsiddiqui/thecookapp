@@ -1006,7 +1006,7 @@
     
     // qC9Dhevs7E - Dev Jeremy's pizza.
     // yVyEcZFboc - Prod Chicken adobo
-    [CKRecipe recipeForObjectId:@"yVyEcZFboc"
+    [CKRecipe recipeForObjectId:@"qC9Dhevs7E"
                         success:^(CKRecipe *recipe){
                             [self viewRecipe:recipe];
                         }

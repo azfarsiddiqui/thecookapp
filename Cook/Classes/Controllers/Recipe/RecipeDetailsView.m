@@ -25,7 +25,6 @@
 #import "CKBook.h"
 #import "DataHelper.h"
 #import "CKRecipeTag.h"
-#import "ProfileViewController.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -60,8 +59,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, strong) UIView *addDetailsCardView;
-
-@property (nonatomic, strong) ProfileViewController *profileViewController;
 
 @end
 
@@ -347,6 +344,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         initialValue = [self.recipeDetails.method CK_lineBreakFormattedString];
     }
     return initialValue;
+}
+
+#pragma mark - CKProfilePhotoView delegate
+
+- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
+    [self.delegate recipeDetailsViewProfileRequested];
 }
 
 #pragma mark - Properties
@@ -1339,14 +1342,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      completion:^(BOOL finished) {
                          [self.addDetailsCardView removeFromSuperview];
                      }];
-}
-
-#pragma mark - CKProfilePhotoView delegate
-
-- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
-    ProfileViewController *storeBookViewController = [[ProfileViewController alloc] initWithUser:user];
-    self.profileViewController = storeBookViewController;
-    [self.delegate recipeDetailsProfileTapped:storeBookViewController];
 }
 
 @end

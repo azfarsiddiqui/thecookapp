@@ -12,13 +12,15 @@
 
 @class CKUser;
 
-typedef void(^ProfileCloseBlock)(BOOL isClosed);
+@protocol ProfileViewControllerDelegate <NSObject>
+
+- (void)profileViewControllerCloseRequested;
+
+@end
 
 @interface ProfileViewController : OverlayViewController <CKNavigationControllerSupport>
 
-@property (nonatomic, copy) ProfileCloseBlock closeBlock;
-
 - (id)initWithUser:(CKUser *)user;
-- (void)showOverlayOnViewController:(UIViewController *)parentController;
+- (id)initWithUser:(CKUser *)user delegate:(id<ProfileViewControllerDelegate>)delegate;
 
 @end

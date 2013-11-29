@@ -53,7 +53,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
     RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate, CKNavigationControllerDelegate,
-    PinRecipeViewControllerDelegate>
+    PinRecipeViewControllerDelegate, ProfileViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -123,6 +123,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 // Close flag, to prevent hiding of things when view should be closed
 @property (nonatomic, assign) BOOL isClosed;
+
+// Profile.
+@property (nonatomic, strong) ProfileViewController *profileViewController;
 
 @end
 
@@ -280,12 +283,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     return self.addMode;
 }
 
-- (void)recipeDetailsProfileTapped:(ProfileViewController *)bookViewController {
-    [self hideButtons];
-    bookViewController.closeBlock = ^(BOOL isClosed){
-        [self updateButtons];
-    };
-    [bookViewController showOverlayOnViewController:self];
+- (void)recipeDetailsViewProfileRequested {
+    [self showProfileOverlay:YES];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -359,6 +358,12 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         image = self.imageView.image;
     }
     return image;
+}
+
+#pragma mark - ProfileViewControllerDelegate methods
+
+- (void)profileViewControllerCloseRequested {
+    [self showProfileOverlay:NO];
 }
 
 #pragma mark - CKRecipeSocialViewDelegate methods
@@ -1622,6 +1627,32 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                         self.imageScrollView.userInteractionEnabled = NO;
                                                     } else {
                                                         self.pinRecipeViewController = nil;
+                                                        [self updateButtons];
+                                                    }
+                                                }];
+}
+
+- (void)showProfileOverlay:(BOOL)show {
+    if (show) {
+        [self hideButtons];
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:self.recipe.user delegate:self];
+    } else {
+        self.view.userInteractionEnabled = YES;
+        self.scrollView.userInteractionEnabled = YES;
+        self.imageScrollView.userInteractionEnabled = YES;
+    }
+    [ModalOverlayHelper showModalOverlayForViewController:self.profileViewController
+                                                     show:show
+                                                animation:^{
+                                                    
+                                                } completion:^{
+                                                    
+                                                    if (show) {
+                                                        self.view.userInteractionEnabled = NO;
+                                                        self.scrollView.userInteractionEnabled = NO;
+                                                        self.imageScrollView.userInteractionEnabled = NO;
+                                                    } else {
+                                                        self.profileViewController = nil;
                                                         [self updateButtons];
                                                     }
                                                 }];

@@ -16,6 +16,7 @@
 - (void)recipeDetailsViewEditing:(BOOL)editing;
 - (void)recipeDetailsViewUpdated;
 - (BOOL)recipeDetailsViewAddMode;
+- (void)recipeDetailsViewProfileRequested;
 - (void)recipeDetailsProfileTapped:(ProfileViewController *)bookViewController;
 
 @end

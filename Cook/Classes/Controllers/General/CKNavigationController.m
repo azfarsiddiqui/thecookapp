@@ -307,7 +307,6 @@
     if (!self.backgroundImageView.superview) {
         self.backgroundImageView.alpha = 0.0;
         [self.view insertSubview:self.backgroundImageView aboveSubview:self.underlayView];
-        
     }
     
     if (!self.backgroundImageTopShadowView) {
@@ -361,6 +360,9 @@
         };
         _backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
         _backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        
+        // Motion effects.
+        [ViewHelper applyDraggyMotionEffectsToView:_backgroundImageView];
     }
     return _backgroundImageView;
 }
