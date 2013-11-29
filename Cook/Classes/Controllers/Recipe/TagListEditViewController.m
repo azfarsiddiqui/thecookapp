@@ -78,7 +78,6 @@
     [self.containerView addSubview:self.foodTypeCollectionView];
     
     self.scrollView.scrollEnabled = NO;
-    self.editing
     
     UIView *titleAlignView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.containerView addSubview:titleAlignView];
