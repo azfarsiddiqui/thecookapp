@@ -108,7 +108,7 @@
     
     self.book = book;
     
-    if (book.illustrationImageFile) {
+    if ([self.book hasRemoteImage]) {
         
         // Load a blank illustration.
         [self setCover:book.cover illustration:[CKBookCover blankFeaturedIllustrationImageName]];
@@ -119,7 +119,7 @@
             [self setCover:book.cover illustration:nil];
             
             // Load the image remotely.
-            [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:self.book.illustrationImageFile.url]
+            [[CKPhotoManager sharedInstance] imageForUrl:[self.book remoteImageUrl]
                                                     size:self.illustrationImageView.bounds.size];
             
         }
@@ -700,10 +700,10 @@
 
 - (void)photoLoadingReceived:(NSNotification *)notification {
     
-    if (self.book.illustrationImageFile) {
-        
+    if ([self.book hasRemoteImage]) {
+        NSURL *url = [self.book remoteImageUrl];
         NSString *receivedPhotoName = [EventHelper nameForPhotoLoading:notification];
-        NSString *photoName = [self.book.illustrationImageFile.url lowercaseString];
+        NSString *photoName = [[url absoluteString] lowercaseString];
         
         if ([photoName isEqualToString:receivedPhotoName]) {
             

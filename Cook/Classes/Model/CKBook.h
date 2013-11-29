@@ -53,6 +53,7 @@ typedef enum {
 
 // Custom Illustration image.
 @property (nonatomic, strong) PFFile *illustrationImageFile;
+@property (nonatomic, strong) PFFile *illustrationLowImageFile;
 
 // Fetches
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
@@ -64,6 +65,9 @@ typedef enum {
 - (void)recipesForPage:(NSString *)page batchIndex:(NSInteger)batchIndex success:(PageRecipesSuccessBlock)success
                failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
+- (BOOL)hasRemoteImage;
+- (NSURL *)remoteImageUrl;
 
 // Searches
 + (void)searchBooksByKeyword:(NSString *)keyword success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;

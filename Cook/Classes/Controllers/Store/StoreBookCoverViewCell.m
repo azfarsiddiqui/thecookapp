@@ -43,9 +43,14 @@
 
 - (void)loadBookCoverImage:(UIImage *)bookCoverImage status:(BookStatus)bookStatus {
     self.snapshotView.image = bookCoverImage;
+    [self updateBookStatus:bookStatus];
+}
+
+- (void)updateBookStatus:(BookStatus)bookStatus {
     
     // Followed/FB indicator.
     [self updateFollowedAndFacebookIcon:bookStatus];
+    
 }
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {

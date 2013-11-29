@@ -1153,6 +1153,8 @@
     // Scroll offset?
     CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
     [categoryController setScrollOffset:scrollOffset];
+    BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
+    [contentHeaderView applyOffset:scrollOffset.y];
 }
 
 - (void)clearFastForwardContentForPage:(NSString *)page cell:(BookContentCell *)cell {

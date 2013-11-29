@@ -76,6 +76,10 @@
     [self.collectionView reloadData];
 }
 
+- (BookStatus)unfollowedBookStatus {
+    return kBookStatusFBSuggested;
+}
+
 #pragma mark - FacebookSuggestionButtonViewDelegate methods
 
 - (void)facebookSuggestButtonViewTapped {

@@ -301,10 +301,10 @@
 
 - (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex {
     CKBook *book = [self.books objectAtIndex:bookIndex];
-    if (book.illustrationImageFile) {
+    if ([book hasRemoteImage]) {
         
         // Load the full image remotely.
-        [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:book.illustrationImageFile.url]
+        [[CKPhotoManager sharedInstance] imageForUrl:[book remoteImageUrl]
                                                 size:[CKBookCover coverImageSize]];
     }
 }
@@ -337,10 +337,30 @@
 
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
-    if (!follow) {
-        [self unloadDataCompletion:^{
-            [self loadData];
+    
+    // Ignore follow reqiuets
+    if (follow) {
+        return;
+    }
+    
+    CKBook *book = [EventHelper bookFollowForNotification:notification];
+    if ([self.books count] > 0) {
+        
+        NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *followBook) {
+            return [followBook.objectId isEqualToString:book.objectId];
         }];
+        if (bookIndex != -1) {
+            
+            // Mark cell as unfollowed.
+            StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
+                                                                      [NSIndexPath indexPathForItem:bookIndex inSection:kStoreSection]];
+            if (cell) {
+                
+                // Set back to unfollowed status. Subclasses can override like provide (F) for suggestions.
+                [cell updateBookStatus:[self unfollowedBookStatus]];
+            }
+        }
+        
     }
 }
 
@@ -363,6 +383,10 @@
     self.storeBookViewController = storeBookViewController;
 }
 
+- (BookStatus)unfollowedBookStatus {
+    return kBookStatusNone;
+}
+
 - (void)closeBook {
     [self.storeBookViewController.view removeFromSuperview];
     self.storeBookViewController = nil;
@@ -378,12 +402,12 @@
             
             // Find the matching book index.
             NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *book) {
-                return [receivedPhotoName isEqualToString:[book.illustrationImageFile.url lowercaseString]];
+                return [receivedPhotoName isEqualToString:[[[book remoteImageUrl] absoluteString] lowercaseString]];
             }];
             
             if (bookIndex != -1) {
                 CKBook *book = [self.books objectAtIndex:bookIndex];
-                NSString *photoName = [book.illustrationImageFile.url lowercaseString];
+                NSString *photoName = [[[book remoteImageUrl] absoluteString] lowercaseString];
                 if ([photoName isEqualToString:receivedPhotoName]) {
                     
                     // Load the book cover image.
@@ -393,6 +417,7 @@
                     
                     // Snapshot it.
                     UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView size:[StoreBookCoverViewCell cellSize] opaque:NO];
+                    [self.bookCoverImages replaceObjectAtIndex:bookIndex withObject:snapshotImage];
                     
                     StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:bookIndex inSection:0]];
                     [cell loadBookCoverImage:snapshotImage status:book.status];

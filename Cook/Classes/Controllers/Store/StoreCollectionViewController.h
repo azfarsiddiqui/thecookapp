@@ -55,5 +55,6 @@
 
 - (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex;
 - (void)showBook:(CKBook *)book atIndexPath:(NSIndexPath *)indexPath;
+- (BookStatus)unfollowedBookStatus;
 
 @end
