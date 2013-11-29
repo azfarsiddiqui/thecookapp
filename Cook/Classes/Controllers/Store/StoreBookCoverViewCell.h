@@ -22,5 +22,6 @@
 
 + (CGSize)cellSize;
 - (void)loadBookCoverImage:(UIImage *)bookCoverImage status:(BookStatus)bookStatus;
+- (void)updateBookStatus:(BookStatus)bookStatus;
 
 @end
