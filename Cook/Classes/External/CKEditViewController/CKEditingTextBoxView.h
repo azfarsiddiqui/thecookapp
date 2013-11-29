@@ -21,6 +21,7 @@
 @property (nonatomic, weak) id<CKEditingTextBoxViewDelegate> delegate;
 @property (nonatomic, assign) CGRect editViewFrame;
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
+@property (nonatomic, strong) UIImageView *iconImageView;
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
 + (UIImage *)textEditingBoxWhite:(BOOL)white;

@@ -492,7 +492,7 @@
                              
                              // Fade out source editing view.
                              self.sourceEditView.alpha = 0.0;
-                             
+                             originalTextBoxView.iconImageView.alpha = 0.0;
                          }
                          completion:^(BOOL finished) {
                              
@@ -632,7 +632,7 @@
                                                                    animations:^{
                                                                        
                                                                        self.sourceEditView.alpha = 1.0;
-                                                                       
+                                                                       originalTextBoxView.iconImageView.alpha = 1.0;
                                                                    }
                                                                    completion:^(BOOL finished) {
                                                                        
