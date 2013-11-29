@@ -31,7 +31,7 @@
 
 #define kTinySize       CGSizeMake(13.0, 13.0)
 #define kMiniSize       CGSizeMake(30.0, 30.0)
-#define kSmallSize      CGSizeMake(48.0, 48.0)
+#define kSmallSize      CGSizeMake(50.0, 50.0)
 #define kMediumSize     CGSizeMake(60.0, 60.0)
 #define kLargeSize      CGSizeMake(90.0, 90.0)
 #define kBorder         1.0

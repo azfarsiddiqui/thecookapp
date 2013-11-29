@@ -78,6 +78,7 @@
     [self.containerView addSubview:self.foodTypeCollectionView];
     
     self.scrollView.scrollEnabled = NO;
+    self.editing
     
     UIView *titleAlignView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.containerView addSubview:titleAlignView];
@@ -134,8 +135,8 @@
                               @"bottomInset":[NSNumber numberWithFloat:kContentInsets.bottom],
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
                               @"lastCollectionHeight":[NSNumber numberWithFloat:kItemHeight*2.1],
-                              @"lineBottomSpacing":@15.0,
-                              @"lineTopSpacing":@5.0,
+                              @"lineBottomSpacing":@20.0,
+                              @"lineTopSpacing":@10.0,
                               @"lineHeight":@1};
     [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-10-[titleCount]-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
