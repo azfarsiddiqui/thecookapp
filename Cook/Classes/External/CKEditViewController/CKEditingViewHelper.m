@@ -46,7 +46,6 @@
     }
     
     if (animated) {
-        
         // Animate in the editing box.
         [UIView animateWithDuration:0.1
                               delay:0.0
@@ -303,6 +302,7 @@
             UIImageView *iconImageView = [[UIImageView alloc] initWithImage:iconImage];
             iconImageView.frame = CGRectMake(contentInsets.left - 5, contentInsets.top + 2, iconImageView.frame.size.width, iconImageView.frame.size.height);
             [textBoxView addSubview:iconImageView];
+            textBoxView.iconImageView = iconImageView;
         }
         
         [parentView insertSubview:textBoxView belowSubview:editingView];

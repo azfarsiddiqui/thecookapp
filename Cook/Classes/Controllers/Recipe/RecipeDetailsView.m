@@ -129,6 +129,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Hide the pageLabel/textBox.
     CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
     CKEditingTextBoxView *tagsTextBoxView = [self.editingHelper textBoxViewForEditingView:self.tagsLabel];
+
     if (editMode) {
         self.pageLabel.hidden = NO;
         self.pageLabel.alpha = 0.0;

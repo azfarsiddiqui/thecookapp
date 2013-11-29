@@ -220,7 +220,7 @@
 }
 
 + (UIFont *)tagsFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:20];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:18];
 }
 
 + (UIColor *)tagsNameColor
