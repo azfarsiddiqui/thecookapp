@@ -224,6 +224,40 @@
     self.profileImageView.image = [ImageHelper croppedImage:profileImage size:self.profileImageView.bounds.size];
 }
 
+#pragma mark - Touches
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    if (!self.delegate) {
+        return;
+    }
+    self.alpha = 0.5;
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (!self.delegate) {
+        return;
+    }
+    
+    UITouch *touch = [touches anyObject];
+    
+    if (CGRectContainsPoint(self.bounds, [touch locationInView:self])) {
+        self.alpha = 0.5;
+    } else {
+        self.alpha = 1.0;
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    if (!self.delegate) {
+        return;
+    }
+    self.alpha = 1.0;
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    self.alpha = 1.0;
+}
+
 #pragma mark - Properties
 
 - (UIButton *)editButton {
