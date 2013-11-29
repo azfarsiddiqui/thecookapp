@@ -27,8 +27,6 @@
 @property (nonatomic) CGPoint targetContentOffset;
 @property (nonatomic) CGFloat targetVelocity;
 
-@property (nonatomic, strong) UIPageControl *pageControl;
-
 @end
 
 @implementation TagListEditViewController
@@ -111,6 +109,9 @@
     self.mealTypeCollectionView.clipsToBounds = NO;
     self.allergyTypeCollectionView.clipsToBounds = NO;
     self.foodTypeCollectionView.clipsToBounds = NO;
+    self.mealTypeCollectionView.alpha = 0.0;
+    self.allergyTypeCollectionView.alpha = 0.0;
+    self.foodTypeCollectionView.alpha = 0.0;
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     titleAlignView.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -181,6 +182,12 @@
                                                                       toItem:self.containerView
                                                                    attribute:NSLayoutAttributeCenterX
                                                                   multiplier:1.f constant:0.f]];
+    
+    [UIView animateWithDuration:0.4 animations:^{
+        self.mealTypeCollectionView.alpha = 1.0;
+        self.foodTypeCollectionView.alpha = 1.0;
+        self.allergyTypeCollectionView.alpha = 1.0;
+    }];
 }
 
 - (UIView *)generateLine {
@@ -290,16 +297,6 @@
     if ([self.selectedItems containsObject:selectedTag])
         [self.selectedItems removeObject:selectedTag];
     self.titleCountLabel.text = [NSString stringWithFormat:@"%i", [self.selectedItems count]];
-}
-
-#pragma mark - UIScrollViewDelegate methods
-//
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    CGFloat pageWidth = kSize.width;
-    int page = floor((scrollView.contentOffset.x - (pageWidth/2)) / pageWidth) + 1;
-    self.pageControl.currentPage = page;
-    
-    
 }
 
 #pragma mark - Properties

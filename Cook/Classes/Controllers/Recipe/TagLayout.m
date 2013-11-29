@@ -34,9 +34,8 @@
     attributes.size = CGSizeMake(kItemWidth, kItemHeight);
     
     if (!attributes.representedElementKind) {
-        
-        CGFloat leftFadeOffset = contentOffset.x + 70;
-        CGFloat rightFadeOffset = contentOffset.x + bounds.size.width - 70;
+        CGFloat leftFadeOffset = contentOffset.x + 20;
+        CGFloat rightFadeOffset = contentOffset.x + bounds.size.width - 20;
         CGFloat minAlpha = 0.0;
         CGFloat fadeRate = 1.0;
         
@@ -45,22 +44,25 @@
             CGFloat effectiveDistance = 320.0;
             CGFloat distance = MIN(leftFadeOffset - frame.origin.x, effectiveDistance);
             CGFloat alphaNum = [self easeInWithInput:MAX(minAlpha,(1-fadeRate * (distance / effectiveDistance)))];
-            attributes.alpha = alphaNum > 0.1 ? alphaNum : 0;
+            attributes.alpha = alphaNum > 0.22 ? alphaNum : minAlpha;
             CATransform3D flipCellTransform = CATransform3DMakeRotation(MIN(M_PI_2 * (attributes.alpha - 1), 0), 0.0f, -1.0f, 0.0f);
             CGFloat zDistance = 1000;
             flipCellTransform.m34 = 1 / zDistance;
-            flipCellTransform = CATransform3DTranslate(flipCellTransform, 0.0f, 0.0f,MIN(kItemWidth * fabs(1- attributes.alpha), 10));
+            CGFloat filteredDistance = (distance < 100) ? distance : 0;
+            CGFloat xTransform = MIN(filteredDistance * (attributes.alpha - 1), 10);
+            flipCellTransform = CATransform3DTranslate(flipCellTransform, -xTransform, 0.0f,MIN(kItemWidth * fabs(1- attributes.alpha), 10));
             attributes.transform3D = flipCellTransform;
-//            attributes.size.width = 
         } else if (frame.origin.x + frame.size.width >= rightFadeOffset) {
             CGFloat effectiveDistance = 320.0;
             CGFloat distance = MIN((frame.origin.x + frame.size.width) - rightFadeOffset, effectiveDistance);
             CGFloat alphaNum = [self easeInWithInput:MAX(minAlpha,(1-fadeRate * (distance / effectiveDistance)))];
-            attributes.alpha = MAX(minAlpha, alphaNum);
+            attributes.alpha = alphaNum > 0.22 ? alphaNum : minAlpha;
             CATransform3D flipCellTransform = CATransform3DMakeRotation(MAX(-M_PI_2 * (attributes.alpha - 1),0), 0.0f, -1.0f, 0.0f);
             CGFloat zDistance = 1000;
             flipCellTransform.m34 = 1 / zDistance;
-            flipCellTransform = CATransform3DTranslate(flipCellTransform, 0.0f, 0.0f,MIN(kItemWidth * fabs(1- attributes.alpha), 10));
+            CGFloat filteredDistance = (distance < 100) ? distance : 0;
+            CGFloat xTransform = MIN(filteredDistance * (attributes.alpha - 1), 10);
+            flipCellTransform = CATransform3DTranslate(flipCellTransform, xTransform, 0.0f,MIN(kItemWidth * fabs(1- attributes.alpha), 10));
             attributes.transform3D = flipCellTransform;
         } else {
             attributes.alpha = 1.0;
