@@ -337,10 +337,30 @@
 
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
-    if (!follow) {
-        [self unloadDataCompletion:^{
-            [self loadData];
+    
+    // Ignore follow reqiuets
+    if (follow) {
+        return;
+    }
+    
+    CKBook *book = [EventHelper bookFollowForNotification:notification];
+    if ([self.books count] > 0) {
+        
+        NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *followBook) {
+            return [followBook.objectId isEqualToString:book.objectId];
         }];
+        if (bookIndex != -1) {
+            
+            // Mark cell as unfollowed.
+            StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
+                                                                      [NSIndexPath indexPathForItem:bookIndex inSection:kStoreSection]];
+            if (cell) {
+                
+                // Set back to unfollowed status. Subclasses can override like provide (F) for suggestions.
+                [cell updateBookStatus:[self unfollowedBookStatus]];
+            }
+        }
+        
     }
 }
 
@@ -361,6 +381,10 @@
     [rootView addSubview:storeBookViewController.view];
     [storeBookViewController transitionFromPoint:pointAtRootView];
     self.storeBookViewController = storeBookViewController;
+}
+
+- (BookStatus)unfollowedBookStatus {
+    return kBookStatusNone;
 }
 
 - (void)closeBook {
@@ -393,6 +417,7 @@
                     
                     // Snapshot it.
                     UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView size:[StoreBookCoverViewCell cellSize] opaque:NO];
+                    [self.bookCoverImages replaceObjectAtIndex:bookIndex withObject:snapshotImage];
                     
                     StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:bookIndex inSection:0]];
                     [cell loadBookCoverImage:snapshotImage status:book.status];
