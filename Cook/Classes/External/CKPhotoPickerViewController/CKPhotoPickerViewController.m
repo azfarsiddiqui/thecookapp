@@ -681,7 +681,8 @@
         // Reset slider to 'None'
         if (self.showFilters)
         {
-            [self.filterPickerView selectNotch:1];
+            //Choose Auto filter for new pictures, None for editing existing
+            [self.filterPickerView selectNotch:self.isEditing ? 0 : 1];
             [self.filterPickerView stopFilterLoading];
         }
     }
