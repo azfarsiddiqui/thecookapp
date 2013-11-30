@@ -72,6 +72,10 @@
         
         self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
         
+        // Register tap.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
+        [self.view addGestureRecognizer:tapGesture];
+        
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
         
@@ -338,6 +342,13 @@
                            [weakSelf.bookCoverView showAdd];
                            [weakSelf.bookCoverView enable:NO interactable:NO];
                        }];
+    }
+}
+
+- (void)tapDismissed:(UITapGestureRecognizer *)tapGesture {
+    CGPoint tappedPoint = [tapGesture locationInView:self.view];
+    if (!CGRectContainsPoint(self.summaryContainerView.frame, tappedPoint)) {
+        [self closeTapped:nil];
     }
 }
 
