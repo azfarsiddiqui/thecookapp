@@ -375,7 +375,11 @@
 }
 
 + (void)postEvent:(NSString *)eventName withUserInfo:(NSDictionary *)theUserInfo {
-    [[NSNotificationCenter defaultCenter] postNotificationName:eventName object:nil userInfo:theUserInfo];
+    
+    // Post all events on main thread as all involve UI updates.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventName object:nil userInfo:theUserInfo];
+    });
 }
 
 + (void)unregisterObserver:(id)observer toEventName:(NSString *)eventName {
