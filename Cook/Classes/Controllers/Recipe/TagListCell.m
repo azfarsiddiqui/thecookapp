@@ -19,7 +19,6 @@
 @property (nonatomic, strong) UIImageView *tagIconSelectedView;
 @property (nonatomic, strong) UIImage *normalImage;
 @property (nonatomic, strong) UIImage *highlightedImage;
-@property (nonatomic, strong) UIView *iconView;
 
 @end
 
@@ -32,9 +31,8 @@
         self.layer.shouldRasterize = YES;
         self.layer.rasterizationScale = [UIScreen mainScreen].scale;
         //Add subvierws
-        [self.contentView addSubview:self.iconView];
-        [self.iconView addSubview:self.tagIconSelectedView];
-        [self.iconView addSubview:self.tagIconView];
+        [self.contentView addSubview:self.tagIconView];
+        [self.contentView addSubview:self.tagIconSelectedView];
         self.tagIconSelectedView.alpha = 0.0;
         [self.contentView addSubview:self.tagLabel];
         [self loadLayout];
@@ -72,34 +70,31 @@
 #pragma mark - Private methods
 
 - (void)loadLayout {
-    NSDictionary *views = @{@"tagLabel":self.tagLabel, @"iconView":self.iconView};
+    NSDictionary *views = @{@"tagLabel":self.tagLabel,
+                            @"iconView":self.tagIconView};
     self.tagLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.iconView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[iconView]" options:0 metrics:0 views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[iconView]-[tagLabel]-(>=0)-|" options:NSLayoutFormatAlignAllCenterX metrics:0 views:views]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.iconView
-                                                                 attribute:NSLayoutAttributeCenterX
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeCenterX
-                                                                multiplier:1.f constant:0.f]];
+    self.tagIconView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tagIconSelectedView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+//    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[iconView]" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-10)-[iconView]-(-10)-[tagLabel(20)]-(>=0)-|" options:NSLayoutFormatAlignAllCenterX metrics:0 views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.tagLabel
                                                                  attribute:NSLayoutAttributeCenterX
                                                                  relatedBy:NSLayoutRelationEqual
                                                                     toItem:self.contentView
                                                                  attribute:NSLayoutAttributeCenterX
                                                                 multiplier:1.f constant:0.f]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.tagIconView
-                                                                 attribute:NSLayoutAttributeCenterX
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.iconView
-                                                                 attribute:NSLayoutAttributeCenterX
-                                                                multiplier:1.f constant:0.f]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.tagIconSelectedView
                                                                  attribute:NSLayoutAttributeCenterX
                                                                  relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.iconView
+                                                                    toItem:self.tagIconView
                                                                  attribute:NSLayoutAttributeCenterX
+                                                                multiplier:1.f constant:0.f]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.tagIconSelectedView
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.tagIconView
+                                                                 attribute:NSLayoutAttributeCenterY
                                                                 multiplier:1.f constant:0.f]];
 }
 
@@ -173,13 +168,6 @@
         _tagIconSelectedView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_tags_meal_on"]];
     }
     return _tagIconSelectedView;
-}
-
-- (UIView *)iconView {
-    if (!_iconView) {
-        _iconView = [[UIView alloc] initWithFrame:CGRectZero];
-    }
-    return _iconView;
 }
 
 @end

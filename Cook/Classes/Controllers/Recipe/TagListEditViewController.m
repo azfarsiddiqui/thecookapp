@@ -78,6 +78,7 @@
     [self.containerView addSubview:self.foodTypeCollectionView];
     
     self.scrollView.scrollEnabled = NO;
+    self.targetEditTextBoxView.userInteractionEnabled = NO;
     
     UIView *titleAlignView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.containerView addSubview:titleAlignView];
@@ -135,7 +136,7 @@
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
                               @"lastCollectionHeight":[NSNumber numberWithFloat:kItemHeight*2.1],
                               @"lineBottomSpacing":@20.0,
-                              @"lineTopSpacing":@10.0,
+                              @"lineTopSpacing":@20.0,
                               @"lineHeight":@1};
     [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-10-[titleCount]-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
@@ -144,7 +145,7 @@
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[allergyCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line3]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[foodCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-30-[mealCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(lineBottomSpacing)-[line3(lineHeight)]-(lineTopSpacing)-[foodCollection(lastCollectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-40-[mealCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(lineBottomSpacing)-[line3(lineHeight)]-(lineTopSpacing)-[foodCollection(lastCollectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
     
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleAlignView
                                                                    attribute:NSLayoutAttributeCenterX
