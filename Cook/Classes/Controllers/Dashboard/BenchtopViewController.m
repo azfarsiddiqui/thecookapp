@@ -1239,9 +1239,13 @@
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {
-    [self.collectionView scrollToItemAtIndexPath:indexPath
-                                atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                        animated:YES];
+    CGPoint requiredOffset = CGPointZero;
+    CGSize cellSize = [BenchtopBookCoverViewCell cellSize];
+    if (indexPath.section == kFollowSection) {
+        requiredOffset.x += floorf(kSideMargin + (cellSize.width * 2.0) + (indexPath.item * cellSize.width) - (self.collectionView.bounds.size.width / 2.0) + (cellSize.width / 2.0));
+    }
+    
+    [self.collectionView setContentOffset:requiredOffset animated:YES];
 }
 
 - (void)followUpdated:(NSNotification *)notification {
