@@ -824,10 +824,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)didBecomeInactive {
     //If backgrounding, remove photo picker to prevent crash
-    if (self.photoPickerViewController)
-    {
-        [self showPhotoPicker:NO];
-    }
+    [self showPhotoPicker:NO completion:^{
+        [self snapToViewport:SnapViewportBottom animated:YES];
+        
+    }];
 }
 
 #pragma mark - Private methods
