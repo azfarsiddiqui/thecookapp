@@ -224,6 +224,12 @@
                          selectedImage:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:editMode selected:YES]];
 }
 
+- (void)disableSelectOnEditView {
+    [CKEditingTextBoxView updateButton:self.textEditBoxImageView
+                                 image:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:NO]
+                         selectedImage:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:NO]];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

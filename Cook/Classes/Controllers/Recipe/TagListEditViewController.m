@@ -78,7 +78,7 @@
     [self.containerView addSubview:self.foodTypeCollectionView];
     
     self.scrollView.scrollEnabled = NO;
-    self.targetEditTextBoxView.userInteractionEnabled = NO;
+    [self.targetEditTextBoxView disableSelectOnEditView];
     
     UIView *titleAlignView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.containerView addSubview:titleAlignView];
@@ -341,13 +341,11 @@
     TagLayout *flowLayout = [[TagLayout alloc] init];
     flowLayout.itemSize = CGSizeMake(kItemWidth, kItemHeight);
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//    flowLayout.sectionInset = UIEdgeInsetsZero;
     //Header reference size too
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
     collectionView.bounces = YES;
     collectionView.alwaysBounceHorizontal = YES;
     collectionView.backgroundColor = [UIColor clearColor];
-//    collectionView.showsVerticalScrollIndicator = NO;
     collectionView.showsHorizontalScrollIndicator = NO;
     collectionView.delegate = self;
     collectionView.dataSource = self;

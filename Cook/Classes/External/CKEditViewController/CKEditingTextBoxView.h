@@ -43,5 +43,6 @@
 - (void)showSaveIcon:(BOOL)show enabled:(BOOL)enabled animated:(BOOL)animated;
 - (CGRect)textBoxFrame;
 - (void)setTextBoxViewWithEdit:(BOOL)editMode;
+- (void)disableSelectOnEditView;
 
 @end

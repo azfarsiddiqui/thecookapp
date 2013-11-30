@@ -40,21 +40,24 @@
         CGFloat fadeRate = 1.0;
         
         CGRect frame = attributes.frame;
+        //Apply fading to left side when they cross leftFadeOffset threshold
         if (frame.origin.x <= leftFadeOffset) {
-            CGFloat effectiveDistance = 200;
+            CGFloat effectiveDistance = 200; //Fade distance
             CGFloat distance = MIN(leftFadeOffset - frame.origin.x, effectiveDistance);
+            //Ease fade in via an exponential curve
             CGFloat alphaNum = [self easeInWithInput:MAX(minAlpha,(1-fadeRate * (distance / effectiveDistance)))];
             attributes.alpha = alphaNum > 0.0 ? alphaNum : minAlpha;
+            //Rotate cell at same rate as fade
             CATransform3D flipCellTransform = CATransform3DMakeRotation(MIN((M_PI_2) * (attributes.alpha - 1), 0), 0.0f, -1.0f, 0.0f);
             CGFloat zDistance = 1000;
-            flipCellTransform.m34 = 1 / zDistance;
-
+            flipCellTransform.m34 = 1 / zDistance; //Magic number for correct pespective
+            //Push cell towards middle (via x and z axis) via a linear rate to make a 'conveyor belt' look
             CGFloat xTransform = distance * ([self easeOffsetWithInput:(1-fadeRate * (distance / effectiveDistance))] - 1);
-//            CGFloat xTransform = MIN(filteredDistance * (attributes.alpha - 1), 10);
             flipCellTransform = CATransform3DTranslate(flipCellTransform, -xTransform, 0.0f, -xTransform);
             attributes.transform3D = flipCellTransform;
         
-        } else if (frame.origin.x + frame.size.width >= rightFadeOffset) {
+        } // Apply same fade to right side, just spin opposite way and translate in opposite direction
+        else if (frame.origin.x + frame.size.width >= rightFadeOffset) {
             CGFloat effectiveDistance = 200.0;
             CGFloat distance = MIN((frame.origin.x + frame.size.width) - rightFadeOffset, effectiveDistance);
             CGFloat alphaNum = [self easeInWithInput:MAX(minAlpha,(1-fadeRate * (distance / effectiveDistance)))];
@@ -72,18 +75,18 @@
 }
 
 - (CGFloat)easeInWithInput:(CGFloat)t  {
-//    DLog(@"T is : %f", t);
     return powf(2,8*t-8);
 }
 
 - (CGFloat)easeOffsetWithInput:(CGFloat)t {
-    return t;//powf(6,4*t-4);//1.5 * powf(t-0.25,2) + 0.15; //powf(2,t)-1;
+    return t;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
     return YES;
 }
 
+// Override method to make cells 'settle' in to place
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity
 {
     CGFloat offsetAdjustment = MAXFLOAT;
