@@ -2234,7 +2234,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (CGFloat)headerHeight {
-    CGFloat headerHeight = 220.0;
+    CGFloat headerHeight = 320.0;
 //    return headerHeight;
     
     if ([self.recipeDetails hasStory]) {
