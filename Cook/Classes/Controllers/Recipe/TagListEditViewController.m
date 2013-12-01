@@ -36,6 +36,7 @@
 {
     self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:YES];
     if (self) {
+        DLog(@"LOADING SELECTED ITEMS: %@", selectedItems);
         self.selectedItems = [NSMutableArray arrayWithArray:selectedItems];
         [CKRecipeTag tagListWithSuccess:^(NSArray *tags) {
             self.items = [tags sortedArrayUsingComparator:^NSComparisonResult(CKRecipeTag *obj1, CKRecipeTag *obj2) {
@@ -44,8 +45,9 @@
             }];
             [self reloadCollectionViews];
             //Programatically select all items in array or preselected tags
+            
             [self.selectedItems enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
-                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:idx inSection:0];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:obj.orderIndex inSection:0];
                 if (obj.categoryIndex == kMealTagType) {
                     [self.mealTypeCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:0];
                 } else if (obj.categoryIndex == kAllergyTagType) {
@@ -202,6 +204,7 @@
 }
 
 - (id)updatedValue {
+    DLog(@"Selected Items: %@", self.selectedItems);
     return self.selectedItems;
 }
 

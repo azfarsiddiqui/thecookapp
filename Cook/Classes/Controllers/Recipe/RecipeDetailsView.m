@@ -649,19 +649,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         {
             if (tag.objectId)
             {
-//                [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX)
-//                                        options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
-//                                     attributes:@{ NSFontAttributeName : self.textViewFont }
-//                                        context:nil].size.height;
+                // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
                 NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
-                CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(kWidth, CGFLOAT_MAX)
+                CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                           attributes:@{ NSFontAttributeName : self.tagsLabel.font }
                                                             context:nil];
-                //Append spaces and tag name
-                if ([tagsString length] > 0)
-                    [tagsString appendString:@" • "];
-                [tagsString appendString:[tag displayName]];
+                if (stringSize.size.width < kWidth) {
+                    //Append spaces and tag name
+                    if ([tagsString length] > 0)
+                        [tagsString appendString:@" • "];
+                    [tagsString appendString:[tag displayName]];
+                }
             }
         }
     }
