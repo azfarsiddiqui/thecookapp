@@ -138,7 +138,7 @@
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
                               @"lastCollectionHeight":[NSNumber numberWithFloat:kItemHeight*2.1],
                               @"lineBottomSpacing":@20.0,
-                              @"lineTopSpacing":@20.0,
+                              @"lineTopSpacing":@25.0,
                               @"lineHeight":@1};
     [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-10-[titleCount]-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];

@@ -25,6 +25,7 @@
 #import "CKBook.h"
 #import "DataHelper.h"
 #import "CKRecipeTag.h"
+#import "NSArray+Enumerable.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -595,26 +596,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.tagsLabel.shadowColor = [UIColor whiteColor];
         self.tagsLabel.userInteractionEnabled = NO;
         [self addSubview:self.tagsLabel];
-//        [self addSubview:self.tagsView];
-        
-//        //Setting up constraints
-//        {
-//            self.tagsView.translatesAutoresizingMaskIntoConstraints = NO;
-//            self.tagsLabel.translatesAutoresizingMaskIntoConstraints = NO;
-//            NSDictionary *metrics = @{@"iconOffset":@40};
-//            NSDictionary *views = @{@"tagsLabel" : self.tagsLabel, @"titleTextView" : self.titleTextView};
-//            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[tagsLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-//            [self addConstraint:[NSLayoutConstraint constraintWithItem:self.tagsLabel
-//                                                             attribute:NSLayoutAttributeCenterX
-//                                                             relatedBy:NSLayoutRelationEqual
-//                                                                toItem:self
-//                                                             attribute:NSLayoutAttributeCenterX
-//                                                            multiplier:1.f constant:0.f]];
-//            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[titleTextView]-(5)-[tagsLabel]" options:0 metrics:metrics views:views]];
-//            NSString *tagsConstraintString = @"|-iconOffset-[tagsLabel]-|";
-//            [self.tagsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:tagsConstraintString options:0 metrics:metrics views:views]];
-//            [self.tagsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[tagsLabel]-|" options:0 metrics:metrics views:views]];
-//        }
+
         UIImage *iconImage = [UIImage imageNamed:@"cook_customise_icon_tag"];
         UIEdgeInsets  defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
         [self.editingHelper wrapEditingView:self.tagsLabel contentInsets:(UIEdgeInsets){
@@ -645,16 +627,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSMutableString *tagsString = [NSMutableString new];
     if ([self.recipeDetails.tags count] > 0)
     {
-        for (CKRecipeTag *tag in self.recipeDetails.tags)
-        {
-            if (tag.objectId)
-            {
+        [self.recipeDetails.tags enumerateObjectsUsingBlock:^(CKRecipeTag *tag, NSUInteger idx, BOOL *stop) {
+            if (tag.categoryIndex == kAllergyTagType) {
                 // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
                 NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
                 CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                           attributes:@{ NSFontAttributeName : self.tagsLabel.font }
-                                                            context:nil];
+                                                             context:nil];
                 if (stringSize.size.width < kWidth) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
@@ -662,7 +642,39 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                     [tagsString appendString:[tag displayName]];
                 }
             }
-        }
+        }];
+        [self.recipeDetails.tags enumerateObjectsUsingBlock:^(CKRecipeTag *tag, NSUInteger idx, BOOL *stop) {
+            if (tag.categoryIndex == kMealTagType) {
+                // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
+                NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
+                CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                                             options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                          attributes:@{ NSFontAttributeName : self.tagsLabel.font }
+                                                             context:nil];
+                if (stringSize.size.width < kWidth) {
+                    //Append spaces and tag name
+                    if ([tagsString length] > 0)
+                        [tagsString appendString:@" • "];
+                    [tagsString appendString:[tag displayName]];
+                }
+            }
+        }];
+        [self.recipeDetails.tags enumerateObjectsUsingBlock:^(CKRecipeTag *tag, NSUInteger idx, BOOL *stop) {
+            if (tag.categoryIndex == kFoodTagType) {
+                // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
+                NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
+                CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                                             options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                          attributes:@{ NSFontAttributeName : self.tagsLabel.font }
+                                                             context:nil];
+                if (stringSize.size.width < kWidth) {
+                    //Append spaces and tag name
+                    if ([tagsString length] > 0)
+                        [tagsString appendString:@" • "];
+                    [tagsString appendString:[tag displayName]];
+                }
+            }
+        }];
     }
     else if (self.editMode)
     {

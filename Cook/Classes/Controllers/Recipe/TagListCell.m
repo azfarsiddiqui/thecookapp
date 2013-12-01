@@ -77,7 +77,7 @@
     self.tagIconSelectedView.translatesAutoresizingMaskIntoConstraints = NO;
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
 //    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[iconView]" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-10)-[iconView]-(-10)-[tagLabel(20)]-(>=0)-|" options:NSLayoutFormatAlignAllCenterX metrics:0 views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-10)-[iconView]-(-7)-[tagLabel(20)]-(>=0)-|" options:NSLayoutFormatAlignAllCenterX metrics:0 views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.tagLabel
                                                                  attribute:NSLayoutAttributeCenterX
                                                                  relatedBy:NSLayoutRelationEqual
