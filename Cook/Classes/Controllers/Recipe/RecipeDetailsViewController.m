@@ -1403,6 +1403,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     SnapViewport toggleViewport = (self.currentViewport == SnapViewportBelow) ? self.previousViewport : SnapViewportBelow;
     BOOL fullscreen = (toggleViewport == SnapViewportBelow);
     
+    // Zoomable only in fullscreen mode.
+    self.imageScrollView.maximumZoomScale = fullscreen ? 2.0 : 1.0;
+    
     [self snapToViewport:toggleViewport animated:YES completion:^{
         
         // Toggle double-tap mode when in fullscreen mode.
@@ -1434,9 +1437,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          }
                          completion:^(BOOL finished)  {
                              self.animating = NO;
-                             
-                             // Zoomable only in fullscreen mode.
-                             self.imageScrollView.maximumZoomScale = fullscreen ? 2.0 : 1.0;
                          }];
     }];
 }
@@ -2211,7 +2211,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         if (self.editMode) {
             [self cancelTapped:nil];
         } else if (self.currentViewport == SnapViewportBelow) {
-            [self toggleImage];
+            //Do nothing
         } else {
             [self closeRecipeView];
         }
