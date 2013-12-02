@@ -205,8 +205,10 @@
                          
                          // Re-enable benchtop.
                          [self enable:YES];
-                         [self.delegate panEnabledRequested:YES];
-                         
+                         if (!self.updateIntroView)
+                         {
+                             [self.delegate panEnabledRequested:YES];
+                         }
                          completion();
                      }];
 }
@@ -884,6 +886,7 @@
                                          
                                          // If we have sign in page, then hide it and perform insertion animation.
                                          if (self.signUpViewController) {
+                                             
                                              [self hideLoginViewCompletion:^{
                                                  
                                                  [self.collectionView performBatchUpdates:^{
@@ -1654,10 +1657,8 @@
                              self.updateIntroView.alpha = 1.0;
                          } completion:^(BOOL finished) {
                              [self.delegate panEnabledRequested:NO];
-                             
                              [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
                              [[NSUserDefaults standardUserDefaults] synchronize];
-                             
                          }];
     }
 }
