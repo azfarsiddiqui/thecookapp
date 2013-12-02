@@ -1028,6 +1028,8 @@
     for (NSString *page in pageRecipes) {
         NSMutableArray *recipes = [NSMutableArray arrayWithArray:[pageRecipes objectForKey:page]];
         [self.pageRecipes setObject:recipes forKey:page];
+        //Initialise pageCurrentBatches
+        [self.pageCurrentBatches setObject:@0 forKey:page];
     }
     
     self.pageRecipes = [NSMutableDictionary dictionaryWithDictionary:pageRecipes];
