@@ -38,6 +38,7 @@
 // Cell configuration.
 - (Class)classForListCell;
 - (void)configureCell:(CKListCell *)cell indexPath:(NSIndexPath *)indexPath;
+- (void)addCellFromTop;
 - (void)addCellToBottom;
 
 // Create new item.

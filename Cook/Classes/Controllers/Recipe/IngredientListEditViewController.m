@@ -25,6 +25,18 @@
 
 - (void)tappedToAddCell:(id)sender {
     [self addCellToBottom];
+    if ([self.items count] > 1)
+        self.hintsView.alpha = 0.5;
+    else
+        self.hintsView.alpha = 1.0;
+}
+
+- (void)addCellFromTop {
+    [super addCellFromTop];
+    if ([self.items count] > 1)
+        self.hintsView.alpha = 0.5;
+    else
+        self.hintsView.alpha = 1.0;
 }
 
 #pragma mark - CKEditViewController methods
@@ -85,6 +97,10 @@
         hintsFrame.origin.x = floorf((self.collectionView.bounds.size.width - hintsFrame.size.width) / 2.0);
         self.hintsView.frame = hintsFrame;
         self.hintsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        if ([self.items count] > 1)
+            self.hintsView.alpha = 0.5;
+        else
+            self.hintsView.alpha = 1.0;
         [suppView addSubview:self.hintsView];
     }
     
