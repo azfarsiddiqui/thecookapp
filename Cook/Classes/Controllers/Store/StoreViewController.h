@@ -12,6 +12,7 @@
 @interface StoreViewController : UIViewController
 
 @property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIView *overlayView;
 
 - (void)enable:(BOOL)enable;
 - (CGFloat)visibleHeight;

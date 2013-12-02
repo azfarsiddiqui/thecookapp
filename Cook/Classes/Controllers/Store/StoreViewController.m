@@ -97,6 +97,7 @@
                                              selector:@selector(didEnterBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:[UIApplication sharedApplication]];
+    [self.view addSubview:self.overlayView];
 }
 
 - (void)enable:(BOOL)enable {
@@ -300,6 +301,15 @@
         _friendsTabView = [[StoreTabView alloc] initWithUnitTabViews:tabViews delegate:self];
     }
     return _friendsTabView;
+}
+
+- (UIView *)overlayView {
+    if (!_overlayView) {
+        _overlayView = [[UIView alloc] init];
+        _overlayView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, kVisibleHeight + kShelfHeight);
+        _overlayView.backgroundColor = [UIColor blackColor];
+    }
+    return _overlayView;
 }
 
 #pragma mark - Private methods
