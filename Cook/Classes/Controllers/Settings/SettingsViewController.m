@@ -175,6 +175,7 @@
         _overlayView = [[UIView alloc] init];
         _overlayView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, kSettingsHeight * 2);
         _overlayView.backgroundColor = [UIColor blackColor];
+        _overlayView.alpha = 0.0;
     }
     return _overlayView;
 }

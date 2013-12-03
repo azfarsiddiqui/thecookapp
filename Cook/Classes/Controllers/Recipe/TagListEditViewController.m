@@ -99,11 +99,7 @@
     
     // HR
     UIView *line1 = [self generateLine];
-    UIView *line2 = [self generateLine];
-    UIView *line3 = [self generateLine];
     [self.containerView addSubview:line1];
-    [self.containerView addSubview:line2];
-    [self.containerView addSubview:line3];
     
     //    self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mealTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -119,8 +115,6 @@
     titleAlignView.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
     line1.translatesAutoresizingMaskIntoConstraints = NO;
-    line2.translatesAutoresizingMaskIntoConstraints = NO;
-    line3.translatesAutoresizingMaskIntoConstraints = NO;
     
     NSDictionary *views = @{@"mealCollection":self.mealTypeCollectionView,
                             @"allergyCollection":self.allergyTypeCollectionView,
@@ -128,26 +122,22 @@
                             @"titleLabel":titleLabel,
                             @"titleAlign":titleAlignView,
                             @"titleCount":self.titleCountLabel,
-                            @"line1":line1,
-                            @"line2":line2,
-                            @"line3":line3};
+                            @"line1":line1};
     NSDictionary *metrics = @{@"leftInset":[NSNumber numberWithFloat:kContentInsets.left],
                               @"rightInset":[NSNumber numberWithFloat:kContentInsets.right],
                               @"topInset":[NSNumber numberWithFloat:kContentInsets.top],
                               @"bottomInset":[NSNumber numberWithFloat:kContentInsets.bottom],
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
-                              @"lastCollectionHeight":[NSNumber numberWithFloat:kItemHeight*2.1],
-                              @"lineBottomSpacing":@20.0,
-                              @"lineTopSpacing":@25.0,
+                              @"lineBottomSpacing":@40.0,
+                              @"lineTopSpacing":@45.0,
                               @"lineHeight":@1};
     [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-10-[titleCount]-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[mealCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line1]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[allergyCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line3]-(rightInset)-|" options:0 metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line1]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[foodCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-40-[mealCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(lineBottomSpacing)-[line3(lineHeight)]-(lineTopSpacing)-[foodCollection(lastCollectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-80-[mealCollection(collectionHeight)]-(40)-[foodCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
     
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleAlignView
                                                                    attribute:NSLayoutAttributeCenterX
@@ -156,12 +146,6 @@
                                                                    attribute:NSLayoutAttributeCenterX
                                                                   multiplier:1.f constant:0.f]];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:line1
-                                                                   attribute:NSLayoutAttributeCenterX
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.containerView
-                                                                   attribute:NSLayoutAttributeCenterX
-                                                                  multiplier:1.f constant:0.f]];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:line3
                                                                    attribute:NSLayoutAttributeCenterX
                                                                    relatedBy:NSLayoutRelationEqual
                                                                       toItem:self.containerView
@@ -346,8 +330,8 @@
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     //Header reference size too
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-    collectionView.bounces = YES;
-    collectionView.alwaysBounceHorizontal = YES;
+    collectionView.bounces = NO;
+    collectionView.alwaysBounceHorizontal = NO;
     collectionView.backgroundColor = [UIColor clearColor];
     collectionView.showsHorizontalScrollIndicator = NO;
     collectionView.delegate = self;

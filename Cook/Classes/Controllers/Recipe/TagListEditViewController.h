@@ -11,9 +11,8 @@
 
 typedef enum {
     kMealTagType = 0,
-    kCookTagType = 1,
     kAllergyTagType = 2,
-    kFoodTagType = 3
+    kFoodTagType = 1
 } TagType;
 
 @interface TagListEditViewController : CKEditViewController

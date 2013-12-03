@@ -450,10 +450,8 @@
     CGFloat settingsOffset = settingsIntersection.size.height;
     if (storeOffset > 0) {
         self.benchtopOverlayView.alpha = MIN((storeOffset / [self.storeViewController visibleHeight]) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
-        self.storeViewController.overlayView.alpha = 1.0 - self.benchtopOverlayView.alpha;
     } else if (settingsOffset > 0) {
         self.benchtopOverlayView.alpha = MIN((settingsOffset / self.settingsViewController.view.frame.size.height) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
-        self.settingsViewController.overlayView.alpha = 1.0 - self.benchtopOverlayView.alpha;
     } else {
         self.benchtopOverlayView.alpha = 0.0;
     }
@@ -539,8 +537,6 @@
                          self.benchtopViewController.view.frame = benchtopFrame;
                          self.settingsViewController.view.frame = settingsFrame;
                          self.benchtopOverlayView.alpha = (benchtopLevel == kBenchtopLevel) ? 0.0: kMaxBenchtopOverlayAlpha;
-                         self.settingsViewController.overlayView.alpha = (benchtopLevel == kBenchtopLevel) ? 1.0: 0.0;
-                         self.storeViewController.overlayView.alpha = (benchtopLevel == kBenchtopLevel) ? 1.0: 0.0;
                      }
                      completion:^(BOOL finished) {
                          
@@ -1149,6 +1145,18 @@
                                               [self snapIfRequired];
                                           }];
                      }];
+}
+
+#pragma mark - Rotation methods
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    self.storeViewController.overlayView.alpha = 1.0;
+    self.settingsViewController.overlayView.alpha = 1.0;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    self.storeViewController.overlayView.alpha = 0.0;
+    self.settingsViewController.overlayView.alpha = 0.0;
 }
 
 @end
