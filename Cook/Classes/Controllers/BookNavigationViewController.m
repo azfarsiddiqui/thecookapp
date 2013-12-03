@@ -226,6 +226,8 @@
         // Add to the front of the list if this was a new recipe.
         [recipes insertObject:recipe atIndex:0];
         
+        // Increment the recipe count.
+        [self incrementCountForPage:page];
     }
     
     // If recipe has changed pages, then remove it from the old page.
@@ -242,6 +244,9 @@
             
             // Remove the recipe from the old page.
             [recipes removeObjectAtIndex:foundIndex];
+            
+            // Decrement the recipe count for previous page.
+            [self decrementCountForPage:currentPage];
         }
     }
     
@@ -262,6 +267,9 @@
     NSString *page = recipe.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
     [recipes removeObject:recipe];
+    
+    // Decrement the recipe.
+    [self decrementCountForPage:page];
     
     // Remember the recipe that was actioned.
     self.saveOrUpdatedRecipe = recipe;
@@ -1814,6 +1822,16 @@
     DLog(@">>> offset[%f] translatedOffset[%f]", offset, translatedOffset);
     
     self.bookNavigationView.frame = frame;
+}
+
+- (void)incrementCountForPage:(NSString *)page {
+    NSInteger existingPageCount = [[self.pageRecipeCount objectForKey:page] integerValue];
+    [self.pageRecipeCount setObject:@(existingPageCount + 1) forKey:page];
+}
+
+- (void)decrementCountForPage:(NSString *)page {
+    NSInteger existingPageCount = [[self.pageRecipeCount objectForKey:page] integerValue];
+    [self.pageRecipeCount setObject:@(existingPageCount - 1) forKey:page];
 }
 
 @end
