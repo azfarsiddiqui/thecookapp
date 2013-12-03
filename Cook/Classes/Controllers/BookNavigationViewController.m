@@ -208,7 +208,8 @@
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
     NSString *page = recipe.page;
-    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
+    
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
     
     // Check if this was a new/updated recipe.
     NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
@@ -225,6 +226,23 @@
         // Add to the front of the list if this was a new recipe.
         [recipes insertObject:recipe atIndex:0];
         
+    }
+    
+    // If recipe has changed pages, then remove it from the old page.
+    NSString *currentPage = [self currentPage];
+    if (![currentPage isEqualToString:page]) {
+        NSMutableArray *recipes = [self.pageRecipes objectForKey:currentPage];
+        
+        // Look for the recipe to remove from the old page.
+        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+            return [existingRecipe.objectId isEqualToString:recipe.objectId];
+        }];
+        
+        if (foundIndex != -1) {
+            
+            // Remove the recipe from the old page.
+            [recipes removeObjectAtIndex:foundIndex];
+        }
     }
     
     // Remember the recipe that was actioned.
