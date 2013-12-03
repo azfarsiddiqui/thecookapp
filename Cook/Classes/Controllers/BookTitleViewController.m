@@ -36,6 +36,7 @@
 
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
+@property (nonatomic, assign) BOOL cachedImageLoaded;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 
 @property (nonatomic, strong) UIImageView *imageView;
@@ -74,6 +75,9 @@
 #define kHeaderCellGap          135.0
 
 - (void)dealloc {
+    self.imageView.image = nil;
+    self.topShadowView.image = nil;
+    self.blurredImageView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
     [EventHelper unregisterPhotoLoadingProgress:self];
 }
@@ -101,6 +105,7 @@
     if (cachedTitleImage) {
         self.imageView.image = cachedTitleImage;
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
+        self.cachedImageLoaded = YES;
     }
     
     [self addCloseButtonLight:YES];
@@ -606,17 +611,28 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)configureHeroRecipeImage:(UIImage *)image {
     self.progressView.hidden = self.fullImageLoaded;
     
-    if (self.fullImageLoaded) {
-        [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
+    if (self.cachedImageLoaded) {
+        [UIView transitionWithView:self.imageView
+                          duration:0.4
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        animations:^{
+                            self.imageView.image = image;
+                        }
+                        completion:^(BOOL success) {
+                        }];
+    } else {
+        self.imageView.image = image;
+        self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     }
-    
-    self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     
     UIColor *tintColour = [[CKBookCover backdropColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
     [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
         self.blurredImageView.image = blurredImage;
     }];
     
+    if (self.fullImageLoaded) {
+        [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
+    }
 }
 
 - (void)applyOffset:(CGFloat)offset distance:(CGFloat)distance view:(UIView *)view {

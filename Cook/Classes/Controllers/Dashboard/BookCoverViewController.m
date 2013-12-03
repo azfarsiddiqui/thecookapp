@@ -86,6 +86,10 @@
 }
 
 - (void)cleanUpLayers {
+    DLog();
+    for (CALayer* layer in [self.view.layer sublayers]) {
+        [layer removeAllAnimations];
+    }
     [self.rightOpenLayer removeFromSuperlayer];
     [self.leftOpenLayer removeFromSuperlayer];
     [self.bookCoverLayer removeFromSuperlayer];
@@ -164,6 +168,9 @@
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
     DLog(@"Open book finished: %@", [NSString CK_stringForBoolean:self.opened]);
+    if (!self.opened) {
+        [self cleanUpLayers];
+    }
     [self.delegate bookCoverViewDidOpen:self.opened];
 }
 

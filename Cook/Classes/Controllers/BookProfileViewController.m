@@ -49,6 +49,8 @@
 #define kTempBookImageKey   @"TEMP_BOOK_IMAGE"
 
 - (void)dealloc {
+    self.imageView.image = nil;
+    self.topShadowView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
 }
 

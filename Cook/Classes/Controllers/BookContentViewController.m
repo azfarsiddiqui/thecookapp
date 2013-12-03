@@ -73,6 +73,7 @@
 #define kLoadMoreCellId     @"LoadMoreCell"
 
 - (void)dealloc {
+    self.imageView.image = nil;
     [EventHelper unregisterSocialUpdates:self];
 }
 

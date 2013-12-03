@@ -781,7 +781,7 @@
 #pragma mark - Cached title images for book.
 
 - (UIImage *)cachedTitleImageForBook:(CKBook *)book {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self cachedTitleImageKeyForBook:book]];
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self cachedTitleImageKeyForBook:book] skipMemory:YES];
 }
 
 - (void)cacheTitleImage:(UIImage *)image book:(CKBook *)book {

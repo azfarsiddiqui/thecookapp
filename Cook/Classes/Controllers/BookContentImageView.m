@@ -35,6 +35,9 @@
 #define kForceVisibleOffset         1.0
 
 - (void)dealloc {
+    self.imageView.image = nil;
+    self.vignetteOverlayView.image = nil;
+    self.blurredImageView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
 }
 
