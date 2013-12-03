@@ -54,8 +54,8 @@
 
 @implementation RootViewController
 
-#define kDragRatio                      0.25
-#define kSnapHeight                     50.0
+#define kDragRatio                      0.35
+#define kSnapHeight                     20.0
 #define kBounceOffset                   30.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
