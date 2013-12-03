@@ -12,6 +12,7 @@
 @class CKBook;
 @class CKRecipe;
 @class CKRecipePin;
+@class BookTitleViewController;
 
 @protocol BookNavigationViewControllerDelegate <NSObject>
 
@@ -27,7 +28,8 @@
 
 @interface BookNavigationViewController : UICollectionViewController
 
-- (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate;
+- (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
+          delegate:(id<BookNavigationViewControllerDelegate>)delegate;
 - (void)setActive:(BOOL)active;
 - (void)updateBinderAlpha:(CGFloat)alpha;
 

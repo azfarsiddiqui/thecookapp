@@ -30,9 +30,10 @@
 @interface BookTitleViewController : BookPageViewController
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate;
-- (id)initWithBook:(CKBook *)book snapshot:(BOOL)snapshot delegate:(id<BookTitleViewControllerDelegate>)delegate;
+- (void)configureLoading:(BOOL)loading;
 - (void)configurePages:(NSArray *)pages;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
 - (void)configureError:(NSError *)error;

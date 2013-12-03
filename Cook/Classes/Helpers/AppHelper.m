@@ -85,4 +85,15 @@
     return value;
 }
 
+#pragma mark - Directories and files.
+
+- (NSString *)documentsDirectoryPath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [paths firstObject];
+}
+
+- (NSString *)documentsPathForFileName:(NSString *)name {
+    return [[self documentsDirectoryPath] stringByAppendingPathComponent:name];
+}
+
 @end

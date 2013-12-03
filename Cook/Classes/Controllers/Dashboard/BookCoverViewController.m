@@ -28,8 +28,10 @@
 @property (nonatomic, strong) CALayer *bookCoverLayer;
 @property (nonatomic, strong) CALayer *bookCoverContentsLayer;
 @property (nonatomic, strong) CALayer *leftOpenLayer;
-@property (nonatomic, strong) CALayer *rightOpenLayer;
+@property (nonatomic, strong) CALayer *leftOutlineLayer;
 @property (nonatomic, strong) CALayer *leftContentsLayer;
+@property (nonatomic, strong) CALayer *rightOpenLayer;
+@property (nonatomic, strong) CALayer *rightOutlineLayer;
 @property (nonatomic, strong) CALayer *rightContentsLayer;
 @property (nonatomic, assign) BOOL opened;
 
@@ -162,14 +164,129 @@
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
     DLog(@"Open book finished: %@", [NSString CK_stringForBoolean:self.opened]);
-    
-//    if (!self.opened) {
-//        [self.rootBookLayer removeAllAnimations];
-//    [self.leftOpenLayer removeAllAnimations];
-//        [self.bookCoverLayer removeAllAnimations];
-//    }
-    
     [self.delegate bookCoverViewDidOpen:self.opened];
+}
+
+#pragma mark - Properties
+
+- (CALayer *)rootBookLayer {
+    if (!_rootBookLayer) {
+        _rootBookLayer = [CALayer layer];
+        _rootBookLayer.anchorPoint = CGPointMake(0.5, 0.5);
+        _rootBookLayer.frame = self.bookCoverView.bounds;
+        _rootBookLayer.position = (CGPoint) {
+            floorf((self.view.bounds.size.width) / 2.0),
+            floorf((self.view.bounds.size.height) / 2.0) + 10.0
+        };
+        _rootBookLayer.backgroundColor = [UIColor clearColor].CGColor;
+    }
+    return _rootBookLayer;
+}
+
+- (CALayer *)bookCoverLayer {
+    if (!_bookCoverLayer) {
+        _bookCoverLayer = [CATransformLayer layer];
+        _bookCoverLayer.anchorPoint = CGPointMake(0.0, 0.5);
+        _bookCoverLayer.frame = self.rootBookLayer.bounds;
+        _bookCoverLayer.position = CGPointMake(0.0, floorf(self.rootBookLayer.bounds.size.height / 2));
+        _bookCoverLayer.doubleSided = YES;
+    }
+    return _bookCoverLayer;
+}
+
+- (CALayer *)leftOpenLayer {
+    if (!_leftOpenLayer) {
+        _leftOpenLayer = [CALayer layer];
+        _leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
+        _leftOpenLayer.frame = self.bookCoverLayer.bounds;
+        _leftOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
+        _leftOpenLayer.doubleSided = NO;
+        _leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
+    }
+    return _leftOpenLayer;
+}
+
+- (CALayer *)leftOutlineLayer {
+    if (!_leftOutlineLayer) {
+        UIImage *leftOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:YES];
+        _leftOutlineLayer = [CALayer layer];
+        _leftOutlineLayer.frame = (CGRect){
+            -kSmallBookOutlineShadowInset.left,
+            -kSmallBookOutlineShadowInset.top,
+            self.leftOpenLayer.bounds.size.width + kSmallBookOutlineShadowInset.left,
+            self.leftOpenLayer.bounds.size.height + kSmallBookOutlineShadowInset.top + kSmallBookOutlineShadowInset.bottom
+        };
+        _leftOutlineLayer.contents = (id)leftOutlineImage.CGImage;
+    }
+    return _leftOutlineLayer;
+}
+
+- (CALayer *)leftContentsLayer {
+    if (!_leftContentsLayer) {
+        _leftContentsLayer = [CALayer layer];
+        _leftContentsLayer.frame = (CGRect){
+            kSmallBookContentInset.left,
+            kSmallBookContentInset.top,
+            self.leftOpenLayer.bounds.size.width - kSmallBookContentInset.left,
+            self.leftOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
+        };
+        _leftContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
+    }
+    return _leftContentsLayer;
+}
+
+- (CALayer *)rightOpenLayer {
+    if (!_rightOpenLayer) {
+        _rightOpenLayer = [CALayer layer];
+        _rightOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
+        _rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
+                                              floorf(self.rootBookLayer.bounds.size.height / 2));
+        _rightOpenLayer.frame = CGRectMake(self.rootBookLayer.bounds.origin.x,
+                                           self.rootBookLayer.bounds.origin.y,
+                                           self.rootBookLayer.bounds.size.width,
+                                           self.rootBookLayer.bounds.size.height);
+        _rightOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
+    }
+    return _rightOpenLayer;
+}
+
+- (CALayer *)rightOutlineLayer {
+    if (!_rightOutlineLayer) {
+        UIImage *rightOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:NO];
+        _rightOutlineLayer = [CALayer layer];
+        _rightOutlineLayer.frame = (CGRect){
+            self.rightOpenLayer.bounds.origin.x,
+            -kSmallBookOutlineShadowInset.top,
+            self.rightOpenLayer.bounds.size.width + kSmallBookOutlineShadowInset.right,
+            self.rightOpenLayer.bounds.size.height + kSmallBookOutlineShadowInset.top + kSmallBookOutlineShadowInset.bottom
+        };
+        _rightOutlineLayer.contents = (id)rightOutlineImage.CGImage;
+    }
+    return _rightOutlineLayer;
+}
+
+- (CALayer *)rightContentsLayer {
+    if (!_rightContentsLayer) {
+        _rightContentsLayer = [CALayer layer];
+        _rightContentsLayer.frame = (CGRect){
+            self.rightOpenLayer.bounds.origin.x,
+            kSmallBookContentInset.top,
+            self.rightOpenLayer.bounds.size.width - kSmallBookContentInset.right,
+            self.rightOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
+        };
+        _rightContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
+    }
+    return _rightContentsLayer;
+}
+
+- (CALayer *)bookCoverContentsLayer {
+    if (!_bookCoverContentsLayer) {
+        _bookCoverContentsLayer = [CALayer layer];
+        _bookCoverContentsLayer.anchorPoint = CGPointMake(0.0, 0.0);
+        _bookCoverContentsLayer.frame = self.bookCoverLayer.bounds;
+        _bookCoverContentsLayer.doubleSided = NO;
+    }
+    return _bookCoverContentsLayer;
 }
 
 #pragma mark - Private methods
@@ -177,111 +294,23 @@
 - (void)initLayers {
     
     // Book root layer.
-    CALayer *rootBookLayer = [CALayer layer];
-    rootBookLayer.anchorPoint = CGPointMake(0.5, 0.5);
-    rootBookLayer.frame = self.bookCoverView.bounds;
-    rootBookLayer.position = (CGPoint) {
-        floorf((self.view.bounds.size.width) / 2.0),
-        floorf((self.view.bounds.size.height) / 2.0) + 10.0
-    };
-    rootBookLayer.backgroundColor = [UIColor clearColor].CGColor;
-    [self.view.layer addSublayer:rootBookLayer];
-    self.rootBookLayer = rootBookLayer;
+    [self.view.layer addSublayer:self.rootBookLayer];
     
-    // Opened RHS layer: outline - shadow.
-    CALayer *rightOpenLayer = [CALayer layer];
-    rightOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
-    rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
-                                          floorf(self.rootBookLayer.bounds.size.height / 2));
-    rightOpenLayer.frame = CGRectMake(rootBookLayer.bounds.origin.x,
-                                      rootBookLayer.bounds.origin.y,
-                                      rootBookLayer.bounds.size.width,
-                                      rootBookLayer.bounds.size.height);
-    rightOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
+    // RHS.
+    [self.rightOpenLayer addSublayer:self.rightOutlineLayer];
+    [self.rightOpenLayer addSublayer:self.rightContentsLayer];
+    [self.rootBookLayer addSublayer:self.rightOpenLayer];
     
-    // RHS outline: outline + shadow.
-    UIImage *rightOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:NO];
-    CALayer *rightOutlineLayer = [CALayer layer];
-    rightOutlineLayer.frame = (CGRect){
-        rightOpenLayer.bounds.origin.x,
-         -kSmallBookOutlineShadowInset.top,
-        rightOpenLayer.bounds.size.width + kSmallBookOutlineShadowInset.right,
-        rightOpenLayer.bounds.size.height + kSmallBookOutlineShadowInset.top + kSmallBookOutlineShadowInset.bottom
-    };
-    rightOutlineLayer.contents = (id)rightOutlineImage.CGImage;
-    [rightOpenLayer addSublayer:rightOutlineLayer];
-
-    // RHS contents.
-    CALayer *rightContentsLayer = [CALayer layer];
-    rightContentsLayer.frame = (CGRect){
-        rightOpenLayer.bounds.origin.x,
-        kSmallBookContentInset.top,
-        rightOpenLayer.bounds.size.width - kSmallBookContentInset.right,
-        rightOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
-    };
-    rightContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
-    [rightOpenLayer addSublayer:rightContentsLayer];
-    self.rightContentsLayer = rightContentsLayer;
+    // LHS.
+    [self.leftOpenLayer addSublayer:self.leftOutlineLayer];
+    [self.leftOpenLayer addSublayer:self.leftContentsLayer];
+    [self.bookCoverLayer addSublayer:self.leftOpenLayer];
     
-    [self.rootBookLayer addSublayer:rightOpenLayer];
-    self.rightOpenLayer = rightOpenLayer;
-    
-    // Book cover layer.
-    CALayer *rootBookCoverLayer = [CATransformLayer layer];
-    rootBookCoverLayer.anchorPoint = CGPointMake(0.0, 0.5);
-    rootBookCoverLayer.frame = self.rootBookLayer.bounds;
-    rootBookCoverLayer.position = CGPointMake(0.0, floorf(self.rootBookLayer.bounds.size.height / 2));
-    rootBookCoverLayer.doubleSided = YES;
-    
-    // Opened LHS layer.
-    CALayer *leftOpenLayer = [CALayer layer];
-    leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
-    leftOpenLayer.frame = rootBookCoverLayer.bounds;
-    leftOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
-    leftOpenLayer.doubleSided = NO;
-    leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
-    
-    // RHS outline.
-    UIImage *leftOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:YES];
-    CALayer *leftOutlineLayer = [CALayer layer];
-    leftOutlineLayer.frame = (CGRect){
-        -kSmallBookOutlineShadowInset.left,
-        -kSmallBookOutlineShadowInset.top,
-        leftOpenLayer.bounds.size.width + kSmallBookOutlineShadowInset.left,
-        leftOpenLayer.bounds.size.height + kSmallBookOutlineShadowInset.top + kSmallBookOutlineShadowInset.bottom
-    };
-    leftOutlineLayer.contents = (id)leftOutlineImage.CGImage;
-    [leftOpenLayer addSublayer:leftOutlineLayer];
-    
-    // LHS contents.
-    CALayer *leftContentsLayer = [CALayer layer];
-    leftContentsLayer.frame = (CGRect){
-        kSmallBookContentInset.left,
-        kSmallBookContentInset.top,
-        leftOpenLayer.bounds.size.width - kSmallBookContentInset.left,
-        leftOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
-    };
-    leftContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
-    [leftOpenLayer addSublayer:leftContentsLayer];
-    self.leftContentsLayer = leftContentsLayer;
-    
-    [rootBookCoverLayer addSublayer:leftOpenLayer];
-    self.leftOpenLayer = leftOpenLayer;
-    
-    // Front book cover contents.
-    CALayer *bookCoverContentsLayer = [CALayer layer];
-    bookCoverContentsLayer.anchorPoint = CGPointMake(0.0, 0.0);
-    bookCoverContentsLayer.frame = rootBookCoverLayer.bounds;
-    bookCoverContentsLayer.doubleSided = NO;
-    [rootBookCoverLayer addSublayer:bookCoverContentsLayer];
-    self.bookCoverContentsLayer = bookCoverContentsLayer;
-    
-    // Attach book cover view
-    self.bookCoverView.layer.frame = bookCoverContentsLayer.bounds;
+    // Book cover.
+    [self.bookCoverLayer addSublayer:self.bookCoverContentsLayer];
+    self.bookCoverView.layer.frame = self.bookCoverContentsLayer.bounds;
     [self.bookCoverContentsLayer addSublayer:self.bookCoverView.layer];
-
-    [self.rootBookLayer addSublayer:rootBookCoverLayer];
-    self.bookCoverLayer = rootBookCoverLayer;
+    [self.rootBookLayer addSublayer:self.bookCoverLayer];
     
     // Inside snapshot.
     [self loadSnapshotView];

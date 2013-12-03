@@ -35,7 +35,7 @@
 @property (nonatomic, strong) WelcomeViewController *welcomeViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
-@property (nonatomic, strong) BookTitleViewController *snapshotBookTitleViewController;
+@property (nonatomic, strong) BookTitleViewController *bookTitleViewController;
 @property (nonatomic, strong) DashboardTutorialViewController *tutorialViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
@@ -239,7 +239,8 @@
         
     } else {
         self.bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
-                                                                                           delegate:self];
+                                                                           titleViewController:self.bookTitleViewController
+                                                                                      delegate:self];
         self.bookNavigationViewController.view.hidden = NO;
     }
     
@@ -277,6 +278,8 @@
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
                              
+                             // Loading.
+                             [self.bookTitleViewController configureLoading:YES];
                          }];
         
     } else {
@@ -293,7 +296,7 @@
         [BookNavigationHelper sharedInstance].bookNavigationViewController = nil;
         
         // Nil out the bookTitleVC for snapshotting.
-        self.snapshotBookTitleViewController = nil;
+        self.bookTitleViewController = nil;
     }
     
 }
@@ -303,11 +306,11 @@
 }
 
 - (UIView *)bookCoverViewInsideSnapshotView {
-    return [self.snapshotBookTitleViewController.view snapshotViewAfterScreenUpdates:YES];
+    return [self.bookTitleViewController.view snapshotViewAfterScreenUpdates:YES];
 }
 
 - (UIImage *)bookCoverViewInsideSnapshotImage {
-    return [ImageHelper imageFromView:self.snapshotBookTitleViewController.view];
+    return [ImageHelper imageFromView:self.bookTitleViewController.view];
 }
 
 #pragma mark - BookNavigationViewControllerDelegate methods
@@ -720,19 +723,21 @@
 - (void)openBook:(CKBook *)book centerPoint:(CGPoint)centerPoint {
     
     self.selectedBook = book;
-    self.snapshotBookTitleViewController = [[BookTitleViewController alloc] initWithBook:book snapshot:YES delegate:nil];
-    self.snapshotBookTitleViewController.view.hidden = NO;
-    
-// Looks like this doesn't affect the snapshotting.
-//    [self.view addSubview:self.snapshotBookTitleViewController.view];
-//    [self.view sendSubviewToBack:self.snapshotBookTitleViewController.view];
+    self.bookTitleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:nil];
+    self.bookTitleViewController.view.hidden = NO;
     
     // Open book.
     BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book delegate:self];
     bookCoverViewController.view.frame = self.view.bounds;
     [self.view addSubview:bookCoverViewController.view];
-    [bookCoverViewController openBook:YES centerPoint:centerPoint];
     self.bookCoverViewController = bookCoverViewController;
+    
+    [self.bookCoverViewController loadSnapshotImage:[ImageHelper imageFromView:self.bookTitleViewController.view opaque:YES scaling:YES]];
+    
+    // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.bookCoverViewController openBook:YES centerPoint:centerPoint];
+//    });
     
 }
 

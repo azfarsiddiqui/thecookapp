@@ -36,9 +36,7 @@
 
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
-@property (nonatomic, assign) BOOL snapshot;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
-@property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
@@ -81,14 +79,8 @@
 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
-    
-    return [self initWithBook:book snapshot:NO delegate:delegate];
-}
-
-- (id)initWithBook:(CKBook *)book snapshot:(BOOL)snapshot delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
-        self.snapshot = snapshot;
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
@@ -104,8 +96,11 @@
     [self initBackgroundView];
     [self initCollectionView];
     
-    if (!self.snapshot) {
-        [self initActivityView];
+    // Attempt to load a cached title image.
+    UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
+    if (cachedTitleImage) {
+        self.imageView.image = cachedTitleImage;
+        self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     }
     
     [self addCloseButtonLight:YES];
@@ -113,6 +108,33 @@
     // Register photo loading events.
     [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
     [EventHelper registerPhotoLoadingProgress:self selector:@selector(photoLoadingProgress:)];
+}
+
+- (void)configureLoading:(BOOL)loading {
+    if (loading) {
+        if (![self.activityView isAnimating]) {
+            [self.activityView startAnimating];
+        }
+        if (!self.activityView.superview) {
+            self.activityView.alpha = 0.0;
+            [self.view addSubview:self.activityView];
+            
+            [UIView animateWithDuration:0.25
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.activityView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+            
+        }
+    } else {
+        if ([self.activityView isAnimating]) {
+            [self.activityView stopAnimating];
+        }
+        [self.activityView removeFromSuperview];
+    }
 }
 
 - (void)configurePages:(NSArray *)pages {
@@ -489,6 +511,27 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _rightArrowImageView;
 }
 
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleLarge];
+        _activityView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - _activityView.frame.size.width) / 2.0),
+            self.view.bounds.size.height - 205.0,
+            _activityView.frame.size.width,
+            _activityView.frame.size.height
+        };
+        _activityView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _activityView;
+}
+
+- (UIImageView *)topShadowView {
+    if (!_topShadowView) {
+        _topShadowView = [ViewHelper topShadowViewForView:self.imageView subtle:YES];
+    }
+    return _topShadowView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
@@ -517,28 +560,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.imageView addSubview:self.blurredImageView];
     
     // Apply top shadow.
-    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view subtle:YES];
-    [self.view insertSubview:topShadowView aboveSubview:self.imageView];
-    self.topShadowView = topShadowView;
+    [self.view insertSubview:self.topShadowView aboveSubview:self.imageView];
     
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
     
     // Borders.
     [self initBorders];
-    
-    // Binder
-    if (self.snapshot) {
-        UIImageView *bindImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
-        bindImageView.frame = (CGRect){
-            floorf((self.view.bounds.size.width - bindImageView.frame.size.width) / 2.0),
-            self.view.bounds.origin.y,
-            bindImageView.frame.size.width,
-            bindImageView.frame.size.height
-        };
-        bindImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [self.view addSubview:bindImageView];
-    }
 }
 
 - (void)initCollectionView {
@@ -565,20 +593,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, kStartUpOffset);
 }
 
-- (void)initActivityView {
-    CKActivityIndicatorView *activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleLarge];
-    activityView.frame = (CGRect){
-        floorf((self.view.bounds.size.width - activityView.frame.size.width) / 2.0),
-        self.view.bounds.size.height - 205.0,
-        activityView.frame.size.width,
-        activityView.frame.size.height
-    };
-    activityView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    [self.view addSubview:activityView];
-    self.activityView = activityView;
-    [activityView startAnimating];
-}
-
 - (void)addPage {
     [self enableAddMode:YES];
     [self performAddPageWithName:nil];
@@ -592,7 +606,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)configureHeroRecipeImage:(UIImage *)image {
     self.progressView.hidden = self.fullImageLoaded;
     
-    [ImageHelper configureImageView:self.imageView image:image];
+    if (self.fullImageLoaded) {
+        [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
+    }
+    
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     
     UIColor *tintColour = [[CKBookCover backdropColourForCover:self.book.cover] colorWithAlphaComponent:0.58];

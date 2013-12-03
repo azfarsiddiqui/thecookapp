@@ -31,6 +31,7 @@
 #import "CKSocialManager.h"
 #import "AnalyticsHelper.h"
 #import "CKSupplementaryContainerView.h"
+#import "CKBookManager.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -110,14 +111,23 @@
 #define kIndexSectionTag            950
 #define kProfileSectionTag          951
 
-- (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
+- (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
+          delegate:(id<BookNavigationViewControllerDelegate>)delegate {
+    
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDelegate:self]]) {
         self.delegate = delegate;
         self.book = book;
         self.user = book.user;
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
-        self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
+        
+        // Init the titleVC, which could be shared between RootVC and BookNavigationVC.
+        if (!titleViewController) {
+            self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
+        } else {
+            self.titleViewController = titleViewController;
+        }
+        self.titleViewController.delegate = self;
         self.titleViewController.bookPageDelegate = self;
         self.enableLikes = YES;
         self.destinationIndexes = @[@([self contentStartSection])]; //Start with first page
@@ -987,7 +997,6 @@
 }
 
 - (void)loadData {
-    DLog();
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
@@ -1093,6 +1102,7 @@
     if ([self.pages count] > 0) {
         [self.titleViewController configureHeroRecipe:self.featuredRecipe];
     }
+    
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {

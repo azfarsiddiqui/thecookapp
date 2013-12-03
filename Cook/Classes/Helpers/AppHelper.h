@@ -29,4 +29,8 @@
 - (NSArray *)keyboardIngredients;
 + (id) configValueForKey:(NSString*) key;
 
+// Local directories/files.
+- (NSString *)documentsDirectoryPath;
+- (NSString *)documentsPathForFileName:(NSString *)name;
+
 @end

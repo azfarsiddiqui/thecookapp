@@ -69,4 +69,8 @@
 - (NSString *)photoNameForRecipe:(CKRecipe *)recipe;
 - (NSString *)photoNameForBook:(CKBook *)book;
 
+// Cached title image for book.
+- (UIImage *)cachedTitleImageForBook:(CKBook *)book;
+- (void)cacheTitleImage:(UIImage *)image book:(CKBook *)book;
+
 @end

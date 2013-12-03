@@ -29,6 +29,7 @@
 
 #define kImageCompression       0.6
 #define kThumbImageCompression  0.6
+#define kBookTitleImagePrefix   @"titleImageForBook-"
 
 + (CKPhotoManager *)sharedInstance {
     static dispatch_once_t pred;
@@ -777,6 +778,16 @@
     return [NSString stringWithFormat:@"book_%@", book.objectId];
 }
 
+#pragma mark - Cached title images for book.
+
+- (UIImage *)cachedTitleImageForBook:(CKBook *)book {
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self cachedTitleImageKeyForBook:book]];
+}
+
+- (void)cacheTitleImage:(UIImage *)image book:(CKBook *)book {
+    [[SDImageCache sharedImageCache] storeImage:image forKey:[self cachedTitleImageKeyForBook:book] toDisk:YES];
+}
+
 #pragma mark - Private methods
 
 - (void)inTransferImageForName:(NSString *)name size:(CGSize)size completion:(void (^)(UIImage *image, NSString *name))completion {
@@ -1067,6 +1078,10 @@
 
 - (void)clearTransferForCacheKey:(NSString *)cacheKey {
     [self.transferInProgress removeObjectForKey:cacheKey];
+}
+
+- (NSString *)cachedTitleImageKeyForBook:(CKBook *)book {
+    return [NSString stringWithFormat:@"%@%@", kBookTitleImagePrefix, book.objectId];
 }
 
 @end
