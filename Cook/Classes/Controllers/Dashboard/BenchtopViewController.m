@@ -11,7 +11,6 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "SignUpBookCoverViewCell.h"
 #import "EventHelper.h"
-#import "CKPagingView.h"
 #import "CKNotificationView.h"
 #import "ViewHelper.h"
 #import "CKBook.h"
@@ -40,7 +39,6 @@
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIScrollView *backdropScrollView;
-@property (nonatomic, strong) CKPagingView *benchtopLevelView;
 @property (nonatomic, strong) CKNotificationView *notificationView;
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIImageView *vignetteView;
@@ -117,7 +115,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self initBackground];
     [self initCollectionView];
-    [self initBenchtopLevelView];
     [self initNotificationView];
     
     if ([CKUser isLoggedIn]) {
@@ -247,8 +244,6 @@
                          } completion:^(BOOL finished) {
                              [self updatePagingBenchtopView];
                          }];
-    } else {
-        [self updateBenchtopLevelViewAnimated:NO];
     }
     [self hideIntroViewsAsRequired];
 }
@@ -659,17 +654,6 @@
     [self.view insertSubview:self.vignetteView aboveSubview:self.collectionView];
 }
 
-- (void)initBenchtopLevelView {
-    CKPagingView *benchtopLevelView = [[CKPagingView alloc] initWithNumPages:3 startPage:1 type:CKPagingViewTypeVertical];
-    benchtopLevelView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    benchtopLevelView.frame = CGRectMake(30.0,
-                                         floorf((self.view.bounds.size.height - benchtopLevelView.frame.size.height) / 2.0),
-                                         benchtopLevelView.frame.size.width,
-                                         benchtopLevelView.frame.size.height);
-    [self.view addSubview:benchtopLevelView];
-    self.benchtopLevelView = benchtopLevelView;
-}
-
 - (void)initNotificationView {
     CKNotificationView *notificationView = [[CKNotificationView alloc] initWithDelegate:self];
     notificationView.frame = CGRectMake(18.0, 33.0, notificationView.frame.size.width, notificationView.frame.size.height);
@@ -711,28 +695,6 @@
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     [self.delegate panToBenchtopForSelf:self];
-}
-
-- (void)updateBenchtopLevelView {
-    [self updateBenchtopLevelViewAnimated:YES];
-}
-
-- (void)updateBenchtopLevelViewAnimated:(BOOL)animated {
-    self.benchtopLevelView.hidden = NO;
-    NSInteger level = [self.delegate currentBenchtopLevel];
-    switch (level) {
-        case 2:
-            [self.benchtopLevelView setPage:0 animated:animated];
-            break;
-        case 1:
-            [self.benchtopLevelView setPage:1 animated:animated];
-            break;
-        case 0:
-            [self.benchtopLevelView setPage:2 animated:animated];
-            break;
-        default:
-            break;
-    }
 }
 
 - (BenchtopBookCoverViewCell *)myBookCell {
@@ -800,7 +762,6 @@
                          
                          // Fade the icons away.
                          self.notificationView.alpha = enable ? 0.0 : 1.0;
-                         self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
                          self.libraryIntroView.alpha = enable ? 0.0 : 1.0;
                          self.settingsIntroView.alpha = enable ? 0.0 : 1.0;
                          
@@ -1132,7 +1093,6 @@
                          
                          // Hide the icons.
                          self.notificationView.alpha = enable ? 0.0 : 1.0;
-                         self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
                          
                          // Hide the intro views.
                          self.libraryIntroView.alpha = enable ? 0.0 : 1.0;
@@ -1482,7 +1442,6 @@
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.notificationView.alpha = show ? 1.0 : 0.0;
-                         self.benchtopLevelView.alpha = show ? 1.0 : 0.0;
                          self.libraryIntroView.alpha = show ? 1.0 : 0.0;
                          self.settingsIntroView.alpha = show ? 1.0 : 0.0;
                          cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
@@ -1528,7 +1487,6 @@
         [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController show:YES
                                                     animation:^{
                                                         self.notificationView.alpha = 0.0;
-                                                        self.benchtopLevelView.alpha = 0.0;
                                                         self.libraryIntroView.alpha = 0.0;
                                                         self.settingsIntroView.alpha = 0.0;
                                                     } completion:nil];
@@ -1537,7 +1495,6 @@
         [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
                                                     animation:^{
                                                         self.notificationView.alpha = 1.0;
-                                                        self.benchtopLevelView.alpha = 1.0;
                                                         self.libraryIntroView.alpha = 1.0;
                                                         self.settingsIntroView.alpha = 1.0;
                                                     } completion:^{
