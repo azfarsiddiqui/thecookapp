@@ -117,6 +117,13 @@ typedef enum SDImageCacheType SDImageCacheType;
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
 
 /**
+ * Query the disk cache synchronously and skipMemory if specified.
+ *
+ * @param key The unique key used to store the wanted image
+ */
+- (UIImage *)imageFromDiskCacheForKey:(NSString *)key skipMemory:(BOOL)skipMemory;
+
+/**
  * Remove the image from memory and disk cache synchronously
  *
  * @param key The unique image cache key

@@ -205,19 +205,29 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key
 {
+    return [self imageFromDiskCacheForKey:key skipMemory:NO];
+}
+
+- (UIImage *)imageFromDiskCacheForKey:(NSString *)key skipMemory:(BOOL)skipMemory {
+    
+    UIImage *image = nil;
+    
     // First check the in-memory cache...
-    UIImage *image = [self imageFromMemoryCacheForKey:key];
-    if (image)
-    {
-        return image;
+    if (!skipMemory) {
+        image = [self imageFromMemoryCacheForKey:key];
+        if (image) {
+            return image;
+        }
     }
     
     // Second check the disk cache...
     UIImage *diskImage = [self diskImageForKey:key];
     if (diskImage)
     {
-        CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
-        [self.memCache setObject:diskImage forKey:key cost:cost];
+        if (!skipMemory) {
+            CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
+            [self.memCache setObject:diskImage forKey:key cost:cost];
+        }
     }
     
     return diskImage;
