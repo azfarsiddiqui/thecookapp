@@ -54,8 +54,8 @@
 
 @implementation RootViewController
 
-#define kDragRatio                      0.25
-#define kSnapHeight                     50.0
+#define kDragRatio                      0.35
+#define kSnapHeight                     20.0
 #define kBounceOffset                   30.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
@@ -450,7 +450,6 @@
         self.storeViewController.overlayView.alpha = 1.0 - self.benchtopOverlayView.alpha;
     } else if (settingsOffset > 0) {
         self.benchtopOverlayView.alpha = MIN((settingsOffset / self.settingsViewController.view.frame.size.height) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
-        DLog(@"Settings offset is: %f", settingsOffset);
         self.settingsViewController.overlayView.alpha = 1.0 - self.benchtopOverlayView.alpha;
     } else {
         self.benchtopOverlayView.alpha = 0.0;
