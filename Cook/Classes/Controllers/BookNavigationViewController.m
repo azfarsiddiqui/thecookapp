@@ -1067,11 +1067,7 @@
     }
     
     // Add likes if we have at least one page.
-    if (self.enableLikes && [self.book isOwner]) {
-        self.likesPageName = [self resolveLikesPageName];
-        [self.pages addObject:self.likesPageName];
-        [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
-    }
+    [self processLikes];
     
     // Process rankings.
     [self processRanks];
@@ -1546,6 +1542,15 @@
                              [self.saveButton removeFromSuperview];
                          }
                      }];
+}
+
+- (void)processLikes {
+    if (self.enableLikes && [self.book isOwner]) {
+        self.likesPageName = [self resolveLikesPageName];
+        [self.pages addObject:self.likesPageName];
+        [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
+        [self.pageRecipeCount setObject:@([self.likedRecipes count]) forKey:self.likesPageName];
+    }
 }
 
 - (void)processRanks {
