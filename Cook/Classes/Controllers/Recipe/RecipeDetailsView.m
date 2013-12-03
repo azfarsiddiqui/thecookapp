@@ -607,15 +607,17 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         } delegate:self white:YES iconImage:iconImage];
     }
     
-    if ([self.recipeDetails.tags count] > 0 || self.editMode) {
+    if (self.editMode) {
         self.tagsLabel.alpha = 1.0;
         [self updateTagsFrame];
         if (self.editMode) {
             [self updateLayoutOffsetVertical:self.tagsLabel.frame.size.height + 15];
         } else {
-            [self updateLayoutOffsetVertical:self.tagsLabel.frame.size.height + 10];
+//            [self updateLayoutOffsetVertical:self.tagsLabel.frame.size.height + 10];
+            //Do nothing, tags label hidden at first
         }
     } else {
+        self.tagsLabel.alpha = 0.0;
         [self updateTagsFrame];
     }
     [self.editingHelper updateEditingView:self.tagsLabel];

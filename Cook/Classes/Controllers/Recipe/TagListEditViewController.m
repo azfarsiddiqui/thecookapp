@@ -346,8 +346,8 @@
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     //Header reference size too
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-    collectionView.bounces = YES;
-    collectionView.alwaysBounceHorizontal = YES;
+    collectionView.bounces = NO;
+    collectionView.alwaysBounceHorizontal = NO;
     collectionView.backgroundColor = [UIColor clearColor];
     collectionView.showsHorizontalScrollIndicator = NO;
     collectionView.delegate = self;

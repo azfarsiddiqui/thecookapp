@@ -42,7 +42,13 @@
         _user = recipe.user;
         _name = recipe.name;
         _story = recipe.story;
-        _tags = recipe.tags;
+        // Check if tag pointer resolves and ignores invalid tags
+        NSMutableArray *tempTags = [NSMutableArray new];
+        [recipe.tags enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
+            if ([obj.parseObject respondsToSelector:@selector(fetchIfNeeded)])
+                [tempTags addObject:obj];
+        }];
+        _tags = tempTags;
         _method = recipe.method;
         _numServes = recipe.numServes;
         _prepTimeInMinutes = recipe.prepTimeInMinutes;
