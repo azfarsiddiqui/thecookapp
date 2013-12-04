@@ -2207,11 +2207,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
     
     // If detected, then close the recipe.
-    if (edgeGesture.state == UIGestureRecognizerStateBegan) {
+    if (edgeGesture.state == UIGestureRecognizerStateBegan && self.imageScrollView.zoomScale == 1.0) {
         if (self.editMode) {
             [self cancelTapped:nil];
-        } else if (self.currentViewport == SnapViewportBelow) {
-            //Do nothing
+        } else if (self.currentViewport == SnapViewportBelow ) {
+            self.imageScrollView.scrollEnabled = NO;
+            [self toggleImage];
         } else {
             [self closeRecipeView];
         }
@@ -2241,7 +2242,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         CGFloat maxStoryHeight = 50.0;
         headerHeight = self.recipeDetailsView.storyLabel.frame.origin.y + MIN(self.recipeDetailsView.storyLabel.frame.size.height, maxStoryHeight) + 15.0;
     } else if (self.addMode) {
-        headerHeight = 265.0;
+        headerHeight = 320.0;
     }
     
     return headerHeight;
