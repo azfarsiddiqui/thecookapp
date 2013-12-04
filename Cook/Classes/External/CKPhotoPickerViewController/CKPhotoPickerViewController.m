@@ -115,6 +115,7 @@
         self.squareOverlayView.frame = self.view.bounds;
         [[self parentView] addSubview:self.squareOverlayView];
     }
+
 }
 
 - (void)receivedRotate:(id)sender
@@ -228,6 +229,14 @@
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.previewImageView;
+}
+
+- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
+    self.saveButton.enabled = NO;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    self.saveButton.enabled = YES;
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -673,6 +682,7 @@
         if (self.type == CKPhotoPickerImageTypeSquare) {
             scrollView.contentInset = UIEdgeInsetsMake(kSquareCropOrigin.y, kSquareCropOrigin.x, kSquareCropOrigin.y, kSquareCropOrigin.x);
             scrollView.maximumZoomScale = 2.0;
+            scrollView.minimumZoomScale = 0.8;
         }
 
         [scrollView addSubview:previewImageView];
@@ -843,17 +853,19 @@
 {
     UIImage *returnImage;
     @autoreleasepool {
-        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-        NSArray *adjustments = [filteredImage autoAdjustmentFiltersWithOptions:@{kCIImageAutoAdjustEnhance: @YES,
-                                                         kCIImageAutoAdjustRedEye: @NO}];
-        for (CIFilter *filter in adjustments){
-            [filter setValue:filteredImage forKey:kCIInputImageKey];
-            filteredImage = filter.outputImage;
+        if (image) {
+            CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+            NSArray *adjustments = [filteredImage autoAdjustmentFiltersWithOptions:@{kCIImageAutoAdjustEnhance: @YES,
+                                                                                     kCIImageAutoAdjustRedEye: @NO}];
+            for (CIFilter *filter in adjustments){
+                [filter setValue:filteredImage forKey:kCIInputImageKey];
+                filteredImage = filter.outputImage;
+            }
+            CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+            returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+            filteredImage = nil;
+            CGImageRelease(returnCGImage);
         }
-        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-        returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-        filteredImage = nil;
-        CGImageRelease(returnCGImage);
     }
     return returnImage;
 }
