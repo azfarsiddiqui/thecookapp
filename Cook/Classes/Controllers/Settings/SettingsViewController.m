@@ -65,8 +65,6 @@
     [self initSettingsContent];
     [self createLoginLogoutButton];
     
-    [self.view addSubview:self.overlayView];
-    
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
@@ -168,16 +166,6 @@
         };
     }
     return _themeTabView;
-}
-
-- (UIView *)overlayView {
-    if (!_overlayView) {
-        _overlayView = [[UIView alloc] init];
-        _overlayView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, kSettingsHeight * 2);
-        _overlayView.backgroundColor = [UIColor blackColor];
-        _overlayView.alpha = 0.0;
-    }
-    return _overlayView;
 }
 
 #pragma mark - Private methods

@@ -50,6 +50,9 @@
 @property (nonatomic, strong) UIImageView *defaultImageView;
 @property (nonatomic, strong) UIView *snapshotView;
 
+@property (nonatomic, strong) UIView *topOverlayView;
+@property (nonatomic, strong) UIView *bottomOverlayView;
+
 @end
 
 @implementation RootViewController
@@ -1149,13 +1152,18 @@
 #pragma mark - Rotation methods
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    self.storeViewController.overlayView.alpha = 1.0;
-    self.settingsViewController.overlayView.alpha = 1.0;
+    self.topOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, -500, SCREEN_WIDTH, 500)];
+    self.topOverlayView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:self.topOverlayView];
+    
+    self.bottomOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 500)];
+    self.bottomOverlayView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:self.bottomOverlayView];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    self.storeViewController.overlayView.alpha = 0.0;
-    self.settingsViewController.overlayView.alpha = 0.0;
+    [self.topOverlayView removeFromSuperview];
+    [self.bottomOverlayView removeFromSuperview];
 }
 
 @end

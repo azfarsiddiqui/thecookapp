@@ -16,7 +16,6 @@
 
 @interface SettingsViewController : UIViewController
 
-@property (nonatomic, strong) UIView *overlayView;
 - (id)initWithDelegate:(id<SettingsViewControllerDelegate>)delegate;
 
 @end
