@@ -29,9 +29,11 @@
 @property (nonatomic, strong) CALayer *bookCoverContentsLayer;
 @property (nonatomic, strong) CALayer *leftOpenLayer;
 @property (nonatomic, strong) CALayer *leftOutlineLayer;
+@property (nonatomic, strong) CALayer *leftPaperOutlineLayer;
 @property (nonatomic, strong) CALayer *leftContentsLayer;
 @property (nonatomic, strong) CALayer *rightOpenLayer;
 @property (nonatomic, strong) CALayer *rightOutlineLayer;
+@property (nonatomic, strong) CALayer *rightPaperOutlineLayer;
 @property (nonatomic, strong) CALayer *rightContentsLayer;
 @property (nonatomic, assign) BOOL opened;
 
@@ -42,8 +44,23 @@
 #define RADIANS(degrees)                ((degrees * (float)M_PI) / 180.0f)
 #define kBookContentInset               (UIEdgeInsets){ 26.0, 64.0, 64.0, 64.0 }
 #define kBookOutlineShadowInset         (UIEdgeInsets){ 16.0, 44.0, 54.0, 44.0 }
-#define kSmallBookContentInset          (UIEdgeInsets){ 8.0, 17.0, 12.0, 17.0 }
+#define kSmallBookContentInset          (UIEdgeInsets){ 5.0, 12.0, 5.0, 12.0 }
 #define kSmallBookOutlineShadowInset    (UIEdgeInsets){ 9.0, 26.0, 30.0, 26.0 }
+
+- (void)dealloc {
+    _bookCoverView = nil;
+    _rootBookLayer = nil;
+    _bookCoverLayer = nil;
+    _bookCoverContentsLayer = nil;
+    _leftOpenLayer = nil;
+    _leftOutlineLayer = nil;
+    _leftPaperOutlineLayer = nil;
+    _leftContentsLayer = nil;
+    _rightOpenLayer = nil;
+    _rightOutlineLayer = nil;
+    _rightPaperOutlineLayer = nil;
+    _rightContentsLayer = nil;
+}
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate {
     return [self initWithBook:book mine:NO delegate:delegate];
@@ -89,11 +106,8 @@
     DLog();
     for (CALayer* layer in [self.view.layer sublayers]) {
         [layer removeAllAnimations];
+        [layer removeFromSuperlayer];
     }
-    [self.rightOpenLayer removeFromSuperlayer];
-    [self.leftOpenLayer removeFromSuperlayer];
-    [self.bookCoverLayer removeFromSuperlayer];
-    [self.rootBookLayer removeFromSuperlayer];
 }
 
 - (void)loadSnapshotView:(UIView *)snapshotView {
@@ -101,33 +115,33 @@
         return;
     }
     
-    // Left image.
-    UIGraphicsBeginImageContextWithOptions((CGSize){ (snapshotView.bounds.size.width / 2.0), snapshotView.bounds.size.height}, NO, 0);
-    BOOL leftDone = [snapshotView drawViewHierarchyInRect:(CGRect){
-        0.0,
-        0.0,
-        snapshotView.frame.size.width,
-        snapshotView.frame.size.height
-    } afterScreenUpdates:YES];
-    UIImage *leftImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    self.leftOpenLayer.contents = (id)leftImage.CGImage;
-    DLog(@"Drawn leftImage %@", leftDone ? @"YES" : @"NO");
-    
-    // Right image.
-    UIGraphicsBeginImageContextWithOptions((CGSize){snapshotView.bounds.size.width/2.0, snapshotView.bounds.size.height}, NO, 0);
-    BOOL rightDone = [snapshotView drawViewHierarchyInRect:(CGRect){
-        -(snapshotView.frame.size.width / 2.0),
-        0.0,
-        snapshotView.frame.size.width,
-        snapshotView.frame.size.height
-    } afterScreenUpdates:YES];
-    UIImage *rightImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    self.rightOpenLayer.contents = (id)rightImage.CGImage;
-    DLog(@"Drawn rightImage %@", rightDone ? @"YES" : @"NO");
-    
-    DLog(@"Loaded snapshotView");
+    @autoreleasepool {
+        // Left image.
+        UIGraphicsBeginImageContextWithOptions((CGSize){ (snapshotView.bounds.size.width / 2.0), snapshotView.bounds.size.height}, NO, 0);
+        BOOL leftDone = [snapshotView drawViewHierarchyInRect:(CGRect){
+            0.0,
+            0.0,
+            snapshotView.frame.size.width,
+            snapshotView.frame.size.height
+        } afterScreenUpdates:YES];
+        UIImage *leftImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        self.leftContentsLayer.contents = (id)leftImage.CGImage;
+        DLog(@"Drawn leftImage %@", leftDone ? @"YES" : @"NO");
+        
+        // Right image.
+        UIGraphicsBeginImageContextWithOptions((CGSize){snapshotView.bounds.size.width/2.0, snapshotView.bounds.size.height}, NO, 0);
+        BOOL rightDone = [snapshotView drawViewHierarchyInRect:(CGRect){
+            -(snapshotView.frame.size.width / 2.0),
+            0.0,
+            snapshotView.frame.size.width,
+            snapshotView.frame.size.height
+        } afterScreenUpdates:YES];
+        UIImage *rightImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        self.rightContentsLayer.contents = (id)rightImage.CGImage;
+        DLog(@"Drawn rightImage %@", rightDone ? @"YES" : @"NO");
+    }
 }
 
 - (void)loadSnapshotImage:(UIImage *)snapshotImage {
@@ -135,29 +149,30 @@
         return;
     }
     
-    CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
-    CGRect screenFrame = [[AppHelper sharedInstance] fullScreenFrame];
-    
-    // Left image.
-    UIImage *leftImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
-        0.0,
-        0.0,
-        (screenFrame.size.width / 2.0) * screenScale,
-        screenFrame.size.height * screenScale
-    }];
-    UIGraphicsEndImageContext();
-    self.leftContentsLayer.contentsScale = screenScale;
-    self.leftContentsLayer.contents = (id)leftImage.CGImage;
-    
-    // Right image.
-    UIImage *rightImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
-        (screenFrame.size.width / 2.0) * screenScale,
-        0.0,
-        (screenFrame.size.width / 2.0) * screenScale,
-        screenFrame.size.height * screenScale
-    }];
-    self.rightContentsLayer.contentsScale = screenScale;
-    self.rightContentsLayer.contents = (id)rightImage.CGImage;
+    @autoreleasepool {
+        CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
+        CGRect screenFrame = [[AppHelper sharedInstance] fullScreenFrame];
+        
+        // Left image.
+        UIImage *leftImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
+            0.0,
+            0.0,
+            (screenFrame.size.width / 2.0) * screenScale,
+            screenFrame.size.height * screenScale
+        }];
+        self.leftContentsLayer.contentsScale = screenScale;
+        self.leftContentsLayer.contents = (id)leftImage.CGImage;
+        
+        // Right image.
+        UIImage *rightImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
+            (screenFrame.size.width / 2.0) * screenScale,
+            0.0,
+            (screenFrame.size.width / 2.0) * screenScale,
+            screenFrame.size.height * screenScale
+        }];
+        self.rightContentsLayer.contentsScale = screenScale;
+        self.rightContentsLayer.contents = (id)rightImage.CGImage;
+    }
 }
 
 #pragma mark - CAAnimation delegate methods
@@ -228,6 +243,16 @@
     return _leftOutlineLayer;
 }
 
+- (CALayer *)leftPaperOutlineLayer {
+    if (!_leftPaperOutlineLayer) {
+        UIImage *leftPaperOutlineImage = [UIImage imageNamed:@"cook_book_edge_overlay_left.png"];
+        _leftPaperOutlineLayer = [CALayer layer];
+        _leftPaperOutlineLayer.frame = self.leftOutlineLayer.frame;
+        _leftPaperOutlineLayer.contents = (id)leftPaperOutlineImage.CGImage;
+    }
+    return _leftPaperOutlineLayer;
+}
+
 - (CALayer *)leftContentsLayer {
     if (!_leftContentsLayer) {
         _leftContentsLayer = [CALayer layer];
@@ -237,7 +262,6 @@
             self.leftOpenLayer.bounds.size.width - kSmallBookContentInset.left,
             self.leftOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
         };
-        _leftContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
     }
     return _leftContentsLayer;
 }
@@ -272,6 +296,16 @@
     return _rightOutlineLayer;
 }
 
+- (CALayer *)rightPaperOutlineLayer {
+    if (!_rightPaperOutlineLayer) {
+        UIImage *rightPaperOutlineImage = [UIImage imageNamed:@"cook_book_edge_overlay_right.png"];
+        _rightPaperOutlineLayer = [CALayer layer];
+        _rightPaperOutlineLayer.frame = self.rightOutlineLayer.frame;
+        _rightPaperOutlineLayer.contents = (id)rightPaperOutlineImage.CGImage;
+    }
+    return _rightPaperOutlineLayer;
+}
+
 - (CALayer *)rightContentsLayer {
     if (!_rightContentsLayer) {
         _rightContentsLayer = [CALayer layer];
@@ -281,7 +315,6 @@
             self.rightOpenLayer.bounds.size.width - kSmallBookContentInset.right,
             self.rightOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
         };
-        _rightContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
     }
     return _rightContentsLayer;
 }
@@ -305,11 +338,13 @@
     
     // RHS.
     [self.rightOpenLayer addSublayer:self.rightOutlineLayer];
+    [self.rightOpenLayer addSublayer:self.rightPaperOutlineLayer];
     [self.rightOpenLayer addSublayer:self.rightContentsLayer];
     [self.rootBookLayer addSublayer:self.rightOpenLayer];
     
     // LHS.
     [self.leftOpenLayer addSublayer:self.leftOutlineLayer];
+    [self.leftOpenLayer addSublayer:self.leftPaperOutlineLayer];
     [self.leftOpenLayer addSublayer:self.leftContentsLayer];
     [self.bookCoverLayer addSublayer:self.leftOpenLayer];
     
