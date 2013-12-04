@@ -772,7 +772,7 @@
     
     [self updateStatViews];
     
-    if (![self.currentUser isSignedIn]) {
+    if (![self.currentUser isSignedIn] || self.book.disabled) {
         
         // Inform delegate of book is locked for non-signed in users.
         if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {

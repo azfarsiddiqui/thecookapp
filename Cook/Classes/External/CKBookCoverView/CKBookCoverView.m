@@ -417,6 +417,7 @@
     self.nameTextView.textAlignment = [self authorTextAlignment];
     self.nameTextView.text = title;
     self.nameTextView.frame = [self nameFrame];
+    self.nameTextView.alpha = self.book.disabled ? 0.7 : 1.0;
     
     // Update editing wrapper if in edit mode.
     if (self.editMode) {
@@ -444,6 +445,7 @@
     
     UIFont *maxFont = [self authorFont];
     self.authorTextView.textAlignment = [self titleTextAlignment];
+    self.authorTextView.alpha = self.book.disabled ? 0.7 : 1.0;
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;

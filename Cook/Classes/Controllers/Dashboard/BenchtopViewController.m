@@ -1173,8 +1173,8 @@
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = (indexPath.section == kMyBookSection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
     
-    // Cannot open guest book.
-    if (book.guest) {
+    // Cannot open guest or disabled book.
+    if (book.guest || book.disabled) {
         return;
     }
     
