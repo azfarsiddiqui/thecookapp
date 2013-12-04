@@ -60,7 +60,7 @@
     recipe.book = book;
     recipe.user = book.user;
     recipe.page = page;
-    recipe.privacy = CKPrivacyFriends;
+    recipe.privacy = CKPrivacyPrivate;
     return recipe;
 }
 

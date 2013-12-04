@@ -71,9 +71,8 @@
                          }
                      }
                      completion:^(BOOL finished){
+                         [self selectedPrivacyAtNotchIndex:selectedNotchIndex];
                      }];
-    
-    [self selectedPrivacyAtNotchIndex:selectedNotchIndex];
 }
 
 - (void)updateNotchSliderWithFrame:(CGRect)sliderFrame {

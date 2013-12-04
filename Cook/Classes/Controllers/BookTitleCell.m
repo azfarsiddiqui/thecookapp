@@ -77,7 +77,13 @@
     [self addStacksWithNumRecipes:numRecipes];
 
     self.titleLabel.text = [page uppercaseString];
-    self.subtitleLabel.text = [NSString stringWithFormat:@"%d RECIPES", numRecipes];
+    
+    NSMutableString *numRecipesDisplay = [NSMutableString stringWithFormat:@"%d RECIPE", numRecipes];
+    if (numRecipes != 1) {
+        [numRecipesDisplay appendString:@"S"];
+    }
+    self.subtitleLabel.text = numRecipesDisplay;
+    
     [self.titleLabel sizeToFit];
     [self.subtitleLabel sizeToFit];
     

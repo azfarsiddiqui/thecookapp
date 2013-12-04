@@ -242,11 +242,18 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
             
             // Add mode?
             if (self.addMode) {
-//                [self performSelector:@selector(enableEditModeWithoutInformingRecipeDetailsView) withObject:nil afterDelay:0.0];
                 
                 // No buttons to start off with in add-mode.
                 [self updateButtonsWithAlpha:0.0];
+                
+                // Enable edit mode next.
                 [self performSelector:@selector(enableEditMode) withObject:nil afterDelay:0.0];
+                
+                // Now set privacy level to Public by default.
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                    [self.privacyView selectNotch:CKPrivacyPublic animated:YES informDelegate:YES];
+                });
+
             } else {
                 [self updateButtons];
             }
@@ -1970,8 +1977,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Create a new RecipeDetailsView everytime, getting rid of the last one if it exists.
     [self.recipeDetailsView removeFromSuperview];
     self.recipeDetailsView = nil;
-    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails
-                                                                     delegate:self];
+    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];
     
     // Update the scrollView with the recipe details view.
     [self updateRecipeDetailsView];
