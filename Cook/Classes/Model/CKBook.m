@@ -574,6 +574,10 @@
     return [NSURL URLWithString:urlString];
 }
 
+- (BOOL)disabled {
+    return [[self.parseObject objectForKey:kBookAttrDisabled] boolValue];
+}
+
 #pragma mark - Searches
 
 + (void)searchBooksByKeyword:(NSString *)keyword success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {

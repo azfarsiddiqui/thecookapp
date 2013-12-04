@@ -45,6 +45,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL featured;
 @property (nonatomic, assign) BookStatus status;
 @property (nonatomic, assign) BOOL guest;
+@property (nonatomic, assign) BOOL disabled;
 @property (nonatomic, strong) CKRecipe *titleRecipe;
 
 // Cover photos.
