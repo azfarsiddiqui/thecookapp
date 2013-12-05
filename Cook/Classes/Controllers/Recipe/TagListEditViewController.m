@@ -46,26 +46,6 @@
             return (obj1.categoryIndex * 1000 + obj1.orderIndex) < (obj2.categoryIndex * 1000 + obj2.orderIndex) ? NSOrderedAscending : NSOrderedDescending;
         }];
         
-        //TEMP CODE ***************
-        if ([self.items count] <=0) {
-            [CKRecipeTag tagListWithSuccess:^(NSArray *tags) {
-                self.items = [tags sortedArrayUsingComparator:^NSComparisonResult(CKRecipeTag *obj1, CKRecipeTag *obj2) {
-                    //Ordering by category and orderIndex
-                    return (obj1.categoryIndex * 1000 + obj1.orderIndex) < (obj2.categoryIndex * 1000 + obj2.orderIndex) ? NSOrderedAscending : NSOrderedDescending;
-                }];
-                [self reloadCollectionViews];
-                //Programatically select all items in array or preselected tags
-                
-                
-            } failure:^(NSError *error) {
-                //Show error message and dismiss
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alertView show];
-                [self dismissEditView];
-            }];
-        }
-        //*****************
-        
         [self.selectedItems enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:obj.orderIndex inSection:0];
             if (obj.categoryIndex == kMealTagType) {

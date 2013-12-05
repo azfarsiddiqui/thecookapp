@@ -14,41 +14,6 @@
 
 #define DEFAULT_LANGUAGE @"en"
 
-+(NSArray *)sharedTags
-{
-    static NSArray *singletonInstance = nil;
-    if ([singletonInstance count] <= 0)
-    {
-        [CKRecipeTag tagListWithSuccess:^(NSArray *tags) {
-            singletonInstance = tags;
-        } failure:^(NSError *error) {
-            DLog(@"Error getting tags");
-        }];
-    }
-    return singletonInstance;
-}
-
-+ (void)tagListWithSuccess:(GetTagsSuccessBlock)success failure:(ObjectFailureBlock)failure
-{
-    PFQuery *query = [PFQuery queryWithClassName:kRecipeTagModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-    // TODO: Need to filter out region specific tags
-    //[query whereKey:kUserModelForeignKeyName equalTo:objectID];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error)
-        {
-            NSMutableArray *tagObjects = [NSMutableArray new];
-            for (PFObject *parseTagObject in objects) {
-                CKRecipeTag *recipeTag = [[CKRecipeTag alloc] initWithParseObject:parseTagObject];
-                [tagObjects addObject:recipeTag];
-            }
-            success(tagObjects);
-        }
-        else
-            failure(error);
-    }];
-}
-
 - (NSString *)displayName
 {
     NSString *languageCode = [[NSLocale preferredLanguages] objectAtIndex:0]; //Current user's language code

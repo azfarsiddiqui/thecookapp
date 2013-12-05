@@ -19,6 +19,4 @@ typedef void(^GetTagsSuccessBlock)(NSArray *tags);
 @property (nonatomic, readonly) NSInteger orderIndex;
 @property (nonatomic, readonly) NSString *imageType;
 
-+ (void)tagListWithSuccess:(GetTagsSuccessBlock)success failure:(ObjectFailureBlock)failure;
-
 @end
