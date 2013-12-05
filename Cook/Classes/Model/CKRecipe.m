@@ -127,6 +127,9 @@
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure {
     
+    //Stamp locale info here
+    self.locale = [[NSLocale autoupdatingCurrentLocale] localeIdentifier];
+    
     // If we have an image, generate a recipe image placeholder.
     if (image) {
         
@@ -492,6 +495,7 @@
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.numServes integerValue]] forKey:kRecipeAttrNumServes];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", [self.prepTimeInMinutes integerValue]] forKey:kRecipeAttrPrepTimeInMinutes];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", [self.cookingTimeInMinutes integerValue]] forKey:kRecipeAttrCookingTimeInMinutes];
+    [descriptionProperties setValue:[NSString CK_safeString:self.locale] forKey:kRecipeAttrLocale];
     [descriptionProperties setValue:self.page forKey:kRecipeAttrPage];
     [descriptionProperties setValue:[self.book description] forKey:kBookModelForeignKeyName];
     [descriptionProperties setValue:[self.user description] forKey:kUserModelForeignKeyName];
@@ -712,6 +716,18 @@
         recipeUpdatedDateTime = self.createdDateTime;
     }
     return recipeUpdatedDateTime;
+}
+
+- (void)setLocale:(NSString *)recipeLocale {
+    if (recipeLocale) {
+        [self.parseObject setObject:recipeLocale forKey:kRecipeAttrLocale];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrLocale];
+    }
+}
+
+- (NSString *)locale {
+    return (NSString *)[self.parseObject objectForKey:kRecipeAttrLocale];
 }
 
 #pragma mark - Existence methods

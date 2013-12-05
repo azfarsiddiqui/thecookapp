@@ -40,6 +40,7 @@ typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 @property (nonatomic, strong) NSArray *ingredients;
 @property (nonatomic, assign) CKPrivacy privacy;
 @property (nonatomic, strong) CKLocation *geoLocation;
+@property (nonatomic, strong) NSString *locale;
 @property (nonatomic, strong) CKRecipeImage *recipeImage;
 @property (nonatomic, assign, readonly) NSInteger numViews;
 @property (nonatomic, assign, readonly) NSInteger numLikes;

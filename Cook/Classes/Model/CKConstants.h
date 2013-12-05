@@ -100,6 +100,7 @@ extern NSString *const kRecipeAttrPrepTimeInMinutes;
 extern NSString *const kRecipeAttrRecipeViewImageContentOffset;
 extern NSString *const kRecipeAttrPrivacy;
 extern NSString *const kRecipeAttrLocation;
+extern NSString *const kRecipeAttrLocale;
 extern NSString *const kRecipeAttrNumViews;
 extern NSString *const kRecipeAttrNumLikes;
 extern NSString *const kRecipeAttrNumComments;
