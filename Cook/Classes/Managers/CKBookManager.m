@@ -13,9 +13,7 @@
 #import <Parse/Parse.h>
 #import "CKRecipeTag.h"
 
-@interface CKBookManager () {
-    NSArray *_tagArray;
-}
+@interface CKBookManager () 
 
 @property (nonatomic, strong) CKBook *myBook;
 
@@ -46,25 +44,6 @@
 
 - (void)holdMyCurrentBook:(CKBook *)book {
     self.myBook = book;
-}
-
-#pragma mark - Properties
-
-- (void)setTagArray:(NSArray *)tagArray {
-    //Set tag array here
-//    if (!error)
-//    {
-//        NSMutableArray *tagObjects = [NSMutableArray new];
-//        for (PFObject *parseTagObject in objects) {
-//            CKRecipeTag *recipeTag = [[CKRecipeTag alloc] initWithParseObject:parseTagObject];
-//            [tagObjects addObject:recipeTag];
-//        }
-//        _tagArray = tagObjects;
-//    }
-}
-
-- (NSArray *)tagArray {
-    return _tagArray;
 }
 
 @end

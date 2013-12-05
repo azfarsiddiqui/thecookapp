@@ -14,6 +14,8 @@
 #import "CKBookCover.h"
 #import "CKPhotoManager.h"
 #import "AppHelper.h"
+#import "CKBookManager.h"
+#import "CKRecipeTag.h"
 
 @interface CKBook ()
 
@@ -417,6 +419,15 @@
                                         NSDictionary *pageRecipeCount = [recipeResults objectForKey:@"pageRecipeCount"];
                                         NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
+                                        
+                                        // Grab tags.
+                                        NSArray *parseTags = [recipeResults objectForKey:@"tags"];
+                                        if ([parseTags count] > 0) {
+                                            NSArray *tags = [parseTags collect:^id(PFObject *parseTag) {
+                                                return [[CKRecipe alloc] initWithParseObject:parseTag];
+                                            }];
+                                            [CKBookManager sharedInstance].tagArray = tags;
+                                        }
                                         
                                         // Wrap the recipes in our model.
                                         NSMutableDictionary *pageRecipes = [NSMutableDictionary dictionary];
