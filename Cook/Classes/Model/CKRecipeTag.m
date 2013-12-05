@@ -14,9 +14,18 @@
 
 #define DEFAULT_LANGUAGE @"en"
 
-//TEST METHOD
-+ (void)tagWithName:(NSString *)name category:(NSInteger)categoryIndex order:(NSInteger)orderIndex imageType:(NSString *)imageType {
-    
++(NSArray *)sharedTags
+{
+    static NSArray *singletonInstance = nil;
+    if ([singletonInstance count] <= 0)
+    {
+        [CKRecipeTag tagListWithSuccess:^(NSArray *tags) {
+            singletonInstance = tags;
+        } failure:^(NSError *error) {
+            DLog(@"Error getting tags");
+        }];
+    }
+    return singletonInstance;
 }
 
 + (void)tagListWithSuccess:(GetTagsSuccessBlock)success failure:(ObjectFailureBlock)failure

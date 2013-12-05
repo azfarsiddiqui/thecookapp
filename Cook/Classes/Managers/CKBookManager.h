@@ -12,6 +12,8 @@
 
 @interface CKBookManager : NSObject
 
+@property (nonatomic, strong) NSArray *tagArray;
+
 + (instancetype)sharedInstance;
 
 // Hang onto my book references.
