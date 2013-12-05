@@ -16,6 +16,7 @@
 @property (nonatomic, weak) id<PagingCollectionViewLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL followMode;
 
 @property (nonatomic, strong) NSMutableArray *anchorPoints;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
@@ -53,6 +54,10 @@
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
     [self markLayoutDirty];
+}
+
+- (void)enableFollowMode:(BOOL)followMode {
+    self.followMode = followMode;
 }
 
 - (CGRect)frameForGap {
@@ -189,9 +194,18 @@
             
         } else if (itemIndexPath.section == kFollowSection) {
             
-            // Inserted followed book slides in.
-            CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, 62.0, 0.0, 0.0);
-            initialAttributes.transform3D = translateTransform;
+            if (self.followMode) {
+                
+                // Followed book slides down.
+                CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, 0.0, -100.0, 0.0);
+                initialAttributes.transform3D = translateTransform;
+                
+            } else {
+                
+                // Inserted followed book slides in.
+                CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, 62.0, 0.0, 0.0);
+                initialAttributes.transform3D = translateTransform;
+            }
         }
         
     }

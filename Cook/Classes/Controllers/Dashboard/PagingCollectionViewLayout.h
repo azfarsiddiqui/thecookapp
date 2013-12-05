@@ -21,6 +21,7 @@
 - (id)initWithDelegate:(id<PagingCollectionViewLayoutDelegate>)delegate;
 - (void)markLayoutDirty;
 - (void)enableEditMode:(BOOL)editMode;
+- (void)enableFollowMode:(BOOL)followMode;
 - (CGRect)frameForGap;;
 - (NSArray *)bookAnchorPoints;
 - (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook;
