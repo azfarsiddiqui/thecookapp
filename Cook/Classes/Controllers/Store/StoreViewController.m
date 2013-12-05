@@ -672,6 +672,7 @@
     }
     
     [self.currentStoreCollectionViewController unloadData];
+    self.currentStoreCollectionViewController.view.hidden = YES;
     self.currentStoreCollectionViewController = nil;
 }
 
