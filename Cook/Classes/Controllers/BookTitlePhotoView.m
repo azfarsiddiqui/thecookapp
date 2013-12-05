@@ -74,6 +74,7 @@
     if (!_profilePhotoView) {
         _profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user profileSize:ProfileViewSizeLarge];
         _profilePhotoView.delegate = self;
+        _profilePhotoView.highlightOnTap = NO;
     }
     return _profilePhotoView;
 }

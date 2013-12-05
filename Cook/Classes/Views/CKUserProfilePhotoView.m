@@ -110,6 +110,7 @@
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize border:border]]) {
         self.placeholderImage = placeholderImage;
         self.profileSize = profileSize;
+        self.highlightOnTap = YES;
         
         // Background/border colour.
         if (border) {
@@ -227,14 +228,14 @@
 #pragma mark - Touches
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    if (!self.delegate) {
+    if (!self.delegate || !self.highlightOnTap) {
         return;
     }
     self.profileImageView.alpha = 0.5;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (!self.delegate) {
+    if (!self.delegate || !self.highlightOnTap) {
         return;
     }
     
@@ -248,7 +249,7 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    if (!self.delegate) {
+    if (!self.delegate || !self.highlightOnTap) {
         return;
     }
     self.profileImageView.alpha = 1.0;

@@ -30,6 +30,7 @@ typedef enum {
 @interface CKUserProfilePhotoView : UIView
 
 @property (nonatomic, weak) id<CKUserProfilePhotoViewDelegate> delegate;
+@property (nonatomic, assign) BOOL highlightOnTap;
 
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize;
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
