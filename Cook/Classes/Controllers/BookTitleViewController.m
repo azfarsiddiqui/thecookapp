@@ -532,7 +532,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (UIImageView *)topShadowView {
     if (!_topShadowView) {
-        _topShadowView = [ViewHelper topShadowViewForView:self.imageView subtle:YES];
+        _topShadowView = [ViewHelper topShadowViewForView:self.view subtle:YES];
     }
     return _topShadowView;
 }
