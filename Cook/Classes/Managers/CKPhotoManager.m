@@ -651,7 +651,7 @@
     DLog(@"Uploading images for user [%@]", user.objectId);
     
     // Just the thumbnail size for the user photo.
-    UIImage *thumbImage = [ImageHelper thumbImageForImage:image];
+    UIImage *thumbImage = image;
     NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, kThumbImageCompression);
     PFFile *thumbImageFile = [PFFile fileWithName:@"profile.jpg" data:thumbImageData];
     
