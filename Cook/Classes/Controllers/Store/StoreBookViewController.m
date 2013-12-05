@@ -131,8 +131,11 @@
                                               self.animating = NO;
                                               
                                               if (![self.book isOwner]) {
-                                                  [self.bookCoverView showActionButton:YES animated:NO];
-                                                  [self.bookCoverView showLoading:YES];
+                                                  [self.bookCoverView showActionButton:!self.book.disabled animated:NO];
+                                                  
+                                                  if (!self.book.disabled) {
+                                                      [self.bookCoverView showLoading:YES];
+                                                  }
                                               }
                                               
                                               [self loadData];

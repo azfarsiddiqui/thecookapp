@@ -1222,12 +1222,19 @@
         }]) {
             
             [[self pagingLayout] markLayoutDirty];
+            [[self pagingLayout] enableFollowMode:YES];
             
-            [self.followBooks addObject:book];
+            // Prepend to the followed books.
+            [self.followBooks insertObject:book atIndex:0];
+            
             [self.collectionView performBatchUpdates:^{
-                [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.followBooks count] - 1 inSection:kFollowSection]]];
+                
+                [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kFollowSection]]];
+                
             } completion:^(BOOL finished) {
+                
                 [self updatePagingBenchtopView];
+                [[self pagingLayout] enableFollowMode:NO];
             }];
         }
     }

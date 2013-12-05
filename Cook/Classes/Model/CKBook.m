@@ -103,17 +103,8 @@
 
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-//    [PFCloud callFunctionInBackground:@"followBooks"
-//                       withParameters:@{}
-//                                block:^(NSArray *books, NSError *error) {
-//                                    if (!error) {
-//                                        success([CKBook booksFromParseBooks:books]);
-//                                    } else {
-//                                        DLog(@"Error loading follow books: %@", [error localizedDescription]);
-//                                    }
-//                                }];
     [PFCloud callFunctionInBackground:@"followBooks_v1_1"
-                       withParameters:@{}
+                       withParameters:@{ @"sortDescending" : @"true" }
                                 block:^(NSDictionary *results, NSError *error) {
                                     NSArray *books = [results objectForKey:@"books"];
                                     NSDictionary *bookUpdates = [results objectForKey:@"updates"];
