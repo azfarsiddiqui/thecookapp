@@ -1082,6 +1082,13 @@
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
     
+    // If not my book, reject empty pages.
+    if (![self.book isOwner]) {
+        self.pages = [NSMutableArray arrayWithArray:[self.pages reject:^BOOL(NSString *page) {
+            return ([[self.pageRecipes objectForKey:page] count] == 0);
+        }]];
+    }
+    
     // Loop through to initialise each recipe.
     for (NSString *page in self.pageRecipes) {
         
