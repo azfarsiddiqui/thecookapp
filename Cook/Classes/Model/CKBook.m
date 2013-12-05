@@ -424,7 +424,7 @@
                                         NSArray *parseTags = [recipeResults objectForKey:@"tags"];
                                         if ([parseTags count] > 0) {
                                             NSArray *tags = [parseTags collect:^id(PFObject *parseTag) {
-                                                return [[CKRecipe alloc] initWithParseObject:parseTag];
+                                                return [[CKRecipeTag alloc] initWithParseObject:parseTag];
                                             }];
                                             [CKBookManager sharedInstance].tagArray = tags;
                                         }
