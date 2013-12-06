@@ -238,10 +238,6 @@
             // Overwrite location.
             self.saveRequired = YES;
             
-        } else if (self.originalRecipe.geoLocation == nil) {
-            
-            // Set location.
-            self.saveRequired = YES;
         }
     } else {
         
