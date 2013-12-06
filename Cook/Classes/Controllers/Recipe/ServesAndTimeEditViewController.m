@@ -8,7 +8,7 @@
 
 #import "ServesAndTimeEditViewController.h"
 #import "CKDialerControl.h"
-#import "CKNotchSliderView.h"
+#import "ServesNotchSliderView.h"
 #import "Theme.h"
 #import "RecipeDetails.h"
 #import "UIColor+Expanded.h"
@@ -21,7 +21,7 @@
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UILabel *servesTitleLabel;
 @property (nonatomic, strong) UILabel *servesLabel;
-@property (nonatomic, strong) CKNotchSliderView *servesSlider;
+@property (nonatomic, strong) ServesNotchSliderView *servesSlider;
 @property (nonatomic, strong) UILabel *prepTitleLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
 @property (nonatomic, strong) CKDialerControl *prepDialer;
@@ -115,9 +115,9 @@
     return _servesLabel;
 }
 
-- (CKNotchSliderView *)servesSlider {
+- (ServesNotchSliderView *)servesSlider {
     if (!_servesSlider) {
-        _servesSlider = [[CKNotchSliderView alloc] initWithNumNotches:10 delegate:self];
+        _servesSlider = [[ServesNotchSliderView alloc] initWithNumNotches:10 delegate:self];
     }
     return _servesSlider;
 }
