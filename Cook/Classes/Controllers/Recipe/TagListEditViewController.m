@@ -95,6 +95,17 @@
     UIView *line1 = [self generateLine];
     [self.containerView addSubview:line1];
     
+    UIImageView *helpIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_icon_hint"]];
+    UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    helpLabel.numberOfLines = 1;
+    helpLabel.font = [Theme tagLabelFont];
+    helpLabel.textColor = [UIColor whiteColor];
+    helpLabel.text = @"TAGS HELP OTHER PEOPLE FIND YOUR RECIPE";
+    helpIcon.translatesAutoresizingMaskIntoConstraints = NO;
+    helpLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:helpIcon];
+    [self.view addSubview:helpLabel];
+    
     //    self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mealTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.allergyTypeCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -116,22 +127,23 @@
                             @"titleLabel":titleLabel,
                             @"titleAlign":titleAlignView,
                             @"titleCount":self.titleCountLabel,
-                            @"line1":line1};
+                            @"line1":line1,
+                            @"helpIcon":helpIcon,
+                            @"helpLabel":helpLabel};
     NSDictionary *metrics = @{@"leftInset":[NSNumber numberWithFloat:kContentInsets.left],
                               @"rightInset":[NSNumber numberWithFloat:kContentInsets.right],
                               @"topInset":[NSNumber numberWithFloat:kContentInsets.top],
                               @"bottomInset":[NSNumber numberWithFloat:kContentInsets.bottom],
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
-                              @"lineBottomSpacing":@40.0,
-                              @"lineTopSpacing":@45.0,
                               @"lineHeight":@1};
     [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-10-[titleCount]-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
+//    [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[titleLabel]" options:0 metrics:nil views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[mealCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[allergyCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line1]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[foodCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(30)]-80-[mealCollection(collectionHeight)]-(40)-[foodCollection(collectionHeight)]-(lineBottomSpacing)-[line1(lineHeight)]-(lineTopSpacing)-[allergyCollection(collectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(40)]-48-[mealCollection(collectionHeight)]-(40)-[foodCollection(collectionHeight)]-(25)-[line1(lineHeight)]-(40)-[allergyCollection(collectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
     
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleAlignView
                                                                    attribute:NSLayoutAttributeCenterX
@@ -163,6 +175,17 @@
                                                                       toItem:self.containerView
                                                                    attribute:NSLayoutAttributeCenterX
                                                                   multiplier:1.f constant:0.f]];
+    { //Setting up constraints to space label and lock at bottom
+//        NSDictionary *metrics = @{@"width":@39.0, @"height":@39.0};
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[helpIcon]-4.0-[helpLabel]-(>=0)-|" options:NSLayoutFormatAlignAllCenterY metrics:0 views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=100)-[helpIcon]-10.0-|" options:0 metrics:0 views:views]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:helpLabel
+                                                              attribute:NSLayoutAttributeCenterX
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeCenterX
+                                                             multiplier:1.f constant:0.f]];
+    }
     
     [UIView animateWithDuration:0.4 animations:^{
         self.mealTypeCollectionView.alpha = 1.0;
