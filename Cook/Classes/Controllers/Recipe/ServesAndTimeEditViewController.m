@@ -33,8 +33,8 @@
 
 @implementation ServesAndTimeEditViewController
 
-#define kSize               CGSizeMake(850.0, 600.0)
-#define kContentInsets      UIEdgeInsetsMake(46.0, 60.0, 35.0, 60.0)
+#define kSize               CGSizeMake(850.0, 650.0)
+#define kContentInsets      UIEdgeInsetsMake(68.0, 60.0, 61.0, 60.0)
 #define kServesSliderGap    8.0
 #define kServesHRGap        31.0
 #define kServesIconGap      25.0
@@ -83,7 +83,7 @@
 - (UIView *)containerView {
     if (!_containerView) {
         _containerView = [[UIView alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - kSize.width) / 2.0),
-                                                                  floorf((self.view.bounds.size.height - kSize.height) / 2.0),
+                                                                  floorf((self.view.bounds.size.height - kSize.height) / 2.0) + 2.0,
                                                                   kSize.width,
                                                                   kSize.height)];
         _containerView.backgroundColor = [UIColor clearColor];
