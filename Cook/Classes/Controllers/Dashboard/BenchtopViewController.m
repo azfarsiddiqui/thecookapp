@@ -264,6 +264,7 @@
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     cell.bookCoverView.hidden = YES;
     [self showBookCell:cell show:!open];
+    self.notificationView.alpha = open ? 0.0 : 1.0;
 }
 
 - (void)bookDidOpen:(BOOL)open {
@@ -291,6 +292,7 @@
     [visibleCells each:^(UICollectionViewCell *cell) {
         cell.alpha = show ? 1.0 : 0.0;
     }];
+    self.notificationView.alpha = show ? 1.0 : 0.0;
 }
 
 #pragma mark - UIScrollViewDelegate methods
