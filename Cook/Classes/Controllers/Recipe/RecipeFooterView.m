@@ -24,9 +24,9 @@
 
 #define kElementsGap    100.0
 #define kIconLabelGap   8.0
-#define kLabelFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16.0]
+#define kLabelFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0]
 #define kLabelColour    [UIColor colorWithHexString:@"A0A0A0"]
-#define kContentInsets  (UIEdgeInsets){ 0.0, 25.0, 0.0, 0.0 }
+#define kContentInsets  (UIEdgeInsets){ 0.0, 0.0, 0.0, 0.0 }
 
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -42,20 +42,8 @@
     
     CGFloat xOffset = kContentInsets.left;
     
-    // Visibility.
-    UIView *visibilityView = [self elementViewWithIcon:[self imageForPrivacy:recipeDetails.privacy]
-                                                  text:[self textForPrivacy:recipeDetails.privacy]];
-    visibilityView.frame = (CGRect){
-        xOffset,
-        0.0,
-        visibilityView.frame.size.width,
-        visibilityView.frame.size.height
-    };
-    xOffset += visibilityView.frame.size.width + kElementsGap;
-    [self.elementViews addObject:visibilityView];
-    
-    // Creation date.
-    UIView *dateView = [self elementViewWithIcon:[UIImage imageNamed:@"cook_book_recipe_footer_icon_edit.png"]
+    // Visibility and Creation date.
+    UIView *dateView = [self elementViewWithIcon:[self imageForPrivacy:recipeDetails.privacy]
                                             text:[[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:recipeDetails.createdDateTime] uppercaseString]];
     dateView.frame = (CGRect){
         xOffset,
@@ -69,7 +57,7 @@
     // Location if any.
     if (recipeDetails.location) {
         
-        UIView *locationView = [self elementViewWithIcon:[UIImage imageNamed:@"cook_book_recipe_footer_icon_location.png"]
+        UIView *locationView = [self elementViewWithIcon:[UIImage imageNamed:@"cook_book_inner_icon_small_location.png"]
                                                     text:[[recipeDetails.location displayName] uppercaseString]];
         locationView.frame = (CGRect){
             xOffset,
@@ -128,21 +116,21 @@
 }
 
 - (UIImage *)imageForPrivacy:(CKPrivacy)privacy {
-    UIImage *image = nil;
+    UIImage *privacyIcon = nil;
     switch (privacy) {
         case CKPrivacyPrivate:
-            image = [UIImage imageNamed:@"cook_book_recipe_footer_icon_secret.png"];
+            privacyIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_secret.png"];
             break;
         case CKPrivacyFriends:
-            image = [UIImage imageNamed:@"cook_book_recipe_footer_icon_friends.png"];
+            privacyIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_friends.png"];
             break;
         case CKPrivacyPublic:
-            image = [UIImage imageNamed:@"cook_book_recipe_footer_icon_public.png"];
+            privacyIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_public.png"];
             break;
         default:
             break;
     }
-    return image;
+    return privacyIcon;
 }
 
 - (NSString *)textForPrivacy:(CKPrivacy)privacy {
