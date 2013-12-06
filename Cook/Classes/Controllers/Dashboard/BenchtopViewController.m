@@ -119,7 +119,7 @@
     [self initNotificationView];
     
     if ([CKUser isLoggedIn]) {
-        [self loadBenchtop:YES isBackgroundFetch:NO];
+        [self loadBenchtop:YES];
     }
     
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
@@ -139,6 +139,10 @@
                                              selector:@selector(didBecomeActive)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:[UIApplication sharedApplication]];
+}
+
+- (void)loadBenchtop:(BOOL)load {
+    [self loadBenchtop:load isBackgroundFetch:NO];
 }
 
 - (void)loadBenchtop:(BOOL)load isBackgroundFetch:(BOOL)isBackground {

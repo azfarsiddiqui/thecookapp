@@ -250,6 +250,9 @@
         }
     }
     
+    // Re-sort the recipes.
+    [self sortRecipes:recipes];
+    
     // Remember the recipe that was actioned.
     self.saveOrUpdatedRecipe = recipe;
     
@@ -1544,6 +1547,7 @@
 
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
+    [EventHelper postStatusBarChangeForLight:editMode];
     [self updateButtonsWithAlpha:1.0];
     [self.currentEditViewController enableEditMode:editMode animated:YES completion:nil];
 }
@@ -1839,6 +1843,12 @@
 - (void)decrementCountForPage:(NSString *)page {
     NSInteger existingPageCount = [[self.pageRecipeCount objectForKey:page] integerValue];
     [self.pageRecipeCount setObject:@(existingPageCount - 1) forKey:page];
+}
+
+- (void)sortRecipes:(NSMutableArray *)recipes {
+    [recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
+        return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
+    }];
 }
 
 @end

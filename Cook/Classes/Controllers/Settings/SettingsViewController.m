@@ -17,7 +17,7 @@
 #import "UIDevice+Hardware.h"
 #import <MessageUI/MessageUI.h>
 
-@interface SettingsViewController () <MFMailComposeViewControllerDelegate>
+@interface SettingsViewController () <MFMailComposeViewControllerDelegate, CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, weak) id<SettingsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -69,6 +69,12 @@
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
+    [self processLoginLogout];
+}
+
 #pragma mark - Properties
 
 - (UIView *)loginLogoutButtonView {
@@ -88,13 +94,13 @@
         if (currentUser) {
             CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
                                                                                  profileSize:ProfileViewSizeSmall border:NO];
+            photoView.delegate = self;
             photoView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
                 _loginLogoutButtonView.bounds.origin.y,
                 photoView.frame.size.width,
                 photoView.frame.size.height
             };
-            photoView.userInteractionEnabled = NO;
             [_loginLogoutButtonView addSubview:photoView];
             yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
             
@@ -394,12 +400,16 @@
 }
 
 - (void)loginLogoutTapped:(id)sender {
+    [self processLoginLogout];
+}
+
+- (void)processLoginLogout {
     
     if ([CKUser isLoggedIn]) {
-  
-// HERE FOR DEV TESTING OF UNLINKING FB user.
-//        [PFFacebookUtils unlinkUser:[CKUser currentUser].parseUser];
-//
+        
+    // HERE FOR DEV TESTING OF UNLINKING FB user.
+    //        [PFFacebookUtils unlinkUser:[CKUser currentUser].parseUser];
+    //
         
         [CKUser logoutWithCompletion:^{
             
@@ -411,7 +421,6 @@
     } else {
         [self.delegate settingsViewControllerSignInRequested];
     }
-    
 }
 
 - (void)loggedIn:(NSNotification *)notification {

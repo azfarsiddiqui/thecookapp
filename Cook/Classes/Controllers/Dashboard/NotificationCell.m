@@ -276,7 +276,7 @@
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
         text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
-        text = [NSString stringWithFormat:@"%@ added your recipe \"%@\" to their book.", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ added your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     }
     
     return text;

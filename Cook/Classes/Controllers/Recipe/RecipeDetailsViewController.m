@@ -1800,10 +1800,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if (self.recipeDetails.saveRequired) {
         
-        // If name or page is updated.
-        if (!self.addMode && ([self.recipeDetails nameUpdated] || [self.recipeDetails pageUpdated])) {
+        // If name OR page OR privacy is updated.
+        if (!self.addMode && ([self.recipeDetails nameUpdated]
+                              || [self.recipeDetails pageUpdated]
+                              || [self.recipeDetails privacyUpdated])) {
+            
             self.recipe.recipeUpdatedDateTime = [NSDate date];
         }
+        
         //If has deleted image and no new image selected
         if (self.isDeleteRecipeImage)
         {

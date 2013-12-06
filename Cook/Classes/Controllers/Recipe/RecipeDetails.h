@@ -49,13 +49,15 @@
 - (BOOL)methodUpdated;
 - (BOOL)servesPrepUpdated;
 - (BOOL)ingredientsUpdated;
-- (BOOL)privacyUpdated;
 - (BOOL)locationUpdated;
+- (BOOL)privacyUpdated;
 
 - (BOOL)hasTitle;
 - (BOOL)hasStory;
 - (BOOL)hasMethod;
 - (BOOL)hasServes;
 - (BOOL)hasIngredients;
+
+- (BOOL)isNew;
 
 @end
