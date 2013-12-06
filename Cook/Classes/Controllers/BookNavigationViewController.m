@@ -1544,6 +1544,7 @@
 
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
+    [EventHelper postStatusBarChangeForLight:editMode];
     [self updateButtonsWithAlpha:1.0];
     [self.currentEditViewController enableEditMode:editMode animated:YES completion:nil];
 }
