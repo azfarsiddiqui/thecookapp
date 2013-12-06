@@ -28,6 +28,7 @@
 #import "CardViewHelper.h"
 #import "CKNavigationController.h"
 #import "CKBookManager.h"
+#import "RootViewController.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -118,7 +119,7 @@
     [self initNotificationView];
     
     if ([CKUser isLoggedIn]) {
-        [self loadBenchtop:YES];
+        [self loadBenchtop:YES isBackgroundFetch:NO];
     }
     
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
@@ -140,9 +141,13 @@
                                                object:[UIApplication sharedApplication]];
 }
 
-- (void)loadBenchtop:(BOOL)load {
+- (void)loadBenchtop:(BOOL)load isBackgroundFetch:(BOOL)isBackground {
     DLog(@"load [%@]", load ? @"YES" : @"NO");
-    [self enable:load];
+    
+    //NEed to check if in store/settings
+    if (!isBackground) {
+        [self enable:load];
+    }
     
     if (load) {
         [self loadMyBook];
@@ -1276,7 +1281,7 @@
 }
 
 - (void)backgroundFetch:(NSNotification *)notification {
-    [self loadBenchtop:YES];
+    [self loadBenchtop:YES isBackgroundFetch:YES];
 }
 
 - (void)updatePagingBenchtopView {
