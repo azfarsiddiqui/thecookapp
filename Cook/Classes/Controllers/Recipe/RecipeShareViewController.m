@@ -150,7 +150,7 @@
         bottomLabel.text = @"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB";
         lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
     } else {
-        bottomLabel.text = @"REPORT INAPPROPRIATE CONTENT";
+        bottomLabel.text = @"REPORT";
         lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_report"]];
         UITapGestureRecognizer *reportGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reportPressed:)];
         [bottomLabel addGestureRecognizer:reportGesture];
