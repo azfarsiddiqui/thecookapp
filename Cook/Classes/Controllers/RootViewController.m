@@ -327,7 +327,6 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
-    [self.benchtopViewController showVisibleBooks:NO];
     [self viewRecipe:recipe];
 }
 
@@ -823,6 +822,8 @@
 
 - (void)showModalViewController:(UIViewController *)modalViewController {
     
+    [self.benchtopViewController showVisibleBooks:NO];
+    
     // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
     if (![modalViewController isKindOfClass:[UIViewController class]]
         && ![modalViewController conformsToProtocol:@protocol(BookModalViewController)]) {
@@ -874,8 +875,8 @@
                  }
                  completion:^(BOOL finished)  {
                      
-                        [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
-                                                  withObject:[NSNumber numberWithBool:YES]];
+                     [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                               withObject:[NSNumber numberWithBool:YES]];
                  }];
 }
 
