@@ -671,7 +671,7 @@
 //        scrollView.contentMode = UIViewContentModeScaleAspectFit;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.alwaysBounceVertical = YES;
-        scrollView.maximumZoomScale = 1.0;
+        scrollView.maximumZoomScale = 1.5;
         scrollView.minimumZoomScale = 1.0;
         scrollView.delegate = self;
         scrollView.alpha = 0.0;
