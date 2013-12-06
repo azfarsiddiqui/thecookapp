@@ -115,6 +115,10 @@
     return ![self.location isEqual:self.originalRecipe.geoLocation];
 }
 
+- (BOOL)privacyUpdated {
+    return (self.originalRecipe.privacy != self.privacy);
+}
+
 - (BOOL)hasTitle {
     return [self.name CK_containsText];
 }

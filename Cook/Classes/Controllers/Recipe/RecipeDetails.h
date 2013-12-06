@@ -50,6 +50,7 @@
 - (BOOL)servesPrepUpdated;
 - (BOOL)ingredientsUpdated;
 - (BOOL)locationUpdated;
+- (BOOL)privacyUpdated;
 
 - (BOOL)hasTitle;
 - (BOOL)hasStory;
