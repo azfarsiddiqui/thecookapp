@@ -328,6 +328,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)photoPickerViewControllerCloseRequested {
     
     // Close and revert to mid height.
+    [self loadPhoto];
     [self showPhotoPicker:NO completion:^{
         [self snapToViewport:SnapViewportBottom animated:YES];
         
@@ -2186,6 +2187,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          if (!show) {
                              [self.photoPickerViewController.view removeFromSuperview];
                              self.photoPickerViewController = nil;
+                         } else {
+                             self.imageView.image = nil;
                          }
                          completion();
                      }];
