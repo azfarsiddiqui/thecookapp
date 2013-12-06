@@ -49,7 +49,6 @@
 - (BOOL)methodUpdated;
 - (BOOL)servesPrepUpdated;
 - (BOOL)ingredientsUpdated;
-- (BOOL)privacyUpdated;
 - (BOOL)locationUpdated;
 
 - (BOOL)hasTitle;
@@ -57,5 +56,7 @@
 - (BOOL)hasMethod;
 - (BOOL)hasServes;
 - (BOOL)hasIngredients;
+
+- (BOOL)isNew;
 
 @end

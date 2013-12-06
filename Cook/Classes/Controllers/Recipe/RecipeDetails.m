@@ -111,10 +111,6 @@
     return [self ingredientsChangedForIngredients:self.ingredients];
 }
 
-- (BOOL)privacyUpdated {
-    return (self.originalRecipe.privacy != self.privacy);
-}
-
 - (BOOL)locationUpdated {
     return ![self.location isEqual:self.originalRecipe.geoLocation];
 }
@@ -137,6 +133,10 @@
 
 - (BOOL)hasIngredients {
     return [self.ingredients count] > 0;
+}
+
+- (BOOL)isNew {
+    return ![self.originalRecipe persisted];
 }
 
 #pragma mark - Properties.
@@ -213,9 +213,16 @@
 
 - (void)setPrivacy:(CKPrivacy)privacy {
     _privacy = privacy;
-    if (self.originalRecipe.privacy != privacy) {
-        self.saveRequired = YES;
+    
+    if ([self isNew]) {
+        
+        // Recipes are always public when new (or add mode).
+        self.saveRequired = self.privacy != CKPrivacyPublic;;
+        
+    } else {
+        self.saveRequired = (self.originalRecipe.privacy != self.privacy);
     }
+
 }
 
 - (void)setLocation:(CKLocation *)location {
