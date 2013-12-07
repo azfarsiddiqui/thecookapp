@@ -74,16 +74,16 @@
 
 @implementation BenchtopViewController
 
-#define kCellId         @"CellId"
-#define kSignUpCellId   @"SignUpCellId"
-#define kCellSize       CGSizeMake(300.0, 438.0)
-#define kSideMargin     362.0
-#define kMyBookSection  0
-#define kFollowSection  1
-#define kPagingRate     2.0
-#define kBlendPageWidth 1024.0
-#define kHasSeenUpdateIntro @"HasSeen1.2"
-#define kContentInsets  (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
+#define kCellId             @"CellId"
+#define kSignUpCellId       @"SignUpCellId"
+#define kCellSize           CGSizeMake(300.0, 438.0)
+#define kSideMargin         362.0
+#define kMyBookSection      0
+#define kFollowSection      1
+#define kPagingRate         2.0
+#define kBlendPageWidth     1024.0
+#define kHasSeenUpdateIntro @"HasSeen1.3"
+#define kContentInsets      (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -1608,23 +1608,45 @@
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
-        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_12"]];
+        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_13"]];
         introImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         introImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:introImageView];
         
-        UIButton *closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(updateIntroTapped)];
+        // Top-left close button.
+        UIButton *closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(closeIntroTapped)];
         closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         closeButton.frame = (CGRect){
-            kContentInsets.left,
+            kContentInsets.left - 5.0,
             kContentInsets.top,
             closeButton.frame.size.width,
             closeButton.frame.size.height
         };
         [self.updateIntroView addSubview:closeButton];
         
-        [self.view addSubview:self.updateIntroView];
+        // Bottom Find out More and Continue buttons.
+        UIButton *moreButton = [self updateIntroButtonWithText:@"FIND OUT MORE" target:self selector:@selector(updateIntroMoreTapped)];
+        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" target:self selector:@selector(updateIntroContinueTapped)];
+        CGFloat buttonOffsetFromBottom = 145.0;
+        CGFloat buttonOffset = -16.0;
+        CGFloat buttonGap = 117.0;
+        CGFloat requiredWidth = moreButton.frame.size.width + buttonGap + continueButton.frame.size.width;
+        moreButton.frame = (CGRect){
+            floorf((self.view.bounds.size.width - requiredWidth) / 2.0) + buttonOffset,
+            self.view.bounds.size.height - buttonOffsetFromBottom,
+            moreButton.frame.size.width,
+            moreButton.frame.size.height
+        };
+        continueButton.frame = (CGRect){
+            moreButton.frame.origin.x + moreButton.frame.size.width + buttonGap,
+            self.view.bounds.size.height - buttonOffsetFromBottom,
+            continueButton.frame.size.width,
+            continueButton.frame.size.height
+        };
+        [self.updateIntroView addSubview:moreButton];
+        [self.updateIntroView addSubview:continueButton];
         
+        [self.view addSubview:self.updateIntroView];
         [UIView animateWithDuration:0.4
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
@@ -1650,7 +1672,7 @@
     }
 }
 
-- (void)updateIntroTapped {
+- (void)closeIntroTapped {
     [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationCurveEaseOut animations:^{
         self.updateIntroView.alpha = 0.0;
     } completion:^(BOOL finished) {
@@ -1725,6 +1747,29 @@
 
 - (void)clearUpdatesForBook:(CKBook *)book {
     [self.followBookUpdates removeObjectForKey:book.objectId];
+}
+
+- (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setTitle:text forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    [button setTitleShadowColor:[UIColor darkTextColor] forState:UIControlStateNormal];
+//    button.titleLabel.shadowOffset = (CGSize){ 0.0, 1.0 };
+    button.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0];
+    button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
+    if (target && [target respondsToSelector:selector]) {
+        [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    }
+    [button sizeToFit];
+    return button;
+}
+
+- (void)updateIntroMoreTapped {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://blog.thecookapp.com"]];
+}
+
+- (void)updateIntroContinueTapped {
+    [self closeIntroTapped];
 }
 
 @end
