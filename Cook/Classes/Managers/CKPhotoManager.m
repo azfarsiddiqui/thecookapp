@@ -668,7 +668,7 @@
             [user saveInBackground:^{
                 
                 DLog(@"User saved successfully.");
-                
+                [CKUser refreshCurrentUser];
                 // End background task.
                 [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
                 

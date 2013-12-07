@@ -58,8 +58,18 @@
         [self insertSubview:self.bookTitleView belowSubview:self.profilePhotoView];
         
         self.frame = CGRectIntegral(CGRectUnion(self.profilePhotoView.frame, self.bookTitleView.frame));
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWhenNotified:) name:kUserChangeNotification object:nil];
     }
     return self;
+}
+
+- (void)updateWhenNotified:(NSNotification *)notification {
+    CKUser *newUser = [notification.userInfo objectForKey:kUserKey];
+    [self.profilePhotoView loadProfilePhotoForUser:newUser];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUserChangeNotification object:nil];
 }
 
 #pragma mark - CKUserProfilePhotoViewDelegate methods
