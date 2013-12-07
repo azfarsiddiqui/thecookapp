@@ -11,8 +11,8 @@
 #define kTagCellID          @"TagCell"
 #define kTagSectionHeadID   @"TagSectionHeader"
 #define kTagSectionFootID   @"TagSectionFooter"
-#define kSize               CGSizeMake(890.0, 650.0)
-#define kContentInsets      UIEdgeInsetsMake(68.0, 80.0, 0.0, 80.0)
+#define kSize               CGSizeMake(850.0, 650.0)
+#define kContentInsets      UIEdgeInsetsMake(68.0, 60.0, 0.0, 60.0)
 #define kSectionHeadWidth   20.0
 #define kSectionFootWidth   20.0
 #define kItemHeight 105

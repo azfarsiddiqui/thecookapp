@@ -143,7 +143,7 @@
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[allergyCollection]-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(leftInset)-[line1]-(rightInset)-|" options:0 metrics:metrics views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[foodCollection]-|" options:0 metrics:metrics views:views]];
-    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(40)]-48-[mealCollection(collectionHeight)]-(40)-[foodCollection(collectionHeight)]-(25)-[line1(lineHeight)]-(40)-[allergyCollection(collectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+    [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topInset)-[titleAlign(40)]-48-[mealCollection(collectionHeight)]-(37)-[foodCollection(collectionHeight)]-(30)-[line1(lineHeight)]-(40)-[allergyCollection(collectionHeight)]-(>=bottomInset)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
     
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleAlignView
                                                                    attribute:NSLayoutAttributeCenterX
