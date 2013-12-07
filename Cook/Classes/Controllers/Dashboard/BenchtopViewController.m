@@ -1750,12 +1750,21 @@
 }
 
 - (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
+
+    // Soft shadow.
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.05];
+    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+    shadow.shadowBlurRadius = 3.0;
+    NSDictionary *textAttributes = @{
+                                     NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0],
+                                     NSForegroundColorAttributeName : [UIColor whiteColor],
+                                     NSShadowAttributeName : shadow
+                                     };
+    NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:text attributes:textAttributes];
+
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setTitle:text forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    [button setTitleShadowColor:[UIColor darkTextColor] forState:UIControlStateNormal];
-//    button.titleLabel.shadowOffset = (CGSize){ 0.0, 1.0 };
-    button.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0];
+    [button setAttributedTitle:textDisplay forState:UIControlStateNormal];
     button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
     if (target && [target respondsToSelector:selector]) {
         [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
