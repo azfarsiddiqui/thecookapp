@@ -990,7 +990,9 @@
 }
 
 - (void)loadFollowBooksReload:(BOOL)reload {
-    
+    if (self.updateIntroView.alpha == 0.0) {
+        [self.delegate panEnabledRequested:YES];
+    }
     [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks, NSDictionary *followBookUpdates) {
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
         self.followBookUpdates = [NSMutableDictionary dictionaryWithDictionary:followBookUpdates];
