@@ -2010,11 +2010,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if (!self.addMode && ([self.recipe hasMethod] || [self.recipe hasIngredients]) && self.currentViewport != SnapViewportTop) {
         
-        // Snap to top first.
-        [self snapToViewport:SnapViewportTop completion:^{
             [self enableEditModeWithoutInformingRecipeDetailsView:enable];
             [self.recipeDetailsView enableEditMode:enable];
-        }];
         
     } else {
         [self snapToViewport:SnapViewportBottom completion:^{

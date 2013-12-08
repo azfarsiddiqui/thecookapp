@@ -26,6 +26,7 @@
 #import "DataHelper.h"
 #import "CKRecipeTag.h"
 #import "NSArray+Enumerable.h"
+#import "EventHelper.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -100,6 +101,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             if (self.editMode) {
                 [self enableFieldsForEditMode:editMode];
             }
+            [EventHelper registerUserChange:self selector:@selector(reloadProfile:)];
             
         } animated:NO]; // TODO Polish up animation.
         
@@ -107,6 +109,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     return self;
 }
 
+- (void)reloadProfile:(NSNotification *)notification {
+    CKUser *newUser = [notification.userInfo objectForKey:kUserKey];
+    //Only update user profile pic if current user
+    if ([newUser.objectId isEqualToString:[CKUser currentUser].objectId]) {
+        self.recipeDetails.user = newUser;
+        [self.profilePhotoView loadProfilePhotoForUser:newUser];
+    }
+}
 
 - (void)enableEditMode:(BOOL)editMode {
     DLog();
@@ -177,6 +187,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode {
     self.recipeDetails = recipeDetails;
     [self enableEditMode:editMode];
+}
+
+- (void)dealloc {
+    [EventHelper unregisterUserChange:self];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods

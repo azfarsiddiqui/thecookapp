@@ -25,6 +25,8 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 
 @interface CKUser : CKModel
 
+#define kUserKey                  @"user"
+
 @property (nonatomic, strong) PFUser *parseUser;
 @property (nonatomic, copy) NSString *facebookId;
 @property (nonatomic, strong) NSString *facebookEmail;
@@ -40,6 +42,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 @property (nonatomic, strong) PFFile *profilePhoto;
 
 + (CKUser *)currentUser;
++ (void)refreshCurrentUser;
 + (BOOL)isLoggedIn;
 + (void)forceLogoutUserIfRequired;
 + (void)forceLogout;

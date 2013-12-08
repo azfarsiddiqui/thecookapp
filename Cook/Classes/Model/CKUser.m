@@ -14,6 +14,7 @@
 #import "CKUserFriend.h"
 #import "CKServerManager.h"
 #import <FacebookSDK/FacebookSDK.h>
+#import "EventHelper.h"
 
 @interface CKUser ()
 
@@ -25,8 +26,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 @implementation CKUser
 
-#define kCookGuestTheme     @"kCookGuestTheme"
-#define kCookForceLogout    @"CookForceLogout"
+#define kCookGuestTheme         @"kCookGuestTheme"
+#define kCookForceLogout        @"CookForceLogout"
 
 + (CKUser *)currentUser {
     PFUser *parseUser = [PFUser currentUser];
@@ -35,6 +36,13 @@ static ObjectFailureBlock loginFailureBlock = nil;
     } else {
         return nil;
     }
+}
+
++ (void)refreshCurrentUser {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        [[PFUser currentUser] refresh];
+    });
 }
 
 + (BOOL)isLoggedIn {
@@ -585,7 +593,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (BOOL)hasProfilePhoto {
     PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
-    return ((profilePhoto != nil && profilePhoto.getData.length > 0) || [self.facebookId length] > 0);
+    return ((profilePhoto != nil && [profilePhoto isDataAvailable]) || [self.facebookId length] > 0);
 }
 
 - (NSString *)friendlyName {
@@ -655,6 +663,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
         return;
     }
     [self.parseObject setObject:profilePhoto forKey:kUserAttrProfilePhoto];
+    [EventHelper postUserChangeWithUser:self];
 }
 
 - (PFFile *)profilePhoto {
