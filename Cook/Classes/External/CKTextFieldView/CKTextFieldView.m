@@ -125,7 +125,7 @@
     
     // Position it at the end.
     self.validationImageView.frame = (CGRect) {
-        self.bounds.size.width,
+        self.bounds.size.width - self.validationImageView.frame.size.width - 12.0,
         floorf((self.bounds.size.height - self.validationImageView.frame.size.height) / 2.0) + 1.0,
         self.validationImageView.frame.size.width,
         self.validationImageView.frame.size.height
