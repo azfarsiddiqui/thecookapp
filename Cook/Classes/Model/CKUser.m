@@ -14,6 +14,7 @@
 #import "CKUserFriend.h"
 #import "CKServerManager.h"
 #import <FacebookSDK/FacebookSDK.h>
+#import "EventHelper.h"
 
 @interface CKUser ()
 
@@ -38,7 +39,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 + (void)refreshCurrentUser {
-    [[PFUser currentUser] refresh];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        [[PFUser currentUser] refresh];
+    });
 }
 
 + (BOOL)isLoggedIn {
@@ -659,7 +663,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
         return;
     }
     [self.parseObject setObject:profilePhoto forKey:kUserAttrProfilePhoto];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kUserChangeNotification object:nil userInfo:@{kUserKey:self}];
+    [EventHelper postUserChangeWithUser:self];
 }
 
 - (PFFile *)profilePhoto {

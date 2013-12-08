@@ -41,6 +41,7 @@
 #define kNumLikesSocialUpdates      @"CKNumLikesSocialUpdates"
 #define kNumCommentsSocialUpdates   @"CKNumCommentsSocialUpdates"
 #define kLikedSocialUpdates         @"CKLikedSocialUpdates"
+#define kUserChangeNotification     @"UserChangedNotification"
 
 #pragma mark - Login successful event
 
@@ -183,6 +184,20 @@
 
 + (void)unregisterThemeChange:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventThemeChange];
+}
+
+#pragma mark - User profile change
+
++ (void)registerUserChange:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kUserChangeNotification];
+}
+
++ (void)postUserChangeWithUser:(CKUser *)newUser {
+    [EventHelper postEvent:kUserChangeNotification withUserInfo:@{kUserKey:newUser}];
+}
+
++ (void)unregisterUserChange:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kUserChangeNotification];
 }
 
 #pragma mark - Status bar change.

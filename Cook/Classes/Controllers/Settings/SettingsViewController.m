@@ -32,6 +32,7 @@
 @property (nonatomic, strong) UIButton *twitterButton;
 
 @property (nonatomic, strong) ThemeTabView *themeTabView;
+@property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 
 @end
 
@@ -45,6 +46,7 @@
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
+    [EventHelper unregisterUserChange:self];
 }
 
 - (id)initWithDelegate:(id<SettingsViewControllerDelegate>)delegate {
@@ -67,6 +69,14 @@
     
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
+    [EventHelper registerUserChange:self selector:@selector(reloadProfilePhoto:)];
+}
+
+- (void)reloadProfilePhoto:(NSNotification *) notification {
+    CKUser *newUser = [notification.userInfo objectForKey:kUserKey];
+    if (self.profileView) {
+        [self.profileView loadProfilePhotoForUser:newUser];
+    }
 }
 
 #pragma mark - CKUserProfilePhotoViewDelegate methods
@@ -103,7 +113,7 @@
             };
             [_loginLogoutButtonView addSubview:photoView];
             yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
-            
+            self.profileView = photoView;
         } else {
             
             UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_icon_login.png"]];

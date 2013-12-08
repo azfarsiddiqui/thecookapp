@@ -48,6 +48,10 @@
 + (void)postThemeChange;
 + (void)unregisterThemeChange:(id)observer;
 
++ (void)registerUserChange:(id)observer selector:(SEL)selector;
++ (void)postUserChangeWithUser:(CKUser *)newUser;
++ (void)unregisterUserChange:(id)observer;
+
 // Status bar.
 + (void)registerStatusBarChange:(id)observer selector:(SEL)selector;
 + (void)postStatusBarChangeForLight:(BOOL)light;

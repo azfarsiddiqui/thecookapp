@@ -25,7 +25,6 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 
 @interface CKUser : CKModel
 
-#define kUserChangeNotification   @"UserChangedNotification"
 #define kUserKey                  @"user"
 
 @property (nonatomic, strong) PFUser *parseUser;

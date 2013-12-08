@@ -11,6 +11,7 @@
 #import "CKBook.h"
 #import "CKUser.h"
 #import "CKUserProfilePhotoView.h"
+#import "EventHelper.h"
 
 @interface BookTitlePhotoView () <CKUserProfilePhotoViewDelegate>
 
@@ -58,18 +59,19 @@
         [self insertSubview:self.bookTitleView belowSubview:self.profilePhotoView];
         
         self.frame = CGRectIntegral(CGRectUnion(self.profilePhotoView.frame, self.bookTitleView.frame));
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWhenNotified:) name:kUserChangeNotification object:nil];
+        [EventHelper registerUserChange:self selector:@selector(updateWhenNotified:)];
     }
     return self;
 }
 
 - (void)updateWhenNotified:(NSNotification *)notification {
     CKUser *newUser = [notification.userInfo objectForKey:kUserKey];
+    DLog(@"Profile photo url: %@", newUser.profilePhotoUrl);
     [self.profilePhotoView loadProfilePhotoForUser:newUser];
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUserChangeNotification object:nil];
+    [EventHelper unregisterUserChange:self];
 }
 
 #pragma mark - CKUserProfilePhotoViewDelegate methods
