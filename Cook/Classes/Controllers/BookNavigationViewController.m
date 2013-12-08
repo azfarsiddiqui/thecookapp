@@ -298,6 +298,33 @@
     // Remember the page.
     self.saveOrUpdatedPage = recipePin.page;
     
+    // Decrement the unpinned recipe.
+    [self decrementCountForPage:recipePin.page];
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
+}
+
+- (void)updateWithPinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion {
+    DLog(@"Updating layout with pinned recipe [%@]", recipePin.recipe.objectId);
+    
+    // Add pinned recipe to the page in the book.
+    NSString *page = recipePin.page;
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
+    [recipes addObject:recipePin.recipe];
+    
+    // Re-sort the recipes.
+    [self sortRecipes:recipes];
+    
+    // Remember the page.
+    self.saveOrUpdatedPage = recipePin.page;
+    
+    // Decrement the unpinned recipe.
+    [self incrementCountForPage:page];
+    
     // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
     self.bookUpdatedBlock = completion;
     
