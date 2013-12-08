@@ -845,10 +845,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 #pragma mark - Background notification methods
 
 - (void)didBecomeInactive {
+    [self loadPhoto];
     //If backgrounding, remove photo picker to prevent crash
     [self showPhotoPicker:NO completion:^{
         [self snapToViewport:SnapViewportBottom animated:YES];
-        
     }];
 }
 
