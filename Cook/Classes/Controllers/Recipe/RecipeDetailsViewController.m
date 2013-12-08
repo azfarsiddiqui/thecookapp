@@ -206,6 +206,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)pinRecipeViewControllerPinnedWithRecipePin:(CKRecipePin *)recipePin {
     self.recipePin = recipePin;
     [self updatePinnedButton];
+    
+    // Cater for pinning a recipe in my book (Likes page).
+    if ([self.book isOwner]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[BookNavigationHelper sharedInstance] updateBookNavigationWithPinnedRecipe:recipePin completion:^{}];
+        });
+    }
 }
 
 #pragma mark - CKNavigationControllerDelegate methods
@@ -1908,6 +1915,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             [self.saveOverlayViewController updateProgress:0.9];
             
             if ([self.book isOwner]) {
+                
                 // Ask the opened book to relayout.
                 [[BookNavigationHelper sharedInstance] updateBookNavigationWithUnpinnedRecipe:self.recipePin
                                                                                    completion:^{

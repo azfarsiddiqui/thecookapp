@@ -53,12 +53,23 @@
 - (void)updateBookNavigationWithUnpinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion {
     
     // Return immediately if no opened book.
-    if (!self.bookNavigationViewController) {
+    if (!self.bookNavigationViewController && completion != nil) {
         completion();
     }
     
     // Ask the opened book to update with the recipe.
     [self.bookNavigationViewController updateWithUnpinnedRecipe:recipePin completion:completion];
+}
+
+- (void)updateBookNavigationWithPinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion {
+    
+    // Return immediately if no opened book.
+    if (!self.bookNavigationViewController && completion != nil) {
+        completion();
+    }
+    
+    // Ask the opened book to update with the added recipe pin.
+    [self.bookNavigationViewController updateWithPinnedRecipe:recipePin completion:completion];
 }
 
 - (void)updateBookNavigationWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
