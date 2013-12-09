@@ -615,9 +615,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         UIEdgeInsets  defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
         [self.editingHelper wrapEditingView:self.tagsLabel contentInsets:(UIEdgeInsets){
             defaultInsets.top + 8.0,
-            defaultInsets.left + 5.0,
+            defaultInsets.left,
             defaultInsets.bottom + 4.0,
-            defaultInsets.right - 7.0 + iconImage.size.width //Add padding to make it look centered
+            defaultInsets.right
         } delegate:self white:YES iconImage:iconImage];
     }
     
@@ -706,9 +706,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.tagsLabel.numberOfLines = 1;
     
     CGSize size = [self.tagsLabel sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
+    UIImage *iconImage = [UIImage imageNamed:@"cook_customise_icon_tag"];
     if (!self.editMode) {
         self.tagsLabel.frame = CGRectIntegral((CGRect){
-            floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0,
+            floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0 + iconImage.size.width/2) : 0,
             self.layoutOffset.y,
             size.width > kWidth ? kWidth : size.width,
             size.height
@@ -716,7 +717,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     } else {
         //UGLY, autolayout this sucker to center properly later
         self.tagsLabel.frame = CGRectIntegral((CGRect){
-            (floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0),
+            (floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0 + iconImage.size.width/2) : 0),
             self.layoutOffset.y + 15,
             size.width > kWidth ? kWidth : size.width,
             size.height
