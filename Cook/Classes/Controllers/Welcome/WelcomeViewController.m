@@ -165,7 +165,7 @@
         [_welcomePageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Cook helps you create and share your%@very own Cookbook for iPad.", [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Cook is the place to create and share %@your recipes with the world.", [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height - 8.0,
@@ -197,7 +197,7 @@
         [_createPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Customize the cover of your book then%@add your family recipes, the meals%@you've cooked lately, tips, tricks,%@anything food related.", [NSString CK_lineBreakString], [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related.", [NSString CK_lineBreakString], [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentLeft availableSize:size];
         subtitleLabel.frame = CGRectMake(0.0,
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 2.0,
@@ -228,7 +228,7 @@
         [_collectPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Make your recipes public and share them%@with the world or keep them just for%@close friends, the choice is yours.", [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours.", [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 2.0,
@@ -260,7 +260,7 @@
         [_libraryPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Pull your bench down to reveal the%@Library with other people's cookbooks%@and recipes from all over the world.", [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world.", [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height - 9.0,

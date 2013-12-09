@@ -291,7 +291,7 @@
     CGSize leftSize = [self.dataSource sizeOfAdornmentForIndexPath:leftIndexPath];
     UICollectionViewLayoutAttributes *leftLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:leftIndexPath];
     leftLayoutAttributes.frame = CGRectMake(pageOffset,
-                                            size.height - 225.0,
+                                            size.height - 245.0,
                                             leftSize.width,
                                             leftSize.height);
     [self.itemsLayoutAttributes addObject:leftLayoutAttributes];
@@ -302,7 +302,7 @@
     CGSize rightSize = [self.dataSource sizeOfAdornmentForIndexPath:rightIndexPath];
     UICollectionViewLayoutAttributes *rightLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:rightIndexPath];
     rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width,
-                                             size.height - 225.0,
+                                             size.height - 245.0,
                                              rightSize.width,
                                              rightSize.height);
     [self.itemsLayoutAttributes addObject:rightLayoutAttributes];
