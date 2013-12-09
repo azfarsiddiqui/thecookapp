@@ -235,6 +235,9 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = [self.books objectAtIndex:indexPath.row];
+    if (book.disabled) {
+        return;
+    }
     [self showBook:book atIndexPath:indexPath];
 }
 
