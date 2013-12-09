@@ -27,7 +27,9 @@
 
 @interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
     CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
-
+{
+    UILabel *_signInLabel;
+}
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
@@ -37,6 +39,7 @@
 @property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *actionButtonCaptionLabel;
+@property (nonatomic, strong, readonly) UILabel *signInLabel;
 @property (nonatomic, strong) CKButtonView *actionButtonView;
 @property (nonatomic, strong) CKStatView *followersStatView;
 @property (nonatomic, strong) CKStatView *numRecipesStatView;
@@ -386,6 +389,11 @@
     if (self.storeMode && !self.book.featured && ![self.book.user isEqual:self.currentUser]) {
         [self initFriendsButton];
     }
+    
+    //Show Sign In label if Guest user
+    if (self.currentUser == nil && self.book.featured) {
+        [self addSubview:self.signInLabel];
+    }
 }
 
 - (void)updateName:(NSString *)name {
@@ -621,6 +629,23 @@
     } else {
         self.actionButtonView.hidden = YES;
     }
+}
+
+- (UILabel *)signInLabel {
+    if (!_signInLabel) {
+        _signInLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _signInLabel.font = kActionCaptionFont;
+        _signInLabel.textColor = [UIColor whiteColor];
+        _signInLabel.text = [[NSString stringWithFormat:@"PLEASE SIGN IN"] uppercaseString];
+        [_signInLabel sizeToFit];
+        _signInLabel.frame = (CGRect){
+            floorf((self.bounds.size.width - _signInLabel.frame.size.width) / 2.0),
+            self.frame.size.height - _signInLabel.frame.size.height - 20,
+            _signInLabel.frame.size.width,
+            _signInLabel.frame.size.height
+        };
+    }
+    return _signInLabel;
 }
 
 - (void)initActionButtonWithSelector:(SEL)selector {
