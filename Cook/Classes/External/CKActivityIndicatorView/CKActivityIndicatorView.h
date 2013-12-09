@@ -20,8 +20,9 @@ typedef NS_ENUM(NSUInteger, CKActivityIndicatorViewStyle) {
 
 @property (nonatomic, assign) BOOL hidesWhenStopped;
 
-- (id)initWithStyle:(CKActivityIndicatorViewStyle)style;
++ (CGSize)sizeForStyle:(CKActivityIndicatorViewStyle *)style;
 
+- (id)initWithStyle:(CKActivityIndicatorViewStyle)style;
 - (void)startAnimating;
 - (void)stopAnimating;
 - (BOOL)isAnimating;

@@ -115,6 +115,7 @@
                                         success([CKBook booksFromParseBooks:books], bookUpdates);
                                     } else {
                                         DLog(@"Error loading follow books: %@", [error localizedDescription]);
+                                        failure(error);
                                     }
                                 }];
 
