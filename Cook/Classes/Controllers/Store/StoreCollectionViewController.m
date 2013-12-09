@@ -173,13 +173,18 @@
     NSArray *insertIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
         return [NSIndexPath indexPathForItem:index inSection:0];
     }];
-    
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
-    } completion:^(BOOL finished) {
+    if ([self.collectionView numberOfItemsInSection:0] == 0) {
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+        } completion:^(BOOL finished) {
+            self.animating = NO;
+            self.loading = NO;
+        }];
+    } else {
+        [self.collectionView reloadData];
         self.animating = NO;
         self.loading = NO;
-    }];
+    }
 }
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
