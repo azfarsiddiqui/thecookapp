@@ -121,7 +121,7 @@
 
 - (UILabel *)label {
     if (!_label) {
-        NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"FACEBOOK%@SUGGESTIONS", @"\u2028"]
+        NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"GET FACEBOOK%@SUGGESTIONS", @"\u2028"]
                                                                           attributes:[self labelTextAttributes]];
         _label = [[UILabel alloc] initWithFrame:CGRectZero];
         _label = [[UILabel alloc] initWithFrame:CGRectZero];

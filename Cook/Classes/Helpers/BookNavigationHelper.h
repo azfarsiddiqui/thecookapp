@@ -24,6 +24,7 @@ typedef void(^BookNavigationUpdatedBlock)();
 - (void)updateBookNavigationWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithUnpinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithPinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateBookNavigationWithLikedRecipe:(CKRecipe *)recipe liked:(BOOL)liked completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithRenamedPage:(NSString *)page fromPage:(NSString *)fromPage completion:(BookNavigationUpdatedBlock)completion;
 

@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, assign) BOOL dark;
-@property (nonatomic, assign) BOOL liked;
 @property (nonatomic, strong) UIButton *likeButton;
 @property (nonatomic, strong) CKUser *currentUser;
 
@@ -106,11 +105,13 @@
     // Update likes straight away.
     [[CKSocialManager sharedInstance] like:like recipe:self.recipe];
     
+    // Mark as liked.
+    self.liked = like;
+    
     // Like via the server.
     [self.recipe like:like
                  user:[CKUser currentUser]
            completion:^{
-               self.liked = like;
                self.likeButton.userInteractionEnabled = YES;
                self.likeButton.enabled = YES;
                [AnalyticsHelper trackEventName:@"Liked" params:nil];

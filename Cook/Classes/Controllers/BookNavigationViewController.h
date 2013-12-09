@@ -37,6 +37,8 @@
 - (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithUnpinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithPinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateWithLikedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateWithUnlikedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithRenamedPage:(NSString *)page fromPage:(NSString *)fromPage
                    completion:(BookNavigationUpdatedBlock)completion;

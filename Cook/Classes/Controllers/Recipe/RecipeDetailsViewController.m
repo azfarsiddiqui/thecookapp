@@ -70,7 +70,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIImageView *contentImageView;
 @property (nonatomic, strong) RecipeDetailsView *recipeDetailsView;
 @property (nonatomic, strong) RecipeFooterView *recipeFooterView;
-@property (nonatomic, strong) UIImageView *recipeFooterDividerView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, assign) SnapViewport currentViewport;
@@ -93,6 +92,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, assign) BOOL locatingInProgress;
 @property (nonatomic, assign) BOOL isDeleteRecipeImage;
+@property (nonatomic, assign) BOOL recipeInfoLoaded;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *deleteButton;
@@ -1001,6 +1001,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if ([self.recipe persisted]) {
         [self.recipe infoAndViewedWithCompletion:^(BOOL liked, CKRecipePin *recipePin) {
+            self.recipeInfoLoaded = YES;
             self.liked = liked;
             self.recipePin = recipePin;
             DLog(@"Recipe liked[%@] pinned[%@]", [NSString CK_stringForBoolean:self.liked], [NSString CK_stringForBoolean:(self.recipePin != nil)])
@@ -1694,7 +1695,28 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)closeRecipeView {
     self.isClosed = YES;
     [self hideButtons];
+    [self processLayoutIfRequired];
     [self fadeOutBackgroundImageThenClose];
+}
+
+- (void)processLayoutIfRequired {
+    
+    // No processing if recipe info not loaded.
+    if (!self.recipeInfoLoaded) {
+        return;
+    }
+    
+    // If my own book and likes has changed.
+    if ([self.book isOwner:self.currentUser]
+        && self.liked != self.likeButton.liked) {
+        
+        // Update book.
+        [[BookNavigationHelper sharedInstance] updateBookNavigationWithLikedRecipe:self.recipe
+                                                                             liked:self.likeButton.liked
+                                                                        completion:^{}];
+        
+    }
+    
 }
 
 - (void)fadeOutBackgroundImageThenClose {
@@ -2103,13 +2125,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Footer?
     if (!self.addMode) {
         
-        // Divider?
-        if ([self.recipeDetails hasServes] || [self.recipeDetails hasMethod] || [self.recipeDetails hasIngredients]) {
-            [self.recipeFooterDividerView removeFromSuperview];
-            self.recipeFooterDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
-            self.recipeFooterDividerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        }
-        
         // Footer.
         if (!self.recipeFooterView) {
             self.recipeFooterView = [[RecipeFooterView alloc] init];
@@ -2119,7 +2134,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.recipeFooterView updateFooterWithRecipeDetails:self.recipeDetails];
         
         CGSize contentSize = self.recipeDetailsView.frame.size;
-        contentSize.height += (self.recipeFooterDividerView ? kFooterTopGap : 0.0) + self.recipeFooterView.frame.size.height + kFooterBottomGap;
+        contentSize.height += self.recipeFooterView.frame.size.height + kFooterBottomGap;
         contentSize.height = MAX(contentSize.height, 768.0 - kContentTopOffset); // UGH need to force 768.0 as autoresize hasn't kicked in for scrollView yet.
         self.scrollView.contentSize = contentSize;
         self.recipeFooterView.frame = (CGRect){
@@ -2129,20 +2144,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             self.recipeFooterView.frame.size.height
         };
         
-        // Position the divider.
-        if (self.recipeFooterDividerView) {
-            self.recipeFooterDividerView.frame = (CGRect){
-                floorf((self.scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
-                self.recipeFooterView.frame.origin.y - kFooterTopGap,
-                self.recipeDetailsView.frame.size.width,
-                self.recipeFooterDividerView.frame.size.height
-            };
-            [self.scrollView addSubview:self.recipeFooterDividerView];
-        }
-        
     } else {
-        [self.recipeFooterDividerView removeFromSuperview];
-        self.recipeFooterDividerView = nil;
         [self.recipeFooterView removeFromSuperview];
         self.recipeFooterView = nil;
         self.scrollView.contentSize = self.recipeDetailsView.frame.size;

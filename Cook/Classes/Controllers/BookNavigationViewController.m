@@ -39,6 +39,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *user;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
 @property (nonatomic, strong) CKRecipe *saveOrUpdatedRecipe;
 @property (nonatomic, strong) NSString *saveOrUpdatedPage;
@@ -118,6 +119,7 @@
         self.delegate = delegate;
         self.book = book;
         self.user = book.user;
+        self.currentUser = [CKUser currentUser];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
         
@@ -330,6 +332,74 @@
     
     // Load recipes to rebuild the layout.
     [self loadRecipes];
+}
+
+- (void)updateWithLikedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
+   
+    NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
+    
+    // Look for the liked recipe if it was there from before.
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }];
+    
+    if (foundIndex == -1) {
+        
+        // Add the recipe to the likes page.
+        [likedRecipes addObject:recipe];
+        
+        // Re-sort liked recipes.
+        [self sortRecipes:likedRecipes];
+        
+        // Inrement the recipe count for likes page.
+        [self incrementCountForPage:self.likesPageName];
+        
+        // Stay on the current page.
+        self.saveOrUpdatedPage = [self currentPage];
+        
+        // Update the likes page.
+        BookContentViewController *pageViewController = [self.contentControllers objectForKey:self.likesPageName];
+        if (pageViewController) {
+            [pageViewController loadData];
+        }
+        
+        // Update book title page.
+        [self.titleViewController refresh];
+
+    }
+
+}
+
+- (void)updateWithUnlikedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
+    
+    NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
+    
+    // Look for the liked recipe if it was there from before.
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }];
+    
+    if (foundIndex != -1) {
+        
+        // Remove the recipe from the likes page.
+        [likedRecipes removeObjectAtIndex:foundIndex];
+        
+        // Decrement the recipe count for previous page.
+        [self decrementCountForPage:self.likesPageName];
+        
+        // Stay on the current page.
+        self.saveOrUpdatedPage = [self currentPage];
+        
+        // Update the likes page.
+        BookContentViewController *pageViewController = [self.contentControllers objectForKey:self.likesPageName];
+        if (pageViewController) {
+            [pageViewController loadData];
+        }
+        
+        // Update book title page.
+        [self.titleViewController refresh];
+        
+    }
 }
 
 - (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
@@ -1636,24 +1706,20 @@
         if ([recipes count] > 0) {
             
             // Get the highest ranked recipe.
-            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludePins:YES];
+            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
             
             // If none found, then include pins.
             if (!highestRankedRecipe) {
-                highestRankedRecipe = [self highestRankedRecipeForPage:page excludePins:NO];
+                highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
             }
             
             // Set only if found.
             if (highestRankedRecipe) {
                 [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
             }
-            
         }
         
     }];
-    
-    // Chose a featured recipe for the book title.
-    self.featuredRecipe = nil;
     
     // Get book title recipe if any.
     if (self.book.titleRecipe) {
@@ -1661,40 +1727,63 @@
     }
     
     // Get the highest ranked recipe among the highest ranked recipes.
-    if (!self.featuredRecipe) {
-        [self.pageCoverRecipes each:^(NSString *page, CKRecipe *recipe) {
-            if (![page isEqualToString:self.likesPageName]) {
-                if (self.featuredRecipe) {
-                    if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
-                        self.featuredRecipe = recipe;
-                    }
-                } else {
-                    self.featuredRecipe = recipe;
-                }
-            }
-        }];
-    }
-}
-
-- (CKRecipe *)highestRankedRecipeForPage:(NSString *)page excludePins:(BOOL)excludePins {
-    NSArray *recipes = [self.pageRecipes objectForKey:page];
-    return [self highestRankedRecipeForRecipes:recipes excludePins:excludePins];
-}
-
-- (CKRecipe *)highestRankedRecipeForRecipes:(NSArray *)recipes excludePins:(BOOL)excludePins {
+    self.featuredRecipe = [self highestRankedRecipeForBookIncludeOthers:NO];
     
-    // Exclude pins if specified.
-    if (excludePins) {
-        recipes = [recipes select:^BOOL(CKRecipe *recipe) {
-            return [recipe isOwner:self.user];
-        }];
+    // If still not found, try including pins.
+    if (!self.featuredRecipe) {
+        [self highestRankedRecipeForBookIncludeOthers:YES];
     }
+}
+
+- (CKRecipe *)highestRankedRecipeForBookIncludeOthers:(BOOL)includeOthers {
+    __block CKRecipe *bookRecipe = nil;
+    
+    for (NSString *page in self.pageCoverRecipes) {
+        
+        // Bypass the likes page if specified.
+        if (!includeOthers && [page isEqualToString:self.likesPageName]) {
+            continue;
+        }
+        
+        // Get the highest ranked recipe for the page.
+        CKRecipe *recipe = [self.pageCoverRecipes objectForKey:page];
+        
+        // Bypass non-owners if specified.
+        if (!includeOthers && ![recipe isOwner:self.user]) {
+            continue;
+        }
+        
+        if (bookRecipe) {
+            if ([self rankForRecipe:recipe] > [self rankForRecipe:bookRecipe]) {
+                bookRecipe = recipe;
+            }
+        } else {
+            bookRecipe = recipe;
+        }
+    }
+    
+    return bookRecipe;
+}
+
+- (CKRecipe *)highestRankedRecipeForPage:(NSString *)page excludeOthers:(BOOL)excludeOthers {
+    NSArray *recipes = [self.pageRecipes objectForKey:page];
+    return [self highestRankedRecipeForRecipes:recipes excludeOthers:excludeOthers];
+}
+
+- (CKRecipe *)highestRankedRecipeForRecipes:(NSArray *)recipes excludeOthers:(BOOL)excludeOthers {
     
     // Further filter recipes with photos.
     NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
     
     __block CKRecipe *highestRankedRecipe = nil;
-    [recipesWithPhotos each:^(CKRecipe *recipe) {
+    
+    for (CKRecipe *recipe in recipesWithPhotos) {
+        
+        // Bypass non-owners if specified.
+        if (excludeOthers && ![recipe isOwner:self.user]) {
+            continue;
+        }
+        
         if (highestRankedRecipe) {
             if ([self rankForRecipe:recipe] > [self rankForRecipe:highestRankedRecipe]) {
                 highestRankedRecipe = recipe;
@@ -1702,14 +1791,14 @@
         } else {
             highestRankedRecipe = recipe;
         }
-        
-    }];
+    }
     
     return highestRankedRecipe;
 }
 
 - (CGFloat)rankForRecipe:(CKRecipe *)recipe {
-    return recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
+    CGFloat score = recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
+    return score;
 }
 
 - (NSInteger)currentPageIndex {
