@@ -27,6 +27,8 @@
 #import "CKRecipeTag.h"
 #import "NSArray+Enumerable.h"
 #import "EventHelper.h"
+#import "CKBookCover.h"
+#import "UIColor+Expanded.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -37,7 +39,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionTopBottom
 };
 
-@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, CKUserProfilePhotoViewDelegate>
+@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, CKUserProfilePhotoViewDelegate, TTTAttributedLabelDelegate>
 
 @property (nonatomic, weak) id<RecipeDetailsViewDelegate> delegate;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -49,7 +51,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) RecipeServesCookView *servesCookView;
 @property (nonatomic, strong) UIView *ingredientsDividerView;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
-@property (nonatomic, strong) UILabel *methodLabel;
+@property (nonatomic, strong) TTTAttributedLabel *methodLabel;
 
 // Layout
 @property (nonatomic, assign) CGPoint layoutOffset;
@@ -366,6 +368,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
     [self.delegate recipeDetailsViewProfileRequested];
+}
+
+#pragma mark - TTTAttributedLabelDelegate method
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 #pragma mark - Properties
@@ -736,7 +744,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self addSubview:self.storyDividerView];
         
         // Story label.
-        self.storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.storyLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         self.storyLabel.font = [Theme storyFont];
         self.storyLabel.textColor = [Theme storyColor];
         self.storyLabel.numberOfLines = 0;
@@ -747,6 +755,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyLabel.userInteractionEnabled = NO;
         self.storyLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.storyLabel.alpha = 0.0;
+        self.storyLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
+        self.storyLabel.linkAttributes = @{NSForegroundColorAttributeName : [CKBookCover textColourForCover:self.recipeDetails.book.cover],
+                                           NSUnderlineStyleAttributeName : [NSNumber numberWithInteger:NSUnderlineStyleSingle]};
+        self.storyLabel.activeLinkAttributes = @{NSForegroundColorAttributeName : [[CKBookCover textColourForCover:self.recipeDetails.book.cover] lighterColor],
+                                                 NSUnderlineStyleAttributeName : [NSNumber numberWithInteger:NSUnderlineStyleSingle]};
+        
+        self.storyLabel.delegate = self;
         [self addSubview:self.storyLabel];
         
         [self updateStoryFrame];
@@ -781,8 +796,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyDividerView.frame.size.height
     };
     
+    if (self.editMode) {
+        self.storyLabel.userInteractionEnabled = NO;
+    } else {
+        self.storyLabel.userInteractionEnabled = YES;
+    }
+    
     NSAttributedString *storyDisplay = [self attributedTextForText:story font:[Theme storyFont] colour:[Theme storyColor]];
-    self.storyLabel.attributedText = storyDisplay;
+    self.storyLabel.text = storyDisplay;
     CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
     
     //Center story if no ingredients or serves
@@ -939,7 +960,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateMethod {
     if (!self.methodLabel) {
-        self.methodLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.methodLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         self.methodLabel.numberOfLines = 0;
         self.methodLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.methodLabel.textAlignment = NSTextAlignmentLeft;
@@ -947,6 +968,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.methodLabel.userInteractionEnabled = NO;
         self.methodLabel.alpha = 0.0;
         self.methodLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        self.methodLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
+        self.methodLabel.linkAttributes = @{NSForegroundColorAttributeName : [CKBookCover textColourForCover:self.recipeDetails.book.cover],
+                                           NSUnderlineStyleAttributeName : [NSNumber numberWithInteger:NSUnderlineStyleSingle]};
+        self.methodLabel.activeLinkAttributes = @{NSForegroundColorAttributeName : [[CKBookCover textColourForCover:self.recipeDetails.book.cover] lighterColor],
+                                                 NSUnderlineStyleAttributeName : [NSNumber numberWithInteger:NSUnderlineStyleSingle]};
+        
+        self.methodLabel.delegate = self;
         [self addSubview:self.methodLabel];
         [self updateMethodFrame];
     }
@@ -969,8 +997,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         method = @"METHOD OR STEPS";
     }
     
+    if (self.editMode) {
+        self.methodLabel.userInteractionEnabled = NO;
+    } else {
+        self.methodLabel.userInteractionEnabled = YES;
+    }
+    
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
-    self.methodLabel.attributedText = methodDisplay;
+    self.methodLabel.text = methodDisplay;
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
     //Center story if no ingredients or serves
     if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {

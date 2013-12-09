@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 
 @class RecipeDetails;
 @class ProfileViewController;
@@ -25,7 +26,7 @@
 @interface RecipeDetailsView : UIView
 
 @property (nonatomic, strong) UITextView *titleTextView;
-@property (nonatomic, strong) UILabel *storyLabel;
+@property (nonatomic, strong) TTTAttributedLabel *storyLabel;
 @property (nonatomic, strong) UILabel *tagsLabel;
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate;
