@@ -53,8 +53,8 @@
 @implementation SignupViewController
 
 #define kCloseButtonInsets  (UIEdgeInsets){ 30.0, 20.0, 0.0, 0.0 }
-#define kEmailSignupSize    CGSizeMake(460.0, 337.0)
-#define kEmailSignInSize    CGSizeMake(460.0, 263.0)
+#define kEmailSignupSize    CGSizeMake(480.0, 337.0)
+#define kEmailSignInSize    CGSizeMake(480.0, 263.0)
 #define kTextFieldSize      CGSizeMake(300.0, 50.0)
 #define kDividerInsets      UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0)
 #define kPasswordMinLength  6

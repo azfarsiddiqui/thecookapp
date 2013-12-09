@@ -29,12 +29,13 @@
 #import "CKNavigationController.h"
 #import "CKBookManager.h"
 #import "RootViewController.h"
+#import "FollowReloadButtonView.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate,
-    CKNavigationControllerDelegate>
+    CKNavigationControllerDelegate, FollowReloadButtonViewDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -45,6 +46,7 @@
 @property (nonatomic, strong) UIImageView *vignetteView;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) UIImage *signupBlurImage;
+@property (nonatomic, strong) FollowReloadButtonView *followReloadView;
 
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
@@ -299,6 +301,12 @@
     self.notificationView.alpha = show ? 1.0 : 0.0;
 }
 
+#pragma mark - FollowReloadButtonViewDelegate methods
+
+- (void)followReloadButtonViewTapped {
+    [self loadFollowBooks];
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -409,6 +417,10 @@
 }
 
 #pragma mark - CKPagingCollectionViewLayoutDelegate methods
+
+- (BOOL)pagingLayoutFollowsDidLoad {
+    return (self.followBooks != nil);
+}
 
 - (void)pagingLayoutDidUpdate {
     
@@ -592,6 +604,13 @@
     }
 }
 
+- (FollowReloadButtonView *)followReloadView {
+    if (!_followReloadView) {
+        _followReloadView = [[FollowReloadButtonView alloc] initWithDelegate:self];
+    }
+    return _followReloadView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -663,6 +682,16 @@
     self.vignetteView.center = self.view.center;
     self.vignetteView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view insertSubview:self.vignetteView aboveSubview:self.collectionView];
+    
+    // Follow books activity view on first follow book location.
+    self.followReloadView.frame = (CGRect){
+        self.collectionView.bounds.size.width - 62.0 + floorf(([BenchtopBookCoverViewCell cellSize].width - self.followReloadView.frame.size.width) / 2.0),
+        floorf((self.collectionView.bounds.size.height - self.followReloadView.frame.size.height) / 2.0),
+        self.followReloadView.frame.size.width,
+        self.followReloadView.frame.size.height
+    };
+    self.followReloadView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    [self.collectionView addSubview:self.followReloadView];
 }
 
 - (void)initNotificationView {
@@ -990,11 +1019,20 @@
 }
 
 - (void)loadFollowBooksReload:(BOOL)reload {
-    //Enable pan to Settings and Store except when update screen is active
+    
+    // Enable pan to Settings and Store except when update screen is active
     if (self.updateIntroView.alpha == 0.0) {
         [self.delegate panEnabledRequested:YES];
     }
+    
+    // Spin the spinner.
+    [self.followReloadView enableActivity:YES];
+    
     [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks, NSDictionary *followBookUpdates) {
+        
+        // Stop spinner.
+        [self.followReloadView removeFromSuperview];
+        
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
         self.followBookUpdates = [NSMutableDictionary dictionaryWithDictionary:followBookUpdates];
         
@@ -1028,6 +1066,9 @@
         
     } failure:^(NSError *error) {
         DLog(@"Error: %@", [error localizedDescription]);
+        
+        // Show reload.
+        [self.followReloadView enableActivity:NO];
         
         // No connection?
         if ([[CKServerManager sharedInstance] noConnectionError:error]) {
@@ -1372,7 +1413,7 @@
 - (PagingBenchtopBackgroundView *)createPagingBenchtopBackgroundView {
     
     NSInteger numMyBook = [self.collectionView numberOfItemsInSection:kMyBookSection];
-    NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
+    NSInteger numFollowBooks = self.followBooks ? [self.followBooks count] : 1;
     
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         0.0,
@@ -1388,15 +1429,10 @@
         if (section == kMyBookSection) {
             
             if (self.myBook) {
-//                pagingBenchtopView.leftEdgeColour = [CKBookCover themeBackdropColourForCover:self.myBook.cover];
                 [pagingBenchtopView addColour:[CKBookCover themeBackdropColourForCover:self.myBook.cover]];
             }
             
         } else if (section == kFollowSection) {
-            
-            // Add white for gap.
-            // [pagingBenchtopView addColour:[UIColor colorWithRed:255 green:0 blue:255 alpha:0.5]];
-            // [pagingBenchtopView addColour:[UIColor whiteColor]];
             
             NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
@@ -1410,13 +1446,7 @@
                     // Extract components to reset alpha
                     CGFloat red, green, blue, alpha;
                     [bookColour getRed:&red green:&green blue:&blue alpha:&alpha];
-                    // [pagingBenchtopView addColour:[UIColor colorWithRed:red green:green blue:blue alpha:0.1]];
-                    
                     [pagingBenchtopView addColour:bookColour];
-                    
-                } else if (followIndex == (numFollowBooks - 1)) {
-                    
-//                    pagingBenchtopView.rightEdgeColour = bookColour;
                     
                 }
                 

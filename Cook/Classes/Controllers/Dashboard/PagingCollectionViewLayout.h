@@ -10,6 +10,7 @@
 
 @protocol PagingCollectionViewLayoutDelegate <NSObject>
 
+- (BOOL)pagingLayoutFollowsDidLoad;
 - (void)pagingLayoutDidUpdate;
 
 @end

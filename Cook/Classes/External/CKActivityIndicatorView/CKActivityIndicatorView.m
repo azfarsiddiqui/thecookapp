@@ -21,18 +21,22 @@
 
 @implementation CKActivityIndicatorView
 
++ (CGSize)sizeForStyle:(CKActivityIndicatorViewStyle *)style {
+    return [self backgroundImageForStyle:style].size;
+}
+
 - (id)initWithStyle:(CKActivityIndicatorViewStyle)style {
     if (self = [super init]) {
         self.style = style;
         self.currentTransform = CGAffineTransformIdentity;
         self.userInteractionEnabled = NO;
         
-        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[self backgroundImageForStyle:style]];
+        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[CKActivityIndicatorView backgroundImageForStyle:style]];
         self.frame = backgroundView.frame;
         [self addSubview:backgroundView];
         self.backgroundImageView = backgroundView;
         
-        UIImageView *activityIndicatorImageView = [[UIImageView alloc] initWithImage:[self imageForStyle:style]];
+        UIImageView *activityIndicatorImageView = [[UIImageView alloc] initWithImage:[CKActivityIndicatorView imageForStyle:style]];
         self.activityIndicatorImageView = activityIndicatorImageView;
         
         self.backgroundColor = [UIColor clearColor];
@@ -92,7 +96,7 @@
     [self.activityIndicatorImageView.layer addAnimation:spinAnimation forKey:@"spinAnimation"];
 }
 
-- (UIImage *)backgroundImageForStyle:(CKActivityIndicatorViewStyle)style {
++ (UIImage *)backgroundImageForStyle:(CKActivityIndicatorViewStyle)style {
     UIImage *image = nil;
     switch (style) {
         case CKActivityIndicatorViewStyleTiny:
@@ -116,7 +120,7 @@
     return image;
 }
 
-- (UIImage *)imageForStyle:(CKActivityIndicatorViewStyle)style {
++ (UIImage *)imageForStyle:(CKActivityIndicatorViewStyle)style {
     UIImage *image = nil;
     switch (style) {
         case CKActivityIndicatorViewStyleTiny:

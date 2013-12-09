@@ -115,10 +115,13 @@
 - (CGSize)collectionViewContentSize {
     CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     
-    CGSize minSize = self.collectionView.bounds.size;
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
     CGFloat emptyBookGap = bookSize.width;
-    
+
+    CGSize minSize = (CGSize){
+        kContentInsets.left + bookSize.width + emptyBookGap + bookSize.width + kContentInsets.right,
+        self.collectionView.bounds.size.height
+    };
     CGSize requiredSize = (CGSize){
         kContentInsets.left + bookSize.width + emptyBookGap + (numFollowBooks * bookSize.width) + kContentInsets.right,
         self.collectionView.bounds.size.height
@@ -226,32 +229,9 @@
         }
     }
     
-    // If velocity is non-zero, don't resist, just go with the direction of the scroll.
-//    if (velocity.x < 0.0) {
-//        offsetAdjustment -= 300.0;
-//    } else if (velocity.x > 0.0) {
-//        offsetAdjustment += 300.0;
-//    }
-    
     CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
-    
-//    if ([self.anchorPoints count] > 1) {
-//        CGPoint anchorPoint = [[self.anchorPoints objectAtIndex:1] CGPointValue];
-//        if (targetContentOffset.x == anchorPoint.x - (self.collectionView.bounds.size.width / 2.0)) {
-//            
-//            CGSize bookSize = [PagingCollectionViewLayout bookSize];
-//            targetContentOffset.x += bookSize.width;
-//            CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-//            if (targetContentOffset.x < visibleFrame.origin.x) {
-//                targetContentOffset.x *= -1;
-//            }
-//        }
-//    }
-    
     return targetContentOffset;
 }
-
-#pragma mark - Properties
 
 #pragma mark - Private methods
 
@@ -277,22 +257,32 @@
     }
     
     // Do we have followed books?
-    NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
-    if (numFollowBooks > 0) {
+    if ([self.delegate pagingLayoutFollowsDidLoad]) {
         
-        // Middle gap/anchor.
-        UICollectionViewLayoutAttributes *myBookAttributes = [self.itemsLayoutAttributes firstObject];
-        CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + bookSize.width, myBookAttributes.center.y };
-        [self.anchorPoints addObject:[NSValue valueWithCGPoint:gapAnchor]];
-        
-        // Build the other books.
-        for (NSInteger bookIndex = 0; bookIndex < numFollowBooks; bookIndex++) {
+        NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
+        if (numFollowBooks > 0) {
             
-            UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForFollowBookAtIndex:bookIndex];
-            [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
-            [self.itemsLayoutAttributes addObject:attributes];
-            [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
+            // Middle gap/anchor.
+            UICollectionViewLayoutAttributes *myBookAttributes = [self.itemsLayoutAttributes firstObject];
+            CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + bookSize.width, myBookAttributes.center.y };
+            [self.anchorPoints addObject:[NSValue valueWithCGPoint:gapAnchor]];
+            
+            // Build the other books.
+            for (NSInteger bookIndex = 0; bookIndex < numFollowBooks; bookIndex++) {
+                
+                UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForFollowBookAtIndex:bookIndex];
+                [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
+                [self.itemsLayoutAttributes addObject:attributes];
+                [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
+            }
         }
+        
+    } else {
+        
+        // Spinner anchor.
+        UICollectionViewLayoutAttributes *firstFollowBookAttributes = [self layoutAttributesForFollowBookAtIndex:0];
+        [self.anchorPoints addObject:[NSValue valueWithCGPoint:firstFollowBookAttributes.center]];
+        
     }
     
     // Mark layout as completed.
