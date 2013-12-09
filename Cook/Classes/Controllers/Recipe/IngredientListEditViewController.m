@@ -24,19 +24,37 @@
 #define kFooterId   @"FooterId"
 
 - (void)tappedToAddCell:(id)sender {
-    [self addCellToBottom];
-    if ([self.items count] > 1)
-        self.hintsView.alpha = 0.5;
-    else
-        self.hintsView.alpha = 1.0;
+    if ([self allowedToAdd]) {
+        [self addCellToBottom];
+        [self fadeHintAcoordingToCount];
+    }
 }
 
 - (void)addCellFromTop {
-    [super addCellFromTop];
-    if ([self.items count] > 1)
+    if ([self allowedToAdd]) {
+        [super addCellFromTop];
+        [self fadeHintAcoordingToCount];
+    }
+}
+
+- (void)fadeHintAcoordingToCount {
+    if ([self.items count] > 2) {
+        self.hintsView.alpha = 0.0;
+    } else if ([self.items count] > 1) {
         self.hintsView.alpha = 0.5;
-    else
+    } else {
         self.hintsView.alpha = 1.0;
+    }
+}
+
+- (BOOL)allowedToAdd {
+    __block BOOL hasEmptyIngredients = NO;
+    [self.items enumerateObjectsUsingBlock:^(Ingredient *obj, NSUInteger idx, BOOL *stop) {
+        if (obj.name.length <= 0 && obj.measurement.length <= 0) {
+            hasEmptyIngredients = YES;
+        }
+    }];
+    return !hasEmptyIngredients;
 }
 
 #pragma mark - CKEditViewController methods
@@ -97,11 +115,11 @@
         hintsFrame.origin.x = floorf((self.collectionView.bounds.size.width - hintsFrame.size.width) / 2.0);
         self.hintsView.frame = hintsFrame;
         self.hintsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        if ([self.items count] > 1)
-            self.hintsView.alpha = 0.5;
-        else
-            self.hintsView.alpha = 1.0;
+        [self fadeHintAcoordingToCount];
         [suppView addSubview:self.hintsView];
+        
+        UITapGestureRecognizer *tapToAddGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedToAddCell:)];
+        [suppView addGestureRecognizer:tapToAddGesture];
     }
     
     return suppView;
@@ -113,7 +131,7 @@
 referenceSizeForFooterInSection:(NSInteger)section {
     CGSize footerSize = CGSizeZero;
     
-    footerSize = self.hintsView.frame.size;
+    footerSize = CGSizeMake(self.view.frame.size.width, 100);
     
     return footerSize;
 }
@@ -130,10 +148,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
 - (UIView *)hintsView {
     if (!_hintsView) {
         _hintsView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_Ingredientshint.png"]];
-        //TEST to add cells
-        _hintsView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tapToAddGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedToAddCell:)];
-        [_hintsView addGestureRecognizer:tapToAddGesture];
     }
     return _hintsView;
 }
