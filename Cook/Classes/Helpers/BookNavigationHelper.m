@@ -72,6 +72,22 @@
     [self.bookNavigationViewController updateWithPinnedRecipe:recipePin completion:completion];
 }
 
+- (void)updateBookNavigationWithLikedRecipe:(CKRecipe *)recipe liked:(BOOL)liked
+                                 completion:(BookNavigationUpdatedBlock)completion {
+    
+    // Return immediately if no opened book.
+    if (!self.bookNavigationViewController && completion != nil) {
+        completion();
+    }
+    
+    // Ask the opened book to update with liked/unliked recipe.
+    if (liked) {
+        [self.bookNavigationViewController updateWithLikedRecipe:recipe completion:completion];
+    } else {
+        [self.bookNavigationViewController updateWithUnlikedRecipe:recipe completion:completion];
+    }
+}
+
 - (void)updateBookNavigationWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
     
     // Return immediately if no opened book.

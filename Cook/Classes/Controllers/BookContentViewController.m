@@ -105,6 +105,7 @@
 }
 
 - (void)loadData {
+    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
     self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
 }
@@ -711,7 +712,11 @@
                                                                          }];
                                                                  }
                                                                  failure:^(NSError *error) {
-                                                                     // Unabel to delete.
+                                                                     
+                                                                     // Unable to delete.
+                                                                     [weakSelf enableEditMode:NO animated:NO completion:^{
+                                                                         [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
+                                                                     }];
                                                                  }];
                                                }];
 }

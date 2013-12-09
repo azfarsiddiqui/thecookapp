@@ -37,5 +37,6 @@
 - (void)configurePages:(NSArray *)pages;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
 - (void)configureError:(NSError *)error;
+- (void)refresh;
 
 @end

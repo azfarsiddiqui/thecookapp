@@ -334,6 +334,74 @@
     [self loadRecipes];
 }
 
+- (void)updateWithLikedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
+   
+    NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
+    
+    // Look for the liked recipe if it was there from before.
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }];
+    
+    if (foundIndex == -1) {
+        
+        // Add the recipe to the likes page.
+        [likedRecipes addObject:recipe];
+        
+        // Re-sort liked recipes.
+        [self sortRecipes:likedRecipes];
+        
+        // Inrement the recipe count for likes page.
+        [self incrementCountForPage:self.likesPageName];
+        
+        // Stay on the current page.
+        self.saveOrUpdatedPage = [self currentPage];
+        
+        // Update the likes page.
+        BookContentViewController *pageViewController = [self.contentControllers objectForKey:self.likesPageName];
+        if (pageViewController) {
+            [pageViewController loadData];
+        }
+        
+        // Update book title page.
+        [self.titleViewController refresh];
+
+    }
+
+}
+
+- (void)updateWithUnlikedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
+    
+    NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
+    
+    // Look for the liked recipe if it was there from before.
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }];
+    
+    if (foundIndex != -1) {
+        
+        // Remove the recipe from the likes page.
+        [likedRecipes removeObjectAtIndex:foundIndex];
+        
+        // Decrement the recipe count for previous page.
+        [self decrementCountForPage:self.likesPageName];
+        
+        // Stay on the current page.
+        self.saveOrUpdatedPage = [self currentPage];
+        
+        // Update the likes page.
+        BookContentViewController *pageViewController = [self.contentControllers objectForKey:self.likesPageName];
+        if (pageViewController) {
+            [pageViewController loadData];
+        }
+        
+        // Update book title page.
+        [self.titleViewController refresh];
+        
+    }
+}
+
 - (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with deleted page [%@]", page);
     

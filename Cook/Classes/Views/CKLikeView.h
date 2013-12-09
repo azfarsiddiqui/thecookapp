@@ -12,6 +12,7 @@
 
 @interface CKLikeView : UIView
 
+@property (nonatomic, assign) BOOL liked;
 @property (nonatomic, assign) BOOL enabled;
 
 + (CGSize)likeSize;

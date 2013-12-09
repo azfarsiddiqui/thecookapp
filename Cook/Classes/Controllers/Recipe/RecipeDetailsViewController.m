@@ -92,6 +92,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, assign) BOOL locatingInProgress;
 @property (nonatomic, assign) BOOL isDeleteRecipeImage;
+@property (nonatomic, assign) BOOL recipeInfoLoaded;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *deleteButton;
@@ -1000,6 +1001,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if ([self.recipe persisted]) {
         [self.recipe infoAndViewedWithCompletion:^(BOOL liked, CKRecipePin *recipePin) {
+            self.recipeInfoLoaded = YES;
             self.liked = liked;
             self.recipePin = recipePin;
             DLog(@"Recipe liked[%@] pinned[%@]", [NSString CK_stringForBoolean:self.liked], [NSString CK_stringForBoolean:(self.recipePin != nil)])
@@ -1693,7 +1695,28 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)closeRecipeView {
     self.isClosed = YES;
     [self hideButtons];
+    [self processLayoutIfRequired];
     [self fadeOutBackgroundImageThenClose];
+}
+
+- (void)processLayoutIfRequired {
+    
+    // No processing if recipe info not loaded.
+    if (!self.recipeInfoLoaded) {
+        return;
+    }
+    
+    // If my own book and likes has changed.
+    if ([self.book isOwner:self.currentUser]
+        && self.liked != self.likeButton.liked) {
+        
+        // Update book.
+        [[BookNavigationHelper sharedInstance] updateBookNavigationWithLikedRecipe:self.recipe
+                                                                             liked:self.likeButton.liked
+                                                                        completion:^{}];
+        
+    }
+    
 }
 
 - (void)fadeOutBackgroundImageThenClose {

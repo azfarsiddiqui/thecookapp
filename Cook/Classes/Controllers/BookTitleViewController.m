@@ -220,6 +220,10 @@
     [self.activityView stopAnimating];
 }
 
+- (void)refresh {
+    [self.collectionView reloadData];
+}
+
 #pragma mark - BookPageViewController methods
 
 - (void)showIntroCard:(BOOL)show {
