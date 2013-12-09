@@ -168,6 +168,7 @@
 
 - (void)photoPickerViewControllerCloseRequested {
     [self showPhotoPicker:NO];
+    [self loadData];
 }
 
 - (void)photoPickerViewControllerDeleteRequested {
@@ -314,6 +315,8 @@
                      completion:^(BOOL finished) {
                          if (!show) {
                              [self cleanupPhotoPicker];
+                         } else {
+                             self.imageView.image = nil;
                          }
                      }];
 }

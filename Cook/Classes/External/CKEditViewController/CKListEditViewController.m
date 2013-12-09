@@ -306,6 +306,8 @@
 #pragma mark - UICollectionViewDataSource_Draggable methods
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
+    CKListCell *listCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    [listCell.textField resignFirstResponder];
     [self currentLayout].dragging = YES;
     return self.canReorderItems;
 }
@@ -318,6 +320,7 @@
 
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
+    
     [self currentLayout].dragging = NO;
     
     id item = [self.items objectAtIndex:fromIndexPath.item];
@@ -550,7 +553,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }
     
     // Disable/enable drag/drop according to focus mode.
-    [self.collectionView getHelper].enabled = !focused;
+    self.collectionView.draggable = !focused;
     
     // Mark as not top add activation.
     [self updateAddStateWithActivation:NO];
