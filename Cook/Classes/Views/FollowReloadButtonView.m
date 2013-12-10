@@ -61,7 +61,7 @@
 
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
-        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleLarge];
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleMedium];
     }
     return _activityView;
 }

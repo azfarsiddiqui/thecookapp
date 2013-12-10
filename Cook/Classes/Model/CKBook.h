@@ -15,7 +15,7 @@
 @class CKRecipe;
 
 typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                       NSDictionary *pageRecipeCount, NSArray *likedRecipes,
+                                       NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSArray *likedRecipes,
                                        NSDate *bookLastAccessedDate);
 typedef void(^PageRecipesSuccessBlock)(CKBook *book, NSString *page, NSInteger batchindex, NSArray *recipes);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
