@@ -74,6 +74,10 @@
     return YES;
 }
 
+- (void)clearResponders {
+    [self.textField resignFirstResponder];
+}
+
 #pragma mark - CKListCell methods
 
 + (UIEdgeInsets)listItemInsets {
