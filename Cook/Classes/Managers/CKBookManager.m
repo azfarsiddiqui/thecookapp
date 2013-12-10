@@ -9,9 +9,6 @@
 #import "CKBookManager.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
-#import "AppHelper.h"
-#import <Parse/Parse.h>
-#import "CKRecipeTag.h"
 
 @interface CKBookManager () 
 
@@ -20,6 +17,10 @@
 @end
 
 @implementation CKBookManager
+
+#define kPopularRankingName     @"popular"
+#define kLatestRankingName      @"latest"
+#define kSupportedRankingNames  @[@"popular", @"latest"]
 
 + (instancetype)sharedInstance {
     static dispatch_once_t pred;
@@ -34,6 +35,34 @@
     if (self = [super init]) {
     }
     return self;
+}
+
+- (NSArray *)supportedRankingNames {
+    return kSupportedRankingNames;
+}
+
+- (NSString *)defaultRankingName {
+    return kPopularRankingName;
+}
+
+- (BOOL)isSupportedForRankingName:(NSString *)rankingName {
+    return [[self supportedRankingNames] containsObject:[rankingName lowercaseString]];
+}
+
+- (CGFloat)rankingScoreForRecipe:(CKRecipe *)recipe {
+    return [self rankingScoreForRecipe:recipe rankingName:kPopularRankingName];
+}
+
+- (CGFloat)rankingScoreForRecipe:(CKRecipe *)recipe rankingName:(NSString *)rankingName {
+    CGFloat rankingScore = 0.0;
+    
+    if ([[rankingName lowercaseString] isEqualToString:kPopularRankingName]) {
+        rankingScore = recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
+    } else if ([[rankingName lowercaseString] isEqualToString:kLatestRankingName]) {
+        rankingScore = [recipe.recipeUpdatedDateTime timeIntervalSince1970];
+    }
+    
+    return rankingScore;
 }
 
 #pragma mark - Hang on to my book.

@@ -420,6 +420,7 @@
                                         NSDictionary *pageRecipeCount = [recipeResults objectForKey:@"pageRecipeCount"];
                                         NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
+                                        NSDictionary *pageRankings = [recipeResults objectForKey:@"pageRankings"];
                                         
                                         // Grab tags.
                                         NSArray *parseTags = [recipeResults objectForKey:@"tags"];
@@ -457,7 +458,8 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:nil book:nil];
                                         }];
                                         
-                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, likedRecipes, accessDate);
+                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, pageRankings,
+                                                likedRecipes, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);

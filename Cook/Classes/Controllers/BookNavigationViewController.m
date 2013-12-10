@@ -49,6 +49,7 @@
 @property (nonatomic, strong) NSMutableDictionary *pageRecipeCount;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageBatches;
+@property (nonatomic, strong) NSDictionary *pageRankings;
 @property (nonatomic, strong) NSMutableDictionary *pageCurrentBatches;
 @property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
@@ -1126,7 +1127,8 @@
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                    NSDictionary *pageRecipeCount, NSArray *likedRecipes, NSDate *lastAccessedDate) {
+                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSArray *likedRecipes,
+                                    NSDate *lastAccessedDate) {
         
         if (parseBook) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
@@ -1141,7 +1143,8 @@
         }
         self.bookLastAccessedDate = lastAccessedDate;
         
-        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount likedRecipes:likedRecipes];
+        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings
+                likedRecipes:likedRecipes];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
@@ -1152,12 +1155,14 @@
 }
 
 - (void)processRecipes:(NSDictionary *)pageRecipes pageBatches:(NSDictionary *)pageBatches
-            pageCounts:(NSDictionary *)pageCounts likedRecipes:(NSArray *)likedRecipes {
+            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings
+          likedRecipes:(NSArray *)likedRecipes {
     
     // Loop through to initialise each recipe.
     self.pageRecipes = [NSMutableDictionary new];
     self.pageBatches = [NSMutableDictionary dictionaryWithDictionary:pageBatches];
     self.pageRecipeCount = [NSMutableDictionary dictionaryWithDictionary:pageCounts];
+    self.pageRankings = pageRankings;
     self.pageCurrentBatches = [NSMutableDictionary new];
     
     for (NSString *page in pageRecipes) {
@@ -1778,13 +1783,12 @@
 
 - (CKRecipe *)highestRankedRecipeForPage:(NSString *)page excludeOthers:(BOOL)excludeOthers {
     NSArray *recipes = [self.pageRecipes objectForKey:page];
-    return [self highestRankedRecipeForRecipes:recipes excludeOthers:excludeOthers];
-}
-
-- (CKRecipe *)highestRankedRecipeForRecipes:(NSArray *)recipes excludeOthers:(BOOL)excludeOthers {
     
     // Further filter recipes with photos.
     NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
+
+    // Ranking algorithm name.
+    NSString *rankingName = [self.pageRankings objectForKey:page];
     
     __block CKRecipe *highestRankedRecipe = nil;
     
@@ -1796,7 +1800,7 @@
         }
         
         if (highestRankedRecipe) {
-            if ([self rankForRecipe:recipe] > [self rankForRecipe:highestRankedRecipe]) {
+            if ([self rankForRecipe:recipe rankingName:rankingName] > [self rankForRecipe:highestRankedRecipe rankingName:rankingName]) {
                 highestRankedRecipe = recipe;
             }
         } else {
@@ -1807,9 +1811,16 @@
     return highestRankedRecipe;
 }
 
+- (CGFloat)rankForRecipe:(CKRecipe *)recipe rankingName:(NSString *)rankingName {
+    
+    // Ranking based on the given ranking algorithm name.
+    return [[CKBookManager sharedInstance] rankingScoreForRecipe:recipe rankingName:rankingName];
+}
+
 - (CGFloat)rankForRecipe:(CKRecipe *)recipe {
-    CGFloat score = recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
-    return score;
+    
+    // Default ranking based on popularity.
+    return [[CKBookManager sharedInstance] rankingScoreForRecipe:recipe];
 }
 
 - (NSInteger)currentPageIndex {
