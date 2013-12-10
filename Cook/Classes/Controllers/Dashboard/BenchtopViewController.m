@@ -1422,7 +1422,7 @@
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         0.0,
         0.0,
-        kBlendPageWidth * (numMyBook + 1 + numFollowBooks),
+        kBlendPageWidth * (numMyBook + 1 + (numFollowBooks == 0 ? 1 : numFollowBooks)),
         self.backgroundTextureView.frame.size.height
     } pageWidth:kBlendPageWidth];
     
