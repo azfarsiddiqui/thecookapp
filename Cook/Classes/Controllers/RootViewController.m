@@ -70,6 +70,7 @@
 - (void)dealloc {
     [EventHelper unregisterStatusBarChange:self];
     [EventHelper unregisterLogout:self];
+    [EventHelper unregisterUserChange:self];
 }
 
 - (void)viewDidLoad {
@@ -93,6 +94,7 @@
     // Register login/logout events.
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerStatusBarChange:self selector:@selector(statusBarChanged:)];
+    [EventHelper registerUserChange:self selector:@selector(refreshUser:)];
     
     // App-wide tint colour.
     [ViewHelper configureTextInputTintColour];
@@ -341,6 +343,14 @@
     if ([self.selectedBook.user.objectId isEqual:[CKUser currentUser].objectId])
     {
         self.selectedBook = book;
+    }
+}
+
+- (void)refreshUser:(NSNotification *)notification {
+    if ([self.selectedBook.user.objectId isEqual:[CKUser currentUser].objectId])
+    {
+        CKUser *currentUser = [notification.userInfo objectForKey:kUserKey];
+        self.selectedBook.user = currentUser;
     }
 }
 
