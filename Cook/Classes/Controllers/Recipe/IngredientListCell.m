@@ -175,6 +175,13 @@
     [self.unitTextField resignFirstResponder];
 }
 
+- (BOOL)isBlank {
+    if (self.textField.text.length <= 0 && self.unitTextField.text.length <= 0) {
+        return YES;
+    } else
+        return NO;
+}
+
 #pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
 
 - (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit {

@@ -49,11 +49,13 @@
 
 - (BOOL)allowedToAdd {
     __block BOOL hasEmptyIngredients = NO;
-    [self.items enumerateObjectsUsingBlock:^(Ingredient *obj, NSUInteger idx, BOOL *stop) {
-        if (obj.name.length <= 0 && obj.measurement.length <= 0) {
+    for (int i = 0; i < [self.items count]; i++) {
+        //Check all cells for completely blank ones
+        IngredientListCell *cell = (IngredientListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+        if ([cell isBlank]) {
             hasEmptyIngredients = YES;
         }
-    }];
+    }
     return !hasEmptyIngredients;
 }
 

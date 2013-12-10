@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) IngredientsKeyboardAccessoryViewController *ingredientsAccessoryViewController;
 
+- (BOOL)isBlank;
+
 @end
