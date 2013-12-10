@@ -1200,7 +1200,7 @@
             
             // Is this a new recipe?
             if (self.bookLastAccessedDate
-                && ([recipe.createdDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+                && ([recipe.recipeUpdatedDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
                 
                 // Mark the page as new.
                 [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
@@ -1698,6 +1698,11 @@
 }
 
 - (void)processRanks {
+    [self processRanksForPage];
+    [self processRanksForBook];
+}
+
+- (void)processRanksForPage {
     self.pageCoverRecipes = [NSMutableDictionary dictionary];
     
     // Gather the highest ranked recipes for each page.
@@ -1720,6 +1725,9 @@
         }
         
     }];
+}
+
+- (void)processRanksForBook {
     
     // Get book title recipe if any.
     if (self.book.titleRecipe) {
