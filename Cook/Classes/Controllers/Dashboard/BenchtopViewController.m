@@ -144,10 +144,10 @@
 }
 
 - (void)loadBenchtop:(BOOL)load {
-    [self loadBenchtop:load isBackgroundFetch:NO];
+    [self loadBenchtop:load backgroundFetch:NO];
 }
 
-- (void)loadBenchtop:(BOOL)load isBackgroundFetch:(BOOL)isBackground {
+- (void)loadBenchtop:(BOOL)load backgroundFetch:(BOOL)isBackground {
     DLog(@"load [%@]", load ? @"YES" : @"NO");
     
     //NEed to check if in store/settings
@@ -156,8 +156,8 @@
     }
     
     if (load) {
-        [self loadMyBook];
-        [self loadFollowBooks];
+        [self loadMyBookBackgroundFetch:isBackground];
+        [self loadFollowBooksBackgroundFetch:isBackground];
     } else {
         
         self.myBook = nil;
@@ -847,6 +847,10 @@
 }
 
 - (void)loadMyBook {
+    [self loadMyBookBackgroundFetch:NO];
+}
+
+- (void)loadMyBookBackgroundFetch:(BOOL)backgroundFetch {
     
     CKUser *currentUser = [CKUser currentUser];
     if (currentUser) {
@@ -958,9 +962,11 @@
                          failure:^(NSError *error) {
                              DLog(@"Error: %@", [error localizedDescription]);
                              
-                             // No connection?
-                             if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-                                 [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+                             // Only show no connection card if non-background fetch mode.
+                             if (!backgroundFetch) {
+                                 if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                                     [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+                                 }
                              }
                              
                          }];
@@ -1009,10 +1015,13 @@
             
         } failure:^(NSError *error) {
             
-            // No connection?
-            if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-                [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+            // Only show no connection card if non-background fetch mode.
+            if (!backgroundFetch) {
+                if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                    [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+                }
             }
+
         }];
         
     }
@@ -1023,7 +1032,15 @@
     [self loadFollowBooksReload:NO];
 }
 
+- (void)loadFollowBooksBackgroundFetch:(BOOL)backgroundFetch {
+    [self loadFollowBooksReload:NO backgroundFetch:backgroundFetch];
+}
+
 - (void)loadFollowBooksReload:(BOOL)reload {
+    [self loadFollowBooksReload:reload backgroundFetch:NO];
+}
+
+- (void)loadFollowBooksReload:(BOOL)reload backgroundFetch:(BOOL)backgroundFetch {
     
     // Enable pan to Settings and Store except when update screen is active
     if (self.updateIntroView.alpha == 0.0) {
@@ -1075,10 +1092,13 @@
         // Show reload.
         [self.followReloadView enableActivity:NO];
         
-        // No connection?
-        if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-            [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+        // Only show no connection card if non-background fetch mode.
+        if (!backgroundFetch) {
+            if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+            }
         }
+        
     }];
 
 }
@@ -1335,7 +1355,7 @@
 }
 
 - (void)backgroundFetch:(NSNotification *)notification {
-    [self loadBenchtop:YES isBackgroundFetch:YES];
+    [self loadBenchtop:YES backgroundFetch:YES];
 }
 
 - (void)updatePagingBenchtopView {
