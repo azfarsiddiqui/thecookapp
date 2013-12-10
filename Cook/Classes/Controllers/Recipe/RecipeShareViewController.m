@@ -136,45 +136,59 @@
                                                              multiplier:1.f constant:0.f]];
     }
     
+    
     //Only show disclaimer if owner of recipe
-    UILabel *bottomLabel = [[UILabel alloc] init];
-    [bottomLabel setBackgroundColor:[UIColor clearColor]];
-    bottomLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    bottomLabel.textAlignment = NSTextAlignmentLeft;
-    bottomLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
-    bottomLabel.textColor = [UIColor whiteColor];
-    [self.view addSubview:bottomLabel];
-    UIImageView *lockImageView;
     
     if ([self.recipe.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
+        
+        UILabel *bottomLabel = [[UILabel alloc] init];
+        [bottomLabel setBackgroundColor:[UIColor clearColor]];
+        bottomLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        bottomLabel.textAlignment = NSTextAlignmentLeft;
+        bottomLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+        bottomLabel.textColor = [UIColor whiteColor];
+        [self.view addSubview:bottomLabel];
         bottomLabel.text = @"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB";
-        lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
+        UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
+        lockImageView.backgroundColor = [UIColor clearColor];
+        lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:lockImageView];
+        
+        { //Setting up constraints to space label and lock at bottom
+            NSDictionary *metrics = @{@"width":@39.0, @"height":@39.0};
+            NSDictionary *views = NSDictionaryOfVariableBindings(bottomLabel, lockImageView);
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[lockImageView(width)]-4.0-[bottomLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=100)-[lockImageView(height)]-10.0-|" options:0 metrics:metrics views:views]];
+            [self.view addConstraint:[NSLayoutConstraint constraintWithItem:bottomLabel
+                                                                  attribute:NSLayoutAttributeCenterX
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.view
+                                                                  attribute:NSLayoutAttributeCenterX
+                                                                 multiplier:1.f constant:0.f]];
+        }
     } else {
-        bottomLabel.text = @"REPORT";
-        lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_report"]];
+        UILabel *reportLabel = [[UILabel alloc] init];
+        [reportLabel setBackgroundColor:[UIColor clearColor]];
+        reportLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        reportLabel.textAlignment = NSTextAlignmentLeft;
+        reportLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+        reportLabel.textColor = [UIColor whiteColor];
+        [self.view addSubview:reportLabel];
+        reportLabel.text = @"REPORT";
+        UIImageView *flagImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_report"]];
         UITapGestureRecognizer *reportGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reportPressed:)];
-        [bottomLabel addGestureRecognizer:reportGesture];
+        [reportLabel addGestureRecognizer:reportGesture];
         UITapGestureRecognizer *reportGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reportPressed:)];
-        [lockImageView addGestureRecognizer:reportGesture2];
-        bottomLabel.userInteractionEnabled = YES;
-        lockImageView.userInteractionEnabled = YES;
-    }
-    
-    lockImageView.backgroundColor = [UIColor clearColor];
-    lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:lockImageView];
-    
-    { //Setting up constraints to space label and lock at bottom
-        NSDictionary *metrics = @{@"width":@39.0, @"height":@39.0};
-        NSDictionary *views = NSDictionaryOfVariableBindings(bottomLabel, lockImageView);
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[lockImageView(width)]-4.0-[bottomLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=100)-[lockImageView(height)]-10.0-|" options:0 metrics:metrics views:views]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:bottomLabel
-                                                              attribute:NSLayoutAttributeCenterX
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.view
-                                                              attribute:NSLayoutAttributeCenterX
-                                                             multiplier:1.f constant:0.f]];
+        [flagImageView addGestureRecognizer:reportGesture2];
+        flagImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:flagImageView];
+        reportLabel.userInteractionEnabled = YES;
+        flagImageView.userInteractionEnabled = YES;
+        {
+            NSDictionary *views = NSDictionaryOfVariableBindings(reportLabel, flagImageView);
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[flagImageView]-(5)-[reportLabel]-(20)-|" options:NSLayoutFormatAlignAllCenterY metrics:0 views:views]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(35)-[flagImageView]-(>=20)-|" options:0 metrics:0 views:views]];
+        }
     }
     
     // Attach actions to buttons
