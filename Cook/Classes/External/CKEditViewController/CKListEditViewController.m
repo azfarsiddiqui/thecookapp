@@ -183,6 +183,7 @@
 }
 
 - (NSString *)pullToReleaseTextForActivated:(BOOL)activated {
+
     return activated ? @"Release to add" : @"Pull to add";
 }
 
@@ -194,6 +195,10 @@
     NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:[self.items count] inSection:0];
     [self createNewCellAtIndexPath:nextIndexPath];
     [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+}
+
+- (BOOL)allowedToAdd {
+    return YES;
 }
 
 #pragma mark - Lifecycle events.
@@ -408,7 +413,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (!self.canAddItems) {
+    if (!self.canAddItems || ![self allowedToAdd]) {
         return;
     }
     
@@ -425,7 +430,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
-    if (!self.canAddItems) {
+    if (!self.canAddItems || ![self allowedToAdd]) {
         return;
     }
     
@@ -513,7 +518,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         targetTextBoxView.hidden = YES;
         
         // Show the real collectionView.
-        if (self.canAddItems) {
+        if (self.canAddItems && [self allowedToAdd]) {
             [self.collectionView addSubview:self.pullToAddView];
             [self updateAddState];
         }
@@ -888,7 +893,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)updateAddState {
-    if (!self.canAddItems) {
+    if (!self.canAddItems || ![self allowedToAdd]) {
+        self.topAddLabel.text = @"";
         return;
     }
     
@@ -912,7 +918,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)addCellFromTop {
-    if (!self.canAddItems) {
+    if (!self.canAddItems || ![self allowedToAdd]) {
         return;
     }
     
@@ -1173,7 +1179,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
         CKListCell *cell = [self listCellAtIndexPath:indexPath];
         [cell setEditing:YES];
-        
+        [self updateAddState];
     }];
 
 }

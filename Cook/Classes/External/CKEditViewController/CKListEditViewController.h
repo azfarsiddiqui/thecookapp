@@ -43,6 +43,7 @@
 
 // Create new item.
 - (id)createNewItem;
+- (BOOL)allowedToAdd;
 
 // Extended lifecycle events.
 - (void)itemsDidShow:(BOOL)show;
