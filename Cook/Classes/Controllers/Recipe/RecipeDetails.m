@@ -258,7 +258,9 @@
     } else {
         
         // Clear location
-        self.saveRequired = (self.originalRecipe.geoLocation != nil);
+        if (!self.saveRequired) {
+            self.saveRequired = (self.originalRecipe.geoLocation != nil);
+        }
         
     }
     
