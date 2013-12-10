@@ -32,6 +32,8 @@ typedef enum {
 
 @interface CKBook : CKModel
 
+#define kHasSeenProfileHintKey @"hasSeenProfileHint"
+
 @property (nonatomic, strong) CKUser *user;
 
 @property (nonatomic, copy) NSString *cover;

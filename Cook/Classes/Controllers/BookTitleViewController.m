@@ -184,6 +184,7 @@
                              }
                              completion:^(BOOL finished){
                                  [self showIntroCard:([pages count] <= 1)];
+                                 [self showProfileHintCard:[self profileCardRequired]];
                                  
                                  // Open ze gates.
                                  [self openGates];
@@ -224,6 +225,16 @@
     [self.collectionView reloadData];
 }
 
+- (BOOL)profileCardRequired {
+    //Only show profile hint if:
+    // - Hasn't seen it before
+    // - Has a page and a recipe
+    // - Has no bio
+    // - Has no Profile Photo or Profile Background
+    BOOL hasShown = [[[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenProfileHintKey] boolValue];
+    return ((![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && self.book.story.length == 0 && [self.pages count] > 1 && !hasShown);
+}
+
 #pragma mark - BookPageViewController methods
 
 - (void)showIntroCard:(BOOL)show {
@@ -234,6 +245,7 @@
     NSString *cardTag = @"GetStartedCard";
     
     if (show) {
+        
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_title.png"]
@@ -244,6 +256,31 @@
                                                       center:(CGPoint){
                                                           90.0 + ([BookTitleCell cellSize].width+ 20.0) * 2 + floorf(cardSize.width / 2.0),
                                                           self.view.bounds.size.height - [BookTitleCell cellSize].height + 58.0,
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
+}
+
+- (void)showProfileHintCard:(BOOL)show {
+    if (![self.book isOwner]) {
+        return;
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kHasSeenProfileHintKey];
+    NSString *cardTag = @"YourProfile";
+    
+    if (show) {
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
+                                                       title:@"YOUR PROFILE"
+                                                    subtitle:@"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE"
+                                                        view:self.view
+                                                      anchor:CardViewAnchorMidLeft
+                                                      center:(CGPoint){
+                                                          floorf(cardSize.width / 2.0) + 20.0,
+                                                          floorf(cardSize.height / 2.0) + 40.0
                                                       }];
     } else {
         [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];

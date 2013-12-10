@@ -93,8 +93,8 @@
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
-                                                       title:@"YOUR PROFILE"
-                                                    subtitle:@"ADD A BACKGROUND IMAGE, PROFILE PHOTO AND BIO."
+                                                       title:@"EDIT PROFILE"
+                                                    subtitle:@"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO"
                                                         view:self.view
                                                       anchor:CardViewAnchorTopRight
                                                       center:(CGPoint){
@@ -423,7 +423,8 @@
 }
 
 - (BOOL)introRequired {
-    return (!self.editMode && ![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]);
+    DLog(@"Num recipes: %i", self.book.numRecipes);
+    return (!self.editMode && (![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && self.book.numRecipes > 0);
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {

@@ -441,6 +441,7 @@
 - (void)loggedOut:(NSNotification *)notification {
     [self createLoginLogoutButton];
     [self.themeTabView reset];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kHasSeenProfileHintKey];
 }
 
 #pragma mark - MFMailViewController delegate method
