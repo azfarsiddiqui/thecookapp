@@ -91,13 +91,21 @@
 }
 
 - (void)loadBook:(CKBook *)book {
-    [self loadBook:book updates:0];
+    [self loadBook:book updates:0 isNew:NO];
 }
 
 - (void)loadBook:(CKBook *)book updates:(NSInteger)updates {
+    [self loadBook:book updates:updates isNew:NO];
+}
+
+- (void)loadBook:(CKBook *)book updates:(NSInteger)updates isNew:(BOOL)isNew {
     
     // Update cover.
-    [self.bookCoverView loadBook:book update:updates];
+    if (isNew) {
+        [self.bookCoverView loadNewBook:book];
+    } else {
+        [self.bookCoverView loadBook:book update:updates];
+    }
     
     // Reset delete mode.
     [self enableDeleteMode:NO];

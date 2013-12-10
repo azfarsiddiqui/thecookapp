@@ -170,6 +170,11 @@
     }
 }
 
+- (void)clearResponders {
+    [super clearResponders];
+    [self.unitTextField resignFirstResponder];
+}
+
 #pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
 
 - (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit {

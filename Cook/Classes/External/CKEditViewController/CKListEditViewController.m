@@ -307,7 +307,7 @@
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
     CKListCell *listCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [listCell.textField resignFirstResponder];
+    [listCell clearResponders];
     [self currentLayout].dragging = YES;
     return self.canReorderItems;
 }

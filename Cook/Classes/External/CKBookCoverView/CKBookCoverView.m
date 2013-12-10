@@ -96,6 +96,11 @@
     [self loadBook:book editable:[book editable] loadRemoteIllustration:YES updates:updates];
 }
 
+- (void)loadNewBook:(CKBook *)book {
+    [self loadBook:book editable:[book editable] loadRemoteIllustration:YES updates:0];
+    [self markNew];
+}
+
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable {
     [self loadBook:book editable:editable loadRemoteIllustration:YES];
 }
@@ -191,6 +196,29 @@
 
 - (void)clearUpdates {
     [self.updatesIcon removeFromSuperview];
+}
+
+- (void)markNew {
+    self.updatesIcon.image = [CKBookCover updatesIconImageForCover:self.book.cover];
+    
+    if (!self.updatesIcon.superview) {
+        [self addSubview:self.updatesIcon];
+    }
+    if (!self.updatesLabel.superview) {
+        self.updatesLabel.center = self.updatesIcon.center;
+        [self.updatesIcon addSubview:self.updatesLabel];
+    }
+    
+    self.updatesLabel.text = @"NEW";
+    self.updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:18.0];
+    [self.updatesLabel sizeToFit];
+    self.updatesLabel.frame = (CGRect){
+        floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.width) / 2.0),
+        floorf((self.updatesIcon.bounds.size.height - self.updatesLabel.frame.size.height) / 2.0) - 3.0,
+        self.updatesLabel.frame.size.width,
+        self.updatesLabel.frame.size.height
+    };
+    
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -720,7 +748,6 @@
 
 - (void)loadUpdates:(NSInteger)updates {
     if (updates > 0) {
-        
         // Update with book colour.
         self.updatesIcon.image = [CKBookCover updatesIconImageForCover:self.book.cover];
         
