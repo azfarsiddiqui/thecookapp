@@ -1727,11 +1727,14 @@
     }
     
     // Get the highest ranked recipe among the highest ranked recipes.
-    self.featuredRecipe = [self highestRankedRecipeForBookIncludeOthers:NO];
-    
-    // If still not found, try including pins.
     if (!self.featuredRecipe) {
-        [self highestRankedRecipeForBookIncludeOthers:YES];
+        
+        self.featuredRecipe = [self highestRankedRecipeForBookIncludeOthers:NO];
+        
+        // If still not found, try including pins.
+        if (!self.featuredRecipe) {
+            self.featuredRecipe = [self highestRankedRecipeForBookIncludeOthers:YES];
+        }
     }
 }
 
