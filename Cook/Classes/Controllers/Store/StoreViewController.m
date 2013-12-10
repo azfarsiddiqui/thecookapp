@@ -69,7 +69,6 @@
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
-    [EventHelper unregisterFollowUpdated:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
                                                   object:[UIApplication sharedApplication]];
 }
