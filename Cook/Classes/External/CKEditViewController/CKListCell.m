@@ -50,7 +50,7 @@
         textField.backgroundColor = [UIColor clearColor];
         textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
-        textField.returnKeyType = UIReturnKeyDone;
+        textField.returnKeyType = UIReturnKeyNext;
         textField.font = self.font;
         textField.userInteractionEnabled = NO;
         [self.contentView addSubview:textField];

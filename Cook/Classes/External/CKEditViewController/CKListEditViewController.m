@@ -1226,17 +1226,17 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                 
                 // Only add if the cell after next is not empty.
                 if (currentCell && ![currentCell isEmpty]) {
-                    [cell.textField resignFirstResponder];
+                    [self createNewCellAtIndexPath:nextIndexPath];
                 }
                 
             } else {
-                [cell.textField resignFirstResponder];
+                [self createNewCellAtIndexPath:nextIndexPath];
             }
             
         } else {
             
             if (indexPath.item == [self.items count] - 1) {
-                [cell.textField resignFirstResponder];
+                [self createNewCellAtIndexPath:nextIndexPath];
                 
             } else {
                 
