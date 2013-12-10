@@ -1439,24 +1439,27 @@
         } else if (section == kFollowSection) {
             
             NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
-            for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
+            if (numFollowBooks > 0) {
                 
-                CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                UIColor *bookColour = [CKBookCover themeBackdropColourForCover:book.cover];
-                
-                // Add the next book colour at the gap.
-                if (followIndex == 0) {
+                for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                     
-                    // Extract components to reset alpha
-                    CGFloat red, green, blue, alpha;
-                    [bookColour getRed:&red green:&green blue:&blue alpha:&alpha];
+                    CKBook *book = [self.followBooks objectAtIndex:followIndex];
+                    UIColor *bookColour = [CKBookCover themeBackdropColourForCover:book.cover];
+                    
+                    // Add the next book colour at the gap.
+                    if (followIndex == 0) {
+                        
+                        // Extract components to reset alpha
+                        CGFloat red, green, blue, alpha;
+                        [bookColour getRed:&red green:&green blue:&blue alpha:&alpha];
+                        [pagingBenchtopView addColour:bookColour];
+                        
+                    }
+                    
                     [pagingBenchtopView addColour:bookColour];
-                    
                 }
                 
-                [pagingBenchtopView addColour:bookColour];
             }
-            
         }
     }
     

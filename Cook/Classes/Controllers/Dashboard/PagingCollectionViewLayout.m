@@ -90,7 +90,16 @@
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForFollowBookAtIndex:(NSInteger)bookIndex {
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
+    CGPoint cellOffset = [self offsetForFollowBookAtIndex:bookIndex];
     
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+    attributes.frame = (CGRect) { cellOffset.x, cellOffset.y, bookSize.width, bookSize.height };
+    return attributes;
+}
+
+- (CGPoint)offsetForFollowBookAtIndex:(NSInteger)bookIndex {
     CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     
     // Compulsory gap: my book + empty book
@@ -99,15 +108,10 @@
         kContentInsets.top
     };
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-    attributes.frame = (CGRect) {
+    return (CGPoint){
         cellOffset.x + (bookIndex * bookSize.width),
-        kContentInsets.top,
-        bookSize.width,
-        bookSize.height
+        kContentInsets.top
     };
-    return attributes;
 }
 
 #pragma mark - UICollectionViewLayout methods
@@ -275,6 +279,13 @@
                 [self.itemsLayoutAttributes addObject:attributes];
                 [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
             }
+            
+        } else {
+            
+            // Empty follow books should have an anchor.
+            UICollectionViewLayoutAttributes *firstFollowBookAttributes = [self layoutAttributesForFollowBookAtIndex:0];
+            [self.anchorPoints addObject:[NSValue valueWithCGPoint:firstFollowBookAttributes.center]];
+            
         }
         
     } else {
