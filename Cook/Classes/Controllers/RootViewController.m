@@ -456,11 +456,11 @@
     
     // Analog fade.
     CGRect storeIntersection = CGRectIntersection(self.view.bounds, self.storeViewController.view.frame);
-    CGFloat storeOffset = storeIntersection.size.height;
+    CGFloat storeOffset = storeIntersection.size.height - [self.storeViewController bottomShadowHeight];
     CGRect settingsIntersection = CGRectIntersection(self.view.bounds, self.settingsViewController.view.frame);
     CGFloat settingsOffset = settingsIntersection.size.height;
     if (storeOffset > 0) {
-        self.benchtopOverlayView.alpha = MIN((storeOffset / [self.storeViewController visibleHeight]) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
+        self.benchtopOverlayView.alpha = MIN((storeOffset / ([self.storeViewController visibleHeight] - [self.storeViewController bottomShadowHeight])) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
     } else if (settingsOffset > 0) {
         self.benchtopOverlayView.alpha = MIN((settingsOffset / self.settingsViewController.view.frame.size.height) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
     } else {
