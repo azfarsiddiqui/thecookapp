@@ -378,7 +378,12 @@
         
     } else if (indexPath.section == kFollowSection) {
         CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
-        [cell loadBook:book updates:[self updatesForBook:book]];
+        if ([self.followBookUpdates objectForKey:book.objectId]) {
+            [cell loadBook:book updates:[self updatesForBook:book]];
+        }
+        else {
+            [cell loadBook:book updates:0 isNew:YES];
+        }
     }
     
     return cell;
@@ -1285,11 +1290,10 @@
             [self.collectionView performBatchUpdates:^{
                 
                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kFollowSection]]];
-                
             } completion:^(BOOL finished) {
-                
                 [self updatePagingBenchtopView];
                 [[self pagingLayout] enableFollowMode:NO];
+                [self.collectionView reloadData];
             }];
         }
     }

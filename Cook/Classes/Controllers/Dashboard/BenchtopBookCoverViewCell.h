@@ -36,6 +36,7 @@
 - (UIOffset)shadowOffset;
 - (void)loadBook:(CKBook *)book;
 - (void)loadBook:(CKBook *)book updates:(NSInteger)updates;
+- (void)loadBook:(CKBook *)book updates:(NSInteger)updates isNew:(BOOL)isNew;
 - (void)enableDeleteMode:(BOOL)enable;
 - (void)enableEditMode:(BOOL)enable;
 

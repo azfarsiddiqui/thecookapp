@@ -32,6 +32,7 @@
 - (id)initWithDelegate:(id<CKBookCoverViewDelegate>)delegate;
 - (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)loadBook:(CKBook *)book;
+- (void)loadNewBook:(CKBook *)book;
 - (void)loadBook:(CKBook *)book update:(NSInteger)updates;
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable;
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable loadRemoteIllustration:(BOOL)loadRemoteIllustration;
