@@ -1361,6 +1361,11 @@
 - (void)updatePagingBenchtopView {
     DLog();
     
+    // No blending in edit mode.
+    if (self.editMode) {
+        return;
+    }
+    
     // Create a new blended benchtop with the current layout.
     PagingBenchtopBackgroundView *pagingBenchtopView = [self createPagingBenchtopBackgroundView];
     
