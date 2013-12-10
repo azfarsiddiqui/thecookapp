@@ -346,18 +346,23 @@
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
     
-    // Ignore follow reqiuets
+    // Ignore follow requests.
     if (follow) {
         return;
     }
     
-    CKBook *book = [EventHelper bookFollowForNotification:notification];
+    CKBook *unfollowedBook = [EventHelper bookFollowForNotification:notification];
     if ([self.books count] > 0) {
         
         NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *followBook) {
-            return [followBook.objectId isEqualToString:book.objectId];
+            return [followBook.objectId isEqualToString:unfollowedBook.objectId];
         }];
+        
         if (bookIndex != -1) {
+            
+            // Update the underlying book status.
+            CKBook *existingBook = [self.books objectAtIndex:bookIndex];
+            existingBook.status = [self unfollowedBookStatus];
             
             // Mark cell as unfollowed.
             StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
