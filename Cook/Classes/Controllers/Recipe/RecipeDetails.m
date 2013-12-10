@@ -233,19 +233,33 @@
     _location = location;
     
     if (location != nil) {
-        if (self.originalRecipe.geoLocation != nil && ![self.originalRecipe.geoLocation isEqual:location]) {
+        
+        if (self.originalRecipe.geoLocation) {
             
-            // Overwrite location.
-            self.saveRequired = YES;
+            // If there was an existing location, then compare the two.
+            self.saveRequired = ![self.originalRecipe.geoLocation isEqual:location];
+            
+        } else {
+            
+            if ([self isNew] && !self.saveRequired) {
+                
+                // New recipe and not save required means that the location was set by default, but nothing has yet been
+                // entered.
+                self.saveRequired = NO;
+                
+            } else {
+                
+                // New location received.
+                self.saveRequired = YES;
+            }
             
         }
+        
     } else {
         
-        if (self.originalRecipe.geoLocation != nil) {
-            
-            // Clear location.
-            self.saveRequired = YES;
-        }
+        // Clear location
+        self.saveRequired = (self.originalRecipe.geoLocation != nil);
+        
     }
     
 }
