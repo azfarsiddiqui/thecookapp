@@ -20,6 +20,7 @@
 // Rankings.
 - (NSArray *)supportedRankingNames;
 - (NSString *)defaultRankingName;
+- (NSString *)resolveRankingNameForName:(NSString *)rankingName;
 - (BOOL)isSupportedForRankingName:(NSString *)rankingName;
 - (CGFloat)rankingScoreForRecipe:(CKRecipe *)recipe;
 - (CGFloat)rankingScoreForRecipe:(CKRecipe *)recipe rankingName:(NSString *)rankingName;

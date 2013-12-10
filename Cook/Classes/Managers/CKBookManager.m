@@ -45,6 +45,19 @@
     return kPopularRankingName;
 }
 
+- (NSString *)resolveRankingNameForName:(NSString *)rankingName {
+    
+    if ([self isSupportedForRankingName:rankingName]) {
+        
+        return rankingName;
+        
+    } else {
+        
+        // Default popularity ranking algorithm.
+        return kPopularRankingName;
+    }
+}
+
 - (BOOL)isSupportedForRankingName:(NSString *)rankingName {
     return [[self supportedRankingNames] containsObject:[rankingName lowercaseString]];
 }

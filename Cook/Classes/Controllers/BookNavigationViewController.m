@@ -1788,7 +1788,7 @@
     NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
 
     // Ranking algorithm name.
-    NSString *rankingName = [self.pageRankings objectForKey:page];
+    NSString *rankingName = [self resolveRankingNameForPage:page];
     
     __block CKRecipe *highestRankedRecipe = nil;
     
@@ -1809,6 +1809,10 @@
     }
     
     return highestRankedRecipe;
+}
+
+- (NSString *)resolveRankingNameForPage:(NSString *)page {
+    return [[CKBookManager sharedInstance] resolveRankingNameForName:[self.pageRankings objectForKey:page]];
 }
 
 - (CGFloat)rankForRecipe:(CKRecipe *)recipe rankingName:(NSString *)rankingName {
