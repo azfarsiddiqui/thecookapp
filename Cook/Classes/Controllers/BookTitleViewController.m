@@ -158,7 +158,7 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
         } completion:^(BOOL finished){
-            [self showIntroCard:([pages count] == 0)];
+            [self showIntroCard:([pages count] <= 1)];
         }];
         
     } else {
@@ -183,7 +183,7 @@
                                  self.collectionView.transform = CGAffineTransformIdentity;
                              }
                              completion:^(BOOL finished){
-                                 [self showIntroCard:([pages count] == 0)];
+                                 [self showIntroCard:([pages count] <= 1)];
                                  
                                  // Open ze gates.
                                  [self openGates];
@@ -242,7 +242,7 @@
                                                         view:self.collectionView
                                                       anchor:CardViewAnchorMidLeft
                                                       center:(CGPoint){
-                                                          90.0 + [BookTitleCell cellSize].width + floorf(cardSize.width / 2.0) + 20.0,
+                                                          90.0 + ([BookTitleCell cellSize].width+ 20.0) * 2 + floorf(cardSize.width / 2.0),
                                                           self.view.bounds.size.height - [BookTitleCell cellSize].height + 58.0,
                                                       }];
     } else {
