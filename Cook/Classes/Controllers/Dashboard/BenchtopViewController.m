@@ -1256,6 +1256,9 @@
                                           completion:^(BOOL finished){
                                               CGPoint centerPoint = cell.contentView.center;
                                               [self.delegate openBookRequestedForBook:book centerPoint:centerPoint];
+                                              if ([self.followBookUpdates objectForKey:book.objectId] == nil) {
+                                                  [self.followBookUpdates setObject:@0 forKey:book.objectId];
+                                              }
                                           }];
                      }];
     
@@ -1783,7 +1786,8 @@
 }
 
 - (void)clearUpdatesForBook:(CKBook *)book {
-    [self.followBookUpdates removeObjectForKey:book.objectId];
+//    [self.followBookUpdates removeObjectForKey:book.objectId];
+    [self.followBookUpdates setObject:@0 forKey:book.objectId];
 }
 
 - (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
