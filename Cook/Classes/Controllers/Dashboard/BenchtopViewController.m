@@ -55,6 +55,7 @@
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
 @property (nonatomic, strong) CKBook *myBook;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) NSMutableArray *followBooks;
 @property (nonatomic, strong) NSMutableDictionary *followBookUpdates;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
@@ -121,6 +122,7 @@
     [self initNotificationView];
     
     if ([CKUser isLoggedIn]) {
+        self.currentUser = [CKUser currentUser];
         [self loadBenchtop:YES];
     }
     
@@ -247,15 +249,6 @@
 
 - (void)enable:(BOOL)enable animated:(BOOL)animated {
     self.collectionView.userInteractionEnabled = enable;
-    if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                         } completion:^(BOOL finished) {
-                             [self updatePagingBenchtopView];
-                         }];
-    }
     [self hideIntroViewsAsRequired];
 }
 
@@ -366,7 +359,8 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     BenchtopBookCoverViewCell *cell = nil;
-    if (![CKUser isLoggedIn] && indexPath.section == kMyBookSection) {
+    
+    if (![self.currentUser isSignedIn] && indexPath.section == kMyBookSection) {
         cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kSignUpCellId forIndexPath:indexPath];
     } else {
         cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
@@ -378,10 +372,12 @@
         
     } else if (indexPath.section == kFollowSection) {
         CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
-        if ([self.followBookUpdates objectForKey:book.objectId]) {
+        
+        if (![self.currentUser isSignedIn]) {
+            [cell loadBook:book];
+        } else if ([self.followBookUpdates objectForKey:book.objectId]) {
             [cell loadBook:book updates:[self updatesForBook:book]];
-        }
-        else {
+        } else {
             [cell loadBook:book updates:0 isNew:YES];
         }
     }
@@ -439,7 +435,7 @@
 
 - (void)notificationViewTapped {
     
-    if ([CKUser isLoggedIn]) {
+    if ([self.currentUser isSignedIn]) {
         [self showNotificationsOverlay:YES];
     }
     
@@ -704,7 +700,7 @@
     notificationView.frame = CGRectMake(18.0, 33.0, notificationView.frame.size.width, notificationView.frame.size.height);
     [self.view addSubview:notificationView];
     self.notificationView = notificationView;
-    self.notificationView.hidden = ![CKUser isLoggedIn];
+    self.notificationView.hidden = ![self.currentUser isSignedIn];
 }
 
 - (PagingCollectionViewLayout *)pagingLayout {
@@ -723,7 +719,7 @@
                 if ([self isCenterBookAtIndexPath:indexPath]) {
                     
                     // Enable delete only in the center.
-                    if ([CKUser isLoggedIn]) {
+                    if ([self.currentUser isSignedIn]) {
                         [self enableDeleteMode:YES indexPath:indexPath];
                     }
                     
@@ -1334,10 +1330,16 @@
         // Show notification view.
         self.notificationView.hidden = NO;
         
+        // Reset the current user.
+        self.currentUser = [CKUser currentUser];
+        
     }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    
+    // Clear the current user
+    self.currentUser = nil;
     
     // Hide notification view.
     self.notificationView.hidden = YES;
