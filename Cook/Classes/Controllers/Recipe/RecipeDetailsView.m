@@ -827,26 +827,38 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateContentDivider {
-    if (!self.contentDividerView) {
-        self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
-        self.contentDividerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        [self addSubview:self.contentDividerView];
+    
+    if ([self.recipeDetails.story CK_containsText] || self.editMode) {
+        
+        if (!self.contentDividerView) {
+            self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
+            self.contentDividerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+            [self addSubview:self.contentDividerView];
+        }
+        
+        CGFloat dividerGap = (self.storyLabel.alpha == 0.0) ? 5.0 : 30.0;
+        CGFloat postDividerGap = (self.storyLabel.alpha == 0.0) ? 20.0 : 30.0;
+        
+        self.contentDividerView.frame = (CGRect){
+            floorf((self.bounds.size.width - kDividerWidth) / 2.0),
+            self.layoutOffset.y + dividerGap,
+            kDividerWidth,
+            self.contentDividerView.frame.size.height
+        };
+        
+        [self updateLayoutOffsetVertical:dividerGap + self.contentDividerView.frame.size.height + postDividerGap];
+        
+    } else {
+        
+        [self.contentDividerView removeFromSuperview];
+        self.contentDividerView = nil;
+        
+        [self updateLayoutOffsetVertical:10.0];
     }
-    
-    CGFloat dividerGap = (self.storyLabel.alpha == 0.0) ? 5.0 : 30.0;
-    CGFloat postDividerGap = (self.storyLabel.alpha == 0.0) ? 20.0 : 30.0;
-    
-    self.contentDividerView.frame = (CGRect){
-        floorf((self.bounds.size.width - kDividerWidth) / 2.0),
-        self.layoutOffset.y + dividerGap,
-        kDividerWidth,
-        self.contentDividerView.frame.size.height
-    };
-    
-    [self updateLayoutOffsetVertical:dividerGap + self.contentDividerView.frame.size.height + postDividerGap];
     
     // Mark this as the offset for content start, so that left/right columns can reference.
     self.contentOffset = self.layoutOffset;
+    
 }
 
 - (void)updateAddDetailsCardView {
