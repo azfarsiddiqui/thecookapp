@@ -159,7 +159,6 @@
     
     if (load) {
         [self loadMyBookBackgroundFetch:isBackground];
-        [self loadFollowBooksBackgroundFetch:isBackground];
     } else {
         
         self.myBook = nil;
@@ -979,6 +978,9 @@
                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
                     [self updatePagingBenchtopView];
+                    
+                    // Load follow books.
+                    [self loadFollowBooks];
                 }];
                 
             } else {
@@ -999,6 +1001,8 @@
                         [self flashIntros];
                     }
                     
+                    // Load follow books.
+                    [self loadFollowBooks];
                 }];
 
             }
@@ -1048,8 +1052,8 @@
     
     [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks, NSDictionary *followBookUpdates) {
         
-        // Stop spinner.
-        [self.followReloadView removeFromSuperview];
+        // Stop spinner but don't show reload button.
+        [self.followReloadView enableActivity:NO hideReload:YES];
         
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
         self.followBookUpdates = [NSMutableDictionary dictionaryWithDictionary:followBookUpdates];
@@ -1320,7 +1324,11 @@
 
 - (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    
+    
     if (success) {
+        
+        [self deleteFollowBooks];
         
         [self loadMyBook];
         
@@ -1338,6 +1346,8 @@
 
 - (void)loggedOut:(NSNotification *)notification {
     
+    [self deleteFollowBooks];
+    
     // Clear the current user
     self.currentUser = nil;
     
@@ -1349,7 +1359,6 @@
     
     // Reload benchtop.
     [self loadMyBook];
-    [self loadFollowBooksReload:YES];
     
     // Add intros.
     [self flashIntros];
@@ -1850,6 +1859,29 @@
 
 - (void)updateIntroContinueTapped {
     [self closeIntroTapped];
+}
+
+- (void)deleteFollowBooks {
+    if ([self.followBooks count] > 0) {
+        
+        NSArray *indexPathsToDelete = [self.followBooks collectWithIndex:^(CKBook *book, NSUInteger bookIndex) {
+            return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+        }];
+        
+        // Clear model.
+        [self.followBooks removeAllObjects];
+        self.followBooks = nil;
+        
+        // Clear UI.
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+        } completion:^(BOOL finished) {
+            [self updatePagingBenchtopView];
+        }];
+        
+    }
+    
 }
 
 @end
