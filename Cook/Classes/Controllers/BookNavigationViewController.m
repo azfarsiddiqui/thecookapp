@@ -211,13 +211,14 @@
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
     NSString *page = recipe.page;
-    NSString *currentPage = [self currentPage];
+    
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
     
     // Check if this was a new/updated recipe.
-    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
     NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
+    
     if (foundIndex != -1) {
         
         // Replace the recipe if it's only been updated.
@@ -228,37 +229,41 @@
         // Add to the front of the list if this was a new recipe.
         [recipes insertObject:recipe atIndex:0];
         
-        // Increment the recipe count for target page.
+        // Increment the recipe count.
         [self incrementCountForPage:page];
+    }
+    
+    // If recipe has changed pages, then remove it from the old page.
+    NSString *currentPage = [self currentPage];
+    if (![currentPage isEqualToString:page]) {
+        NSMutableArray *recipes = [self.pageRecipes objectForKey:currentPage];
         
-        // If changed pages, decrement count for the source page.
-        if (![currentPage isEqualToString:page]) {
+        // Look for the recipe to remove from the old page.
+        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+            return [existingRecipe.objectId isEqualToString:recipe.objectId];
+        }];
+        
+        if (foundIndex != -1) {
             
-            // Decrement source page.
+            // Remove the recipe from the old page.
+            [recipes removeObjectAtIndex:foundIndex];
+            
+            // Decrement the recipe count for previous page.
             [self decrementCountForPage:currentPage];
-            
         }
     }
     
     // Re-sort the recipes.
     [self sortRecipes:recipes];
     
-    // Reload the data.
-    BookContentViewController *pageViewController = [self.contentControllers objectForKey:page];
-    if (pageViewController) {
-        [pageViewController loadData];
-    }
+    // Remember the recipe that was actioned.
+    self.saveOrUpdatedRecipe = recipe;
     
-    // Different page, scroll there.
-    if (![currentPage isEqualToString:page]) {
-        [self scrollToPage:page animated:NO];
-    }
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
     
-    // Run completion.
-    if (completion != nil) {
-        completion();
-    }
-    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
 }
 
 - (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
@@ -1704,33 +1709,36 @@
 }
 
 - (void)processRanks {
-    [self processRanksForPage];
+    [self processRanksForAllPages];
     [self processRanksForBook];
 }
 
-- (void)processRanksForPage {
+- (void)processRanksForAllPages {
     self.pageCoverRecipes = [NSMutableDictionary dictionary];
     
     // Gather the highest ranked recipes for each page.
-    [self.pageRecipes each:^(NSString *page, NSArray *recipes) {
+    [[self.pageRecipes allKeys] each:^(NSString *page) {
+        [self processRanksForPage:page];
+    }];
+}
+
+- (void)processRanksForPage:(NSString *)page {
+    NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
+    if ([pageRecipes count] > 0) {
         
-        if ([recipes count] > 0) {
-            
-            // Get the highest ranked recipe.
-            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
-            
-            // If none found, then include pins.
-            if (!highestRankedRecipe) {
-                highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
-            }
-            
-            // Set only if found.
-            if (highestRankedRecipe) {
-                [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
-            }
+        // Get the highest ranked recipe.
+        CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
+        
+        // If none found, then include pins.
+        if (!highestRankedRecipe) {
+            highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
         }
         
-    }];
+        // Set only if found.
+        if (highestRankedRecipe) {
+            [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+        }
+    }
 }
 
 - (void)processRanksForBook {
