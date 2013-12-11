@@ -1710,33 +1710,36 @@
 }
 
 - (void)processRanks {
-    [self processRanksForPage];
+    [self processRanksForAllPages];
     [self processRanksForBook];
 }
 
-- (void)processRanksForPage {
+- (void)processRanksForAllPages {
     self.pageCoverRecipes = [NSMutableDictionary dictionary];
     
     // Gather the highest ranked recipes for each page.
-    [self.pageRecipes each:^(NSString *page, NSArray *recipes) {
+    [[self.pageRecipes allKeys] each:^(NSString *page) {
+        [self processRanksForPage:page];
+    }];
+}
+
+- (void)processRanksForPage:(NSString *)page {
+    NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
+    if ([pageRecipes count] > 0) {
         
-        if ([recipes count] > 0) {
-            
-            // Get the highest ranked recipe.
-            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
-            
-            // If none found, then include pins.
-            if (!highestRankedRecipe) {
-                highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
-            }
-            
-            // Set only if found.
-            if (highestRankedRecipe) {
-                [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
-            }
+        // Get the highest ranked recipe.
+        CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
+        
+        // If none found, then include pins.
+        if (!highestRankedRecipe) {
+            highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
         }
         
-    }];
+        // Set only if found.
+        if (highestRankedRecipe) {
+            [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+        }
+    }
 }
 
 - (void)processRanksForBook {

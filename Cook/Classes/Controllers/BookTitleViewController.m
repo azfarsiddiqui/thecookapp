@@ -715,7 +715,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                                                                                        delegate:self
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
-                                                                                                          title:@"Page Name"
+                                                                                                          title:@"ADD PAGE"
                                                                                                  characterLimit:16];
     editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;

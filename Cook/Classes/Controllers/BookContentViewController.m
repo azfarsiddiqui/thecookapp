@@ -108,6 +108,7 @@
     [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
     self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
+    [self showIntroCard];
 }
 
 - (void)loadPageContent {
