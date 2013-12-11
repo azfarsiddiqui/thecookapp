@@ -143,7 +143,7 @@
     __weak RootViewController *weakSelf = self;
     [self dismissWelcomeViewCompletion:^{
         weakSelf.panEnabled = YES;
-        [weakSelf.benchtopViewController loadBenchtop:YES];
+        [weakSelf.benchtopViewController loadBenchtop];
     }];
     
 }

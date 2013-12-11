@@ -16,7 +16,7 @@
 @property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL allowDelete;
 
-- (void)loadBenchtop:(BOOL)load;
+- (void)loadBenchtop;
 - (void)enable:(BOOL)enable;
 - (void)bookAboutToClose;
 - (void)showVisibleBooks:(BOOL)show;
