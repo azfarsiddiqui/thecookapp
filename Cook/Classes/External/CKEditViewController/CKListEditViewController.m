@@ -1143,7 +1143,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
     DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
     
-    if (!self.swipeDeleteActivated && indexPath) {
+    if (!self.swipeDeleteActivated && indexPath && !self.saveRequired) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             [self.items removeObjectAtIndex:indexPath.item];
             [self.collectionView performBatchUpdates:^{
