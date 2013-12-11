@@ -710,6 +710,7 @@
 
 - (void)bookTitleAddedPage:(NSString *)page {
     [self addPage:page];
+    [self scrollToPage:page animated:YES];
 }
 
 - (BOOL)bookTitleIsNewForPage:(NSString *)page {
