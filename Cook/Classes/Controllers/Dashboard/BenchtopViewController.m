@@ -1179,7 +1179,12 @@
     // Unfollow in the background, then inform listeners of the update.
     [book removeFollower:currentUser
                  success:^{
+                     
                      [EventHelper postFollow:NO book:book];
+                     
+                     // Clear the book updates.
+                     [self.followBookUpdates removeObjectForKey:book.objectId];
+                     
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];
