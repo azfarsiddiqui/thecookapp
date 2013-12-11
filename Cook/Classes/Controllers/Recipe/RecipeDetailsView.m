@@ -828,7 +828,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateContentDivider {
     
-    if ([self.recipeDetails.story CK_containsText] || self.editMode) {
+    if (self.editMode || ([self.recipeDetails.story CK_containsText] && [self.recipeDetails hasServes]
+                          && [self.recipeDetails hasMethod] && [self.recipeDetails hasIngredients])) {
         
         if (!self.contentDividerView) {
             self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
@@ -853,7 +854,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self.contentDividerView removeFromSuperview];
         self.contentDividerView = nil;
         
-        [self updateLayoutOffsetVertical:10.0];
+        [self updateLayoutOffsetVertical:13.0];
     }
     
     // Mark this as the offset for content start, so that left/right columns can reference.
@@ -968,6 +969,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView.frame.size.width,
         self.ingredientsView.frame.size.height
     };
+    
+    // Divider visible only if ingredients is.
+    self.ingredientsDividerView.hidden = (self.ingredientsView.alpha == 0.0);
 }
 
 - (void)updateMethod {
