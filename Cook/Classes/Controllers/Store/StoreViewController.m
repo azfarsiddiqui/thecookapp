@@ -640,16 +640,13 @@
 }
 
 - (void)loggedIn:(NSNotification *)notification {
-    
-    // Unload any data.
-    [self.currentStoreCollectionViewController unloadData];
-    
+    [self purgeData];
     [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedIn)];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedOut)];
     [self purgeData];
+    [self.storeCollectionViewControllers makeObjectsPerformSelector:@selector(isLoggedOut)];
 }
 
 - (UIImage *)imageForFriendsButtonSelected:(BOOL)selected {
