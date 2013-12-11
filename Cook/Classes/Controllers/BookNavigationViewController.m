@@ -211,14 +211,13 @@
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
     NSString *page = recipe.page;
-    
-    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
+    NSString *currentPage = [self currentPage];
     
     // Check if this was a new/updated recipe.
+    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
     NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
-    
     if (foundIndex != -1) {
         
         // Replace the recipe if it's only been updated.
@@ -229,41 +228,37 @@
         // Add to the front of the list if this was a new recipe.
         [recipes insertObject:recipe atIndex:0];
         
-        // Increment the recipe count.
+        // Increment the recipe count for target page.
         [self incrementCountForPage:page];
-    }
-    
-    // If recipe has changed pages, then remove it from the old page.
-    NSString *currentPage = [self currentPage];
-    if (![currentPage isEqualToString:page]) {
-        NSMutableArray *recipes = [self.pageRecipes objectForKey:currentPage];
         
-        // Look for the recipe to remove from the old page.
-        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
-            return [existingRecipe.objectId isEqualToString:recipe.objectId];
-        }];
-        
-        if (foundIndex != -1) {
+        // If changed pages, decrement count for the source page.
+        if (![currentPage isEqualToString:page]) {
             
-            // Remove the recipe from the old page.
-            [recipes removeObjectAtIndex:foundIndex];
-            
-            // Decrement the recipe count for previous page.
+            // Decrement source page.
             [self decrementCountForPage:currentPage];
+            
         }
     }
     
     // Re-sort the recipes.
     [self sortRecipes:recipes];
     
-    // Remember the recipe that was actioned.
-    self.saveOrUpdatedRecipe = recipe;
+    // Reload the data.
+    BookContentViewController *pageViewController = [self.contentControllers objectForKey:page];
+    if (pageViewController) {
+        [pageViewController loadData];
+    }
     
-    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
-    self.bookUpdatedBlock = completion;
+    // Different page, scroll there.
+    if (![currentPage isEqualToString:page]) {
+        [self scrollToPage:page animated:NO];
+    }
     
-    // Load recipes to rebuild the layout.
-    [self loadRecipes];
+    // Run completion.
+    if (completion != nil) {
+        completion();
+    }
+    
 }
 
 - (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
