@@ -186,7 +186,7 @@
         flagImageView.userInteractionEnabled = YES;
         {
             NSDictionary *views = NSDictionaryOfVariableBindings(reportLabel, flagImageView);
-            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[flagImageView]-(5)-[reportLabel]-(20)-|" options:NSLayoutFormatAlignAllCenterY metrics:0 views:views]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[flagImageView]-(1)-[reportLabel]-(20)-|" options:NSLayoutFormatAlignAllCenterY metrics:0 views:views]];
             [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(35)-[flagImageView]-(>=20)-|" options:0 metrics:0 views:views]];
         }
     }
