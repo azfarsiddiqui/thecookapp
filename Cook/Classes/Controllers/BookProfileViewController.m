@@ -424,7 +424,7 @@
 
 - (BOOL)introRequired {
     DLog(@"Num recipes: %i", self.book.numRecipes);
-    return (!self.editMode && (![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && self.book.numRecipes > 0);
+    return (!self.editMode && (![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && [self.book.pages count] > 0);
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {

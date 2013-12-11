@@ -37,6 +37,7 @@
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
 @property (nonatomic, assign) BOOL cachedImageLoaded;
+@property (nonatomic, assign) BOOL didScrollBack;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 
 @property (nonatomic, strong) UIImageView *imageView;
@@ -115,6 +116,12 @@
     [EventHelper registerPhotoLoadingProgress:self selector:@selector(photoLoadingProgress:)];
 }
 
+//- (void)viewDidAppear:(BOOL)animated {
+//    if (self.didScrollBack) {
+//        [self showProfileHintCard:[self profileCardRequired]];
+//    }
+//}
+
 - (void)configureLoading:(BOOL)loading {
     if (loading) {
         if (![self.activityView isAnimating]) {
@@ -159,7 +166,9 @@
             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
         } completion:^(BOOL finished){
             [self showIntroCard:([pages count] <= 1)];
-            [self showProfileHintCard:[self profileCardRequired]];
+            if ([self profileCardRequired]) {
+                [self showProfileHintCard:YES];
+            }
         }];
         
     } else {
@@ -185,8 +194,9 @@
                              }
                              completion:^(BOOL finished){
                                  [self showIntroCard:([pages count] <= 1)];
-                                 [self showProfileHintCard:[self profileCardRequired]];
-                                 
+                                 if ([self profileCardRequired]) {
+                                     [self showProfileHintCard:YES];
+                                 }
                                  // Open ze gates.
                                  [self openGates];
                                  
@@ -233,7 +243,7 @@
     // - Has no bio
     // - Has no Profile Photo or Profile Background
     BOOL hasShown = [[[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenProfileHintKey] boolValue];
-    return ((![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && self.book.story.length == 0 && [self.pages count] > 1 && !hasShown);
+    return ((![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && [self.pages count] > 1 && !hasShown);
 }
 
 #pragma mark - BookPageViewController methods
@@ -268,10 +278,10 @@
     if (![self.book isOwner]) {
         return;
     }
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kHasSeenProfileHintKey];
     NSString *cardTag = @"YourProfile";
     
     if (show) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kHasSeenProfileHintKey];
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
@@ -281,7 +291,7 @@
                                                       anchor:CardViewAnchorMidLeft
                                                       center:(CGPoint){
                                                           floorf(cardSize.width / 2.0) + 20.0,
-                                                          floorf(cardSize.height / 2.0) + 40.0
+                                                          floorf(cardSize.height / 2.0) + 30.0
                                                       }];
     } else {
         [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
@@ -757,7 +767,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleAddedPage:page];
     [self enableAddMode:NO];
     [self showIntroCard:NO];
-    [self showProfileHintCard:[self profileCardRequired]];
+    self.didScrollBack = YES;
+    if ([self profileCardRequired]) {
+        [self showProfileHintCard:YES];
+    }
 }
 
 - (void)initBorders {
