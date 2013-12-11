@@ -11,5 +11,6 @@
 @interface DataHelper : NSObject
 
 + (NSString *)friendlyDisplayForCount:(NSUInteger)count;
++ (NSString *)friendlyDisplayForCount:(NSUInteger)count showFractional:(BOOL)showFractional;
 
 @end

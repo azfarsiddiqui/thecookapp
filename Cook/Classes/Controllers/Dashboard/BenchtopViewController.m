@@ -115,13 +115,14 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    self.currentUser = [CKUser currentUser];
     self.view.backgroundColor = [UIColor whiteColor];
+    
     [self initBackground];
     [self initCollectionView];
     [self initNotificationView];
     
     if ([CKUser isLoggedIn]) {
-        self.currentUser = [CKUser currentUser];
         [self loadBenchtop];
     }
     

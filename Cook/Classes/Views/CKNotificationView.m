@@ -27,6 +27,10 @@
 
 @implementation CKNotificationView
 
+#define kFont       [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0]
+#define kMidFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:18.0]
+#define kMinFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:15.0]
+
 - (void)dealloc {
     [EventHelper unregisterUserNotifications:self];
     [EventHelper unregisterLoginSucessful:self];
@@ -80,7 +84,7 @@
     if (!_badgeLabel) {
         _badgeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _badgeLabel.backgroundColor = [UIColor clearColor];
-        _badgeLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0];
+        _badgeLabel.font = kFont;
         _badgeLabel.textColor = [UIColor colorWithHexString:@"8e8e8e"];
         _badgeLabel.textAlignment = NSTextAlignmentCenter;
         _badgeLabel.lineBreakMode = NSLineBreakByClipping;
@@ -122,7 +126,8 @@
     if (hasNotifications) {
         
         // Update the label.
-        self.badgeLabel.text = [DataHelper friendlyDisplayForCount:self.badgeCount];
+        self.badgeLabel.text = [DataHelper friendlyDisplayForCount:self.badgeCount showFractional:NO];  // No fractions.
+        self.badgeLabel.font = [self fontForBadgeCount];
         [self.badgeLabel sizeToFit];
         self.badgeLabel.frame = (CGRect){
             floorf((self.bounds.size.width - self.badgeLabel.frame.size.width) / 2.0),
@@ -178,6 +183,16 @@
     }
     
     
+}
+
+- (UIFont *)fontForBadgeCount {
+    UIFont *font = kFont;
+    if (self.badgeCount >= 100000) {
+        font = kMinFont;
+    } else if (self.badgeCount >= 10000) {
+        font = kMidFont;
+    }
+    return font;
 }
 
 - (void)loadData {
