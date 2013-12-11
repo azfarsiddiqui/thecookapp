@@ -872,6 +872,9 @@
                                          [self updatePagingBenchtopView];
                                      }
                                      
+                                     // Load follow books.
+                                     [self loadFollowBooks];
+                                     
                                  } else {
                                      
                                      // Set to nil to delete it first.
