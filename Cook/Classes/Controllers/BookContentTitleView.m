@@ -22,18 +22,20 @@
 
 @implementation BookContentTitleView
 
-#define kCategoryFont       [Theme defaultFontWithSize:118.0]
-#define kCategoryMinFont    [Theme defaultFontWithSize:110.0]
-#define kCategoryInsets     UIEdgeInsetsMake(15.0, 50.0, 15.0, 50.0)
+#define kCategoryFont       [Theme defaultFontWithSize:110.0]
+#define kCategoryMinFont    [Theme defaultFontWithSize:100.0]
+#define kCategoryInsets     (UIEdgeInsets){ 15.0, 50.0, 15.0, 50.0 }
+#define kCategoryMinInsets  (UIEdgeInsets){ 15.0, 35.0, 15.0, 35.0 }
+#define kBoxInsets          (UIEdgeInsets){ 12.0, 12.0, 12.0, 12.0 }
 #define kUnderlayColour     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 #define kEditUnderlayColour [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]
 
 - (id)initWithTitle:(NSString *)title {
     if (self = [super initWithFrame:CGRectZero]) {
+        [self updateWithTitle:title];
         [self addSubview:self.boxImageView];
         [self addSubview:self.underlayView];
         [self addSubview:self.maskedLabel];
-        [self updateWithTitle:title];
     }
     return self;
 }
@@ -41,35 +43,27 @@
 - (void)updateWithTitle:(NSString *)title {
     self.title = [title uppercaseString];
     
-    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kCategoryFont];
+    UIFont *font = kCategoryFont;
+    UIEdgeInsets insets = kCategoryInsets;
+    UIEdgeInsets boxInsets = kBoxInsets;
+    if ([self needsScaling]) {
+        font = kCategoryMinFont;
+        insets = kCategoryMinInsets;
+    }
+    
+    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font];
     NSAttributedString *titleDisplay = [[NSAttributedString alloc] initWithString:self.title attributes:paragraphAttributes];
     self.maskedLabel.attributedText = titleDisplay;
     
-    // Figure out the required size with padding.
-    CGSize availableSize = CGSizeMake(self.bounds.size.width - kCategoryInsets.left - kCategoryInsets.right, self.bounds.size.height);
-    if (self.superview) {
-        availableSize = CGSizeMake(self.superview.bounds.size.width - kCategoryInsets.left - kCategoryInsets.right, self.superview.bounds.size.height);
-    }
-    CGSize size = [self.maskedLabel sizeThatFits:availableSize];
-    size.width += kCategoryInsets.left + kCategoryInsets.right;
-    size.height += kCategoryInsets.top + kCategoryInsets.bottom;
-    
-    // Bump down font if exceeds maximum width.
-    if (size.width >= availableSize.width) {
-        paragraphAttributes = [self paragraphAttributesForFont:kCategoryMinFont];
-        titleDisplay = [[NSAttributedString alloc] initWithString:self.title attributes:paragraphAttributes];
-        self.maskedLabel.attributedText = titleDisplay;
-        size = [self.maskedLabel sizeThatFits:availableSize];
-        size.width += kCategoryInsets.left + kCategoryInsets.right;
-        size.height += kCategoryInsets.top + kCategoryInsets.bottom;
-    }
+    [self.maskedLabel sizeToFit];
+    CGSize size = self.maskedLabel.frame.size;
+    size.width += insets.left + insets.right;
+    size.height += insets.top + insets.bottom;
     
     // Update myself and my dependent views.
     self.maskedLabel.frame = CGRectIntegral((CGRect){ 0.0, 0.0, size.width, size.height });
     self.underlayView.frame = self.maskedLabel.frame;
     self.frame = self.maskedLabel.frame;
-    
-    UIEdgeInsets boxInsets = (UIEdgeInsets) { 12.0, 12.0, 12.0, 12.0 };
     self.boxImageView.frame = (CGRect){
         -boxInsets.left,
         -boxInsets.top,
@@ -106,8 +100,7 @@
         _maskedLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         _maskedLabel.numberOfLines = 0;
         _maskedLabel.textAlignment = NSTextAlignmentCenter;
-        _maskedLabel.font = kCategoryFont;
-        _maskedLabel.insets = kCategoryInsets;
+        _maskedLabel.insets = [self maskedLabelInsets];
     }
     return _maskedLabel;
 }
@@ -133,7 +126,7 @@
 #pragma mark - Private methods
 
 - (NSDictionary *)paragraphAttributesForFont:(UIFont *)font {
-    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
     paragraphStyle.lineSpacing = -10.0;
@@ -144,6 +137,14 @@
             [UIColor whiteColor], NSForegroundColorAttributeName,
             paragraphStyle, NSParagraphStyleAttributeName,
             nil];
+}
+
+- (UIEdgeInsets)maskedLabelInsets {
+    return UIEdgeInsetsZero;
+}
+
+- (BOOL)needsScaling {
+    return ([self.title length] > 14);
 }
 
 @end
