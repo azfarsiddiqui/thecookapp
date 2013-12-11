@@ -655,7 +655,7 @@
 }
 
 - (NSString *)footerTextForSignUp:(BOOL)signUp {
-    return signUp ? @"ALREADY HAVE AN ACCOUNT? SIGN IN" : @"DON'T HAVE AN ACCOUNT? SIGN UP!";
+    return signUp ? @"ALREADY HAVE AN ACCOUNT? SIGN IN" : @"DON'T HAVE AN ACCOUNT? SIGN UP";
 }
 
 - (NSString *)emailButtonTextForSignUp:(BOOL)signUp {
