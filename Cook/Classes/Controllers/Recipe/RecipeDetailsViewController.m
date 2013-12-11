@@ -2039,15 +2039,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)enableEditMode:(BOOL)enable {
     
     if (!self.addMode && ([self.recipe hasMethod] || [self.recipe hasIngredients]) && self.currentViewport != SnapViewportTop) {
-        
-            [self enableEditModeWithoutInformingRecipeDetailsView:enable];
-            [self.recipeDetailsView enableEditMode:enable];
-        
+        [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+        [self.recipeDetailsView enableEditMode:enable];
     } else {
-        [self snapToViewport:SnapViewportBottom completion:^{
-            [self enableEditModeWithoutInformingRecipeDetailsView:enable];
-            [self.recipeDetailsView enableEditMode:enable];
-        }];
+        [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+        [self.recipeDetailsView enableEditMode:enable];
+        [self snapToViewport:SnapViewportBottom];
     }
 }
 
@@ -2272,13 +2269,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (CGFloat)headerHeight {
     CGFloat headerHeight = 320.0;
-//    return headerHeight;
     
-    if ([self.recipeDetails hasStory]) {
-        CGFloat maxStoryHeight = 50.0;
-        headerHeight = self.recipeDetailsView.storyLabel.frame.origin.y + MIN(self.recipeDetailsView.storyLabel.frame.size.height, maxStoryHeight) + 15.0;
-    } else if (self.addMode) {
-        headerHeight = 320.0;
+    if (self.editMode && ![self.recipeDetails hasStory]) {
+        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 24.0);
     }
     
     return headerHeight;
