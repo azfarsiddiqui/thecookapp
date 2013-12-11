@@ -29,7 +29,7 @@
 
 #define kFont       [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0]
 #define kMidFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:18.0]
-#define kMinFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:15.0]
+#define kMinFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0]
 
 - (void)dealloc {
     [EventHelper unregisterUserNotifications:self];
@@ -187,9 +187,10 @@
 
 - (UIFont *)fontForBadgeCount {
     UIFont *font = kFont;
-    if (self.badgeCount >= 100000) {
+    NSString *badgeText = self.badgeLabel.text;
+    if ([badgeText length] > 3) {
         font = kMinFont;
-    } else if (self.badgeCount >= 10000) {
+    } else if ([badgeText length] > 2) {
         font = kMidFont;
     }
     return font;
