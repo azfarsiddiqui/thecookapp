@@ -136,7 +136,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   80.0
-#define kFooterTopGap       25.0
+#define kFooterTopGap       10.0
 #define kFooterBottomGap    25.0
 #define kDragRatio          0.9
 #define kIconGap            18.0
@@ -2134,12 +2134,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.recipeFooterView updateFooterWithRecipeDetails:self.recipeDetails];
         
         CGSize contentSize = self.recipeDetailsView.frame.size;
-        contentSize.height += self.recipeFooterView.frame.size.height + kFooterBottomGap;
+        contentSize.height += kFooterTopGap + self.recipeFooterView.frame.size.height + kFooterBottomGap;
         contentSize.height = MAX(contentSize.height, 768.0 - kContentTopOffset); // UGH need to force 768.0 as autoresize hasn't kicked in for scrollView yet.
         self.scrollView.contentSize = contentSize;
         self.recipeFooterView.frame = (CGRect){
             floorf((self.scrollView.bounds.size.width - self.recipeFooterView.frame.size.width) / 2.0),
-            contentSize.height - self.recipeFooterView.frame.size.height - kFooterBottomGap,
+            contentSize.height - kFooterBottomGap - self.recipeFooterView.frame.size.height,
             self.recipeFooterView.frame.size.width,
             self.recipeFooterView.frame.size.height
         };

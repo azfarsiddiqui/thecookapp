@@ -18,5 +18,6 @@
 
 - (id)initWithDelegate:(id<FollowReloadButtonViewDelegate>)delegate;
 - (void)enableActivity:(BOOL)activity;
+- (void)enableActivity:(BOOL)activity hideReload:(BOOL)hideReload;
 
 @end

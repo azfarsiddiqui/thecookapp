@@ -100,6 +100,7 @@
     [self.books removeAllObjects];
     [self.bookCoverImages removeAllObjects];
     [self.bookCovers removeAllObjects];
+    [self hideMessageCard];
     self.books = nil;
     self.bookCoverImages = nil;
     self.bookCovers = nil;

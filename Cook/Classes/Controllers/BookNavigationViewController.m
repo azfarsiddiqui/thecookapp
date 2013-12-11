@@ -1649,7 +1649,13 @@
 
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
-    [EventHelper postStatusBarChangeForLight:editMode];
+    
+    if (!editMode) {
+        
+        // Restore status bar after edit mode.
+        [EventHelper postStatusBarChangeForLight:self.lightStatusBar];
+    }
+    
     [self updateButtonsWithAlpha:1.0];
     [self.currentEditViewController enableEditMode:editMode animated:YES completion:nil];
 }

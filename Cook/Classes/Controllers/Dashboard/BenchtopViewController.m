@@ -55,13 +55,13 @@
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
 @property (nonatomic, strong) CKBook *myBook;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) NSMutableArray *followBooks;
 @property (nonatomic, strong) NSMutableDictionary *followBookUpdates;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
-@property (nonatomic, assign) BOOL transitional;
 @property (nonatomic, strong) NSString *preEditingBookName;
 @property (nonatomic, strong) NSString *preEditingAuthorName;
 
@@ -115,13 +115,15 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    self.currentUser = [CKUser currentUser];
     self.view.backgroundColor = [UIColor whiteColor];
+    
     [self initBackground];
     [self initCollectionView];
     [self initNotificationView];
     
     if ([CKUser isLoggedIn]) {
-        [self loadBenchtop:YES];
+        [self loadBenchtop];
     }
     
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
@@ -143,31 +145,18 @@
                                                object:[UIApplication sharedApplication]];
 }
 
-- (void)loadBenchtop:(BOOL)load {
-    [self loadBenchtop:load backgroundFetch:NO];
+- (void)loadBenchtop {
+    [self loadBenchtopBackgroundFetch:NO];
 }
 
-- (void)loadBenchtop:(BOOL)load backgroundFetch:(BOOL)isBackground {
-    DLog(@"load [%@]", load ? @"YES" : @"NO");
+- (void)loadBenchtopBackgroundFetch:(BOOL)isBackground {
     
-    //NEed to check if in store/settings
+    // NEed to check if in store/settings
     if (!isBackground) {
-        [self enable:load];
+        [self enable:YES];
     }
     
-    if (load) {
-        [self loadMyBookBackgroundFetch:isBackground];
-        [self loadFollowBooksBackgroundFetch:isBackground];
-    } else {
-        
-        self.myBook = nil;
-        [self.followBooks removeAllObjects];
-        self.followBooks = nil;
-        
-        [[self pagingLayout] markLayoutDirty];
-        [self.collectionView reloadData];
-    }
-    
+    [self loadBooksBackgroundFetch:isBackground];
     [self.delegate benchtopLoaded];
 }
 
@@ -247,15 +236,6 @@
 
 - (void)enable:(BOOL)enable animated:(BOOL)animated {
     self.collectionView.userInteractionEnabled = enable;
-    if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                         } completion:^(BOOL finished) {
-                             [self updatePagingBenchtopView];
-                         }];
-    }
     [self hideIntroViewsAsRequired];
 }
 
@@ -366,7 +346,8 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     BenchtopBookCoverViewCell *cell = nil;
-    if (![CKUser isLoggedIn] && indexPath.section == kMyBookSection) {
+    
+    if (![self.currentUser isSignedIn] && indexPath.section == kMyBookSection) {
         cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kSignUpCellId forIndexPath:indexPath];
     } else {
         cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
@@ -378,10 +359,12 @@
         
     } else if (indexPath.section == kFollowSection) {
         CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
-        if ([self.followBookUpdates objectForKey:book.objectId]) {
+        
+        if (![self.currentUser isSignedIn]) {
+            [cell loadBook:book];
+        } else if ([self.followBookUpdates objectForKey:book.objectId]) {
             [cell loadBook:book updates:[self updatesForBook:book]];
-        }
-        else {
+        } else {
             [cell loadBook:book updates:0 isNew:YES];
         }
     }
@@ -430,7 +413,7 @@
 - (void)pagingLayoutDidUpdate {
     
     // Update blurring backdrop only in non-edit mode.
-    if (!self.editMode || !self.transitional) {
+    if (!self.editMode) {
         [self updatePagingBenchtopView];
     }
 }
@@ -439,7 +422,7 @@
 
 - (void)notificationViewTapped {
     
-    if ([CKUser isLoggedIn]) {
+    if ([self.currentUser isSignedIn]) {
         [self showNotificationsOverlay:YES];
     }
     
@@ -704,7 +687,7 @@
     notificationView.frame = CGRectMake(18.0, 33.0, notificationView.frame.size.width, notificationView.frame.size.height);
     [self.view addSubview:notificationView];
     self.notificationView = notificationView;
-    self.notificationView.hidden = ![CKUser isLoggedIn];
+    self.notificationView.hidden = ![self.currentUser isSignedIn];
 }
 
 - (PagingCollectionViewLayout *)pagingLayout {
@@ -723,7 +706,7 @@
                 if ([self isCenterBookAtIndexPath:indexPath]) {
                     
                     // Enable delete only in the center.
-                    if ([CKUser isLoggedIn]) {
+                    if ([self.currentUser isSignedIn]) {
                         [self enableDeleteMode:YES indexPath:indexPath];
                     }
                     
@@ -846,12 +829,16 @@
     [self enableDeleteMode:NO indexPath:self.selectedIndexPath];
 }
 
-- (void)loadMyBook {
-    [self loadMyBookBackgroundFetch:NO];
+- (void)loadBooks {
+    [self loadBooksBackgroundFetch:NO];
 }
 
-- (void)loadMyBookBackgroundFetch:(BOOL)backgroundFetch {
+- (void)loadBooksBackgroundFetch:(BOOL)backgroundFetch {
     
+    // Hide any no connection messages.
+    [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
+    
+    // Logged in loading...
     CKUser *currentUser = [CKUser currentUser];
     if (currentUser) {
         
@@ -877,64 +864,32 @@
                                          [self updatePagingBenchtopView];
                                      }
                                      
+                                     // Load follow books.
+                                     [self loadFollowBooks];
+                                     
                                  } else {
                                      
-                                     // Set to nil to delete it first.
-                                     self.myBook = nil;
-                                     [[self pagingLayout] markLayoutDirty];
-                                     [self clearPagingBenchtopView];
-                                     self.transitional = YES;
+                                     self.myBook = book;
                                      
-                                     // Delete the item.
-                                     [self.collectionView performBatchUpdates:^{
-                                         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-                                     } completion:^(BOOL finished) {
-                                         
-                                         // Reset the book.
-                                         self.myBook = book;
-                                         [[self pagingLayout] markLayoutDirty];
-                                         
-                                         // If we have sign in page, then hide it and perform insertion animation.
-                                         if (self.signUpViewController) {
-                                             
-                                             [self hideLoginViewCompletion:^{
-                                                 
-                                                 [self.collectionView performBatchUpdates:^{
-                                                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-                                                 } completion:^(BOOL finished) {
-                                                     
-                                                     NSArray *followIndexPaths = [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex){
-                                                         return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
-                                                     }];
-                                                     [self.followBooks removeAllObjects];
-                                                     [[self pagingLayout] markLayoutDirty];
-                                                     
-                                                     [self.collectionView performBatchUpdates:^{
-                                                         [self.collectionView deleteItemsAtIndexPaths:followIndexPaths];
-                                                     } completion:^(BOOL finished) {
-                                                         
-                                                         self.transitional = NO;
-                                                         [self loadFollowBooks];
-                                                     }];
-                                                     
-                                                     
-                                                 }];
-                                             }];
-                                         } else {
-                                             
-                                             // Just insert it.
-                                             [self.collectionView performBatchUpdates:^{
-                                                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-                                             } completion:^(BOOL finished) {
-                                                 [self updatePagingBenchtopView];
-                                             }];
-
-                                         }
-                                         
-                                     }];
+                                     // Update benchtop if book is of a different cover.
+                                     BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
                                      
+                                     // Reload so that we swap cells.
+                                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                      
+                                     // Update after myBook has been set.
+                                     if (changedCover) {
+                                         [self updatePagingBenchtopView];
+                                     }
+                                     
+                                     // Load follow books.
+                                     [self loadFollowBooks];
+                                 
                                  }
+                                 
+                                 // Sample a snapshot.
+                                 [self snapshotBenchtop];
+                                 
                                  
                              } else {
                                  
@@ -945,18 +900,17 @@
                                  [self.collectionView performBatchUpdates:^{
                                      [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                  } completion:^(BOOL finished) {
-                                     // No need to reblend, as layoutDidGenerate will trigger it.
+                                     
+                                     // Sample a snapshot.
+                                     [self snapshotBenchtop];
+                                     
                                  }];
                              }
                              
-                             //Show intro screen for update if haven't seen it
-                             if (![[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro])
-                             {
+                             // Show intro screen for update if haven't seen it
+                             if (![self hasSeenUpdateIntro]) {
                                  [self flashUpdateIntro];
                              }
-         
-                             // Hide any no connection messages.
-                             [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
                              
                          }
                          failure:^(NSError *error) {
@@ -969,20 +923,30 @@
                                  }
                              }
                              
+                             // Sample a snapshot.
+                             [self snapshotBenchtop];
+                             
                          }];
     } else {
         
         // Load login book.
         [CKBook dashboardGuestBookSuccess:^(CKBook *guestBook) {
             
+            // Logged out and log back in.
             if (self.myBook) {
                 self.myBook = guestBook;
                 
-                // Insert book then update blended benchtop.
+                // Reload book then update blended benchtop.
+                [[self pagingLayout] markLayoutDirty];
                 [self.collectionView performBatchUpdates:^{
                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
-                    [self updatePagingBenchtopView];
+                    
+                    // Sample a snapshot.
+                    [self snapshotBenchtop];
+                    
+                    // Load follow books.
+                    [self loadFollowBooks];
                 }];
                 
             } else {
@@ -995,7 +959,8 @@
                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
                     
-                    // No need to reblend, as layoutDidGenerate will trigger it.
+                    // Sample a snapshot.
+                    [self snapshotBenchtop];
                     
                     // First time launch.
                     if ([self.delegate respondsToSelector:@selector(benchtopFirstTimeLaunched)]) {
@@ -1003,15 +968,11 @@
                         [self flashIntros];
                     }
                     
+                    // Load follow books.
+                    [self loadFollowBooks];
                 }];
 
             }
-            
-            // Hide any no connection messages.
-            [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
-            
-            // Sample a snapshot.
-            [self snapshotBenchtop];
             
         } failure:^(NSError *error) {
             
@@ -1025,22 +986,13 @@
         }];
         
     }
-    
 }
 
 - (void)loadFollowBooks {
-    [self loadFollowBooksReload:NO];
+    [self loadFollowBooksBackgroundFetch:NO];
 }
 
 - (void)loadFollowBooksBackgroundFetch:(BOOL)backgroundFetch {
-    [self loadFollowBooksReload:NO backgroundFetch:backgroundFetch];
-}
-
-- (void)loadFollowBooksReload:(BOOL)reload {
-    [self loadFollowBooksReload:reload backgroundFetch:NO];
-}
-
-- (void)loadFollowBooksReload:(BOOL)reload backgroundFetch:(BOOL)backgroundFetch {
     
     // Enable pan to Settings and Store except when update screen is active
     if (self.updateIntroView.alpha == 0.0) {
@@ -1052,39 +1004,32 @@
     
     [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks, NSDictionary *followBookUpdates) {
         
-        // Stop spinner.
-        [self.followReloadView removeFromSuperview];
+        // Stop spinner but don't show reload button.
+        [self.followReloadView enableActivity:NO hideReload:YES];
         
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
         self.followBookUpdates = [NSMutableDictionary dictionaryWithDictionary:followBookUpdates];
         
         NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
         
-        if (reload) {
-            [[self pagingLayout] markLayoutDirty];
-            
+        [[self pagingLayout] markLayoutDirty];
+        
+        NSInteger existingNumFollows = [self.collectionView numberOfItemsInSection:kFollowSection];
+        if (existingNumFollows > 0) {
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
             } completion:^(BOOL finished) {
-                [self updatePagingBenchtopView];
+                
+                // Sample a snapshot.
+                [self snapshotBenchtop];
+                
             }];
         } else {
-            [[self pagingLayout] markLayoutDirty];
+            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             
-            NSInteger existingNumFollows = [self.collectionView numberOfItemsInSection:kFollowSection];
-            if (existingNumFollows > 0) {
-                [self.collectionView performBatchUpdates:^{
-                    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                } completion:^(BOOL finished) {
-                    [self updatePagingBenchtopView];
-                }];
-            } else {
-                [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-            }
+            // Sample a snapshot.
+            [self snapshotBenchtop];
         }
-        
-        // Sample a snapshot.
-        [self snapshotBenchtop];
         
     } failure:^(NSError *error) {
         DLog(@"Error: %@", [error localizedDescription]);
@@ -1229,14 +1174,18 @@
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section]]];
     } completion:^(BOOL finished) {
-        [self updatePagingBenchtopView];
-        
+        // Do nothing on delete.
     }];
     
     // Unfollow in the background, then inform listeners of the update.
     [book removeFollower:currentUser
                  success:^{
+                     
                      [EventHelper postFollow:NO book:book];
+                     
+                     // Clear the book updates.
+                     [self.followBookUpdates removeObjectForKey:book.objectId];
+                     
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];
@@ -1314,7 +1263,6 @@
                 
                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kFollowSection]]];
             } completion:^(BOOL finished) {
-                [self updatePagingBenchtopView];
                 [[self pagingLayout] enableFollowMode:NO];
                 [self.collectionView reloadData];
             }];
@@ -1324,9 +1272,27 @@
 
 - (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    
+    
     if (success) {
         
-        [self loadMyBook];
+        // Delete current book then reload.
+        [self deleteMyBookCompletion:^{
+            
+            // If we have sign in page, then hide it and perform insertion animation.
+            if (self.signUpViewController) {
+                
+                [self hideLoginViewCompletion:^{
+                    [self deleteFollowBooksUpdateBackground:NO];
+                    [self loadBooks];
+                }];
+                
+            } else {
+                [self deleteFollowBooksUpdateBackground:NO];
+                [self loadBooks];
+            }
+            
+        }];
         
         // Clear the sign up image.
         self.signupBlurImage = nil;
@@ -1334,10 +1300,16 @@
         // Show notification view.
         self.notificationView.hidden = NO;
         
+        // Reset the current user.
+        self.currentUser = [CKUser currentUser];
+        
     }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    
+    // Clear the current user
+    self.currentUser = nil;
     
     // Hide notification view.
     self.notificationView.hidden = YES;
@@ -1346,11 +1318,9 @@
     [self.collectionView setContentOffset:CGPointZero animated:YES];
     
     // Reload benchtop.
-    [self loadMyBook];
-    [self loadFollowBooksReload:YES];
+    [self deleteFollowBooksUpdateBackground:NO];
+    [self loadBooks];
     
-    // Add intros.
-    [self flashIntros];
 }
 
 - (void)themeChanged:(NSNotification *)notification {
@@ -1358,7 +1328,7 @@
 }
 
 - (void)backgroundFetch:(NSNotification *)notification {
-    [self loadBenchtop:YES backgroundFetch:YES];
+    [self loadBenchtopBackgroundFetch:YES];
 }
 
 - (void)updatePagingBenchtopView {
@@ -1814,7 +1784,6 @@
 }
 
 - (void)clearUpdatesForBook:(CKBook *)book {
-//    [self.followBookUpdates removeObjectForKey:book.objectId];
     [self.followBookUpdates setObject:@0 forKey:book.objectId];
 }
 
@@ -1848,6 +1817,92 @@
 
 - (void)updateIntroContinueTapped {
     [self closeIntroTapped];
+}
+
+- (void)deleteMyBook {
+    if (self.myBook) {
+        
+        // Clear model.
+        self.myBook = nil;
+        
+        // Clear UI.
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+        } completion:^(BOOL finished) {
+        }];
+    }
+}
+
+- (void)deleteMyBookCompletion:(void (^)())completion {
+    if (self.myBook) {
+        
+        // Clear model.
+        self.myBook = nil;
+        
+        // Clear UI.
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+        } completion:^(BOOL finished) {
+            completion();
+        }];
+        
+    } else {
+        if (completion != nil) {
+            completion();
+        }
+    }
+}
+
+- (void)deleteFollowBooks {
+    if ([self.followBooks count] > 0) {
+        
+        NSArray *indexPathsToDelete = [self.followBooks collectWithIndex:^(CKBook *book, NSUInteger bookIndex) {
+            return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+        }];
+        
+        // Clear model.
+        [self.followBooks removeAllObjects];
+        self.followBooks = nil;
+        
+        // Clear UI.
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+        } completion:^(BOOL finished) {
+        }];
+        
+    }
+    
+}
+
+- (void)deleteFollowBooksUpdateBackground:(BOOL)updateBackground {
+    
+    if ([self.followBooks count] > 0) {
+        
+        // Assemble IPs to delete.
+        NSArray *indexPathsToDelete = [self.followBooks collectWithIndex:^(CKBook *book, NSUInteger bookIndex) {
+            return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+        }];
+        
+        // Clear model.
+        [self.followBooks removeAllObjects];
+        self.followBooks = nil;
+        
+        // Clear UI.
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+        } completion:^(BOOL finished) {
+        }];
+        
+    }
+    
+}
+
+- (BOOL)hasSeenUpdateIntro {
+    return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro] != nil);
 }
 
 @end

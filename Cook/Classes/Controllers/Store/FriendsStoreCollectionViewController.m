@@ -29,11 +29,19 @@
                                 DLog(@"Error: %@", [error localizedDescription]);
                                 [self showNoConnectionCardIfApplicableError:error];
                             }];
+        
+    } else {
+        [self showSignInCard];
     }
 }
 
 - (void)showNoBooksCard {
     [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
+                                             view:self.collectionView show:YES center:self.collectionView.center];
+}
+
+- (void)showSignInCard {
+    [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"SIGN IN TO ADD FRIENDS"
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 

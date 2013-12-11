@@ -9,6 +9,7 @@
 #import "FollowReloadButtonView.h"
 #import "CKActivityIndicatorView.h"
 #import "ViewHelper.h"
+#import "NSString+Utilities.h"
 
 @interface FollowReloadButtonView ()
 
@@ -33,6 +34,10 @@
 }
 
 - (void)enableActivity:(BOOL)activity {
+    [self enableActivity:activity hideReload:NO];
+}
+
+- (void)enableActivity:(BOOL)activity hideReload:(BOOL)hideReload {
     
     // Ignore if already in the same status.
     if (self.activity == activity) {
@@ -42,7 +47,9 @@
     
     // Interaction status.
     self.userInteractionEnabled = !activity;
-    self.reloadButton.hidden = activity;
+    
+    // Hide reload button on activity, or specifically asked to.
+    self.reloadButton.hidden = activity ? YES : hideReload;
     
     if (activity) {
         if (!self.activityView.superview) {
