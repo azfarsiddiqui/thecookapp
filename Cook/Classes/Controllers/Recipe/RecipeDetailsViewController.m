@@ -2110,7 +2110,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if (self.scrollView.contentOffset.y > 0) {
         
-        [self.scrollView setContentOffset:CGPointZero animated:YES];
+        if (!self.editMode) {
+            [self.scrollView setContentOffset:CGPointZero animated:YES];
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self resetRecipeDetailsView];
         });
