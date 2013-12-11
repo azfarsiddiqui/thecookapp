@@ -187,7 +187,10 @@
     if (textField == self.unitTextField) {
         self.ingredientsAccessoryViewController.delegate = self;
     }
-    return [super textFieldShouldBeginEditing:textField];
+    if (![self.textField isFirstResponder] && !self.unitTextField) {
+        [self.delegate listItemFocused:YES cell:self];
+    }
+    return YES;
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
@@ -205,17 +208,21 @@
             
             // This was keyboard dismissal from UoM field, do empty processing.
             self.focusName = NO;
-            if (![self currentValue])
-                DLog(@"REMOVE ME");
             return [super textFieldShouldEndEditing:textField];
         }
         
     } else {
-        
         return [super textFieldShouldEndEditing:textField];
     }
     
 }
+
+//- (void)textFieldDidEndEditing:(UITextField *)textField {
+//    //Only do blank cell cleanup if exiting from main text field
+//    if (textField == self.textField) {
+//        [self.delegate listItemFocused:NO cell:self];
+//    }
+//}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     DLog(@"textField %@", textField);

@@ -39,7 +39,7 @@
 
 - (void)fadeHintAcoordingToCount {
     if ([self.items count] > 2) {
-        self.hintsView.alpha = 0.0;
+        self.hintsView.alpha = 0.38;
     } else if ([self.items count] > 1) {
         self.hintsView.alpha = 0.5;
     } else {
@@ -133,7 +133,7 @@
 referenceSizeForFooterInSection:(NSInteger)section {
     CGSize footerSize = CGSizeZero;
     
-    footerSize = CGSizeMake(self.view.frame.size.width, 100);
+    footerSize = CGSizeMake(self.view.frame.size.width, 400);
     
     return footerSize;
 }

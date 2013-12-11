@@ -159,6 +159,7 @@
             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
         } completion:^(BOOL finished){
             [self showIntroCard:([pages count] <= 1)];
+            [self showProfileHintCard:[self profileCardRequired]];
         }];
         
     } else {
@@ -347,7 +348,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if (indexPath.item < [self.pages count]) {
         [self.delegate bookTitleSelectedPage:[self.pages objectAtIndex:indexPath.item]];
     } else {
-        [self addPage];
+//        [self addPage];
+        [self addPageWithName:@""];
+        [self enableAddMode:YES];
     }
 }
 
@@ -756,6 +759,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleAddedPage:page];
     [self enableAddMode:NO];
     [self showIntroCard:NO];
+    [self showProfileHintCard:[self profileCardRequired]];
 }
 
 - (void)initBorders {

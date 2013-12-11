@@ -34,6 +34,7 @@
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL processing;
 @property (nonatomic, strong) NSIndexPath *editingIndexPath;
+@property (nonatomic, assign) BOOL isAutoDeleting;
 
 @end
 
@@ -82,6 +83,7 @@
         self.allowSelection = YES;
         self.addItemAfterEach = YES;
         self.allowMultipleSelection = NO;
+        self.isAutoDeleting = NO;
     }
     return self;
 }
@@ -195,7 +197,7 @@
     NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:[self.items count] inSection:0];
     [self createNewCellAtIndexPath:nextIndexPath];
     if ([self.items count] > 1) {
-        [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
     }
 }
 
@@ -554,6 +556,9 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     DLog(@"focus[%@] item[%d]", focused ? @"YES" : @"NO", indexPath.item);
     
+//    if (self.editingCell == cell)
+//        return;
+    
     if (focused) {
         self.editingIndexPath = indexPath;
         self.editingCell = cell;
@@ -574,10 +579,11 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
             
         } else {
-            
-            if ([self.items count] > 1 && !self.processing) {
-                dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.items count] > 1 && !self.processing && !self.isAutoDeleting) {
+                self.isAutoDeleting = YES;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
                     [self deleteCellAtIndexPath:indexPath];
+                    self.isAutoDeleting = NO;
                 });
             }
             
@@ -588,9 +594,13 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         if ([self.collectionView numberOfItemsInSection:0] > 1) {
             for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; i++) {
                 CKListCell *listCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-                if ([listCell isEmpty] && !indexPath.item == i) {
-                    [self deleteCellAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-                    [cell setEditing:YES];
+                if ([listCell isEmpty] && !indexPath.item == i && !self.isAutoDeleting) {
+                    self.isAutoDeleting = YES;
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+                        [self deleteCellAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+                        [cell setEditing:YES];
+                        self.isAutoDeleting = NO;
+                    });
                 }
             }
         }
@@ -928,43 +938,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
 }
 
-- (void)addCellFromTop {
-    if (!self.canAddItems || ![self allowedToAdd]) {
-        return;
-    }
-    
-    // Mark as adding mode and turn off activation mode.
-    self.topAddActivated = NO;
-    
-    // Insert an empty item at front.
-    [self.items insertObject:[self createNewItem] atIndex:0];
-    
-    // Index path of new item at top.
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    
-    [self.collectionView performBatchUpdates:^{
-        
-        [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
-        
-    } completion:^(BOOL finished) {
-        
-        [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.collectionView.contentInset = UIEdgeInsetsZero;
-                         }
-                         completion:^(BOOL finished) {
-                             
-                             // Set editing on the new cell.
-                             CKListCell *cell = [self listCellAtIndexPath:indexPath];
-                             [self setEditing:YES cell:cell];
-                             
-                         }];
-    }];
-}
-
 - (NSInteger)integerForIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
     UILabel *label = (UILabel *)[cell.contentView viewWithTag:kLabelTag];
@@ -1169,19 +1142,60 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
     DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
     
-    if (!self.swipeDeleteActivated) {
-        [self.items removeObjectAtIndex:indexPath.item];
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
-        } completion:^(BOOL finished) {
-            //If only cell just got deleted and adding a new one, manually set editing index to it
-            if ([self.items count] <=1) {
-                self.editingIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-            }
-            [self updateCellsState];
-        }];
+    if (!self.swipeDeleteActivated && indexPath) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+            [self.items removeObjectAtIndex:indexPath.item];
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+            } completion:^(BOOL finished) {
+                //If only cell just got deleted and adding a new one, manually set editing index to it
+                if ([self.items count] <=1) {
+                    self.editingIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+                }
+                [self updateCellsState];
+            }];
+        });
     }
 }
+
+- (void)addCellFromTop {
+    if (!self.canAddItems || ![self allowedToAdd]) {
+        return;
+    }
+    
+    // Mark as adding mode and turn off activation mode.
+    self.topAddActivated = NO;
+    
+    // Insert an empty item at front.
+    [self.items insertObject:[self createNewItem] atIndex:0];
+    
+    // Index path of new item at top.
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    
+    [self.collectionView performBatchUpdates:^{
+        
+        [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+        
+    } completion:^(BOOL finished) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.collectionView.contentInset = UIEdgeInsetsZero;
+                             }
+                             completion:^(BOOL finished) {
+                                 
+                                 // Set editing on the new cell.
+                                 CKListCell *cell = [self listCellAtIndexPath:indexPath];
+                                 [self setEditing:YES cell:cell];
+                                 
+                             }];
+        });
+    }];
+}
+
 
 - (void)createNewCellAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -1195,7 +1209,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     } completion:^(BOOL finished) {
         
         CKListCell *cell = [self listCellAtIndexPath:indexPath];
-        [cell setEditing:YES];
+        [self setEditing:YES cell:cell];
         [self updateAddState];
         
     }];
@@ -1213,12 +1227,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     // Empty cell?
     if ([cell isEmpty]) {
         
-        if ([self.items count] > 1) {
-            // Delete an empty cell.
-            [self deleteCellAtIndexPath:indexPath];
-            
-        } else {
-            
+        if ([self.items count] < 2) {
             // Last empty cell, just unfocus.
             [cell setEditing:NO];
             [self updateCellsState];
