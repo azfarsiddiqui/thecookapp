@@ -74,6 +74,10 @@
     return YES;
 }
 
+- (BOOL)isFirstResponder {
+    return [self.textField isFirstResponder];
+}
+
 #pragma mark - CKListCell methods
 
 + (UIEdgeInsets)listItemInsets {

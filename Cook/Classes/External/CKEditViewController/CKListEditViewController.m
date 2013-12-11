@@ -1297,7 +1297,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         if (self.editingIndexPath) {
             cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
         } else {
-            cell.backgroundView.alpha = 1.0;
+            cell.backgroundView.alpha = [((CKListCell *)cell) isFirstResponder] ? 1.0 : kInactiveCellFade;
         }
     }
 }

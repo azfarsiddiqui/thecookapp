@@ -174,6 +174,10 @@
     return (self.textField.text.length == 0 && self.unitTextField.text.length == 0);
 }
 
+- (BOOL)isFirstResponder {
+    return ([self.textField isFirstResponder] || [self.unitTextField isFirstResponder]);
+}
+
 #pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
 
 - (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit {
