@@ -348,9 +348,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if (indexPath.item < [self.pages count]) {
         [self.delegate bookTitleSelectedPage:[self.pages objectAtIndex:indexPath.item]];
     } else {
-//        [self addPage];
-        [self addPageWithName:@""];
-        [self enableAddMode:YES];
+        [self addPage];
     }
 }
 

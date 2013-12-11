@@ -556,9 +556,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     DLog(@"focus[%@] item[%d]", focused ? @"YES" : @"NO", indexPath.item);
     
-//    if (self.editingCell == cell)
-//        return;
-    
     if (focused) {
         self.editingIndexPath = indexPath;
         self.editingCell = cell;
@@ -579,11 +576,14 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
             
         } else {
+            //Remove resigning cell if it's blank
             if ([self.items count] > 1 && !self.processing && !self.isAutoDeleting) {
                 self.isAutoDeleting = YES;
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
                     [self deleteCellAtIndexPath:indexPath];
                     self.isAutoDeleting = NO;
+                    self.editingIndexPath = nil;
+                    [self updateCellsState];
                 });
             }
             
@@ -598,8 +598,9 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                     self.isAutoDeleting = YES;
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
                         [self deleteCellAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-                        [cell setEditing:YES];
                         self.isAutoDeleting = NO;
+                        self.editingIndexPath = nil;
+                        [self updateCellsState];
                     });
                 }
             }

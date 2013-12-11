@@ -183,11 +183,18 @@
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    //If moving between fields in cell
+    if (([self.unitTextField isFirstResponder] && [textField isEqual:self.textField]) ||
+        ([self.textField isFirstResponder] && [textField isEqual:self.unitTextField])) {
+        self.focusName = YES;
+    } else {
+        self.focusName = NO;
+    }
     
     if (textField == self.unitTextField) {
         self.ingredientsAccessoryViewController.delegate = self;
     }
-    if (![self.textField isFirstResponder] && !self.unitTextField) {
+    if (!self.focusName) {
         [self.delegate listItemFocused:YES cell:self];
     }
     return YES;
@@ -211,8 +218,14 @@
             return [super textFieldShouldEndEditing:textField];
         }
         
-    } else {
-        return [super textFieldShouldEndEditing:textField];
+    } else { //Name field
+        if (self.focusName) {
+            self.focusName = NO;
+            return YES;
+        } else {
+            self.focusName = NO;
+            return [super textFieldShouldEndEditing:textField];
+        }
     }
     
 }
