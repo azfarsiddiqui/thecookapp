@@ -52,11 +52,11 @@
     for (int i = 0; i < [self.items count]; i++) {
         //Check all cells for completely blank ones
         IngredientListCell *cell = (IngredientListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-        if ([cell isBlank]) {
+        if ([self isEmptyForValue:[cell currentValue]]) {
             hasEmptyIngredients = YES;
         }
     }
-    return !hasEmptyIngredients;
+    return YES;//!hasEmptyIngredients;
 }
 
 #pragma mark - CKEditViewController methods

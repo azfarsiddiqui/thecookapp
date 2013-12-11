@@ -170,16 +170,8 @@
     }
 }
 
-- (void)clearResponders {
-    [super clearResponders];
-    [self.unitTextField resignFirstResponder];
-}
-
 - (BOOL)isBlank {
-    if (self.textField.text.length <= 0 && self.unitTextField.text.length <= 0) {
-        return YES;
-    } else
-        return NO;
+    return (self.textField.text.length == 0 && self.unitTextField.text.length == 0);
 }
 
 #pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
@@ -213,6 +205,8 @@
             
             // This was keyboard dismissal from UoM field, do empty processing.
             self.focusName = NO;
+            if (![self currentValue])
+                DLog(@"REMOVE ME");
             return [super textFieldShouldEndEditing:textField];
         }
         

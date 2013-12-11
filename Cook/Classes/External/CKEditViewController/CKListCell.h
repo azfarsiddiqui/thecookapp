@@ -42,6 +42,4 @@
 
 - (BOOL)isEmpty;
 
-- (void)clearResponders;
-
 @end

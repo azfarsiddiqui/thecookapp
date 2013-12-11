@@ -194,7 +194,9 @@
 - (void)addCellToBottom {
     NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:[self.items count] inSection:0];
     [self createNewCellAtIndexPath:nextIndexPath];
-    [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+    if ([self.items count] > 1) {
+        [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    }
 }
 
 - (BOOL)allowedToAdd {
@@ -312,7 +314,7 @@
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
     CKListCell *listCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [listCell clearResponders];
+    [listCell resignFirstResponder];
     [self currentLayout].dragging = YES;
     return self.canReorderItems;
 }
@@ -582,7 +584,16 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         }
         
     } else {
-        
+        //Clear out any blank cells other than the current one
+        if ([self.collectionView numberOfItemsInSection:0] > 1) {
+            for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; i++) {
+                CKListCell *listCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+                if ([listCell isEmpty] && !indexPath.item == i) {
+                    [self deleteCellAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+                    [cell setEditing:YES];
+                }
+            }
+        }
         [self updateCellsState];
         
     }
@@ -1158,12 +1169,18 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
     DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
     
-//    [self.items removeObjectAtIndex:indexPath.item];
-//    [self.collectionView performBatchUpdates:^{
-//        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
-//    } completion:^(BOOL finished) {
-//        [self updateCellsState];
-//    }];
+    if (!self.swipeDeleteActivated) {
+        [self.items removeObjectAtIndex:indexPath.item];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+        } completion:^(BOOL finished) {
+            //If only cell just got deleted and adding a new one, manually set editing index to it
+            if ([self.items count] <=1) {
+                self.editingIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+            }
+            [self updateCellsState];
+        }];
+    }
 }
 
 - (void)createNewCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -1180,6 +1197,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         CKListCell *cell = [self listCellAtIndexPath:indexPath];
         [cell setEditing:YES];
         [self updateAddState];
+        
     }];
 
 }
@@ -1196,7 +1214,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if ([cell isEmpty]) {
         
         if ([self.items count] > 1) {
-            
             // Delete an empty cell.
             [self deleteCellAtIndexPath:indexPath];
             
@@ -1204,7 +1221,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             
             // Last empty cell, just unfocus.
             [cell setEditing:NO];
-            
+            [self updateCellsState];
         }
         
     } else {
@@ -1226,7 +1243,9 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                 
                 // Only add if the cell after next is not empty.
                 if (currentCell && ![currentCell isEmpty]) {
-                    [self createNewCellAtIndexPath:nextIndexPath];
+                    //[self createNewCellAtIndexPath:nextIndexPath];
+                    CKListCell *nextCell = [self listCellAtIndexPath:nextIndexPath];
+                    [nextCell setEditing:YES];
                 }
                 
             } else {
@@ -1236,7 +1255,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         } else {
             
             if (indexPath.item == [self.items count] - 1) {
-                [self createNewCellAtIndexPath:nextIndexPath];
+                [self addCellToBottom];
                 
             } else {
                 
