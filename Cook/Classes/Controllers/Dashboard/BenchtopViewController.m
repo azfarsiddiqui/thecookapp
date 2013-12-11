@@ -1019,8 +1019,6 @@
                 [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
             } completion:^(BOOL finished) {
                 
-                [self updatePagingBenchtopView];
-                
                 // Sample a snapshot.
                 [self snapshotBenchtop];
                 
@@ -1175,8 +1173,7 @@
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section]]];
     } completion:^(BOOL finished) {
-        [self updatePagingBenchtopView];
-        
+        // Do nothing on delete.
     }];
     
     // Unfollow in the background, then inform listeners of the update.
@@ -1260,7 +1257,6 @@
                 
                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kFollowSection]]];
             } completion:^(BOOL finished) {
-                [self updatePagingBenchtopView];
                 [[self pagingLayout] enableFollowMode:NO];
                 [self.collectionView reloadData];
             }];
@@ -1782,7 +1778,6 @@
 }
 
 - (void)clearUpdatesForBook:(CKBook *)book {
-//    [self.followBookUpdates removeObjectForKey:book.objectId];
     [self.followBookUpdates setObject:@0 forKey:book.objectId];
 }
 
@@ -1829,7 +1824,6 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
         } completion:^(BOOL finished) {
-            [self updatePagingBenchtopView];
         }];
     }
 }
@@ -1845,7 +1839,6 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
         } completion:^(BOOL finished) {
-            [self updatePagingBenchtopView];
             completion();
         }];
         
@@ -1872,7 +1865,6 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
         } completion:^(BOOL finished) {
-            [self updatePagingBenchtopView];
         }];
         
     }
@@ -1897,9 +1889,6 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
         } completion:^(BOOL finished) {
-            if (updateBackground) {
-                [self updatePagingBenchtopView];
-            }
         }];
         
     }
