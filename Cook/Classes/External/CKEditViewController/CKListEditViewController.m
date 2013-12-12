@@ -594,7 +594,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         if ([self.collectionView numberOfItemsInSection:0] > 1) {
             for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; i++) {
                 CKListCell *listCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-                if ([listCell isEmpty] && !indexPath.item == i && !self.isAutoDeleting) {
+                if ([listCell isEmpty] && indexPath.item != i && !self.isAutoDeleting) {
                     self.isAutoDeleting = YES;
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
                         [self deleteCellAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
@@ -1226,16 +1226,16 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     DLog(@"processCell item[%d]", indexPath.item);
     
     // Empty cell?
-    if ([cell isEmpty]) {
-        
-        if ([self.items count] < 2) {
-            // Last empty cell, just unfocus.
-            [cell setEditing:NO];
-            [self updateCellsState];
-        }
-        
-    } else {
-        
+//    if ([cell isEmpty]) {
+//        
+//        if ([self.items count] < 2) {
+//            // Last empty cell, just unfocus.
+//            [cell setEditing:NO];
+//            [self updateCellsState];
+//        }
+//        
+//    } else {
+    
         // Get the current value and update the items array.
         id currentValue = [cell currentValue];
         [self.items replaceObjectAtIndex:indexPath.item withObject:currentValue];
@@ -1259,7 +1259,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                 }
                 
             } else {
-                [self createNewCellAtIndexPath:nextIndexPath];
+                [self addCellToBottom];
             }
             
         } else {
@@ -1276,7 +1276,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             
         }
         
-    }
+//    }
 }
 
 - (BOOL)isEmptyForValue:(id)currentValue {
