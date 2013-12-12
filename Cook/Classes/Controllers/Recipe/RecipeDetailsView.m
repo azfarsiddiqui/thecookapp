@@ -828,8 +828,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateContentDivider {
     
-    if (self.editMode || ([self.recipeDetails.story CK_containsText] && [self.recipeDetails hasServes]
-                          && [self.recipeDetails hasMethod] && [self.recipeDetails hasIngredients])) {
+    if (self.editMode || ([self.recipeDetails.story CK_containsText])) {
         
         if (!self.contentDividerView) {
             self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];

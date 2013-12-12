@@ -12,11 +12,15 @@
 
 @interface EventHelper : NSObject
 
+// Login successful.
 + (void)registerLoginSucessful:(id)observer selector:(SEL)selector;
 + (void)postLoginSuccessful:(BOOL)success;
++ (void)postLoginSuccessful:(BOOL)success newUser:(BOOL)newUser;
 + (void)unregisterLoginSucessful:(id)observer;
 + (BOOL)loginSuccessfulForNotification:(NSNotification *)notification;
++ (BOOL)loginSuccessfulNewUserForNotification:(NSNotification *)notification;
 
+// Logouts.
 + (void)registerLogout:(id)observer selector:(SEL)selector;
 + (void)postLogout;
 + (void)unregisterLogout:(id)observer;

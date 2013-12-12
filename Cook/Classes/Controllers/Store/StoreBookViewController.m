@@ -182,7 +182,12 @@
 }
 
 - (void)bookSummaryViewBookIsPrivate {
-    [self.bookCoverView showLocked];
+    
+    if (![CKUser isLoggedIn] && self.book.featured && self.book.status == kBookStatusFollowed) {
+        [self.bookCoverView showFollowed];
+    } else {
+        [self.bookCoverView showLocked];
+    }
 }
 
 - (void)bookSummaryViewBookIsDownloadable {

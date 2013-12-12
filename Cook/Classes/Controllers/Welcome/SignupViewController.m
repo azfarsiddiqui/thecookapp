@@ -811,7 +811,7 @@
                        
                        // Wait before informing login successful.
                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                           [self informLoginSuccessful:YES];
+                           [self informLoginSuccessful:YES newUser:YES];
                        });
                        
                    } failure:^(NSError *error) {
@@ -904,7 +904,7 @@
             
             // Wait before informing login successful.
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [self informLoginSuccessful:YES];
+                [self informLoginSuccessful:YES newUser:isNewUser];
             });
         }        
         
@@ -930,12 +930,16 @@
 }
 
 - (void)informLoginSuccessful:(BOOL)success {
+    [self informLoginSuccessful:success newUser:NO];
+}
+
+- (void)informLoginSuccessful:(BOOL)success newUser:(BOOL)newUser {
     
     // Inform to release modal.
     [self.delegate signUpViewControllerModalRequested:NO];
     
     // Inform login result.
-    [EventHelper postLoginSuccessful:success];
+    [EventHelper postLoginSuccessful:success newUser:newUser];
 }
 
 - (void)enableFacebookLogin:(BOOL)enable completion:(void (^)())completion {

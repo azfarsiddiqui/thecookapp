@@ -273,6 +273,10 @@
                                 }];
 }
 
++ (BOOL)dashboardBookLoadCacheMissError:(NSError *)error {
+    return ([error.domain isEqualToString:@"Parse"] && [error code] == kPFErrorCacheMiss);
+}
+
 #pragma mark - Store books.
 
 + (void)categoriesBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {

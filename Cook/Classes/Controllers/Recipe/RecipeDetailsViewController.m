@@ -2038,7 +2038,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)enableEditMode:(BOOL)enable {
     
-    if (!self.addMode && ([self.recipe hasMethod] || [self.recipe hasIngredients]) && self.currentViewport != SnapViewportTop) {
+    if (enable && ![self.recipeDetails hasStory]) {
+        [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+        [self.recipeDetailsView enableEditMode:enable];
+        [self snapToViewport:SnapViewportBottom];
+    } else if (!self.addMode && ([self.recipe hasMethod] || [self.recipe hasIngredients]) && self.currentViewport != SnapViewportTop) {
         [self enableEditModeWithoutInformingRecipeDetailsView:enable];
         [self.recipeDetailsView enableEditMode:enable];
     } else {

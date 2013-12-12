@@ -14,6 +14,7 @@
 #define kBoolBenchtopFreeze         @"CKBoolBenchtopFreeze"
 #define kEventLoginSuccessful       @"CKEventLoginSuccessful"
 #define kBoolLoginSuccessful        @"CKBoolLoginSuccessful"
+#define kNewUserLoginSuccessful     @"CKNewUserLoginSuccessful"
 #define kEventOpenBook              @"CKEventOpenBook"
 #define kBoolOpenBook               @"CKBoolOpenBook"
 #define kEventEditMode              @"CKEventEditMode"
@@ -50,9 +51,13 @@
 }
 
 + (void)postLoginSuccessful:(BOOL)success {
+    [self postLoginSuccessful:success newUser:NO];
+}
+
++ (void)postLoginSuccessful:(BOOL)success newUser:(BOOL)newUser {
     [EventHelper postEvent:kEventLoginSuccessful
-              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success]
-                                                       forKey:kBoolLoginSuccessful]];
+              withUserInfo:@{ kBoolLoginSuccessful : @(success),
+                              kNewUserLoginSuccessful : @(newUser) }];
 }
 
 + (void)unregisterLoginSucessful:(id)observer {
@@ -61,6 +66,10 @@
 
 + (BOOL)loginSuccessfulForNotification:(NSNotification *)notification {
     return [[[notification userInfo] valueForKey:kBoolLoginSuccessful] boolValue];
+}
+
++ (BOOL)loginSuccessfulNewUserForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kNewUserLoginSuccessful] boolValue];
 }
 
 #pragma mark - Logout 

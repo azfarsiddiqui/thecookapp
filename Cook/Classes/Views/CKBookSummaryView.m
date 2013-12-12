@@ -391,7 +391,7 @@
     }
     
     //Show Sign In label if Guest user
-    if (self.currentUser == nil && self.book.featured) {
+    if (self.currentUser == nil && self.book.featured && self.book.status != kBookStatusFollowed) {
         [self addSubview:self.signInLabel];
     }
 }
@@ -636,7 +636,7 @@
         _signInLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _signInLabel.font = kActionCaptionFont;
         _signInLabel.textColor = [UIColor whiteColor];
-        _signInLabel.text = [[NSString stringWithFormat:@"PLEASE SIGN IN TO VIEW BOOK"] uppercaseString];
+        _signInLabel.text = [[NSString stringWithFormat:@"SIGN IN TO VIEW THIS BOOK"] uppercaseString];
         [_signInLabel sizeToFit];
         _signInLabel.frame = (CGRect){
             floorf((self.bounds.size.width - _signInLabel.frame.size.width) / 2.0),
