@@ -682,7 +682,7 @@
         if (self.type == CKPhotoPickerImageTypeSquare) {
             scrollView.contentInset = UIEdgeInsetsMake(kSquareCropOrigin.y, kSquareCropOrigin.x, kSquareCropOrigin.y, kSquareCropOrigin.x);
             scrollView.maximumZoomScale = 2.0;
-            scrollView.minimumZoomScale = 0.8;
+            scrollView.minimumZoomScale = 0.6;
         }
 
         [scrollView addSubview:previewImageView];
