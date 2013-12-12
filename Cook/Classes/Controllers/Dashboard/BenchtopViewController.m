@@ -154,13 +154,20 @@
 
 - (void)loadBenchtopBackgroundFetch:(BOOL)isBackground {
     
-    // NEed to check if in store/settings
+    // Re-enable if it's not background.
     if (!isBackground) {
         [self enable:YES];
     }
-    
-    [self loadBooksBackgroundFetch:isBackground];
-    [self.delegate benchtopLoaded];
+
+    if (isBackground) {
+        [self deleteFollowBooksCompletion:^{
+            [self loadBooksBackgroundFetch:YES];
+            [self.delegate benchtopLoaded];
+        }];
+    } else {
+        [self loadBooksBackgroundFetch:NO];
+        [self.delegate benchtopLoaded];
+    }
 }
 
 - (void)showLoginViewSignUp:(BOOL)signUp {
@@ -869,7 +876,7 @@
                                      }
                                      
                                      // Load follow books.
-                                     [self loadFollowBooks];
+                                     [self loadFollowBooksBackgroundFetch:backgroundFetch];
                                      
                                  } else {
                                      
@@ -887,7 +894,7 @@
                                      }
                                      
                                      // Load follow books.
-                                     [self loadFollowBooks];
+                                     [self loadFollowBooksBackgroundFetch:backgroundFetch];
                                  
                                      // Show update notes?
                                      [self showUpdateNotesIfRequired];
@@ -919,7 +926,7 @@
                              // If it was a cache-miss, then we know this is first time load of book, should proceed
                              // to load my books.
                              if ([CKBook dashboardBookLoadCacheMissError:error]) {
-                                 [self loadFollowBooks];
+                                 [self loadFollowBooksBackgroundFetch:backgroundFetch];
                              }
                              
                              // Only show no connection card if non-background fetch mode.
@@ -946,7 +953,7 @@
                 } completion:^(BOOL finished) {
                     
                     // Load follow books.
-                    [self loadFollowBooks];
+                    [self loadFollowBooksBackgroundFetch:backgroundFetch];
                 }];
                 
             } else {
@@ -966,7 +973,7 @@
                     }
                     
                     // Load follow books.
-                    [self loadFollowBooks];
+                    [self loadFollowBooksBackgroundFetch:backgroundFetch];
                 }];
 
             }
@@ -991,7 +998,10 @@
 
 - (void)loadFollowBooksBackgroundFetch:(BOOL)backgroundFetch {
     
-    // Enable pan to Settings and Store except when update screen is active
+    // Hide any no connection messages.
+    [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
+    
+   // Enable pan to Settings and Store except when update screen is active
     if (self.updateIntroView.alpha == 0.0) {
         [self.delegate panEnabledRequested:YES];
     }
