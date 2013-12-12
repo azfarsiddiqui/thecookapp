@@ -393,11 +393,11 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     cell.delegate = self;
     cell.backgroundColor = [UIColor clearColor];
     
-    if (self.editingIndexPath) {
-        cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
-    } else {
-        cell.backgroundView.alpha = 1.0;
-    }
+//    if (self.editingIndexPath) {
+//        cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
+//    } else {
+    cell.backgroundView.alpha = 1.0;
+//    }
     
     [self configureCell:cell indexPath:indexPath];
     
@@ -1290,16 +1290,16 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)updateCellsState {
     
     // Fade out all other cells.
-    NSArray *visibleCells = [self.collectionView visibleCells];
-    for (UICollectionViewCell *cell in visibleCells) {
-        NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-        
-        if (self.editingIndexPath) {
-            cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
-        } else {
-            cell.backgroundView.alpha = [((CKListCell *)cell) isFirstResponder] ? 1.0 : kInactiveCellFade;
-        }
-    }
+//    NSArray *visibleCells = [self.collectionView visibleCells];
+//    for (UICollectionViewCell *cell in visibleCells) {
+//        NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+//        
+//        if (self.editingIndexPath) {
+//            cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
+//        } else {
+//            cell.backgroundView.alpha = [((CKListCell *)cell) isFirstResponder] ? 1.0 : kInactiveCellFade;
+//        }
+//    }
 }
 
 - (void)updateSwipeToDeleteLabel {
