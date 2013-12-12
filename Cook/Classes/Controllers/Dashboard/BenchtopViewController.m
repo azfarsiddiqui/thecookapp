@@ -1281,6 +1281,9 @@
     
     if (success) {
         
+        // Clear blur image.
+        self.signupBlurImage = nil;
+        
         // Delete current book then reload.
         [self deleteMyBookCompletion:^{
             
