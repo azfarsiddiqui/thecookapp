@@ -1596,12 +1596,15 @@
 }
 
 - (void)snapshotBenchtopCompletion:(void (^)())completion {
-    [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
-        self.signupBlurImage = blurredImage;
-        if (completion != nil) {
-            completion();
-        }
-    }];
+    
+    if (![self.currentUser isSignedIn] || ([self.currentUser isSignedIn] && ![self hasSeenUpdateIntro])) {
+        [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
+            self.signupBlurImage = blurredImage;
+            if (completion != nil) {
+                completion();
+            }
+        }];
+    }
 }
 
 - (void)flashIntros {
@@ -1709,6 +1712,7 @@
                          animations:^{
                              self.updateIntroView.alpha = 1.0;
                          } completion:^(BOOL finished) {
+                             self.signupBlurImage = nil;
                              [self.delegate panEnabledRequested:NO];
                              [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
                              [[NSUserDefaults standardUserDefaults] synchronize];
