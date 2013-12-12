@@ -36,7 +36,6 @@
 - (void)configureLoading:(BOOL)loading;
 - (void)configurePages:(NSArray *)pages;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
-- (void)configureError:(NSError *)error;
 - (void)refresh;
 - (void)didScrollToProfile;
 

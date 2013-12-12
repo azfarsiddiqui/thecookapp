@@ -246,7 +246,6 @@
         self.bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
                                                                            titleViewController:self.bookTitleViewController
                                                                                       delegate:self];
-        self.bookNavigationViewController.view.hidden = NO;
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -259,7 +258,6 @@
         // Create book navigation.
         self.bookNavigationViewController.view.frame = self.view.bounds;
         [self.view addSubview:self.bookNavigationViewController.view];
-        self.bookNavigationViewController = self.bookNavigationViewController;
         
         // Inform the helper that coordinates book navigation and any updated recipes.
         [BookNavigationHelper sharedInstance].bookNavigationViewController = self.bookNavigationViewController;
@@ -283,8 +281,8 @@
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
                              
-                             // Loading.
-                             [self.bookTitleViewController configureLoading:YES];
+                             // Load data.
+                             [self.bookNavigationViewController loadData];
                          }];
         
     } else {

@@ -30,6 +30,7 @@
 
 - (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
           delegate:(id<BookNavigationViewControllerDelegate>)delegate;
+- (void)loadData;
 - (void)setActive:(BOOL)active;
 - (void)updateBinderAlpha:(CGFloat)alpha;
 

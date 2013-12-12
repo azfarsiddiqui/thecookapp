@@ -116,36 +116,47 @@
     [EventHelper registerPhotoLoadingProgress:self selector:@selector(photoLoadingProgress:)];
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-//    if (self.didScrollBack) {
-//        [self showProfileHintCard:[self profileCardRequired]];
-//    }
-//}
-
 - (void)configureLoading:(BOOL)loading {
+    
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.5, 0.5);
+    
     if (loading) {
         if (![self.activityView isAnimating]) {
             [self.activityView startAnimating];
         }
         if (!self.activityView.superview) {
             self.activityView.alpha = 0.0;
+            self.activityView.transform = scaleTransform;
             [self.view addSubview:self.activityView];
             
-            [UIView animateWithDuration:0.25
+            [UIView animateWithDuration:0.2
                                   delay:0.0
                                 options:UIViewAnimationCurveEaseIn
                              animations:^{
                                  self.activityView.alpha = 1.0;
+                                 self.activityView.transform = CGAffineTransformIdentity;
                              }
                              completion:^(BOOL finished) {
                              }];
             
         }
     } else {
-        if ([self.activityView isAnimating]) {
-            [self.activityView stopAnimating];
-        }
-        [self.activityView removeFromSuperview];
+        
+        [UIView animateWithDuration:0.15
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.activityView.alpha = 0.0;
+//                             self.activityView.transform = scaleTransform;
+//                             self.activityView.transform = CGAffineTransformConcat(scaleTransform, CGAffineTransformMakeTranslation(0.0, kStartUpOffset));
+//                             self.activityView.transform = CGAffineTransformMakeTranslation(0.0, kStartUpOffset);
+                         }
+                         completion:^(BOOL finished) {
+                             if ([self.activityView isAnimating]) {
+                                 [self.activityView stopAnimating];
+                             }
+                             [self.activityView removeFromSuperview];
+                         }];
     }
 }
 
@@ -154,8 +165,7 @@
     // Make sure view is available when this is invoked.
     self.view.hidden = NO;
     
-    [self.activityView stopAnimating];
-    [self.activityView removeFromSuperview];
+    [self configureLoading:NO];
     
     BOOL reload = (self.pages != nil);
     self.pages = [NSMutableArray arrayWithArray:pages];
@@ -226,10 +236,6 @@
         
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size];
     }
-}
-
-- (void)configureError:(NSError *)error {
-    [self.activityView stopAnimating];
 }
 
 - (void)refresh {

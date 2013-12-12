@@ -157,7 +157,6 @@
     self.justOpened = YES;
     [self initBookOutlineView];
     [self initCollectionView];
-    [self loadData];
     
     // Register pinch
     UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)];
@@ -1126,6 +1125,9 @@
 }
 
 - (void)loadData {
+    
+    // Spin the title page.
+    [self.titleViewController configureLoading:YES];
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
