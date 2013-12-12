@@ -1622,7 +1622,7 @@
         self.libraryIntroView.transform = CGAffineTransformMakeTranslation(0.0, -shiftOffset);
         CGRect libraryFrame = self.libraryIntroView.frame;
         libraryFrame.origin.x = floorf((self.view.bounds.size.width - libraryFrame.size.width) / 2.0);
-        libraryFrame.origin.y = 0.0;
+        libraryFrame.origin.y = 31.0;
         self.libraryIntroView.frame = libraryFrame;
         [self.view addSubview:self.libraryIntroView];
     }
@@ -1636,7 +1636,7 @@
         self.settingsIntroView.transform = CGAffineTransformMakeTranslation(0.0, shiftOffset);
         CGRect settingsFrame = self.settingsIntroView.frame;
         settingsFrame.origin.x = floorf((self.view.bounds.size.width - settingsFrame.size.width) / 2.0);
-        settingsFrame.origin.y = self.view.bounds.size.height - settingsFrame.size.height + 5.0;
+        settingsFrame.origin.y = self.view.bounds.size.height - settingsFrame.size.height - 13.0;
         self.settingsIntroView.frame = settingsFrame;
         [self.view addSubview:self.settingsIntroView];
         
