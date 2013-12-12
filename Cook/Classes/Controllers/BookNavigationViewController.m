@@ -927,6 +927,7 @@
     
     if (indexPath.section == kProfileSection) {
         cell = [self profileCellAtIndexPath:indexPath];
+        [self.titleViewController didScrollToProfile];
     } else if (indexPath.section == kIndexSection) {
         cell = [self indexCellAtIndexPath:indexPath];
     } else {

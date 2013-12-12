@@ -299,6 +299,11 @@
     
 }
 
+//Called when BookNav has scrolled to Profile, able to dismiss hints if shown
+- (void)didScrollToProfile {
+    [self showProfileHintCard:NO];
+}
+
 #pragma mark - BooKTitlePhotoViewDelegate methods
 
 - (void)bookTitlePhotoViewProfileTapped {

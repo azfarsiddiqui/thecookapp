@@ -47,6 +47,7 @@
 #define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kAvailableWidth     624.0
 #define kTempBookImageKey   @"TEMP_BOOK_IMAGE"
+#define kProfileHintCard    @"PROFILE_HINT"
 
 - (void)dealloc {
     self.imageView.image = nil;
@@ -150,7 +151,7 @@
     }
     
     // Show intro card?
-    [self showIntroCard:[self introRequired]];
+    [self showIntroCard:NO];
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
@@ -360,7 +361,7 @@
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     self.editMode = editMode;
     
-    [self showIntroCard:[self introRequired]];
+    [self showIntroCard:NO];
     
     // Prep photo edit button to be transitioned in.
     if (self.editMode) {
@@ -423,8 +424,7 @@
 }
 
 - (BOOL)introRequired {
-    DLog(@"Num recipes: %i", self.book.numRecipes);
-    return (!self.editMode && (![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && [self.book.pages count] > 0);
+    return (!self.editMode && (![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]) && [self.book.pages count] > 0);
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {
