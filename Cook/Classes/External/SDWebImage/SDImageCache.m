@@ -131,19 +131,26 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 
 #pragma mark ImageCache
 
-- (void)storeImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk
-{
+- (void)storeImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk {
     [self storeImage:image imageData:imageData forKey:key png:NO toDisk:toDisk];
 }
 
-- (void)storeImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk
-{
+- (void)storeImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key png:(BOOL)png
+            toDisk:(BOOL)toDisk {
+    
+    [self storeImage:image imageData:imageData forKey:key png:png toDisk:toDisk skipMemory:YES];
+}
+
+- (void)storeImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key png:(BOOL)png
+            toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
+    
     if (!image || !key)
     {
         return;
     }
-    if (!toDisk)
+    if (!skipMemory) {
         [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    }
     
     if (toDisk)
     {
@@ -196,6 +203,11 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk
 {
     [self storeImage:image imageData:nil forKey:key png:png toDisk:toDisk];
+}
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
+    
+    [self storeImage:image imageData:nil forKey:key png:png toDisk:toDisk skipMemory:skipMemory];
 }
 
 - (UIImage *)imageFromMemoryCacheForKey:(NSString *)key

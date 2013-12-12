@@ -57,7 +57,11 @@
 - (BOOL)imageCachedForKey:(NSString *)cacheKey;
 - (UIImage *)cachedImageForKey:(NSString *)cacheKey;
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory;
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png toDisk:(BOOL)toDisk;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png toDisk:(BOOL)toDisk
+        skipMemory:(BOOL)skipMemory;
 - (void)removeImageForKey:(NSString *)cacheKey;
 
 // Image uploads, including thumbnail generation.

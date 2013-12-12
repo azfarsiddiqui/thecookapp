@@ -477,7 +477,7 @@
     [self updateTransferProgress:@(0) cacheKey:recipe.recipeImage.imageUuid];
     
     // Save a copy while transfer is being processed. This is so that the user could still see his/her own images.
-    [self storeImage:image forKey:recipeImage.imageUuid];
+    [self storeImage:image forKey:recipeImage.imageUuid toDisk:YES skipMemory:NO];
     
     // Now upload the thumb sized.
     __weak CKPhotoManager *weakSelf = self;
@@ -513,6 +513,9 @@
                         
                         // Successful, and remove the local copy
                         [weakSelf clearTransferForCacheKey:cacheKey];
+                        
+                        // Clear in-memory cache, but retain the disk one.
+                        [weakSelf clearCachedImageForKey:cacheKey fromDisk:NO];
                         
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -756,12 +759,32 @@
     return cachedImage;
 }
 
+- (void)clearCachedImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk {
+    [[SDImageCache sharedImageCache] removeImageForKey:key fromDisk:fromDisk];
+}
+
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey {
     [self storeImage:image forKey:cacheKey png:NO];
 }
 
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
+    [self storeImage:image forKey:cacheKey png:NO toDisk:toDisk skipMemory:skipMemory];
+}
+
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png {
+    [self storeImage:image forKey:cacheKey png:png toDisk:YES];
     [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey png:png toDisk:YES];
+}
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png toDisk:(BOOL)toDisk {
+    
+    [self storeImage:image forKey:cacheKey png:png toDisk:toDisk skipMemory:YES];
+}
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png toDisk:(BOOL)toDisk
+        skipMemory:(BOOL)skipMemory {
+    
+    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey png:png toDisk:toDisk skipMemory:skipMemory];
 }
 
 - (void)removeImageForKey:(NSString *)cacheKey {
@@ -854,7 +877,6 @@
         if (image) {
             
             // Return in-transfer image.
-//            DLog(@">>>>> Found in-transfer image for name [%@]", name);
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             dispatch_async(queue, ^{
                 
