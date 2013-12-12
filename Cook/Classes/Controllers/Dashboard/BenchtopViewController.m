@@ -270,6 +270,7 @@
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     if (!open) {
         cell.bookCoverView.hidden = NO;
+        [cell.bookCoverView enable:YES];
     } else {
         [self clearUpdatesForBook:cell.bookCoverView.book];
         [cell.bookCoverView clearUpdates];
@@ -1228,6 +1229,7 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseOut
                      animations:^{
+                         [cell.bookCoverView enable:NO animated:NO];
                          cell.transform = CGAffineTransformMakeScale(bookScale, bookScale);
                      }
                      completion:^(BOOL finished){
