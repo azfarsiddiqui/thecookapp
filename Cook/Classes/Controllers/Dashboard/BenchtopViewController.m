@@ -887,10 +887,6 @@
                                  
                                  }
                                  
-                                 // Sample a snapshot.
-                                 [self snapshotBenchtop];
-                                 
-                                 
                              } else {
                                  
                                  [[self pagingLayout] markLayoutDirty];
@@ -901,15 +897,19 @@
                                      [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                  } completion:^(BOOL finished) {
                                      
-                                     // Sample a snapshot.
-                                     [self snapshotBenchtop];
                                      
+                                     // Show intro screen for update if haven't seen it
+                                     if (![self hasSeenUpdateIntro]) {
+                                         
+                                         [self snapshotBenchtopCompletion:^{
+                                             [self flashUpdateIntro];
+                                         }];
+                                         
+//                                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+//                                             [self flashUpdateIntro];
+//                                         });
+                                     }
                                  }];
-                             }
-                             
-                             // Show intro screen for update if haven't seen it
-                             if (![self hasSeenUpdateIntro]) {
-                                 [self flashUpdateIntro];
                              }
                              
                          }
@@ -922,9 +922,6 @@
                                      [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
                                  }
                              }
-                             
-                             // Sample a snapshot.
-                             [self snapshotBenchtop];
                              
                          }];
     } else {
@@ -942,9 +939,6 @@
                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
                     
-                    // Sample a snapshot.
-                    [self snapshotBenchtop];
-                    
                     // Load follow books.
                     [self loadFollowBooks];
                 }];
@@ -958,9 +952,6 @@
                 [self.collectionView performBatchUpdates:^{
                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
-                    
-                    // Sample a snapshot.
-                    [self snapshotBenchtop];
                     
                     // First time launch.
                     if ([self.delegate respondsToSelector:@selector(benchtopFirstTimeLaunched)]) {
@@ -1019,16 +1010,9 @@
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
             } completion:^(BOOL finished) {
-                
-                // Sample a snapshot.
-                [self snapshotBenchtop];
-                
             }];
         } else {
             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-            
-            // Sample a snapshot.
-            [self snapshotBenchtop];
         }
         
     } failure:^(NSError *error) {
@@ -1294,9 +1278,6 @@
             
         }];
         
-        // Clear the sign up image.
-        self.signupBlurImage = nil;
-        
         // Show notification view.
         self.notificationView.hidden = NO;
         
@@ -1353,6 +1334,7 @@
     
     if ([self.pagingBenchtopView isEqual:pagingBenchtopView]) {
         [self synchronisePagingBenchtopView];
+        [self snapshotBenchtop];
     } else {
         
         // Blend it and update the benchtop.
@@ -1384,6 +1366,7 @@
                                      [self.pagingBenchtopView removeFromSuperview];
                                      self.pagingBenchtopView = pagingBenchtopView;
                                      [self synchronisePagingBenchtopView];
+                                     [self snapshotBenchtop];
                                  }];
                 
             } else {
@@ -1399,8 +1382,7 @@
                                      self.pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
                                  }
                                  completion:^(BOOL finished) {
-                                     
-                                     
+                                     [self snapshotBenchtop];
                                  }];
             }
             
@@ -1588,8 +1570,15 @@
 }
 
 - (void)snapshotBenchtop {
+    [self snapshotBenchtopCompletion:nil];
+}
+
+- (void)snapshotBenchtopCompletion:(void (^)())completion {
     [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
         self.signupBlurImage = blurredImage;
+        if (completion != nil) {
+            completion();
+        }
     }];
 }
 
@@ -1641,20 +1630,15 @@
 }
 
 - (void)flashUpdateIntro {
-    if (!self.updateIntroView.superview)
-    {
+    
+    if (!self.updateIntroView.superview) {
         self.updateIntroView = [[UIView alloc] initWithFrame:self.view.frame];
         self.updateIntroView.alpha = 0.0;
         
         // Blurred imageView to be hidden to start off with.
         UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        [self snapshotBenchtop];
-        if (self.signupBlurImage) {
-            blurredImageView.image = self.signupBlurImage;
-        } else {
-           blurredImageView.image = [ImageHelper blurredImageFromView:self.view];
-        }
+        blurredImageView.image = self.signupBlurImage;
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
