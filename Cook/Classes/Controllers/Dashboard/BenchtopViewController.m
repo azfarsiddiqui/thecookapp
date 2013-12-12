@@ -30,6 +30,7 @@
 #import "CKBookManager.h"
 #import "RootViewController.h"
 #import "FollowReloadButtonView.h"
+#import "NSString+Utilities.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -62,6 +63,8 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL followBooksLoading;
+@property (nonatomic, assign) BOOL newUser;
 @property (nonatomic, strong) NSString *preEditingBookName;
 @property (nonatomic, strong) NSString *preEditingAuthorName;
 
@@ -236,6 +239,7 @@
 
 - (void)enable:(BOOL)enable animated:(BOOL)animated {
     self.collectionView.userInteractionEnabled = enable;
+    self.notificationView.userInteractionEnabled = enable;
     [self hideIntroViewsAsRequired];
 }
 
@@ -843,7 +847,7 @@
     if (currentUser) {
         
         [CKBook dashboardBookForUser:currentUser
-                         success:^(CKBook *book) {
+                             success:^(CKBook *book) {
                              
                              // Could be called again via cache, or reloaded via login.
                              if (self.myBook) {
@@ -885,36 +889,38 @@
                                      // Load follow books.
                                      [self loadFollowBooks];
                                  
+                                     // Show update notes?
+                                     [self showUpdateNotesIfRequired];
                                  }
                                  
                              } else {
                                  
+                                 // Existing user logging in fresh from new install (cache miss).
                                  [[self pagingLayout] markLayoutDirty];
                                  self.myBook = book;
                                  
                                  // Insert book then update blended benchtop.
                                  [self.collectionView performBatchUpdates:^{
+                                     
                                      [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                     
                                  } completion:^(BOOL finished) {
                                      
-                                     
-                                     // Show intro screen for update if haven't seen it
-                                     if (![self hasSeenUpdateIntro]) {
-                                         
-                                         [self snapshotBenchtopCompletion:^{
-                                             [self flashUpdateIntro];
-                                         }];
-                                         
-//                                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//                                             [self flashUpdateIntro];
-//                                         });
-                                     }
+                                     // Show update notes?
+                                     [self showUpdateNotesIfRequired];
+
                                  }];
                              }
                              
                          }
                          failure:^(NSError *error) {
                              DLog(@"Error: %@", [error localizedDescription]);
+                             
+                             // If it was a cache-miss, then we know this is first time load of book, should proceed
+                             // to load my books.
+                             if ([CKBook dashboardBookLoadCacheMissError:error]) {
+                                 [self loadFollowBooks];
+                             }
                              
                              // Only show no connection card if non-background fetch mode.
                              if (!backgroundFetch) {
@@ -990,6 +996,13 @@
         [self.delegate panEnabledRequested:YES];
     }
     
+    if (self.followBooksLoading) {
+        DLog(@"Follow books loading in progress, returning.");
+        return;
+    }
+    self.followBooksLoading = YES;
+    DLog(@"Loading follow books, backgroundFetch[%@]", [NSString CK_stringForBoolean:backgroundFetch]);
+    
     // Spin the spinner.
     [self.followReloadView enableActivity:YES];
     
@@ -1006,15 +1019,20 @@
         [[self pagingLayout] markLayoutDirty];
         
         NSInteger existingNumFollows = [self.collectionView numberOfItemsInSection:kFollowSection];
-        if (existingNumFollows > 0) {
-            [self.collectionView performBatchUpdates:^{
-                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-            } completion:^(BOOL finished) {
-            }];
-        } else {
-            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-        }
         
+        [self.collectionView performBatchUpdates:^{
+            if (existingNumFollows > 0) {
+                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+            } else {
+                [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+            }
+        } completion:^(BOOL finished) {
+            
+            // Mark as not loading follow books anymore.
+            self.followBooksLoading = NO;
+            
+        }];
+
     } failure:^(NSError *error) {
         DLog(@"Error: %@", [error localizedDescription]);
         
@@ -1027,6 +1045,9 @@
                 [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
             }
         }
+        
+        // Mark as not loading follow books anymore.
+        self.followBooksLoading = NO;
         
     }];
 
@@ -1256,7 +1277,7 @@
 
 - (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
-    
+    self.newUser = [EventHelper loginSuccessfulNewUserForNotification:notification];
     
     if (success) {
         
@@ -1291,6 +1312,7 @@
     
     // Clear the current user
     self.currentUser = nil;
+    self.newUser = NO;
     
     // Hide notification view.
     self.notificationView.hidden = YES;
@@ -1651,7 +1673,7 @@
         UIButton *closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(closeIntroTapped)];
         closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         closeButton.frame = (CGRect){
-            kContentInsets.left - 5.0,
+            kContentInsets.left,
             kContentInsets.top,
             closeButton.frame.size.width,
             closeButton.frame.size.height
@@ -1659,8 +1681,8 @@
         [self.updateIntroView addSubview:closeButton];
         
         // Bottom Find out More and Continue buttons.
-        UIButton *moreButton = [self updateIntroButtonWithText:@"FIND OUT MORE" target:self selector:@selector(updateIntroMoreTapped)];
-        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" target:self selector:@selector(updateIntroContinueTapped)];
+        UIButton *moreButton = [self updateIntroButtonWithText:@"FIND OUT MORE" textAlpha:0.7 target:self selector:@selector(updateIntroMoreTapped)];
+        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" textAlpha:0.7 target:self selector:@selector(updateIntroContinueTapped)];
         CGFloat buttonOffsetFromBottom = 145.0;
         CGFloat buttonOffset = -16.0;
         CGFloat buttonGap = 117.0;
@@ -1784,6 +1806,10 @@
 }
 
 - (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
+    return [self updateIntroButtonWithText:text textAlpha:1.0 target:target selector:selector];
+}
+
+- (UIButton *)updateIntroButtonWithText:(NSString *)text textAlpha:(CGFloat)textAlpha target:(id)target selector:(SEL)selector {
 
     // Soft shadow.
     NSShadow *shadow = [NSShadow new];
@@ -1792,7 +1818,7 @@
     shadow.shadowBlurRadius = 3.0;
     NSDictionary *textAttributes = @{
                                      NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0],
-                                     NSForegroundColorAttributeName : [UIColor whiteColor],
+                                     NSForegroundColorAttributeName : [UIColor colorWithWhite:255 alpha:textAlpha],
                                      NSShadowAttributeName : shadow
                                      };
     NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:text attributes:textAttributes];
@@ -1886,6 +1912,14 @@
 
 - (BOOL)hasSeenUpdateIntro {
     return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro] != nil);
+}
+
+- (void)showUpdateNotesIfRequired {
+    if (self.currentUser && !self.newUser && ![self hasSeenUpdateIntro]) {
+        [self snapshotBenchtopCompletion:^{
+            [self flashUpdateIntro];
+        }];
+    }
 }
 
 @end
