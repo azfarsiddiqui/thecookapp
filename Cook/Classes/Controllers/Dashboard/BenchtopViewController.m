@@ -1283,12 +1283,12 @@
             if (self.signUpViewController) {
                 
                 [self hideLoginViewCompletion:^{
-                    [self deleteFollowBooksUpdateBackground:NO];
+                    [self deleteFollowBooks];
                     [self loadBooks];
                 }];
                 
             } else {
-                [self deleteFollowBooksUpdateBackground:NO];
+                [self deleteFollowBooks];
                 [self loadBooks];
             }
             
@@ -1318,8 +1318,9 @@
     [self.collectionView setContentOffset:CGPointZero animated:YES];
     
     // Reload benchtop.
-    [self deleteFollowBooksUpdateBackground:NO];
-    [self loadBooks];
+    [self deleteFollowBooksCompletion:^{
+        [self loadBooks];
+    }];
     
 }
 
@@ -1436,28 +1437,31 @@
             
         } else if (section == kFollowSection) {
             
-            NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
-            if (numFollowBooks > 0) {
-                
-                for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
+            
+            if ([self pagingLayoutFollowsDidLoad]) {
+                if (numFollowBooks > 0) {
                     
-                    CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                    UIColor *bookColour = [CKBookCover themeBackdropColourForCover:book.cover];
-                    
-                    // Add the next book colour at the gap.
-                    if (followIndex == 0) {
+                    for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                         
-                        // Extract components to reset alpha
-                        CGFloat red, green, blue, alpha;
-                        [bookColour getRed:&red green:&green blue:&blue alpha:&alpha];
+                        CKBook *book = [self.followBooks objectAtIndex:followIndex];
+                        UIColor *bookColour = [CKBookCover themeBackdropColourForCover:book.cover];
+                        
+                        // Add the next book colour at the gap.
+                        if (followIndex == 0) {
+                            
+                            // Extract components to reset alpha
+                            CGFloat red, green, blue, alpha;
+                            [bookColour getRed:&red green:&green blue:&blue alpha:&alpha];
+                            [pagingBenchtopView addColour:bookColour];
+                            
+                        }
+                        
                         [pagingBenchtopView addColour:bookColour];
-                        
                     }
                     
-                    [pagingBenchtopView addColour:bookColour];
                 }
-                
             }
+            
         }
     }
     
@@ -1856,28 +1860,10 @@
 }
 
 - (void)deleteFollowBooks {
-    if ([self.followBooks count] > 0) {
-        
-        NSArray *indexPathsToDelete = [self.followBooks collectWithIndex:^(CKBook *book, NSUInteger bookIndex) {
-            return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
-        }];
-        
-        // Clear model.
-        [self.followBooks removeAllObjects];
-        self.followBooks = nil;
-        
-        // Clear UI.
-        [[self pagingLayout] markLayoutDirty];
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
-        } completion:^(BOOL finished) {
-        }];
-        
-    }
-    
+    [self deleteFollowBooksCompletion:nil];
 }
 
-- (void)deleteFollowBooksUpdateBackground:(BOOL)updateBackground {
+- (void)deleteFollowBooksCompletion:(void (^)())completion {
     
     if ([self.followBooks count] > 0) {
         
@@ -1895,6 +1881,11 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
         } completion:^(BOOL finished) {
+            
+            if (completion != nil) {
+                completion();
+            }
+            
         }];
         
     }
