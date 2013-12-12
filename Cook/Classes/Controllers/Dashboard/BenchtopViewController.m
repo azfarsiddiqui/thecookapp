@@ -1314,12 +1314,20 @@
     // Hide notification view.
     self.notificationView.hidden = YES;
     
-    // Make sure we're on the front page.
-    [self.collectionView setContentOffset:CGPointZero animated:YES];
-    
     // Reload benchtop.
     [self deleteFollowBooksCompletion:^{
-        [self loadBooks];
+        
+        // Make sure we're on the front page.
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             [self.collectionView setContentOffset:CGPointZero animated:NO];
+                         }
+                         completion:^(BOOL finished) {
+                             [self loadBooks];
+                         }];
+        
     }];
     
 }
