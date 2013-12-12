@@ -391,7 +391,7 @@
     }
     
     //Show Sign In label if Guest user
-    if (self.currentUser == nil && self.book.featured) {
+    if (self.currentUser == nil && self.book.featured && self.book.status != kBookStatusFollowed) {
         [self addSubview:self.signInLabel];
     }
 }
