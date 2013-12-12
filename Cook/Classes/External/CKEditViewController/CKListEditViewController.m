@@ -227,8 +227,8 @@
         
         if (!CGRectContainsPoint(visibleFrame, (CGPoint){ cellFrame.origin.x, cellFrame.origin.y + cellFrame.size.height })) {
         
-            // Scroll the bottom obscured item up a bit.
-            CGFloat requiredOffset = cellFrame.origin.y - self.keyboardFrame.size.height + kHiddenFieldScrollUpOffset;
+            // Scroll the bottom obscured item up so that the cell sits just above the keyboard
+            CGFloat requiredOffset = (self.editingCell.frame.origin.y  + self.editingCell.frame.size.height) - (self.view.frame.size.height - self.keyboardFrame.size.height - kHiddenFieldScrollUpOffset);
             [self.collectionView setContentOffset:(CGPoint){
                 self.collectionView.contentOffset.x,
                 requiredOffset
@@ -559,6 +559,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (focused) {
         self.editingIndexPath = indexPath;
         self.editingCell = cell;
+    }
+    
+    if (self.swipeDeleteActivated) {
+        return;
     }
     
     // Disable/enable drag/drop according to focus mode.
@@ -1210,6 +1214,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     } completion:^(BOOL finished) {
         
         CKListCell *cell = [self listCellAtIndexPath:indexPath];
+        self.editingCell = cell;
+        self.editingIndexPath = indexPath;
         [self setEditing:YES cell:cell];
         [self updateAddState];
         
