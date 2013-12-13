@@ -291,6 +291,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)recipeDetailsViewUpdated {
     [self updateRecipeDetailsView];
+    
+    if (self.editMode && ![self.recipeDetails hasStory] && self.currentViewport == SnapViewportBottom) {
+        [self snapToViewport:SnapViewportBottom animated:YES];
+    }
 }
 
 - (BOOL)recipeDetailsViewAddMode {
@@ -347,7 +351,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
                      placeholder:YES];
     self.recipeDetails.image = nil;
-    self.recipeDetails.saveRequired = YES;
     self.isDeleteRecipeImage = YES;
 }
 
@@ -1039,7 +1042,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                    [self loadImageViewWithPhoto:thumbImage placeholder:NO];
                                                    
                                                } completion:^(UIImage *image, NSString *name) {
-                                                   
+
                                                    [self loadImageViewWithPhoto:image placeholder:NO];
                                                    
                                                    // Stop spinner.
@@ -1062,7 +1065,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.imageView.image = image;
     self.imageView.placeholder = placeholder;
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:placeholder];
-    
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -1828,9 +1830,20 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)saveRecipe {
-    DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:self.recipeDetails.saveRequired]);
+    BOOL saveRequired = ([self.recipeDetails saveRequired] || self.isDeleteRecipeImage);
+    DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:saveRequired]);
     
-    if (self.recipeDetails.saveRequired) {
+    // Blank recipe?
+    if (self.addMode && !saveRequired) {
+        UIAlertView *blankAlertView = [[UIAlertView alloc] initWithTitle:@"Sorry, you can't save an empty recipe"
+                                                                 message:nil
+                                                                delegate:nil cancelButtonTitle:nil
+                                                        otherButtonTitles:@"OK", nil];
+        [blankAlertView show];
+        return;
+    }
+    
+    if (saveRequired) {
         
         // If name OR page OR privacy is updated.
         if (!self.addMode && ([self.recipeDetails nameUpdated]
@@ -1870,6 +1883,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                         [self enableSaveMode:NO];
                                         [self enableEditMode:NO];
                                         self.addMode = NO;
+                                        self.recipeDetails.image = nil;
                                     }
                                        failure:^(NSError *error) {
                                            [self enableSaveMode:NO];

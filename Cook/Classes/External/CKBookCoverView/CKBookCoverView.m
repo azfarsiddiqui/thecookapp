@@ -88,6 +88,37 @@
     return self;
 }
 
+- (void)enable:(BOOL)enable {
+    [self enable:enable animated:YES];
+}
+
+- (void)enable:(BOOL)enable animated:(BOOL)animated {
+    if (animated) {
+        if (enable) {
+            self.editButton.alpha = 0.0;
+            [UIView animateWithDuration:0.3
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.editButton.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+        } else {
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.editButton.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+        }
+    } else {
+        self.editButton.alpha = enable ? 1.0 : 0.0;
+    }
+}
+
 - (void)loadBook:(CKBook *)book {
     [self loadBook:book editable:[book editable]];
 }

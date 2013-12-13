@@ -82,41 +82,125 @@
 }
 
 - (BOOL)pageUpdated {
-    return ![self.originalRecipe.page CK_equalsIgnoreCase:self.page];
+    BOOL pageUpdated = ![self.originalRecipe.page CK_equalsIgnoreCase:self.page];
+    DLog(@"pageUpdated[%@]", [NSString CK_stringForBoolean:pageUpdated]);
+    return pageUpdated;
 }
 
 - (BOOL)nameUpdated {
-    return ![self.originalRecipe.name CK_equals:self.name];
+    BOOL nameUpdated = NO;
+    if (self.originalRecipe.name) {
+        nameUpdated = ![self.originalRecipe.name CK_equals:self.name];
+    } else {
+        nameUpdated = ([self.name length] > 0);
+    }
+    
+    DLog(@"nameUpdated[%@]", [NSString CK_stringForBoolean:nameUpdated]);
+    return nameUpdated;
+}
+
+- (BOOL)imageUpdated {
+    BOOL imageUpdated = (self.image != nil);
+    DLog(@"imageUpdated[%@]", [NSString CK_stringForBoolean:imageUpdated]);
+    return imageUpdated;
 }
 
 - (BOOL)tagsUpdated {
-    return [self tagsChangedForTags:self.tags];
+    BOOL tagsUpdated = [self tagsChangedForTags:self.tags];
+    DLog(@"tagsUpdated[%@]", [NSString CK_stringForBoolean:tagsUpdated]);
+    return tagsUpdated;
 }
 
 - (BOOL)storyUpdated {
-    return ![self.originalRecipe.story CK_equals:self.story];
+    BOOL storyUpdated = NO;
+    if (self.originalRecipe.story) {
+        storyUpdated = ![self.originalRecipe.story CK_equals:self.story];
+    } else {
+        storyUpdated = ([self.story length] > 0);
+    }
+
+    DLog(@"storyUpdated[%@]", [NSString CK_stringForBoolean:storyUpdated]);
+    return storyUpdated;
 }
 
 - (BOOL)methodUpdated {
-    return ![self.originalRecipe.method CK_equals:self.method];
+    BOOL methodUpdated = NO;
+    if (self.originalRecipe.story) {
+        methodUpdated = ![self.originalRecipe.method CK_equals:self.method];
+    } else {
+        methodUpdated = ([self.method length] > 0);
+    }
+    
+    DLog(@"methodUpdated[%@]", [NSString CK_stringForBoolean:methodUpdated]);
+    return methodUpdated;
 }
 
 - (BOOL)servesPrepUpdated {
-    return (([self.numServes integerValue] != [self.originalRecipe.numServes integerValue])
-            || ([self.prepTimeInMinutes integerValue] != [self.originalRecipe.prepTimeInMinutes integerValue])
-            || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue]));
+    BOOL servesPrepUpdated = (([self.numServes integerValue] != [self.originalRecipe.numServes integerValue])
+                              || ([self.prepTimeInMinutes integerValue] != [self.originalRecipe.prepTimeInMinutes integerValue])
+                              || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue]));
+    DLog(@"servesPrepUpdated[%@]", [NSString CK_stringForBoolean:servesPrepUpdated]);
+    return servesPrepUpdated;
 }
 
 - (BOOL)ingredientsUpdated {
-    return [self ingredientsChangedForIngredients:self.ingredients];
+    BOOL ingredientsUpdated = NO;
+    ingredientsUpdated = [self ingredientsChangedForIngredients:self.ingredients];
+    DLog(@"ingredientsUpdated[%@]", [NSString CK_stringForBoolean:ingredientsUpdated]);
+    return ingredientsUpdated;
 }
 
 - (BOOL)locationUpdated {
-    return ![self.location isEqual:self.originalRecipe.geoLocation];
+    BOOL locationUpdated = NO;
+    
+    if (![self isNew]) {
+        
+        if (self.location && !self.originalRecipe.geoLocation) {
+            
+            // Has location but not in original.
+            locationUpdated = YES;
+            
+        } else if (self.location == nil && self.originalRecipe.geoLocation) {
+            
+            // No location but has in original.
+            locationUpdated = YES;
+            
+        } else if (self.location && self.originalRecipe.geoLocation) {
+            
+            // Both has locations, then do logical compare.
+            return ![self.location isEqual:self.originalRecipe.geoLocation];
+            
+        }
+    }
+    
+    DLog(@"locationUpdated[%@]", [NSString CK_stringForBoolean:locationUpdated]);
+    return locationUpdated;
 }
 
 - (BOOL)privacyUpdated {
-    return (self.originalRecipe.privacy != self.privacy);
+    BOOL privacyUpdated = NO;
+    if ([self isNew]) {
+        privacyUpdated = (self.originalRecipe.privacy != CKPrivacyPublic);
+    } else {
+        privacyUpdated = (self.originalRecipe.privacy != self.privacy);
+    }
+    DLog(@"privacyUpdated[%@]", [NSString CK_stringForBoolean:privacyUpdated]);
+    return privacyUpdated;
+}
+
+- (BOOL)saveRequired {
+    BOOL needsSaving = [self privacyUpdated]
+                        || [self locationUpdated]
+                        || [self pageUpdated]
+                        || [self imageUpdated]
+                        || [self nameUpdated]
+                        || [self tagsUpdated]
+                        || [self storyUpdated]
+                        || [self servesPrepUpdated]
+                        || [self ingredientsUpdated]
+                        || [self methodUpdated];
+    DLog(@"Original Recipe: %@ needsSaving[%@]", self.originalRecipe, [NSString CK_stringForBoolean:needsSaving]);
+    return needsSaving;
 }
 
 - (BOOL)hasTitle {
@@ -147,123 +231,50 @@
 
 - (void)setPage:(NSString *)page {
     _page = page;
-    if (![self.originalRecipe.page CK_equalsIgnoreCase:page]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setName:(NSString *)name {
     _name = name;
-    if (![self.originalRecipe.name CK_equals:name]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setStory:(NSString *)story {
     _story = story;
-    if (![self.originalRecipe.story CK_equals:story]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setTags:(NSArray *)tags {
     _tags = tags;
-    BOOL tagsChanged = [self tagsChangedForTags:tags];
-    if (tagsChanged) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setMethod:(NSString *)method {
     _method = method;
-    if (![self.originalRecipe.method CK_equals:method]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setNumServes:(NSNumber *)numServes {
     _numServes = numServes;
-    if ([self.originalRecipe.numServes integerValue] != [numServes integerValue]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setPrepTimeInMinutes:(NSNumber *)prepTimeInMinutes {
     _prepTimeInMinutes = prepTimeInMinutes;
-    if ([self.originalRecipe.prepTimeInMinutes integerValue] != [prepTimeInMinutes integerValue]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setCookingTimeInMinutes:(NSNumber *)cookingTimeInMinutes {
     _cookingTimeInMinutes = cookingTimeInMinutes;
-    if ([self.originalRecipe.cookingTimeInMinutes integerValue] != [cookingTimeInMinutes integerValue]) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setIngredients:(NSArray *)ingredients {
-    BOOL ingredientsChanged = [self ingredientsChangedForIngredients:ingredients];
     _ingredients = ingredients;
-    if (ingredientsChanged) {
-        self.saveRequired = YES;
-    }
 }
 
 - (void)setImage:(UIImage *)image {
     _image = image;
-    self.saveRequired = (image != nil);
 }
 
 - (void)setPrivacy:(CKPrivacy)privacy {
     _privacy = privacy;
-    
-    if ([self isNew]) {
-        
-        // Recipes are always public when new (or add mode).
-        self.saveRequired = self.privacy != CKPrivacyPublic;;
-        
-    } else {
-        self.saveRequired = (self.originalRecipe.privacy != self.privacy);
-    }
-
 }
 
 - (void)setLocation:(CKLocation *)location {
     _location = location;
-    
-    if (location != nil) {
-        
-        if (self.originalRecipe.geoLocation) {
-            
-            // If there was an existing location, then compare the two.
-            self.saveRequired = ![self.originalRecipe.geoLocation isEqual:location];
-            
-        } else {
-            
-            if ([self isNew] && !self.saveRequired) {
-                
-                // New recipe and not save required means that the location was set by default, but nothing has yet been
-                // entered.
-                self.saveRequired = NO;
-                
-            } else {
-                
-                // New location received.
-                self.saveRequired = YES;
-            }
-            
-        }
-        
-    } else {
-        
-        // Clear location
-        if (!self.saveRequired) {
-            self.saveRequired = (self.originalRecipe.geoLocation != nil);
-        }
-        
-    }
-    
 }
 
 - (NSDate *)createdDateTime {

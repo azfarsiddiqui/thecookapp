@@ -270,6 +270,7 @@
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     if (!open) {
         cell.bookCoverView.hidden = NO;
+        [cell.bookCoverView enable:YES];
     } else {
         [self clearUpdatesForBook:cell.bookCoverView.book];
         [cell.bookCoverView clearUpdates];
@@ -443,7 +444,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
-    // Recognise taps only when collectionView is disabled.
+    // Recognise dismiss taps only when collectionView is disabled.
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         return (!self.collectionView.userInteractionEnabled);
     }
@@ -1228,6 +1229,7 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseOut
                      animations:^{
+                         [cell.bookCoverView enable:NO animated:NO];
                          cell.transform = CGAffineTransformMakeScale(bookScale, bookScale);
                      }
                      completion:^(BOOL finished){
@@ -1727,8 +1729,7 @@
                          } completion:^(BOOL finished) {
                              self.signupBlurImage = nil;
                              [self.delegate panEnabledRequested:NO];
-                             [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
-                             [[NSUserDefaults standardUserDefaults] synchronize];
+                             [self markHasSeenUpdateIntro];
                          }];
     }
 }
@@ -1931,11 +1932,20 @@
     return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro] != nil);
 }
 
+- (void)markHasSeenUpdateIntro {
+    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)showUpdateNotesIfRequired {
     if (self.currentUser && !self.newUser && ![self hasSeenUpdateIntro]) {
         [self snapshotBenchtopCompletion:^{
             [self flashUpdateIntro];
         }];
+    } else if (self.newUser) {
+        
+        // New user doesn't need to use update intro.
+        [self markHasSeenUpdateIntro];
     }
 }
 
