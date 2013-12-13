@@ -444,7 +444,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
-    // Recognise taps only when collectionView is disabled.
+    // Recognise dismiss taps only when collectionView is disabled.
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         return (!self.collectionView.userInteractionEnabled);
     }

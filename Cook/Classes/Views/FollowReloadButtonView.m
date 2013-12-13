@@ -45,8 +45,8 @@
     }
     self.activity = activity;
     
-    // Interaction status.
-    self.userInteractionEnabled = !activity;
+    // Enable interaction when not spinning and reload button is not hidden.
+    self.userInteractionEnabled = !activity && !hideReload;
     
     // Hide reload button on activity, or specifically asked to.
     self.reloadButton.hidden = activity ? YES : hideReload;
