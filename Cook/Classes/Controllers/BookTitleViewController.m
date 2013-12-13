@@ -249,7 +249,8 @@
     // - Has no bio
     // - Has no Profile Photo or Profile Background
     BOOL hasShown = [[[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenProfileHintKey] boolValue];
-    return ((![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && [self.pages count] > 1 && !hasShown);
+    BOOL hasPhoto = (![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]);
+    return (hasPhoto && ([self.pages count] > 1) && !hasShown);
 }
 
 #pragma mark - BookPageViewController methods

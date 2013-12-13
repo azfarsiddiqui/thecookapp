@@ -424,7 +424,7 @@
 }
 
 - (BOOL)introRequired {
-    return (!self.editMode && (![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]) && [self.book.pages count] > 0);
+    return (!self.editMode && (![self.book hasCoverPhoto] || ![self.book.user hasProfilePhoto]) && [self.book.pages count] > 0);
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {

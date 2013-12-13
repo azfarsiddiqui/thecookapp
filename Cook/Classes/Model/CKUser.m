@@ -593,7 +593,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (BOOL)hasProfilePhoto {
     PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
-    return ((profilePhoto != nil && [profilePhoto isDataAvailable]) || [self.facebookId length] > 0);
+    return ((profilePhoto != nil) || [self.facebookId length] > 0);
 }
 
 - (NSString *)friendlyName {
