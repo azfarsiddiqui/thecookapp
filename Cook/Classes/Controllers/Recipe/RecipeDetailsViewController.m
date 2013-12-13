@@ -291,6 +291,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)recipeDetailsViewUpdated {
     [self updateRecipeDetailsView];
+    
+    if (self.editMode && ![self.recipeDetails hasStory] && self.currentViewport == SnapViewportBottom) {
+        [self snapToViewport:SnapViewportBottom animated:YES];
+    }
 }
 
 - (BOOL)recipeDetailsViewAddMode {
