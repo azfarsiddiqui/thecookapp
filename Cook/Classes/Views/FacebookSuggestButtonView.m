@@ -25,13 +25,6 @@
 #define kSize           (CGSize) { 156.0, 219.0 }
 #define kButtonTextGap  -7.0
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
-                                                  object:[UIApplication sharedApplication]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification
-                                                  object:[UIApplication sharedApplication]];
-}
-
 - (id)initWithDelegate:(id<FacebookSuggestButtonViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
         self.backgroundColor = [UIColor clearColor];
@@ -41,18 +34,6 @@
         [self addSubview:self.facebookButton];
         [self addSubview:self.label];
         [self updateViews];
-        
-        // Register for notification that app did enter background
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(pauseActivityIfRequired)
-                                                     name:UIApplicationDidEnterBackgroundNotification
-                                                   object:[UIApplication sharedApplication]];
-        
-        // Register for notification that app did enter foreground
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(resumeActivityIfRequired)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:[UIApplication sharedApplication]];
     }
     return self;
 }
@@ -89,20 +70,6 @@
 - (void)showText:(BOOL)show {
     self.disableText = !show;
     [self updateViews];
-}
-
-#pragma mark - Background/Foreground activity.
-
-- (void)pauseActivityIfRequired {
-    if (self.activityView.superview) {
-        [self.activityView stopAnimating];
-    }
-}
-
-- (void)resumeActivityIfRequired {
-    if (self.activityView.superview) {
-        [self.activityView startAnimating];
-    }
 }
 
 #pragma mark - Properties
