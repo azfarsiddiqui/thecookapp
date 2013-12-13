@@ -78,6 +78,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL pullingBottom;
 @property (nonatomic, assign) BOOL zoomedLevel;
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *leftEdgeGesture;
 
 // Normal controls.
 @property (nonatomic, strong) UIButton *closeButton;
@@ -177,11 +178,11 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self initRecipeDetails];
     
     // Register left screen edge for shortcut to close.
-    UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
-                                                                                                          action:@selector(screenEdgePanned:)];
-    leftEdgeGesture.edges = UIRectEdgeLeft;
-    leftEdgeGesture.delegate = self;
-    [self.view addGestureRecognizer:leftEdgeGesture];
+    self.leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                             action:@selector(screenEdgePanned:)];
+    self.leftEdgeGesture.edges = UIRectEdgeLeft;
+    self.leftEdgeGesture.delegate = self;
+    [self.view addGestureRecognizer:self.leftEdgeGesture];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didBecomeInactive)
                                                  name:UIApplicationDidEnterBackgroundNotification
@@ -1781,6 +1782,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.shareViewController.view.frame = self.view.bounds;
         self.shareViewController.view.alpha = 0.0;
         [self.view addSubview:self.shareViewController.view];
+        self.leftEdgeGesture.enabled = NO;
+    } else {
+        self.leftEdgeGesture.enabled = YES;
     }
     [UIView animateWithDuration:show? 0.3 : 0.2
                           delay:0.0
