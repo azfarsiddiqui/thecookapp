@@ -743,6 +743,10 @@
             // Get the index of the page within the book.
             NSString *page = self.saveOrUpdatedRecipe.page;
             [self scrollToPage:page animated:NO];
+            //if change of page, dont need to scroll to recipe
+            if (self.saveOrUpdatedPage != nil) {
+                self.saveOrUpdatedRecipe = nil;
+            }
             
         } else if (self.saveOrUpdatedPage != nil) {
         
@@ -762,7 +766,7 @@
         self.bookUpdatedBlock = nil;
         
         // Clear breadcrumb flags.
-        self.saveOrUpdatedRecipe = nil;
+//        self.saveOrUpdatedRecipe = nil;
         self.saveOrUpdatedPage = nil;
         
     } else if (self.justOpened) {
@@ -868,7 +872,6 @@
             NSString *page = [self.pages objectAtIndex:currentPageIndex - [self contentStartSection]];
             BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
             [headerView reloadWithBook:self.book];
-            
         }
     }
 }
@@ -1289,6 +1292,12 @@
         // Remember this so that we can unset it on disEndDisplayingCell
         [self.contentControllers setObject:categoryController forKey:page];
         
+        //if have a saved recipe, scroll to it
+        if (self.saveOrUpdatedRecipe) {
+            [categoryController scrollToRecipe:self.saveOrUpdatedRecipe];
+//            self.saveOrUpdatedRecipe = nil;
+        }
+        
     } else {
         DLog(@"Reusing page VC for [%@]", page);
     }
@@ -1309,6 +1318,7 @@
     [categoryController setScrollOffset:scrollOffset];
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:scrollOffset.y];
+    self.saveOrUpdatedRecipe = nil;
 }
 
 - (void)clearFastForwardContentForPage:(NSString *)page cell:(BookContentCell *)cell {
@@ -1587,6 +1597,7 @@
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
     self.destinationIndexes = @[@(pageIndex)];
+
     [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];

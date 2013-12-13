@@ -50,6 +50,8 @@
 @property (nonatomic, strong) BookContentTitleView *contentTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
+@property (nonatomic, strong) CKRecipe *scrollToRecipe;
+
 // Editing.
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
@@ -86,6 +88,7 @@
         self.page = page;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.fullscreenMode = NO;
+        self.scrollToRecipe = nil;
     }
     return self;
 }
@@ -134,6 +137,12 @@
     self.disableInformScrollOffset = YES;
     [self.collectionView setContentOffset:scrollOffset animated:NO];
     self.disableInformScrollOffset = NO;
+}
+
+- (void)scrollToRecipe:(CKRecipe *)recipe {
+    if (recipe.page == self.page) {
+        self.scrollToRecipe = recipe;
+    }
 }
 
 - (void)applyOverlayAlpha:(CGFloat)alpha {
@@ -270,6 +279,13 @@
 
 - (void)bookContentGridLayoutDidFinish {
     DLog();
+    if (self.scrollToRecipe) {
+        self.disableInformScrollOffset = YES;
+        NSInteger scrollIndex = [self.recipes indexOfObject:self.scrollToRecipe];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:scrollIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        self.disableInformScrollOffset = NO;
+        self.scrollToRecipe = nil;
+    }
 }
 
 - (NSInteger)bookContentGridLayoutNumItems {

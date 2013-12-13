@@ -35,6 +35,7 @@
 - (void)loadPageContent;
 - (CGPoint)currentScrollOffset;
 - (void)setScrollOffset:(CGPoint)scrollOffset;
+- (void)scrollToRecipe:(CKRecipe *)recipe;
 - (void)applyOverlayAlpha:(CGFloat)alpha;
 - (void)loadMoreRecipes:(NSArray *)recipes;
 
