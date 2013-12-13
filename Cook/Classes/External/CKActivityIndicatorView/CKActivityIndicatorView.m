@@ -25,6 +25,13 @@
     return [self backgroundImageForStyle:style].size;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
+                                                  object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification
+                                                  object:[UIApplication sharedApplication]];
+}
+
 - (id)initWithStyle:(CKActivityIndicatorViewStyle)style {
     if (self = [super init]) {
         self.style = style;
@@ -46,6 +53,17 @@
         // To be shown when animation is started.
         self.hidden = YES;
         
+        // Register for notification that app did enter background
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(pauseActivityIfRequired)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:[UIApplication sharedApplication]];
+        
+        // Register for notification that app did enter foreground
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(resumeActivityIfRequired)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:[UIApplication sharedApplication]];
     }
     return self;
 }
@@ -79,8 +97,25 @@
     }
 }
 
+- (void)restartAnimating {
+    [self stopAnimating];
+    [self startAnimating];
+}
+
 - (BOOL)isAnimating {
     return self.animating;
+}
+
+#pragma mark - Background/Foreground activity.
+
+- (void)pauseActivityIfRequired {
+    // Rely on the resume to stop/start
+}
+
+- (void)resumeActivityIfRequired {
+    if (self.superview && [self isAnimating]) {
+        [self restartAnimating];
+    }
 }
 
 #pragma mark - Private methods
