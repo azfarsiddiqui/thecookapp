@@ -352,6 +352,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                      placeholder:YES];
     self.recipeDetails.image = nil;
     self.isDeleteRecipeImage = YES;
+    self.recipe.recipeImage = nil;
+    [self showPhotoPicker:NO completion:^{
+        [self snapToViewport:SnapViewportBottom animated:YES];
+    }];
 }
 
 #pragma mark - RecipeSocialViewControllerDelegate methods
