@@ -9,6 +9,7 @@
 #import "BookContentTitleView.h"
 #import "CKMaskedLabel.h"
 #import "Theme.h"
+#import "AppHelper.h"
 
 @interface BookContentTitleView ()
 
@@ -23,10 +24,11 @@
 @implementation BookContentTitleView
 
 #define kCategoryFont       [Theme defaultFontWithSize:110.0]
-#define kCategoryMinFont    [Theme defaultFontWithSize:100.0]
+#define kCategoryMinFont    [Theme defaultFontWithSize:90.0]
 #define kCategoryInsets     (UIEdgeInsets){ 15.0, 50.0, 15.0, 50.0 }
-#define kCategoryMinInsets  (UIEdgeInsets){ 15.0, 35.0, 15.0, 35.0 }
+#define kCategoryMinInsets  (UIEdgeInsets){ 15.0, 30.0, 15.0, 30.0 }
 #define kBoxInsets          (UIEdgeInsets){ 12.0, 12.0, 12.0, 12.0 }
+#define kContentInsets      (UIEdgeInsets){ 0.0, 42.0, 0.0, 42.0 }
 #define kUnderlayColour     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 #define kEditUnderlayColour [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]
 
@@ -55,13 +57,17 @@
     NSAttributedString *titleDisplay = [[NSAttributedString alloc] initWithString:self.title attributes:paragraphAttributes];
     self.maskedLabel.attributedText = titleDisplay;
     
-    [self.maskedLabel sizeToFit];
-    CGSize size = self.maskedLabel.frame.size;
+    CGSize fullscreenSize = [[AppHelper sharedInstance] fullScreenFrame].size;
+    CGSize availableSize = (CGSize){
+        fullscreenSize.width - kContentInsets.left - kContentInsets.right,
+        fullscreenSize.height
+    };
+    CGSize size = [self.maskedLabel sizeThatFits:availableSize];
     size.width += insets.left + insets.right;
     size.height += insets.top + insets.bottom;
     
     // Update myself and my dependent views.
-    self.maskedLabel.frame = CGRectIntegral((CGRect){ 0.0, 0.0, size.width, size.height });
+    self.maskedLabel.frame = CGRectIntegral((CGRect){ 0.0, 0.0, MIN(availableSize.width, size.width), size.height });
     self.underlayView.frame = self.maskedLabel.frame;
     self.frame = self.maskedLabel.frame;
     self.boxImageView.frame = (CGRect){
