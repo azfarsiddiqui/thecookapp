@@ -60,7 +60,7 @@
     recipe.book = book;
     recipe.user = book.user;
     recipe.page = page;
-    recipe.privacy = CKPrivacyPrivate;
+    recipe.privacy = CKPrivacyPublic;
     return recipe;
 }
 
@@ -495,6 +495,7 @@
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.numServes integerValue]] forKey:kRecipeAttrNumServes];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", [self.prepTimeInMinutes integerValue]] forKey:kRecipeAttrPrepTimeInMinutes];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", [self.cookingTimeInMinutes integerValue]] forKey:kRecipeAttrCookingTimeInMinutes];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:(self.geoLocation != nil)] forKey:kRecipeAttrLocation];
     [descriptionProperties setValue:[NSString CK_safeString:self.locale] forKey:kRecipeAttrLocale];
     [descriptionProperties setValue:self.page forKey:kRecipeAttrPage];
     [descriptionProperties setValue:[self.book description] forKey:kBookModelForeignKeyName];
@@ -617,7 +618,7 @@
 }
 
 - (CKPrivacy)privacy {
-    CKPrivacy privacy = CKPrivacyPrivate;
+    CKPrivacy privacy = CKPrivacyPublic;
     id value = [self.parseObject objectForKey:kRecipeAttrPrivacy];
     if (value) {
         privacy = [value unsignedIntegerValue];

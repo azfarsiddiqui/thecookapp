@@ -32,7 +32,6 @@
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, assign) CKPrivacy privacy;
 @property (nonatomic, strong) NSURL *userPhotoUrl;
-@property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, readonly) NSDate *createdDateTime;
 
 + (NSInteger)maxPrepCookMinutes;
@@ -44,6 +43,7 @@
 
 - (BOOL)pageUpdated;
 - (BOOL)nameUpdated;
+- (BOOL)imageUpdated;
 - (BOOL)tagsUpdated;
 - (BOOL)storyUpdated;
 - (BOOL)methodUpdated;
@@ -51,6 +51,7 @@
 - (BOOL)ingredientsUpdated;
 - (BOOL)locationUpdated;
 - (BOOL)privacyUpdated;
+- (BOOL)saveRequired;
 
 - (BOOL)hasTitle;
 - (BOOL)hasStory;
