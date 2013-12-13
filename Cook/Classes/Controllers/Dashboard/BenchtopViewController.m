@@ -1333,18 +1333,12 @@
     self.notificationView.hidden = YES;
     
     // Reload benchtop.
-    [self deleteFollowBooksCompletion:^{
+    [self clearDashCompletion:^{
         
-        // Make sure we're on the front page.
-        [UIView animateWithDuration:0.3
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             [self.collectionView setContentOffset:CGPointZero animated:NO];
-                         }
-                         completion:^(BOOL finished) {
-                             [self loadBooks];
-                         }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.collectionView setContentOffset:CGPointZero animated:NO];
+            [self loadBooks];
+        });
         
     }];
     
@@ -1924,6 +1918,44 @@
             
         }];
         
+    }
+    
+}
+
+- (void)clearDashCompletion:(void (^)())completion {
+    
+    NSMutableArray *indexPathsToDelete = [NSMutableArray new];
+    
+    // My book.
+    if (self.myBook) {
+        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]];
+        self.myBook = nil;
+    }
+    
+    // Follow books.
+    if ([self.followBooks count] > 0) {
+        
+        // Assemble IPs to delete.
+        [indexPathsToDelete addObjectsFromArray:[self.followBooks collectWithIndex:^(CKBook *book, NSUInteger bookIndex) {
+            return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+        }]];
+        
+        // Clear model.
+        [self.followBooks removeAllObjects];
+        self.followBooks = nil;
+    }
+
+    // Clear UI.
+    if ([indexPathsToDelete count] > 0) {
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+        } completion:^(BOOL finished) {
+            if (completion != nil) {
+                completion();
+            }
+            
+        }];
     }
     
 }
