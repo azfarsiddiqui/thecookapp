@@ -1729,8 +1729,7 @@
                          } completion:^(BOOL finished) {
                              self.signupBlurImage = nil;
                              [self.delegate panEnabledRequested:NO];
-                             [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
-                             [[NSUserDefaults standardUserDefaults] synchronize];
+                             [self markHasSeenUpdateIntro];
                          }];
     }
 }
@@ -1933,11 +1932,20 @@
     return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro] != nil);
 }
 
+- (void)markHasSeenUpdateIntro {
+    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)showUpdateNotesIfRequired {
     if (self.currentUser && !self.newUser && ![self hasSeenUpdateIntro]) {
         [self snapshotBenchtopCompletion:^{
             [self flashUpdateIntro];
         }];
+    } else if (self.newUser) {
+        
+        // New user doesn't need to use update intro.
+        [self markHasSeenUpdateIntro];
     }
 }
 
