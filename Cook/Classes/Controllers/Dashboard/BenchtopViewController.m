@@ -88,6 +88,7 @@
 #define kPagingRate         2.0
 #define kBlendPageWidth     1024.0
 #define kHasSeenUpdateIntro @"HasSeen1.3"
+#define kHasSeenDashArrow   @"HasSeenArrows1.3"
 #define kContentInsets      (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
@@ -919,7 +920,10 @@
 
                                  }];
                              }
-                             
+                            
+                             // Flash intro if haven't seen before.
+                             [self flashIntrosIfRequired];
+                            
                          }
                          failure:^(NSError *error) {
                              DLog(@"Error: %@", [error localizedDescription]);
@@ -952,6 +956,9 @@
                 [self.collectionView performBatchUpdates:^{
                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
+                    
+                    // Show the arrows again.
+                    [self flashIntros];
                     
                     // Load follow books.
                     [self loadFollowBooksBackgroundFetch:backgroundFetch];
@@ -1616,6 +1623,13 @@
     }
 }
 
+- (void)flashIntrosIfRequired {
+    if (![self hasSeenDashArrows]) {
+        [self flashIntros];
+        [self markHasSeenDashArrows];
+    }
+}
+
 - (void)flashIntros {
     CGFloat shiftOffset = 0.0;
     
@@ -1958,6 +1972,15 @@
         }];
     }
     
+}
+
+- (BOOL)hasSeenDashArrows {
+    return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenDashArrow] != nil);
+}
+
+- (void)markHasSeenDashArrows {
+    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenDashArrow];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)hasSeenUpdateIntro {
