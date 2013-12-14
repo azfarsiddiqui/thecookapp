@@ -140,7 +140,7 @@
 }
 
 - (void)scrollToRecipe:(CKRecipe *)recipe {
-    if (recipe.page == self.page) {
+    if ([recipe.page isEqualToString:self.page]) {
         self.scrollToRecipe = recipe;
     }
 }
