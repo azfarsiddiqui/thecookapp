@@ -226,6 +226,14 @@
                 
             } else {
                 
+                // Generate a cache key for the given file and size combination.
+                NSString *cacheKey = [self cacheKeyForParseFile:parseFile size:size];
+                
+                // Return if a download is in progress for this cacheKey.
+                if ([self transferInProgressForCacheKey:cacheKey]) {
+                    return;
+                }
+                
                 // Otherwise download from Parse in an operation.
                 NSBlockOperation *imageDownloadOperation = [NSBlockOperation blockOperationWithBlock:^{
                     [weakSelf downloadImageForParseFile:parseFile size:size name:name thumb:thumb
@@ -943,15 +951,10 @@
                          progress:(void (^)(CGFloat progressRatio))progress
                        completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    DLog(@"Downloading file %@", parseFile.url);
+    
     // Generate a cache key for the given file and size combination.
     NSString *cacheKey = [self cacheKeyForParseFile:parseFile size:size];
-    
-    // Return if a download is in progress for this cacheKey.
-    if ([self transferInProgressForCacheKey:cacheKey]) {
-        return;
-    }
-    
-    DLog(@"Downloading file %@", parseFile.url);
     
     // Mark as in-progress transfer. Just set as zero progress for downloads until we need progress.
     [self updateTransferProgress:@(0) cacheKey:cacheKey];
@@ -1095,11 +1098,19 @@
 }
 
 - (void)updateTransferProgress:(int)percentage cacheKey:(NSString *)cacheKey {
-    [self.transferInProgress setObject:@(percentage / 100.0) forKey:cacheKey];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @synchronized(_transferInProgress) {
+            [_transferInProgress setObject:@(percentage / 100.0) forKey:cacheKey];
+        }
+    });
 }
 
 - (void)clearTransferForCacheKey:(NSString *)cacheKey {
-    [self.transferInProgress removeObjectForKey:cacheKey];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @synchronized(_transferInProgress) {
+            [_transferInProgress removeObjectForKey:cacheKey];
+        }
+    });
 }
 
 - (NSString *)cachedTitleImageKeyForBook:(CKBook *)book {
