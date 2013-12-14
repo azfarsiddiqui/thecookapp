@@ -904,6 +904,8 @@
                                  
                              } else {
                                  
+                                 NSInteger existingRows = [self.collectionView numberOfItemsInSection:kMyBookSection];
+                                 
                                  // Existing user logging in fresh from new install (cache miss).
                                  [[self pagingLayout] markLayoutDirty];
                                  self.myBook = book;
@@ -911,7 +913,12 @@
                                  // Insert book then update blended benchtop.
                                  [self.collectionView performBatchUpdates:^{
                                      
-                                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                     NSIndexPath *myBookIndexPath = [NSIndexPath indexPathForItem:0 inSection:kMyBookSection];
+                                     if (existingRows > 0) {
+                                         [self.collectionView reloadItemsAtIndexPaths:@[myBookIndexPath]];
+                                     } else {
+                                         [self.collectionView insertItemsAtIndexPaths:@[myBookIndexPath]];
+                                     }
                                      
                                  } completion:^(BOOL finished) {
                                      
