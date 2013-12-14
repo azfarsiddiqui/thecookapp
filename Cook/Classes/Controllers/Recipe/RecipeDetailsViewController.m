@@ -1111,7 +1111,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Scroll enabled at the given viewport?
     BOOL scrollEnabled = [self scrollEnabledAtViewport:viewport];
-    
+
     // Pan gesture enabled at the given viewport?
     BOOL panEnabld = [self panEnabledAtViewport:viewport];
     
@@ -2062,7 +2062,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)enableEditMode:(BOOL)enable {
-    
+    [self.scrollView setContentOffset:CGPointZero animated:YES];
     if (enable && ![self.recipeDetails hasStory]) {
         [self enableEditModeWithoutInformingRecipeDetailsView:enable];
         [self.recipeDetailsView enableEditMode:enable];
