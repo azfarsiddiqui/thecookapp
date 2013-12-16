@@ -159,7 +159,10 @@
 }
 
 - (void)panEnabledRequested:(BOOL)enable {
-    self.panEnabled = enable;
+    //Only enable panning if there are no overlays visible
+    if (!self.modalOverlayView) {
+        self.panEnabled = enable;
+    }
 }
 
 - (void)panToBenchtopForSelf:(UIViewController *)viewController {
