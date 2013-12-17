@@ -159,14 +159,13 @@
         self.editViewController = editViewController;
         
     } else if (editingView == self.storyLabel) {
-        
-        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.storyLabel
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
                                                                                                             title:nil
                                                                                                    characterLimit:500];
-        editViewController.clearOnFocus = ![self.book.story CK_containsText];
+        editViewController.clearOnFocus = (![self.book.story CK_containsText] && ![self.updatedStory CK_containsText]);
         editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
