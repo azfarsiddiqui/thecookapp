@@ -14,6 +14,7 @@
 #import <mach/mach_host.h>
 
 static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
+static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 
 @interface SDImageCache ()
 
@@ -386,8 +387,15 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
                                                   includingPropertiesForKeys:resourceKeys
                                                                      options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                 errorHandler:NULL];
+        
+        //Check current size of cache
+        NSDate *expirationDate;
+        if ([self getSize] > kMaxDocumentSize) {
+            expirationDate = [NSDate dateWithTimeIntervalSinceNow:-(60*60*24)];
+        } else {
+            expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
+        }
 
-        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
         NSMutableDictionary *cacheFiles = [NSMutableDictionary dictionary];
         unsigned long long currentCacheSize = 0;
 
