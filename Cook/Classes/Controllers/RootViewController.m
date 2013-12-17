@@ -214,6 +214,12 @@
     }
 }
 
+- (void)benchtopLoggedOutCompletion:(void (^)())completion {
+    if (self.benchtopLevel != kBenchtopLevel) {
+        [self snapToLevel:kBenchtopLevel bounce:NO completion:completion];
+    }
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
@@ -517,6 +523,10 @@
 }
 
 - (void)snapToLevel:(NSUInteger)benchtopLevel completion:(void (^)())completion {
+    [self snapToLevel:benchtopLevel bounce:YES completion:completion];
+}
+
+- (void)snapToLevel:(NSUInteger)benchtopLevel bounce:(BOOL)bounce completion:(void (^)())completion {
     
     BOOL toggleMode = (self.benchtopLevel != benchtopLevel);
     CGRect storeFrame = [self storeFrameForLevel:benchtopLevel];
@@ -524,7 +534,7 @@
     CGRect settingsFrame = [self settingsFrameForLevel:benchtopLevel];
     
     // Add a bounce for toggling between levels.
-    if (toggleMode) {
+    if (bounce && toggleMode) {
         BOOL forwardBounce = benchtopLevel > self.benchtopLevel;
         storeFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
         benchtopFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
@@ -953,7 +963,6 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    [self snapToLevel:kBenchtopLevel];
 }
 
 - (void)updateStatusBarLight:(BOOL)light {

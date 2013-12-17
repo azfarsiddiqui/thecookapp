@@ -1349,13 +1349,17 @@
     // Reload benchtop.
     [self clearDashCompletion:^{
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionView setContentOffset:CGPointZero animated:NO];
-            [self loadBooks];
-        });
+        [self.delegate benchtopLoggedOutCompletion:^{
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.collectionView setContentOffset:CGPointZero animated:NO];
+                [self loadBooks];
+            });
+                
+        }];
         
     }];
-    
+        
 }
 
 - (void)themeChanged:(NSNotification *)notification {
