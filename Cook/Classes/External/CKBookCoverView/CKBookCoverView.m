@@ -789,8 +789,8 @@
             self.updatesLabel.center = self.updatesIcon.center;
             [self.updatesIcon addSubview:self.updatesLabel];
         }
-        
         self.updatesLabel.text = [DataHelper friendlyDisplayForCount:updates];
+        self.updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:28.0];
         [self.updatesLabel sizeToFit];
         self.updatesLabel.frame = (CGRect){
             floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.width) / 2.0),
