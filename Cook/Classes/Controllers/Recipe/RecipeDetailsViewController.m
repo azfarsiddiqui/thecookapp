@@ -1897,6 +1897,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                            [self enableSaveMode:NO];
                                            [self enableEditMode:NO];
                                            self.addMode = NO;
+                                           
+                                           // Alert the error.
+                                           [[[UIAlertView alloc] initWithTitle:@"Unable to Save"
+                                                                       message:@"Please try again soon"
+                                                                      delegate:nil cancelButtonTitle:@"OK"
+                                                             otherButtonTitles:nil] show];
+                                           
                                        }];
         
     } else {
