@@ -837,8 +837,11 @@
 }
 
 - (void)addRecipeForBook:(CKBook *)book page:(NSString *)page {
-    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:self.selectedBook page:page];
-    [self showModalViewController:recipeViewController];
+    //Only allow adding of recipe to book if book is own book
+    if ([book.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
+        RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:book page:page];
+        [self showModalViewController:recipeViewController];
+    }
 }
 
 - (void)showModalViewController:(UIViewController *)modalViewController {
