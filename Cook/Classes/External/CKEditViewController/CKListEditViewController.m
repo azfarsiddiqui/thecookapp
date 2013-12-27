@@ -251,6 +251,7 @@
         self.editingCell = nil;
         self.editingIndexPath = nil;
         [self updateCellsState];
+        [self setEditing:NO];
         
         // Restore and animate the contentInset.
         [UIView animateWithDuration:0.3
@@ -578,7 +579,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             
             // Save current value if it was not empty.
             [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
-            
         } else {
             //Remove resigning cell if it's blank
             if ([self.items count] > 1 && !self.processing && !self.isAutoDeleting) {

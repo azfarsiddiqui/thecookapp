@@ -48,15 +48,7 @@
 }
 
 - (BOOL)allowedToAdd {
-    __block BOOL hasEmptyIngredients = NO;
-    for (int i = 0; i < [self.items count]; i++) {
-        //Check all cells for completely blank ones
-        IngredientListCell *cell = (IngredientListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-        if ([self isEmptyForValue:[cell currentValue]]) {
-            hasEmptyIngredients = YES;
-        }
-    }
-    return YES;//!hasEmptyIngredients;
+    return YES;
 }
 
 #pragma mark - CKEditViewController methods
@@ -82,6 +74,7 @@
     [super configureCell:itemCell indexPath:indexPath];
     itemCell.ingredientsAccessoryViewController = self.ingredientsAccessoryViewController;
     itemCell.allowSelection = NO;
+    itemCell.allowReorder = YES;
 }
 
 - (id)createNewItem {
@@ -102,6 +95,11 @@
     
     // Empty if both contains no value.
     return (![ingredient.measurement CK_containsText] && ![ingredient.name CK_containsText]);
+}
+
+- (void)setEditing:(BOOL)editing {
+    [super setEditing:editing];
+    self.canReorderItems = !editing;
 }
 
 #pragma mark - UICollectionViewDataSource methods
