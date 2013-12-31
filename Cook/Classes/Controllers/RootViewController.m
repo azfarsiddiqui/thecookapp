@@ -160,7 +160,7 @@
 
 - (void)panEnabledRequested:(BOOL)enable {
     //Only enable panning if there are no overlays visible
-    if (!self.modalOverlayView) {
+    if (!self.modalOverlayView && !self.bookNavigationViewController) {
         self.panEnabled = enable;
     }
 }
