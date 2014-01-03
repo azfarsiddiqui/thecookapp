@@ -134,6 +134,7 @@
 - (void)updateTitle {
     
     if ([self hasTitle]) {
+        self.titleLabel.frame = CGRectZero;
         self.titleLabel.hidden = NO;
         
         NSString *title = [self.recipe.name uppercaseString];
@@ -156,6 +157,7 @@
 
 - (void)updateStory {
     if ([self hasStory]) {
+        self.storyLabel.frame = CGRectZero;
         self.storyLabel.hidden = NO;
     } else {
         self.storyLabel.hidden = YES;

@@ -19,7 +19,6 @@
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
-@property (nonatomic, strong) NSMutableArray *ingredientLabels;
 @property (nonatomic, assign) BOOL compact;
 
 @end
@@ -49,7 +48,6 @@
         self.maxSize = maxSize;
         self.textAlignment = textAlignment;
         self.compact = compact;
-        self.ingredientLabels = [NSMutableArray arrayWithCapacity:[ingredients count]];
         [self updateIngredients:ingredients book:book];
     }
     return self;
@@ -64,26 +62,21 @@
     self.layoutOffset = 0.0;
     
     if ([ingredients count] > 0) {
-        
-        // for (Ingredient *ingredient in self.recipe.ingredients) {
+        for (UIView *ingredientLabel in self.subviews) {
+            [ingredientLabel removeFromSuperview];
+        }
         for (NSUInteger ingredientIndex = 0; ingredientIndex < [ingredients count]; ingredientIndex++) {
             
             Ingredient *ingredient = [ingredients objectAtIndex:ingredientIndex];
             NSAttributedString *ingredientAttributedText = [self attributedTextForIngredient:ingredient];
             
-            // Can we re-use an existing one?
             UILabel *ingredientsLabel = nil;
-            if (ingredientIndex < [self.ingredientLabels count]) {
-                ingredientsLabel = [self.ingredientLabels objectAtIndex:ingredientIndex];
-            } else {
-                ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-                ingredientsLabel.userInteractionEnabled = NO;
-                ingredientsLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-                ingredientsLabel.backgroundColor = [UIColor clearColor];
-                ingredientsLabel.numberOfLines = 0;
-                [self.ingredientLabels addObject:ingredientsLabel];
-                [self addSubview:ingredientsLabel];
-            }
+            ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            ingredientsLabel.userInteractionEnabled = NO;
+            ingredientsLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+            ingredientsLabel.backgroundColor = [UIColor clearColor];
+            ingredientsLabel.numberOfLines = 0;
+            [self addSubview:ingredientsLabel];
             
             // Update the display text.
             ingredientsLabel.attributedText = ingredientAttributedText;
@@ -99,17 +92,6 @@
             self.layoutOffset += ingredientsLabel.frame.size.height;
             if (ingredientIndex < [ingredients count] - 1) {
                 self.layoutOffset += self.compact ? kCompactRowGap : kRowGap;
-            }
-        }
-        
-        // Remove any unused ingredientsLabel.
-        if ([ingredients count] < [self.ingredientLabels count]) {
-            for (NSUInteger unwantedIndex = [ingredients count]; unwantedIndex < [self.ingredientLabels count] + 1; unwantedIndex++) {
-                if (unwantedIndex < [self.ingredientLabels count]) {
-                    UILabel *unwantedLabel = [self.ingredientLabels objectAtIndex:unwantedIndex];
-                    [unwantedLabel removeFromSuperview];
-                    [self.ingredientLabels removeObjectAtIndex:unwantedIndex];
-                }
             }
         }
         
