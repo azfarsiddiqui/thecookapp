@@ -22,6 +22,7 @@ typedef enum {
 + (NSString *)guestIllustration;
 + (NSString *)initialCover;
 + (NSString *)initialIllustration;
++ (NSString *)defaultColourName;
 + (NSString *)defaultCover;
 + (NSString *)defaultIllustration;
 + (NSString *)randomCover;
