@@ -39,12 +39,16 @@
     }];
 }
 
-+ (void)dashboardBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)dashboardBookForUser:(CKUser *)user success:(GetCachedObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     [query includeKey:kUserModelForeignKeyName];
+    
+    // Check if we have a cached result to be passed back to the caller.
+    BOOL hasCachedResult = [query hasCachedResult];
+    
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseResults, NSError *error) {
         
         if (!error) {
@@ -71,19 +75,18 @@
                                          // Ignore, only for pre-caching purposes.
                                      }];
                                      
-                                     success(book);
+                                     success(book, NO);
                                      
                                  } failure:^(NSError *error) {
                                      failure(error);
                                  }];
             } else {
-                success([[CKBook alloc] initWithParseBook:parseBook user:user]);
+                success([[CKBook alloc] initWithParseBook:parseBook user:user], hasCachedResult);
             }
             
         } else {
             failure(error);
         }
-        
         
     }];
 
@@ -103,6 +106,35 @@
     success(guestBook);
 }
 
++ (void)dashboardBooksForUser:(CKUser *)user success:(DashboardBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"dashboardBooks"
+                       withParameters:@{}
+                                block:^(NSDictionary *results, NSError *error) {
+                                    
+                                    // My book.
+                                    CKBook *myBook = nil;
+                                    PFObject *myParseBook = [results objectForKey:@"myBook"];
+                                    if (myParseBook) {
+                                        myBook = [[CKBook alloc] initWithParseBook:myParseBook user:user];
+                                    }
+                                    
+                                    // Followed books.
+                                    NSArray *books = [results objectForKey:@"books"];
+                                    
+                                    // Updates
+                                    NSDictionary *bookUpdates = [results objectForKey:@"updates"];
+                                    DLog(@"Book Updates: %@", bookUpdates);
+                                    
+                                    if (!error) {
+                                        success(myBook, [CKBook booksFromParseBooks:books], bookUpdates);
+                                    } else {
+                                        DLog(@"Error loading follow books: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"followBooks_v1_1"
@@ -118,7 +150,6 @@
                                         failure(error);
                                     }
                                 }];
-
 }
 
 + (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

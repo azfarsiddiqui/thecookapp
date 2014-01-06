@@ -19,6 +19,7 @@ typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSDictionary *pageRe
                                        NSDate *bookLastAccessedDate);
 typedef void(^PageRecipesSuccessBlock)(CKBook *book, NSString *page, NSInteger batchindex, NSArray *recipes);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
+typedef void(^DashboardBooksSuccessBlock)(CKBook *myBook, NSArray *followBooks, NSDictionary *followBookUpdates);
 typedef void(^FriendsAndSuggestedBooksSuccessBlock)(NSArray *friendsBooks, NSArray *suggestedBooks);
 typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, BOOL followed, NSUInteger recipeCount,
                                     NSUInteger privateRecipesCount, NSUInteger friendsRecipesCount,
@@ -60,8 +61,9 @@ typedef enum {
 
 // Fetches
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-+ (void)dashboardBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)dashboardBookForUser:(CKUser *)user success:(GetCachedObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)dashboardGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)dashboardBooksForUser:(CKUser *)user success:(DashboardBooksSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (BOOL)dashboardBookLoadCacheMissError:(NSError *)error;
 
