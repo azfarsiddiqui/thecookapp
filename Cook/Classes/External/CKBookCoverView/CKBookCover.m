@@ -40,6 +40,10 @@
     return [CKBookCover randomIllustration];
 }
 
++ (NSString *)defaultColourName {
+    return [self guestCover];
+}
+
 + (NSString *)defaultCover {
     return [[CKBookCover settings] valueForKeyPath:@"Covers.Red.Image"];
 }
@@ -102,11 +106,17 @@
 
 + (UIColor *)colourForCover:(NSString *)cover {
     NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Hex", cover]];
+    if (!hexValue) {
+        hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Hex", [CKBookCover defaultColourName]]];
+    }
     return [UIColor colorWithHexString:hexValue];
 }
 
 + (UIColor *)backdropColourForCover:(NSString *)cover {
     NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.BackdropHex", cover]];
+    if (!hexValue) {
+        hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.BackdropHex", [CKBookCover defaultColourName]]];
+    }
     return [UIColor colorWithHexString:hexValue];
 }
 
@@ -162,7 +172,7 @@
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
     if (!imageName) {
         imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
-                                                             [CKBookCover randomCover]]];
+                                                             [CKBookCover defaultColourName]]];
     }
     
     // Load direct from disk.
