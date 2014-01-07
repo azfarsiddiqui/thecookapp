@@ -195,7 +195,6 @@
 
     } else {
         [self.textView resignFirstResponder];
-        
         // Fade the titleLabel out.
         [UIView animateWithDuration:0.1
                               delay:0.0
@@ -252,6 +251,10 @@
     
     if (appear) {
         [self scrollToCursorIfRequired];
+        [self updateContentSize];
+    } else {
+        //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
+        self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
 }
 
