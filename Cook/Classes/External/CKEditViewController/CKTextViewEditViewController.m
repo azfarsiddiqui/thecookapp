@@ -82,6 +82,12 @@
     return YES;
 }
 
+- (void)doSave {
+    //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
+    self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [super doSave];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -192,7 +198,7 @@
     [super targetTextEditingViewWillAppear:appear];
     
     if (appear) {
-
+        
     } else {
         [self.textView resignFirstResponder];
         // Fade the titleLabel out.
