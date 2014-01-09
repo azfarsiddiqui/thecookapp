@@ -48,6 +48,22 @@
     }
 }
 
+- (BOOL)isRomanisedAsianInput:(NSString *)string {
+    //Checks to see if language is Japanese or Chinese and lowercase-able. This blocks the uppercasing of Pinyin and Romanji
+    NSRange lowercaseCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet lowercaseLetterCharacterSet]];
+    if (lowercaseCharRange.location != NSNotFound) {
+        NSArray *activeLanguages = [UITextInputMode activeInputModes];
+        for (UITextInputMode *inputMode in activeLanguages) {
+            if ([inputMode.primaryLanguage isEqualToString:@"ja-JP"] || [inputMode.primaryLanguage isEqualToString:@"zh-Hans"]) {
+                return YES;
+            }
+        }
+    } else {
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark - Lazy getters
 
 - (UILabel *)limitLabel {

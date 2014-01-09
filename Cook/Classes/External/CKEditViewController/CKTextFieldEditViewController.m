@@ -114,6 +114,7 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     BOOL isBackspace = [newString length] < [textField.text length];
     BOOL shouldChange = NO;
@@ -127,7 +128,7 @@
     self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
     [self updateInfoLabels];
 
-    if (self.forceUppercase) {
+    if (self.forceUppercase && ![self isRomanisedAsianInput:string]) {
         
         UITextPosition *beginning = textField.beginningOfDocument;
         UITextPosition *start = [textField positionFromPosition:beginning offset:range.location];

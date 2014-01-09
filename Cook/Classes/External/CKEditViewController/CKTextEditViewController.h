@@ -21,5 +21,6 @@
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title
         characterLimit:(NSUInteger)characterLimit;
+- (BOOL)isRomanisedAsianInput:(NSString *)string;
 
 @end
