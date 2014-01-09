@@ -855,6 +855,11 @@
 
 - (void)loadMyBookBackgroundFetch:(BOOL)backgroundFetch {
     
+    // Bypass background fetch.
+    if (backgroundFetch) {
+        return;
+    }
+    
     CKUser *currentUser = [CKUser currentUser];
     if (currentUser) {
         
@@ -1852,21 +1857,6 @@
 
 - (void)updateIntroContinueTapped {
     [self closeIntroTapped];
-}
-
-- (void)deleteMyBook {
-    if (self.myBook) {
-        
-        // Clear model.
-        self.myBook = nil;
-        
-        // Clear UI.
-        [[self pagingLayout] markLayoutDirty];
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-        } completion:^(BOOL finished) {
-        }];
-    }
 }
 
 - (void)deleteMyBookCompletion:(void (^)())completion {
