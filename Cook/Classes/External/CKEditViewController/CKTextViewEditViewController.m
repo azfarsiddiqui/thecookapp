@@ -132,7 +132,7 @@
     }
     
     // Force uppercase here by replacing the entry into uppercase.
-    if (shouldChangeText && self.forceUppercase) {
+    if (shouldChangeText && self.forceUppercase && ![self isRomanisedAsianInput:text]) {
         
         UITextPosition *beginning = textView.beginningOfDocument;
         UITextPosition *start = [textView positionFromPosition:beginning offset:range.location];
