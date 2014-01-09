@@ -58,6 +58,8 @@
                 return YES;
             }
         }
+    } else {
+        return YES;
     }
     return NO;
 }
