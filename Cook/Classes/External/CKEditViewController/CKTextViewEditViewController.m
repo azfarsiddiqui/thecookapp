@@ -9,11 +9,12 @@
 #import "CKTextViewEditViewController.h"
 #import "CKEditingTextBoxView.h"
 #import "CKEditingViewHelper.h"
+#import "PSPDFTextView.h"
 
 @interface CKTextViewEditViewController () <UITextViewDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) UITextView *textView;
-@property (nonatomic, strong) UITextView *sandboxTextView;
+@property (nonatomic, strong) PSPDFTextView *textView;
+@property (nonatomic, strong) PSPDFTextView *sandboxTextView;
 @property (nonatomic, assign) CGFloat minHeight;
 
 @end
@@ -23,7 +24,7 @@
 #define kTextViewMinHeight      232.0
 #define kTextViewWidth          780.0
 #define kKeyboardDefaultFrame   CGRectMake(0.0, 396.0, 1024.0, 352.0)
-#define kTextViewAdjustments    UIEdgeInsetsMake(0.0, 0.0, 50.0, 0.0)
+#define kTextViewAdjustments    UIEdgeInsetsMake(0.0, 0.0, 20.0, 0.0)
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {
@@ -38,7 +39,7 @@
     
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title
                         characterLimit:characterLimit]) {
-        self.numLines = 6;
+        self.numLines = 8;
     }
     return self;
 }
@@ -53,7 +54,6 @@
     // Initial TextView height taking into account containing text.
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textView.text = self.forceUppercase ? [currentText uppercaseString] : currentText;
-    CGFloat requiredTextViewHeight = [self requiredTextViewHeight];
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
     
     // TextView positioning.
@@ -61,11 +61,11 @@
         textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
         contentInsets.top,
         textViewAdjustments.left + width + textViewAdjustments.right,
-        ceilf(MAX(requiredTextViewHeight, minHeight)),
+        ceilf(minHeight),
     };
     
     // Set contentSize to be same as bounds.
-    [self updateContentSize];
+//    [self updateContentSize];
     
     return self.textView;
 }
@@ -75,7 +75,7 @@
 }
 
 - (UIEdgeInsets)contentInsets {
-    return (UIEdgeInsets) { 93.0, 20.0, 50.0, 20.0 };
+    return (UIEdgeInsets) { 43.0, 20.0, 50.0, 20.0 };
 }
 
 - (BOOL)contentScrollable {
@@ -110,8 +110,6 @@
     // If trying to paste in content over char limit, cut off and apply
     if (([newString length] > self.characterLimit && !isBackspace)) {
         textView.text = [newString substringToIndex:self.characterLimit];
-        [self updateContentSize];
-        [self updateInfoLabels];
         return NO;
     }
     
@@ -153,21 +151,18 @@
     NSUInteger currentLimit = self.characterLimit - [textView.text length];
     self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
     [self.limitLabel sizeToFit];
-    
-    [self updateInfoLabels];
-    [self updateContentSize];
 }
 
 #pragma mark - Properties
 
-- (UITextView *)textView {
+- (PSPDFTextView *)textView {
     if (!_textView) {
         _textView = [self createTextView];
     }
     return _textView;
 }
 
-- (UITextView *)sandboxTextView {
+- (PSPDFTextView *)sandboxTextView {
     if (!_sandboxTextView) {
         _sandboxTextView = [self createTextView];
         _sandboxTextView.hidden = YES;
@@ -221,16 +216,15 @@
     if (appear) {
         
         // Focus on text field.
-        CGFloat requiredHeight = [self requiredTextViewHeight];
-        if (requiredHeight < [self defaultKeyboardFrame].origin.y) {
-            [self.textView becomeFirstResponder];
-        }
+        [self.textView becomeFirstResponder];
+        [self.textView scrollToVisibleCaretAnimated:NO];
         
         // Add title/limit labels.
         self.titleLabel.alpha = 0.0;
         self.limitLabel.alpha = 0.0;
         [self.scrollView addSubview:self.titleLabel];
         [self.scrollView addSubview:self.limitLabel];
+        self.scrollView.scrollEnabled = NO;
         
         // Fade the labels in.
         [UIView animateWithDuration:0.1
@@ -242,10 +236,6 @@
                          }
                          completion:^(BOOL finished) {
                          }];
-        
-        // Move this somewhere else?
-        [self updateContentSize];
-        
     }
 }
 
@@ -257,7 +247,6 @@
     
     if (appear) {
         [self scrollToCursorIfRequired];
-        [self updateContentSize];
     } else {
         //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
         self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -294,7 +283,7 @@
         targetTextBoxView.frame = proposedTargetTextBoxFrame;
         sourceTextBoxView.frame = proposedTargetTextBoxFrame;
     }
-    
+
     // Figure out the required contentSize of main scrollView. The contentInsets is relative to the targetEditView, so
     // we have to take into account the textBox's contentInsets.
     UIEdgeInsets contentInsets = [self contentInsets];
@@ -309,38 +298,11 @@
 }
 
 - (void)scrollToCursorIfRequired {
-    if (self.textView.selectedTextRange.empty) {
-        
-        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-        UIEdgeInsets contentInsets = [self contentInsets];
-        UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
-
-        // Work out the no-go area for the textbox.
-        CGRect keyboardFrame = [self currentKeyboardFrame];
-        CGRect noGoFrame = keyboardFrame;
-        noGoFrame.origin.y -= contentInsets.bottom;
-        noGoFrame.size.height += contentInsets.bottom;
-        
-        CGRect cursorFrame = [self.textView caretRectForPosition:self.textView.selectedTextRange.start];
-        CGRect cursorFrameToScrollView = [self.scrollView convertRect:cursorFrame fromView:self.textView];
-        CGRect scrollFrame = [self.view convertRect:cursorFrameToScrollView fromView:self.scrollView];
-        if (CGRectIntersectsRect(scrollFrame, noGoFrame)) {
-            
-            CGRect visibleFrame = [self currentVisibleFrame];
-            CGPoint scrollToPoint = (CGPoint){
-                self.scrollView.contentOffset.x,
-                cursorFrameToScrollView.origin.y - visibleFrame.size.height + cursorFrameToScrollView.size.height + textViewAdjustments.bottom + contentInsets.bottom - targetTextBoxView.contentInsets.bottom
-            };
-            
-            NSLog(@"Scroll to reveal %@", NSStringFromCGPoint(scrollToPoint));
-            [self.scrollView setContentOffset:scrollToPoint
-                                     animated:YES];
-        }
-    }
+    [self.textView scrollToVisibleCaretAnimated:NO];
 }
 
-- (UITextView *)createTextView {
-    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
+- (PSPDFTextView *)createTextView {
+    PSPDFTextView *textView = [[PSPDFTextView alloc] initWithFrame:CGRectZero];
     textView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     textView.font = self.textViewFont;
     textView.textColor = [self editingTextColour];
@@ -350,16 +312,13 @@
     }
     textView.delegate = self;
     textView.showsHorizontalScrollIndicator = NO;
-    textView.showsVerticalScrollIndicator = NO;
     textView.backgroundColor = [UIColor clearColor];
-    // iOS7-b2 scrollEnabled causes characters to be left over after deleting from line below.
-    textView.scrollEnabled = NO;
     textView.panGestureRecognizer.enabled = NO;
+    textView.alwaysBounceVertical = YES;
     return textView;
 }
 
 - (CGFloat)requiredTextViewHeight {
-    
     NSDictionary *attributeDict;
     if (self.textView.font)
         attributeDict = @{NSFontAttributeName : self.textView.font};

@@ -1361,6 +1361,7 @@
 		F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB717D1C998000DDD95 /* Social.framework */; };
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
 		F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */; };
+		F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
@@ -3150,6 +3151,8 @@
 		F652ECC31813731C00D73AF9 /* CKListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListHeaderView.m; sourceTree = "<group>"; };
 		F668F8D418228AC800F3DC76 /* SocialMediaActionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialMediaActionHeader.h; sourceTree = "<group>"; };
 		F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialMediaActionHeader.m; sourceTree = "<group>"; };
+		F67CE0EC187FB07500FE7AD0 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
+		F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
 		F686ED471817787600746A49 /* CKCommentEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCommentEditViewController.h; sourceTree = "<group>"; };
 		F686ED481817787600746A49 /* CKCommentEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCommentEditViewController.m; sourceTree = "<group>"; };
 		F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_email.png; sourceTree = "<group>"; };
@@ -5417,6 +5420,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				F67CE0EB187FB07500FE7AD0 /* PSPDFTextView */,
 				F6B169D71855897200D3FBB6 /* TTTAttributedLabel */,
 				76E9867417E2CEB700D9CAF3 /* CKSearchFieldView */,
 				F64E464117DA0DE600F99A5A /* CKFilterSliderView */,
@@ -5716,6 +5720,15 @@
 				760534E617E953EF00EBC54F /* ReleaseDev.plist */,
 			);
 			path = Configurations;
+			sourceTree = "<group>";
+		};
+		F67CE0EB187FB07500FE7AD0 /* PSPDFTextView */ = {
+			isa = PBXGroup;
+			children = (
+				F67CE0EC187FB07500FE7AD0 /* PSPDFTextView.h */,
+				F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */,
+			);
+			path = PSPDFTextView;
 			sourceTree = "<group>";
 		};
 		F68E0EDD17D2AE6600B56E7A /* share */ = {
@@ -7191,6 +7204,7 @@
 				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
 				F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */,
 				F6DD424D180BBD3300AD3803 /* TagListCell.m in Sources */,
+				F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */,
 				764F4D07179CE85A00821221 /* UICollectionView+Draggable.m in Sources */,
 				F60C570E17E3CB2600912544 /* UIDevice+Hardware.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
