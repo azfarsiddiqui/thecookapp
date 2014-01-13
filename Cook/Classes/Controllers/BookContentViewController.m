@@ -281,8 +281,10 @@
     DLog();
     if (self.scrollToRecipe) {
         self.disableInformScrollOffset = YES;
-        NSInteger scrollIndex = [self.recipes indexOfObject:self.scrollToRecipe];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:scrollIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        if ([self.recipes containsObject:self.scrollToRecipe]) {
+            NSInteger scrollIndex = [self.recipes indexOfObject:self.scrollToRecipe];
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:scrollIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        }
         self.disableInformScrollOffset = NO;
         self.scrollToRecipe = nil;
     }
