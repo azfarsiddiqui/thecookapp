@@ -140,7 +140,7 @@
         // replace the text in the range with the upper case version of the replacement string
         [textView replaceRange:textRange withText:[text uppercaseString]];
         shouldChangeText = NO;
-    }
+    } 
     
     return shouldChangeText;
 }
@@ -294,7 +294,7 @@
     };
     
     // See if the caret is out of view?
-    [self scrollToCursorIfRequired];
+//    [self scrollToCursorIfRequired];
 }
 
 - (void)scrollToCursorIfRequired {
