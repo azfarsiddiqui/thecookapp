@@ -16,6 +16,7 @@
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
 #import "CKTextViewEditViewController.h"
+#import "CKGrowingTextViewEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "PageListEditViewController.h"
@@ -29,6 +30,7 @@
 #import "EventHelper.h"
 #import "CKBookCover.h"
 #import "UIColor+Expanded.h"
+#import "UIDevice+Hardware.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -199,21 +201,38 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
     if (editingView == self.titleTextView) {
-        
-        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+//        CKTextEditViewController *editViewController;
+//        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")) {
+//            CKGrowingTextViewEditViewController *editViewController = [[CKGrowingTextViewEditViewController alloc] initWithEditView:editingView
+//                                                                                                         delegate:self
+//                                                                                                    editingHelper:self.editingHelper
+//                                                                                                            white:YES
+//                                                                                                            title:nil
+//                                                                                                                 characterLimit:38];
+//            editViewController.numLines = 2;
+//            editViewController.maxHeight = 160;
+//            editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+//            editViewController.textAlignment = NSTextAlignmentCenter;
+//            editViewController.forceUppercase = YES;
+//            editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
+//            editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+//            [editViewController performEditing:YES];
+//        } else {
+            CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
                                                                                                             title:nil
                                                                                                    characterLimit:38];
-        editViewController.textAlignment = NSTextAlignmentCenter;
-        editViewController.numLines = 2;
-        editViewController.maxHeight = 160;
-        editViewController.forceUppercase = YES;
-        editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
-        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
-        [editViewController performEditing:YES];
+            editViewController.numLines = 2;
+            editViewController.maxHeight = 160;
+            editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+            editViewController.textAlignment = NSTextAlignmentCenter;
+            editViewController.forceUppercase = YES;
+            editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
+            editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+            [editViewController performEditing:YES];
+//        }
         self.editViewController = editViewController;
         
     } else if (editingView == self.pageLabel) {
@@ -234,30 +253,57 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     } else if (editingView == self.storyLabel) {
-        
-        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
-                                                                                                         delegate:self
-                                                                                                    editingHelper:self.editingHelper
-                                                                                                            white:YES
-                                                                                                            title:nil
-                                                                                                   characterLimit:1000];
-        editViewController.clearOnFocus = ![self.recipeDetails hasStory];
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
-        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
-        [editViewController performEditing:YES];
+//        CKTextEditViewController *editViewController;
+//        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")) {
+//            CKGrowingTextViewEditViewController *editViewController = [[CKGrowingTextViewEditViewController alloc] initWithEditView:editingView
+//                                                                                                                           delegate:self
+//                                                                                                                      editingHelper:self.editingHelper
+//                                                                                                                              white:YES
+//                                                                                                                              title:nil
+//                                                                                                                     characterLimit:1000];
+//            editViewController.clearOnFocus = ![self.recipeDetails hasStory];
+//            editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+//            editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+//            [editViewController performEditing:YES];
+//        } else {
+            CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                             delegate:self
+                                                                                                        editingHelper:self.editingHelper
+                                                                                                                white:YES
+                                                                                                                title:nil
+                                                                                                       characterLimit:1000];
+            editViewController.clearOnFocus = ![self.recipeDetails hasStory];
+            editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+            editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+            [editViewController performEditing:YES];
+//        }
+    
+    
         self.editViewController = editViewController;
         
     } else if (editingView == self.methodLabel) {
-        
-        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
-                                                                                                         delegate:self
-                                                                                                    editingHelper:self.editingHelper
-                                                                                                            white:YES
-                                                                                                            title:nil];
-        editViewController.clearOnFocus = ![self.recipeDetails hasMethod];
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
-        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
-        [editViewController performEditing:YES];
+//        CKTextEditViewController *editViewController;
+//        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")) {
+//            CKGrowingTextViewEditViewController *editViewController = [[CKGrowingTextViewEditViewController alloc] initWithEditView:self.methodLabel
+//                                                                                                                           delegate:self
+//                                                                                                                      editingHelper:self.editingHelper
+//                                                                                                                              white:YES
+//                                                                                                                              title:nil];
+//            editViewController.clearOnFocus = ![self.recipeDetails hasMethod];
+//            editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+//            editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+//            [editViewController performEditing:YES];
+//        } else {
+            CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
+                                                                                                             delegate:self
+                                                                                                        editingHelper:self.editingHelper
+                                                                                                                white:YES
+                                                                                                                title:nil];
+            editViewController.clearOnFocus = ![self.recipeDetails hasMethod];
+            editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+            editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+            [editViewController performEditing:YES];
+//        }
         self.editViewController = editViewController;
         
     } else if (editingView == self.servesCookView) {

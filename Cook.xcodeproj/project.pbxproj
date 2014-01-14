@@ -1477,6 +1477,7 @@
 		F6944B24184DA33D007AF965 /* cook_tags_method_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6944B1A184DA33D007AF965 /* cook_tags_method_onpress@2x.png */; };
 		F6944B25184DA33D007AF965 /* cook_tags_savoury_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6944B1B184DA33D007AF965 /* cook_tags_savoury_onpress.png */; };
 		F6944B26184DA33D007AF965 /* cook_tags_savoury_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6944B1C184DA33D007AF965 /* cook_tags_savoury_onpress@2x.png */; };
+		F695F4DC1883B52700A63D8E /* CKGrowingTextViewEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F695F4DB1883B52700A63D8E /* CKGrowingTextViewEditViewController.m */; };
 		F6B169DA1855897200D3FBB6 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B169D91855897200D3FBB6 /* TTTAttributedLabel.m */; };
 		F6B29B4F1803AB360056513F /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B29B4E1803AB360056513F /* AnalyticsHelper.m */; };
 		F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB917D1D575000DDD95 /* MessageUI.framework */; };
@@ -3269,6 +3270,8 @@
 		F6944B1A184DA33D007AF965 /* cook_tags_method_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_tags_method_onpress@2x.png"; sourceTree = "<group>"; };
 		F6944B1B184DA33D007AF965 /* cook_tags_savoury_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_tags_savoury_onpress.png; sourceTree = "<group>"; };
 		F6944B1C184DA33D007AF965 /* cook_tags_savoury_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_tags_savoury_onpress@2x.png"; sourceTree = "<group>"; };
+		F695F4DA1883B52700A63D8E /* CKGrowingTextViewEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKGrowingTextViewEditViewController.h; sourceTree = "<group>"; };
+		F695F4DB1883B52700A63D8E /* CKGrowingTextViewEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKGrowingTextViewEditViewController.m; sourceTree = "<group>"; };
 		F6B169D81855897200D3FBB6 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		F6B169D91855897200D3FBB6 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		F6B29B4D1803AB360056513F /* AnalyticsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsHelper.h; sourceTree = "<group>"; };
@@ -4644,6 +4647,8 @@
 				F686ED481817787600746A49 /* CKCommentEditViewController.m */,
 				F6F5933D181887CA00998795 /* CKPageTitleEditViewController.h */,
 				F6F5933E181887CA00998795 /* CKPageTitleEditViewController.m */,
+				F695F4DA1883B52700A63D8E /* CKGrowingTextViewEditViewController.h */,
+				F695F4DB1883B52700A63D8E /* CKGrowingTextViewEditViewController.m */,
 			);
 			path = CKEditViewController;
 			sourceTree = "<group>";
@@ -7208,6 +7213,7 @@
 				764F4D07179CE85A00821221 /* UICollectionView+Draggable.m in Sources */,
 				F60C570E17E3CB2600912544 /* UIDevice+Hardware.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
+				F695F4DC1883B52700A63D8E /* CKGrowingTextViewEditViewController.m in Sources */,
 				764F4D04179CE85A00821221 /* LSCollectionViewHelper.m in Sources */,
 				76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */,
 				76735C9117BA5C770027CA3B /* BookRecipeGridMediumCell.m in Sources */,
