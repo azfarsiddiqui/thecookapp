@@ -41,6 +41,7 @@
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL hideStatusBar;
+@property (nonatomic, assign) BOOL animating;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
 @property (nonatomic, assign) BOOL panEnabled;
@@ -1132,9 +1133,14 @@
 }
 
 - (void)peekDashByOffset:(CGFloat)offset {
-    CGRect storeFrame = self.storeViewController.view.frame;
-    CGRect dashFrame = self.benchtopViewController.view.frame;
-    CGRect settingsFrame = self.settingsViewController.view.frame;
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
+    CGRect storeFrame = [self storeFrameForLevel:kBenchtopLevel];
+    CGRect dashFrame = [self benchtopFrameForLevel:kBenchtopLevel];
+    CGRect settingsFrame = [self settingsFrameForLevel:kBenchtopLevel];
     CGRect storeBounceFrame = storeFrame;
     CGRect dashBounceFrame = dashFrame;
     CGRect settingsBounceFrame = settingsFrame;
@@ -1168,7 +1174,9 @@
                                               self.settingsViewController.view.frame = settingsBounceFrame;
                                           }
                                           completion:^(BOOL finished) {
-                                              [self snapIfRequired];
+                                              [self snapToLevel:kBenchtopLevel completion:^{
+                                                  self.animating = NO;
+                                              }];
                                           }];
                      }];
 }
