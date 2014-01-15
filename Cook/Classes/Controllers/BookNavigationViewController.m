@@ -491,9 +491,23 @@
             // Calculate the required alpha for the content overlay.
             CGFloat currentPageOffset = [layout pageOffsetForIndexPath:firstIndexPath];
             NSString *nextPage = [self.pages objectAtIndex:nextPageIndex];
+            NSString *currentPage = nil;
+            if (topPageIndex >= 0) {
+                currentPage = [self.pages objectAtIndex:topPageIndex];
+            }
             CGFloat distance = ABS(visibleFrame.origin.x - currentPageOffset);
             CGFloat overlayAlpha = 1.0 - (distance / visibleFrame.size.width);
-            // DLog(@"PAGE [%@] distance[%f] overlay [%f]", nextPage, distance, overlayAlpha);
+            DLog(@"currentPage [%@] nextPage[%@] distance[%f] overlay [%f]", currentPage, nextPage, distance, overlayAlpha);
+            
+            if (overlayAlpha < 0.5) {
+                [self updateNavigationTitleWithPage:nextPage];
+            } else {
+                if ([currentPage length] > 0) {
+                    [self updateNavigationTitleWithPage:currentPage];
+                } else {
+                    [self updateNavigationTitleWithPage:nextPage];
+                }
+            }
             
             // Get the next page and apply the appropriate paging effects.
             BookContentViewController *pageViewController = [self.contentControllers objectForKey:nextPage];
@@ -501,6 +515,7 @@
                 [pageViewController applyOverlayAlpha:overlayAlpha];
             }
         }
+        
     }
     
 }
@@ -1427,7 +1442,7 @@
     if (!self.bookNavigationView) {
         self.bookNavigationView = [[BookNavigationView alloc] initWithFrame:containerView.bounds];
         self.bookNavigationView.delegate = self;
-        [self.bookNavigationView setTitle:[self.book author] editable:[self.book isOwner] book:self.book];
+        [self.bookNavigationView setTitle:[self bookNavigationAuthorName] editable:[self.book isOwner] book:self.book];
         [self.bookNavigationView setDark:NO];
     }
     [containerView configureContentView:self.bookNavigationView];
@@ -2015,6 +2030,22 @@
     [recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
         return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
     }];
+}
+
+- (void)updateNavigationTitle {
+    [self updateNavigationTitleWithPage:[self currentPage]];
+}
+
+- (void)updateNavigationTitleWithPage:(NSString *)pageName {
+    NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
+    if ([pageName length] > 0) {
+        [navigationTitle appendFormat:@" - %@", pageName];
+    }
+    [self.bookNavigationView updateTitle:navigationTitle];
+}
+
+- (NSString *)bookNavigationAuthorName {
+    return [self.book author];
 }
 
 @end
