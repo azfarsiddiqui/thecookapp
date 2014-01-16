@@ -499,16 +499,6 @@
             CGFloat overlayAlpha = 1.0 - (distance / visibleFrame.size.width);
             DLog(@"currentPage [%@] nextPage[%@] distance[%f] overlay [%f]", currentPage, nextPage, distance, overlayAlpha);
             
-            if (overlayAlpha < 0.5) {
-                [self updateNavigationTitleWithPage:nextPage];
-            } else {
-                if ([currentPage length] > 0) {
-                    [self updateNavigationTitleWithPage:currentPage];
-                } else {
-                    [self updateNavigationTitleWithPage:nextPage];
-                }
-            }
-            
             // Get the next page and apply the appropriate paging effects.
             BookContentViewController *pageViewController = [self.contentControllers objectForKey:nextPage];
             if (pageViewController) {
@@ -620,6 +610,9 @@
     // Apply blurring/tinting offset to content image.
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:offset];
+    
+    // Update navigation title.
+    [self updateNavigationTitleWithPage:page offset:offset];
     
     // Show or hide navigation view.
     // [self showOrHideNavigationViewWithOffset:offset page:page];
@@ -1334,6 +1327,9 @@
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:scrollOffset.y];
     self.saveOrUpdatedRecipe = nil;
+    
+    // Update navigation title.
+    [self updateNavigationTitleWithPage:page offset:scrollOffset.y];
 }
 
 - (void)clearFastForwardContentForPage:(NSString *)page cell:(BookContentCell *)cell {
@@ -2032,6 +2028,10 @@
     }];
 }
 
+- (void)updateDefaultNavigationTitle {
+    [self updateNavigationTitleWithPage:nil];
+}
+
 - (void)updateNavigationTitle {
     [self updateNavigationTitleWithPage:[self currentPage]];
 }
@@ -2046,6 +2046,14 @@
 
 - (NSString *)bookNavigationAuthorName {
     return [self.book author];
+}
+
+- (void)updateNavigationTitleWithPage:(NSString *)page offset:(CGFloat)offset {
+    if (offset >= 500.0) {
+        [self updateNavigationTitleWithPage:page];
+    } else {
+        [self updateDefaultNavigationTitle];
+    }
 }
 
 @end
