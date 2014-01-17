@@ -55,13 +55,12 @@
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textView.text = self.forceUppercase ? [currentText uppercaseString] : currentText;
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
-    
     // TextView positioning.
     self.textView.frame = (CGRect){
         textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
-        contentInsets.top,
+        MAX(kKeyboardDefaultFrame.origin.y/2 - minHeight/2, contentInsets.top) ,
         textViewAdjustments.left + width + textViewAdjustments.right,
-        ceilf(minHeight),
+        ceilf(minHeight)
     };
     
     // Set contentSize to be same as bounds.
@@ -84,7 +83,7 @@
 
 - (void)doSave {
     //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
-    self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [super doSave];
 }
 
@@ -243,13 +242,24 @@
     CGRect keyboardFrame = [self currentKeyboardFrame];
     
     // Update the scrollView to be above the keyboard area.
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+    if (targetTextBoxView) {
+        CGRect targetEditViewFrame = self.textView.frame;
+
+        targetEditViewFrame.origin.y = MAX(kKeyboardDefaultFrame.origin.y/2 - self.textView.frame.size.height/2, [self contentInsets].top);
+
+        [UIView animateWithDuration:0.2 animations:^{
+            self.textView.frame = targetEditViewFrame;
+            targetTextBoxView.frame = [targetTextBoxView updatedFrameForProposedEditingViewFrame:self.textView.frame];
+        }];
+    }
     self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
     
     if (appear) {
         [self scrollToCursorIfRequired];
     } else {
         //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
-        self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//        self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
 }
 
@@ -312,6 +322,7 @@
     }
     textView.delegate = self;
     textView.showsHorizontalScrollIndicator = NO;
+    textView.showsVerticalScrollIndicator = NO;
     textView.backgroundColor = [UIColor clearColor];
     textView.panGestureRecognizer.enabled = NO;
     textView.alwaysBounceVertical = YES;
