@@ -120,6 +120,10 @@
     return [UIColor colorWithHexString:hexValue];
 }
 
++ (UIColor *)bookContentTintColourForCover:(NSString *)cover {
+    return [UIColor colorWithHexString:@"3D5766"];
+}
+
 + (UIColor *)themeBackdropColourForCover:(NSString *)cover {
     BOOL vivid = NO;
     BOOL balance = NO;
