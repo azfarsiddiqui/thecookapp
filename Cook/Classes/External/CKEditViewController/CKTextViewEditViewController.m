@@ -58,7 +58,7 @@
     // TextView positioning.
     self.textView.frame = (CGRect){
         textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
-        MAX(self.view.frame.size.height/2 - minHeight/2, contentInsets.top) ,
+        MAX(kKeyboardDefaultFrame.origin.y/2 - minHeight/2, contentInsets.top) ,
         textViewAdjustments.left + width + textViewAdjustments.right,
         ceilf(minHeight)
     };
@@ -245,11 +245,9 @@
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     if (targetTextBoxView) {
         CGRect targetEditViewFrame = self.textView.frame;
-        if ([self keyboardFrame].size.height < 100) {
-            targetEditViewFrame.origin.y = self.view.frame.size.height/2 - self.textView.frame.size.height/2;
-        } else {
-            targetEditViewFrame.origin.y = [self keyboardFrame].origin.y/2 - self.textView.frame.size.height/2;
-        }
+
+        targetEditViewFrame.origin.y = MAX(kKeyboardDefaultFrame.origin.y/2 - self.textView.frame.size.height/2, [self contentInsets].top);
+
         [UIView animateWithDuration:0.2 animations:^{
             self.textView.frame = targetEditViewFrame;
             targetTextBoxView.frame = [targetTextBoxView updatedFrameForProposedEditingViewFrame:self.textView.frame];
