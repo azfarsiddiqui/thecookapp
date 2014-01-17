@@ -15,6 +15,7 @@
 @interface BookNavigationView ()
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -51,6 +52,22 @@
 - (void)setTitle:(NSString *)title editable:(BOOL)editable book:(CKBook *)book {
     self.editable = editable;
     self.book = book;
+    [self updateTitle:title];
+    
+    if (editable) {
+        [self addSubview:self.addButton];
+        [self addSubview:self.editButton];
+    }
+}
+
+- (void)updateTitle:(NSString *)title {
+    
+    // Ignore if the same title.
+    if ([self.title isEqualToString:title]) {
+        return;
+    }
+    self.title = title;
+    
     self.titleLabel.textColor = [self.delegate bookNavigationColour];
     self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
@@ -60,11 +77,6 @@
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
-    
-    if (editable) {
-        [self addSubview:self.addButton];
-        [self addSubview:self.editButton];
-    }
 }
 
 - (void)setDark:(BOOL)dark {
