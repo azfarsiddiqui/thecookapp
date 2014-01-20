@@ -566,9 +566,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         return;
     }
     
-    // Disable/enable drag/drop according to focus mode.
-    self.collectionView.draggable = !focused;
-    
     // Mark as not top add activation.
     [self updateAddStateWithActivation:NO];
     
@@ -576,7 +573,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (!focused) {
         
         if (![cell isEmpty]) {
-            
+            cell.allowReorder = self.canReorderItems;
             // Save current value if it was not empty.
             [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
         } else {
@@ -594,6 +591,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         }
         
     } else {
+        cell.allowReorder = NO;
         //Clear out any blank cells other than the current one
         if ([self.collectionView numberOfItemsInSection:0] > 1) {
             for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; i++) {

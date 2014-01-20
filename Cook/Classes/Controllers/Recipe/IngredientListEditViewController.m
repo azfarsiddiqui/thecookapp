@@ -74,7 +74,6 @@
     [super configureCell:itemCell indexPath:indexPath];
     itemCell.ingredientsAccessoryViewController = self.ingredientsAccessoryViewController;
     itemCell.allowSelection = NO;
-    itemCell.allowReorder = YES;
 }
 
 - (id)createNewItem {
@@ -99,7 +98,7 @@
 
 - (void)setEditing:(BOOL)editing {
     [super setEditing:editing];
-    self.canReorderItems = !editing;
+    self.canReorderItems = YES;
 }
 
 #pragma mark - UICollectionViewDataSource methods
