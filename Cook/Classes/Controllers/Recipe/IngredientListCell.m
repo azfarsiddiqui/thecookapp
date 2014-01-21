@@ -49,7 +49,7 @@
         unitTextField.delegate = self;
         unitTextField.font = self.textField.font;
         unitTextField.textColor = self.textField.textColor;
-        unitTextField.keyboardType = UIKeyboardTypeNumberPad;
+        unitTextField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         unitTextField.returnKeyType = UIReturnKeyNext;
         [self.contentView addSubview:unitTextField];
         self.unitTextField = unitTextField;
