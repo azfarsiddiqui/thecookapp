@@ -689,7 +689,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     }
     
-    UIColor *tintColour = [[CKBookCover backdropColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+    UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
     [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
         self.blurredImageView.image = blurredImage;
     }];

@@ -36,6 +36,7 @@ typedef enum {
 + (UIImage *)thumbImageForCover:(NSString *)cover;
 + (UIColor *)colourForCover:(NSString *)cover;
 + (UIColor *)backdropColourForCover:(NSString *)cover;
++ (UIColor *)bookContentTintColourForCover:(NSString *)cover;
 + (UIColor *)themeBackdropColourForCover:(NSString *)cover;
 + (UIColor *)backdropColourForCover:(NSString *)cover vivid:(BOOL)vivid balance:(BOOL)balance;
 + (UIColor *)textColourForCover:(NSString *)cover;
