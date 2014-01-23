@@ -34,6 +34,7 @@ NSString *const kUserAttrCoverPhoto             = @"coverPhoto";
 NSString *const kUserAttrEmail                  = @"password";
 NSString *const kUserAttrPassword               = @"email";
 NSString *const kUserAttrTheme                  = @"theme";
+NSString *const kUserAttrMeasureType            = @"measureType";
 
 #pragma mark - UserFriend class
 
@@ -101,6 +102,8 @@ NSString *const kRecipeAttrCookingTimeInMinutes = @"cookingTimeMins";
 NSString *const kRecipeAttrPrepTimeInMinutes    = @"prepTimeMins";
 NSString *const kRecipeAttrPrivacy              = @"privacy";
 NSString *const kRecipeAttrLocation             = @"location";
+NSString *const kRecipeAttrMeasureType          = @"measureType";
+NSString *const kRecipeAttrCountryCode          = @"countryCode";
 NSString *const kRecipeAttrLocale               = @"locale";
 NSString *const kRecipeAttrNumViews             = @"numViews";
 NSString *const kRecipeAttrNumLikes             = @"numLikes";

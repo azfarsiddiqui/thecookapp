@@ -407,7 +407,8 @@
                                                                                            book:self.book
                                                                                         maxSize:[self availableBlockSize]
                                                                                   textAlignment:NSTextAlignmentCenter
-                                                                                        compact:YES];
+                                                                                        compact:YES
+                                                                                  measureLocale:CKMeasureTypeNone];
     [self.contentView addSubview:ingredientsView];
     self.ingredientsView = ingredientsView;
 }

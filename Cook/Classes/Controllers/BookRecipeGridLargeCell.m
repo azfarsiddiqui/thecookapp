@@ -63,7 +63,7 @@
         self.ingredientsView.maxSize = blockSize;
         
         UIEdgeInsets contentInsets = [self contentInsets];
-        [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
+        [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book measureType:CKMeasureTypeNone];
       
         // And it only appears after title.
         self.ingredientsView.frame = (CGRect){

@@ -1314,6 +1314,9 @@
 		F60C571117E403C300912544 /* cook_dash_bg_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C570F17E403C300912544 /* cook_dash_bg_settings.png */; };
 		F60C571217E403C300912544 /* cook_dash_bg_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C571017E403C300912544 /* cook_dash_bg_settings@2x.png */; };
 		F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = F60C571417E440ED00912544 /* UIImage+Scale.m */; };
+		F612EBDA188F6AF3001B48FD /* CKMeasureConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F612EBD8188F6AF3001B48FD /* CKMeasureConverter.m */; };
+		F612EBDB188F6AF3001B48FD /* conversions.plist in Resources */ = {isa = PBXBuildFile; fileRef = F612EBD9188F6AF3001B48FD /* conversions.plist */; };
+		F612EBDE188FE530001B48FD /* MeasureListEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F612EBDD188FE530001B48FD /* MeasureListEditViewController.m */; };
 		F613C65217DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C63017DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto.png */; };
 		F613C65317DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C63117DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto@2x.png */; };
 		F613C65417DF4F7E00A5962A /* cook_customise_photo_filter_bg_cool.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C63217DF4F7E00A5962A /* cook_customise_photo_filter_bg_cool.png */; };
@@ -3100,6 +3103,11 @@
 		F60C571017E403C300912544 /* cook_dash_bg_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_settings@2x.png"; sourceTree = "<group>"; };
 		F60C571317E440ED00912544 /* UIImage+Scale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Scale.h"; sourceTree = "<group>"; };
 		F60C571417E440ED00912544 /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
+		F612EBD7188F6AF3001B48FD /* CKMeasureConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKMeasureConverter.h; sourceTree = "<group>"; };
+		F612EBD8188F6AF3001B48FD /* CKMeasureConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKMeasureConverter.m; sourceTree = "<group>"; };
+		F612EBD9188F6AF3001B48FD /* conversions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = conversions.plist; sourceTree = "<group>"; };
+		F612EBDC188FE530001B48FD /* MeasureListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeasureListEditViewController.h; sourceTree = "<group>"; };
+		F612EBDD188FE530001B48FD /* MeasureListEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeasureListEditViewController.m; sourceTree = "<group>"; };
 		F613C63017DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_photo_filter_bg_auto.png; sourceTree = "<group>"; };
 		F613C63117DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_filter_bg_auto@2x.png"; sourceTree = "<group>"; };
 		F613C63217DF4F7E00A5962A /* cook_customise_photo_filter_bg_cool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_photo_filter_bg_cool.png; sourceTree = "<group>"; };
@@ -4222,6 +4230,8 @@
 				76496323181014C60014047B /* AddRecipeLayout.m */,
 				7649632D181018300014047B /* AddRecipePageCell.h */,
 				7649632E181018300014047B /* AddRecipePageCell.m */,
+				F612EBDC188FE530001B48FD /* MeasureListEditViewController.h */,
+				F612EBDD188FE530001B48FD /* MeasureListEditViewController.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -5425,6 +5435,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				F612EBD6188F6AF3001B48FD /* CKMeasureConverter */,
 				F67CE0EB187FB07500FE7AD0 /* PSPDFTextView */,
 				F6B169D71855897200D3FBB6 /* TTTAttributedLabel */,
 				76E9867417E2CEB700D9CAF3 /* CKSearchFieldView */,
@@ -5558,6 +5569,16 @@
 				89B0917316DDBEAC00D47725 /* cook_edit_serveslider_icon_one@2x.png */,
 			);
 			path = servesSlider;
+			sourceTree = "<group>";
+		};
+		F612EBD6188F6AF3001B48FD /* CKMeasureConverter */ = {
+			isa = PBXGroup;
+			children = (
+				F612EBD7188F6AF3001B48FD /* CKMeasureConverter.h */,
+				F612EBD8188F6AF3001B48FD /* CKMeasureConverter.m */,
+				F612EBD9188F6AF3001B48FD /* conversions.plist */,
+			);
+			path = CKMeasureConverter;
 			sourceTree = "<group>";
 		};
 		F63C9569183A54F9000361EA /* tags */ = {
@@ -6812,6 +6833,7 @@
 				764A75E1183354110003594E /* cook_book_graphic_featured_russia@2x.png in Resources */,
 				F6944AAA184D988A007AF965 /* cook_tags_breakfast_on@2x.png in Resources */,
 				766E43AB17DEDC0D006B2495 /* cook_book_inner_category_add_onpress_orange.png in Resources */,
+				F612EBDB188F6AF3001B48FD /* conversions.plist in Resources */,
 				F60C56F417E3309E00912544 /* cook_dash_settings_firstscreen_bg.png in Resources */,
 				76DE6D5718178DF9000ACCDC /* cook_book_inner_icon_small_friends.png in Resources */,
 				F6944B01184D9C56007AF965 /* cook_tags_meat_off.png in Resources */,
@@ -7233,6 +7255,7 @@
 				76381C9516683E9500404FB1 /* RootViewController.m in Sources */,
 				76B1436117FAF5F7000656D3 /* RecipeSocialLikeLayout.m in Sources */,
 				76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */,
+				F612EBDE188FE530001B48FD /* MeasureListEditViewController.m in Sources */,
 				7635A2CE17A9F2A0002F30F2 /* IngredientListEditViewController.m in Sources */,
 				7684618D1814FFD500C621DC /* CKBookInfoView.m in Sources */,
 				7692830C1848B9F3002D9E8A /* BookTitlePhotoView.m in Sources */,
@@ -7355,6 +7378,7 @@
 				76411338182C86C700366512 /* CKContentContainerCell.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
 				7648FF27181564DA00E36041 /* CKStoreBookCoverView.m in Sources */,
+				F612EBDA188F6AF3001B48FD /* CKMeasureConverter.m in Sources */,
 				76735C8B17BA12000027CA3B /* BookRecipeGridCell.m in Sources */,
 				763E00F817AD357200CCA412 /* PageListEditViewController.m in Sources */,
 				76462D3A17830054002EA7D0 /* StoreUnitTabView.m in Sources */,

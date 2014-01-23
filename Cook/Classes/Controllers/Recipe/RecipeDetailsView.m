@@ -966,9 +966,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
+        CKMeasurementType measureType = self.recipeDetails.measureType;
+        if (self.editMode) {
+            measureType = CKMeasureTypeNone;
+        }
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
                                                                              book:self.recipeDetails.book
-                                                                         maxWidth:kMaxLeftWidth];
+                                                                         maxWidth:kMaxLeftWidth
+                                                                    measureLocale:measureType];
         self.ingredientsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
@@ -1006,7 +1011,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Update ingredients.
-    [self.ingredientsView updateIngredients:ingredients];
+    CKMeasurementType measureType = self.recipeDetails.measureType;
+    if (self.editMode) {
+        measureType = CKMeasureTypeNone;
+    }
+    [self.ingredientsView updateIngredients:ingredients measureType:measureType];
     CGFloat beforeIngredientsGap = self.ingredientsDividerView ? 23.0 : 0.0;
     self.ingredientsView.frame = (CGRect){
         kContentInsets.left + leftOffset,

@@ -52,7 +52,7 @@
         blockSize.height += 40.0;   // Have more vertical space.
         self.ingredientsView.maxSize = blockSize;
         UIEdgeInsets contentInsets = [self contentInsets];
-        [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
+        [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book measureType:CKMeasureTypeNone];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,

@@ -56,6 +56,7 @@
         _privacy = recipe.privacy;
         _userPhotoUrl = recipe.userPhotoUrl;
         _location = recipe.geoLocation;
+        _measureType = recipe.measureType;
         
         _ingredients = [NSArray arrayWithArray:[recipe.ingredients collect:^id(Ingredient *ingredient) {
             return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
@@ -76,6 +77,7 @@
     recipe.ingredients = self.ingredients;
     recipe.privacy = self.privacy;
     recipe.geoLocation = self.location;
+    recipe.measureType = self.measureType;
     
     // Re-assign original recipe.
     self.originalRecipe = recipe;
