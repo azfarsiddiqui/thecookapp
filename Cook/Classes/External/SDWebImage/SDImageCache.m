@@ -14,7 +14,6 @@
 #import <mach/mach_host.h>
 
 static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
-static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 
 @interface SDImageCache ()
 
@@ -22,6 +21,8 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 @property (strong, nonatomic) NSString *diskCachePath;
 @property (strong, nonatomic) NSMutableArray *customPaths;
 @property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t ioQueue;
+
+@property (nonatomic, strong) NSMutableDictionary *lastAccessedDictionary; //key:NSDate
 
 @end
 
@@ -60,7 +61,10 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
         // Init the disk cache
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         _diskCachePath = [paths[0] stringByAppendingPathComponent:fullNamespace];
-
+        
+        //Init access expiration dictionary
+        _lastAccessedDictionary = [NSMutableDictionary new];
+        
 #if TARGET_OS_IPHONE
         // Subscribe to app events
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -186,6 +190,9 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
                                }
                                
                                [fileManager createFileAtPath:[self defaultCachePathForKey:key] contents:data attributes:nil];
+                               
+                               //Also store expiration in accessedDictionary
+                               [self.lastAccessedDictionary setObject:[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge] forKey:key];
                            }
                        });
     }
@@ -218,7 +225,7 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key
 {
-    return [self imageFromDiskCacheForKey:key skipMemory:NO];
+    return [self imageFromDiskCacheForKey:key skipMemory:YES];
 }
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key skipMemory:(BOOL)skipMemory {
@@ -237,6 +244,10 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
     UIImage *diskImage = [self diskImageForKey:key];
     if (diskImage)
     {
+        //Update expiration on access
+        NSString *defaultPath = [NSString stringWithFormat:@"file:///private%@", [self defaultCachePathForKey:key]];
+        [self.lastAccessedDictionary setObject:[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge] forKey:defaultPath];
+        
         if (!skipMemory) {
             CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
             [self.memCache setObject:diskImage forKey:key cost:cost];
@@ -388,13 +399,7 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
                                                                      options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                 errorHandler:NULL];
         
-        //Check current size of cache
-        NSDate *expirationDate;
-        if ([self getSize] > kMaxDocumentSize) {
-            expirationDate = [NSDate dateWithTimeIntervalSinceNow:-(60*60*24)];
-        } else {
-            expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
-        }
+        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
 
         NSMutableDictionary *cacheFiles = [NSMutableDictionary dictionary];
         unsigned long long currentCacheSize = 0;
@@ -415,6 +420,11 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 
             // Remove files that are older than the expiration date;
             NSDate *modificationDate = resourceValues[NSURLContentModificationDateKey];
+            if ([self.lastAccessedDictionary objectForKey:fileURL.absoluteString]) {
+                NSDate *accessDate = [self.lastAccessedDictionary objectForKey:fileURL.absoluteString];
+                modificationDate =  modificationDate < accessDate ? accessDate : modificationDate;
+            }
+                
             if ([[modificationDate laterDate:expirationDate] isEqualToDate:expirationDate])
             {
                 [fileManager removeItemAtURL:fileURL error:nil];
