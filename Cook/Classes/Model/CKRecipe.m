@@ -540,7 +540,7 @@
 }
 
 - (void)setPage:(NSString *)page {
-    [self.parseObject setObject:page forKey:kRecipeAttrPage];
+    [self.parseObject setObject:[page uppercaseString] forKey:kRecipeAttrPage];
 }
 
 - (NSString *)story {

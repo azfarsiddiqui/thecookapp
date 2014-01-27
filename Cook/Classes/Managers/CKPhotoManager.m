@@ -47,6 +47,8 @@
         
         // 4 downloads at the same time.
         self.imageDownloadQueue.maxConcurrentOperationCount = 4;
+        
+        [SDImageCache sharedImageCache].maxCacheSize = (400 * 1024 * 1024); //Limit cache to 400MB
     }
     return self;
 }

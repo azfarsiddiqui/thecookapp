@@ -364,8 +364,8 @@
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     if ([value length] > 0) {
-        [self updateContentTitleViewWithTitle:value];
-        self.updatedPage = value;
+        [self updateContentTitleViewWithTitle:[value uppercaseString]];
+        self.updatedPage = [value uppercaseString];
         [self.editingHelper updateEditingView:self.contentTitleView];
     }
 }

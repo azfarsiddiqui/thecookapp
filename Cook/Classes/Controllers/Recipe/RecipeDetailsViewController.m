@@ -2307,7 +2307,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGFloat headerHeight = 320.0;
     
     if (self.editMode && ![self.recipeDetails hasStory]) {
-        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 24.0);
+        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 224.0); //Push it down to 'Type up a recipe' box
     }
     
     return headerHeight;

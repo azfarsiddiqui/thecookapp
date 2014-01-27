@@ -108,7 +108,7 @@
     }
     
     // Ask the opened book to update with the recipe.
-    [self.bookNavigationViewController updateWithRenamedPage:page fromPage:fromPage completion:completion];
+    [self.bookNavigationViewController updateWithRenamedPage:[page uppercaseString] fromPage:fromPage completion:completion];
 }
 
 @end
