@@ -433,7 +433,9 @@
     }];
     
     // Rename the data.
-    [self.pageRecipes setObject:recipesToRename forKey:page];
+    if (recipesToRename && [recipesToRename count] > 0) {
+        [self.pageRecipes setObject:recipesToRename forKey:page];
+    }
     [self.pageRecipes removeObjectForKey:fromPage];
     [self.pageBatches setObject:[self.pageBatches objectForKey:fromPage] forKey:page];
     [self.pageBatches removeObjectForKey:fromPage];
@@ -1208,6 +1210,11 @@
             return ([[self.pageRecipes objectForKey:page] count] == 0);
         }]];
     }
+    NSMutableArray *uppercaseArray = [NSMutableArray new];
+    [self.pages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [uppercaseArray addObject:[obj uppercaseString]];
+    }];
+    self.pages = uppercaseArray;
     
     // Loop through to initialise each recipe.
     for (NSString *page in self.pageRecipes) {
