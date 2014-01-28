@@ -501,7 +501,7 @@
             }
             CGFloat distance = ABS(visibleFrame.origin.x - currentPageOffset);
             CGFloat overlayAlpha = 1.0 - (distance / visibleFrame.size.width);
-            DLog(@"currentPage [%@] nextPage[%@] distance[%f] overlay [%f]", currentPage, nextPage, distance, overlayAlpha);
+//            DLog(@"currentPage [%@] nextPage[%@] distance[%f] overlay [%f]", currentPage, nextPage, distance, overlayAlpha);
             
             // Get the next page and apply the appropriate paging effects.
             BookContentViewController *pageViewController = [self.contentControllers objectForKey:nextPage];

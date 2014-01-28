@@ -95,9 +95,9 @@
     UIEdgeInsets insets = (UIEdgeInsets) { 10.0, 10.0, 6.0, 10.0 };
     NSInteger numSections = [self.collectionView numberOfSections];
     if (section == 0) {
-        insets.left = 23.0;
+        insets.left = 10.0;
     } else if (section == numSections - 1) {
-        insets.right = 23.0;
+        insets.right = 10.0;
     }
     return insets;
 }
