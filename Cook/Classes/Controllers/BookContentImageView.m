@@ -82,13 +82,11 @@
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     self.recipe = recipe;
     self.book = book;
+    [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book];
     
     if ([recipe hasPhotos]) {
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset]];
-    } else {
-        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book];
     }
-
 }
 
 - (CGSize)imageSizeWithMotionOffset {
