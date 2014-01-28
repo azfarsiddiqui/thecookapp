@@ -63,6 +63,7 @@
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
+@property (nonatomic, assign) NSUInteger numRetries;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -112,6 +113,7 @@
 #define kEditButtonInsets           (UIEdgeInsets){ 20.0, 5.0, 0.0, 5.0 }
 #define kIndexSectionTag            950
 #define kProfileSectionTag          951
+#define MAX_NUM_RETRIES             5
 
 - (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
           delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -1167,7 +1169,10 @@
         DLog(@"Error %@", [error localizedDescription]);
         
         // Attempt to reload data.
-        [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
+        if (self.numRetries < MAX_NUM_RETRIES) {
+            self.numRetries += 1;
+            [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
+        }
     }];
 }
 
