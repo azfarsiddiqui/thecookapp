@@ -1149,10 +1149,9 @@
                                     NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSArray *likedRecipes,
                                     NSDate *lastAccessedDate) {
         
-        if (parseBook) {
+        if (parseBook && self.book) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
             self.book = refreshedBook;
-            
             // Refresh the book on the dash as it could be stale, e.g. pages.
             [self.delegate bookNavigationControllerRefreshedBook:refreshedBook];
             
@@ -1600,6 +1599,7 @@
 }
 
 - (void)closeBookWithPinch:(BOOL)pinch {
+    self.book = nil;
     if (pinch) {
         [self.delegate bookNavigationControllerCloseRequested];
     } else {
