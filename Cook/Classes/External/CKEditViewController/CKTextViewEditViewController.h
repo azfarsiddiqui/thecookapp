@@ -16,5 +16,6 @@
 @property (nonatomic, assign) BOOL forceUppercase;
 
 - (BOOL)contentScrollable;
+- (void)includeAccessoryView:(BOOL)doInclude;
 
 @end
