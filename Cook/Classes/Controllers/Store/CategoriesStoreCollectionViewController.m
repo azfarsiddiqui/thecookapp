@@ -27,7 +27,7 @@
 }
 
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO CATEGORIES BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
+    [[CardViewHelper sharedInstance] showCardText:@"NO COLLECTIONS BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 
