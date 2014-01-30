@@ -658,18 +658,18 @@
         DLog(@"Loading more for page[%@]", page);
         [self.book recipesForPage:page batchIndex:requestedBatchIndex
                           success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
-                              
-                              // Append to the list of recipes.
-                              NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
-                              [pageRecipes addObjectsFromArray:recipes];
-                              
-                              // Update the batch index.
-                              [self.pageCurrentBatches setObject:@(requestedBatchIndex) forKey:page];
-                              
-                              // Update the BookContentVC
-                              BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
-                              [contentViewController loadMoreRecipes:recipes];
-
+                              if (self.book) {
+                                  // Append to the list of recipes.
+                                  NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
+                                  [pageRecipes addObjectsFromArray:recipes];
+                                  
+                                  // Update the batch index.
+                                  [self.pageCurrentBatches setObject:@(requestedBatchIndex) forKey:page];
+                                  
+                                  // Update the BookContentVC
+                                  BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
+                                  [contentViewController loadMoreRecipes:recipes];
+                              }
                           }
                           failure:^(NSError *error) {
                           }];
@@ -2049,11 +2049,13 @@
 }
 
 - (void)updateNavigationTitleWithPage:(NSString *)pageName {
-    NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
-    if ([pageName length] > 0) {
-        [navigationTitle appendFormat:@" - %@", pageName];
+    if (self.book) {
+        NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
+        if ([pageName length] > 0) {
+            [navigationTitle appendFormat:@" - %@", pageName];
+        }
+        [self.bookNavigationView updateTitle:navigationTitle];
     }
-    [self.bookNavigationView updateTitle:navigationTitle];
 }
 
 - (NSString *)bookNavigationAuthorName {
