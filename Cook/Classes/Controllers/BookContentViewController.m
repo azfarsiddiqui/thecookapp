@@ -31,6 +31,7 @@
 #import "BookNavigationView.h"
 #import "CKActivityIndicatorView.h"
 #import "CKContentContainerCell.h"
+#import "SDImageCache.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
@@ -452,6 +453,8 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = nil;
+    //Agressively flush cache to preserve memory usage
+    [[SDImageCache sharedImageCache] setValue:nil forKey:@"memCache"];
     if (indexPath.item < [self.recipes count]) {
         
         CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];

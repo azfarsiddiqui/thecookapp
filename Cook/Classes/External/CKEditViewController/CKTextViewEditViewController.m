@@ -10,12 +10,14 @@
 #import "CKEditingTextBoxView.h"
 #import "CKEditingViewHelper.h"
 #import "PSPDFTextView.h"
+#import "IngredientsKeyboardAccessoryViewController.h"
 
-@interface CKTextViewEditViewController () <UITextViewDelegate, UIGestureRecognizerDelegate>
+@interface CKTextViewEditViewController () <UITextViewDelegate, UIGestureRecognizerDelegate, IngredientsKeyboardAccessoryViewControllerDelegate>
 
 @property (nonatomic, strong) PSPDFTextView *textView;
 @property (nonatomic, strong) PSPDFTextView *sandboxTextView;
 @property (nonatomic, assign) CGFloat minHeight;
+@property (nonatomic, strong) IngredientsKeyboardAccessoryViewController *accessoryView;
 
 @end
 
@@ -40,6 +42,8 @@
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title
                         characterLimit:characterLimit]) {
         self.numLines = 8;
+        self.accessoryView = [[IngredientsKeyboardAccessoryViewController alloc] init];
+        self.accessoryView.delegate = self;
     }
     return self;
 }
@@ -85,6 +89,12 @@
     //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
 //    self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [super doSave];
+}
+
+- (void)includeAccessoryView:(BOOL)doInclude {
+    if (doInclude) {
+        self.textView.inputAccessoryView = self.accessoryView.view;
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -147,9 +157,16 @@
 - (void)textViewDidChange:(UITextView *)textView {
     
     // Update character limit.
-    NSUInteger currentLimit = self.characterLimit - [textView.text length];
-    self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
+    NSInteger currentLimit = self.characterLimit - [textView.text length];
+    self.limitLabel.text = [NSString stringWithFormat:@"%i", (int)currentLimit];
     [self.limitLabel sizeToFit];
+}
+
+#pragma mark - IngredientsKeyboardAccessoryViewController delegate method
+
+- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit {
+    [self.textView insertText:value];
+    [self.textView insertText:@" "];
 }
 
 #pragma mark - Properties

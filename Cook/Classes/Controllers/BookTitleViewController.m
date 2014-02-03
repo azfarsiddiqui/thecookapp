@@ -513,7 +513,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value {
     
-    NSString *text = value;
+    NSString *text = [value uppercaseString];
     if ([text CK_containsText]) {
         [self addPageWithName:text];
     } else {

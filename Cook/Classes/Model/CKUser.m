@@ -681,7 +681,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:kUserAttrFacebookId];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:self.admin] forKey:kUserAttrAdmin];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [[self.parseUser objectForKey:kUserAttrFacebookFriends] count]]
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%i", [[self.parseUser objectForKey:kUserAttrFacebookFriends] count]]
                              forKey:@"facebookFriends"];
     return descriptionProperties;
 }
