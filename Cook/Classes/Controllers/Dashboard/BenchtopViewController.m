@@ -1277,7 +1277,7 @@
             } completion:^(BOOL finished) {
                 [[self pagingLayout] enableFollowMode:NO];
                 [self.collectionView reloadData];
-            }];
+            }]; 
         }
     }
 }

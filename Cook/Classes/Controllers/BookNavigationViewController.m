@@ -1937,6 +1937,8 @@
     
     // Save the book in the background.
     [self.book saveInBackground];
+    
+    [self loadData];
 }
 
 - (CGFloat)alphaForBookNavigationViewWithOffset:(CGFloat)offset {
