@@ -265,6 +265,7 @@
     if (!open) {
         cell.bookCoverView.hidden = NO;
         [cell.bookCoverView enable:YES];
+        [self.delegate benchtopShowOtherViews];
     } else {
         [self clearUpdatesForBook:cell.bookCoverView.book];
         [cell.bookCoverView clearUpdates];
@@ -272,6 +273,7 @@
         // Reenable cells in dashboard to prevent wierd device lock->missing cells issue
         cell.bookCoverView.hidden = NO;
         [self showBookCell:cell show:YES];
+        [self.delegate benchtopHideOtherViews];
     }
     
     // Enable panning based on book opened or not.
@@ -285,6 +287,11 @@
         cell.alpha = show ? 1.0 : 0.0;
     }];
     self.notificationView.alpha = show ? 1.0 : 0.0;
+    if (show) {
+        [self.delegate benchtopShowOtherViews];
+    } else {
+        [self.delegate benchtopHideOtherViews];
+    }
 }
 
 #pragma mark - FollowReloadButtonViewDelegate methods

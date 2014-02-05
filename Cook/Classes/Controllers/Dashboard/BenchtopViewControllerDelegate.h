@@ -27,5 +27,7 @@
 - (void)benchtopFirstTimeLaunched;
 - (void)benchtopPeekRequestedForStore;
 - (void)benchtopPeekRequestedForSettings;
+- (void)benchtopHideOtherViews;
+- (void)benchtopShowOtherViews;
 
 @end

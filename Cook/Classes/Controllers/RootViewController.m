@@ -166,6 +166,14 @@
     }
 }
 
+- (void)benchtopHideOtherViews {
+    [self hideSettingsAndStore:YES];
+}
+
+- (void)benchtopShowOtherViews {
+    [self hideSettingsAndStore:NO];
+}
+
 - (void)panToBenchtopForSelf:(UIViewController *)viewController {
     if (viewController == self.storeViewController) {
         [self snapToLevel:kStoreLevel];
@@ -1179,6 +1187,11 @@
                                               }];
                                           }];
                      }];
+}
+
+- (void)hideSettingsAndStore:(BOOL)doHide {
+    self.settingsViewController.view.hidden = doHide;
+    self.storeViewController.view.hidden = doHide;
 }
 
 #pragma mark - Rotation methods
