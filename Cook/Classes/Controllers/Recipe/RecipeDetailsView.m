@@ -570,7 +570,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             defaultInsets.right - 2.0
         } delegate:self white:YES iconImage:[UIImage imageNamed:@"cook_customise_icon_page"]];
         
-        //- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white iconImage:(UIImage *)iconImage
     }
     // Update photo.
     self.profilePhotoView.frame = (CGRect){

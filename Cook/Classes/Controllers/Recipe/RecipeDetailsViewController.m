@@ -1044,12 +1044,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                progress:^(CGFloat progressRatio, NSString *name) {
                                                } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
                                                    
-                                                   [self loadImageViewWithPhoto:thumbImage placeholder:NO];
+                                                   [self loadImageViewWithPhoto:thumbImage placeholder:NO doTopShadow:YES];
                                                    
                                                } completion:^(UIImage *image, NSString *name) {
-
-                                                   [self loadImageViewWithPhoto:image placeholder:NO];
-                                                   
+                                                   if (image) {
+                                                       [self loadImageViewWithPhoto:image placeholder:NO doTopShadow:NO];
+                                                   }
                                                    // Stop spinner.
                                                    [self.activityView stopAnimating];
                                                }];
@@ -1063,10 +1063,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)loadImageViewWithPhoto:(UIImage *)image {
-    [self loadImageViewWithPhoto:image placeholder:NO];
+    [self loadImageViewWithPhoto:image placeholder:NO doTopShadow:YES];
 }
 
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
+    [self loadImageViewWithPhoto:image placeholder:placeholder doTopShadow:YES];
+}
+
+- (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder doTopShadow:(BOOL)doShadow {
     self.imageView.image = image;
     self.imageView.placeholder = placeholder;
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:placeholder];
@@ -1074,7 +1078,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.topShadowView.alpha = 1.0;
+                         self.topShadowView.alpha = doShadow ? 1.0 : 0.0;
                          self.imageView.alpha = 1.0;
                          self.placeholderHeaderView.alpha = 0.0;
                      }
