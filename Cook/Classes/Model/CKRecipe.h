@@ -9,6 +9,7 @@
 #import "CKModel.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "CKRecipeImage.h"
 
 typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPrivate,
@@ -16,7 +17,6 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPublic
 };
 
-@class CKRecipeImage;
 @class CKLocation;
 @class CKRecipePin;
 

@@ -15,7 +15,6 @@
 #import "NSArray+Enumerable.h"
 #import "CKActivity.h"
 #import "NSString+Utilities.h"
-#import "CKRecipeImage.h"
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"
 #import "CKPhotoManager.h"
