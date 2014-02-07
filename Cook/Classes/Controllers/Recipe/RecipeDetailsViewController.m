@@ -912,7 +912,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGRect photoButtonFrame = self.photoButtonView.frame;
     photoButtonFrame.origin = (CGPoint){
         floorf((imageView.bounds.size.width - photoButtonFrame.size.width) / 2.0),
-        floorf((imageView.bounds.size.height - photoButtonFrame.size.height) / 2.0)
+        floorf((imageView.bounds.size.height - photoButtonFrame.size.height) / 2.0) + 25
     };
     self.photoButtonView.frame = photoButtonFrame;
     self.photoButtonView.alpha = [self currentAlphaForPhotoButtonView];
@@ -1039,16 +1039,16 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         // Start the spinner.
         [self.activityView startAnimating];
-        
+        __block BOOL isThumbLoaded = NO;
         [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:self.imageView.bounds.size name:@"RecipePhoto"
                                                progress:^(CGFloat progressRatio, NSString *name) {
                                                } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                   
+                                                   isThumbLoaded = YES;
                                                    [self loadImageViewWithPhoto:thumbImage placeholder:NO doTopShadow:YES];
                                                    
                                                } completion:^(UIImage *image, NSString *name) {
                                                    if (image) {
-                                                       [self loadImageViewWithPhoto:image placeholder:NO doTopShadow:NO];
+                                                       [self loadImageViewWithPhoto:image placeholder:NO doTopShadow:!isThumbLoaded];
                                                    }
                                                    // Stop spinner.
                                                    [self.activityView stopAnimating];
@@ -2311,7 +2311,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGFloat headerHeight = 320.0;
     
     if (self.editMode && ![self.recipeDetails hasStory]) {
-        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 224.0); //Push it down to 'Type up a recipe' box
+        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 69.0); //Push it down to 'Type up a recipe' box
     }
     
     return headerHeight;
