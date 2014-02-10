@@ -191,9 +191,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    NSDictionary *dimensions = @{@"isOwner" : [NSString stringWithFormat:@"%i", ([[CKUser currentUser].objectId isEqualToString:self.recipe.user.objectId])]};
-    [AnalyticsHelper trackEventName:@"Viewed recipe" params:dimensions];
+    [AnalyticsHelper trackEventName:kEventRecipeView params:@{ @"owner" : @([self.recipe isOwner]) } timed:YES];
 }
 
 #pragma mark - PinRecipeViewControllerDelegate methods
@@ -207,6 +205,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)pinRecipeViewControllerPinnedWithRecipePin:(CKRecipePin *)recipePin {
     self.recipePin = recipePin;
     [self updatePinnedButton];
+    
+    [AnalyticsHelper trackEventName:kEventRecipePin params:@{ @"pinned" : @(YES) }];
     
     // Cater for pinning a recipe in my book (Likes page).
     if ([self.book isOwner]) {
@@ -1742,6 +1742,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.imageScrollView.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
+                         [AnalyticsHelper endTrackEventName:kEventRecipeView];
                          [self.modalDelegate closeRequestedForBookModalViewController:self];
                      }];
 }
@@ -1970,6 +1971,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Deletes in the background.
         [self.recipePin deleteInBackground:^{
             
+            [AnalyticsHelper trackEventName:kEventRecipePin params:@{ @"pinned" : @(NO) }];
+            
             [self.saveOverlayViewController updateProgress:0.9];
             
             if ([self.book isOwner]) {
@@ -2040,9 +2043,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                                                        }];
                                                                                    }];
                         //Analytics
-                        NSDictionary *dimensions = @{@"isImage" : [NSString stringWithFormat:@"%@", self.recipeDetails.image ? @YES : @NO],
-                                                     @"privacy" : [NSString stringWithFormat:@"%i", self.recipeDetails.privacy]};
-                        [AnalyticsHelper trackEventName:@"Recipe Saved" params:dimensions];
+                        [AnalyticsHelper trackEventName:kEventRecipeSave params:@{
+                                                                                  @"image"   : self.recipeDetails.image ? @YES : @NO,
+                                                                                  @"privacy" : @(self.recipeDetails.privacy),
+                                                                                  @"new"     : @(self.addMode)
+                                                                                  }];
+
                     } failure:^(NSError *error) {
                            
                            // Run failure.

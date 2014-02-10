@@ -7,10 +7,42 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Parse/PFAnalytics.h>
 
 @interface AnalyticsHelper : NSObject
 
-+ (void)trackEventName:(NSString *)eventName params:(NSDictionary *)dimensions;
+#pragma mark - Events
+
+extern NSString *const kEventLibraryView;
+extern NSString *const kEventLibraryBookSummaryView;
+
+extern NSString *const kEventBookView;
+extern NSString *const kEventBookAdd;
+extern NSString *const kEventBookDelete;
+extern NSString *const kEventPageView;
+
+extern NSString *const kEventSearch;
+
+extern NSString *const kEventRecipeView;
+extern NSString *const kEventRecipeSave;
+extern NSString *const kEventRecipeShare;
+extern NSString *const kEventRecipeComment;
+extern NSString *const kEventRecipeLike;
+extern NSString *const kEventRecipePin;
+extern NSString *const kEventRecipeSocialView;
+
+extern NSString *const kEventNotificationsView;
+
+#pragma mark - Properties
+
+extern NSString *const kEventParamsBookPageName;
+extern NSString *const kEventParamsBookPageIndex;
+
+#pragma mark - Tracking methods
+
++ (void)trackEventName:(NSString *)eventName;
++ (void)trackEventName:(NSString *)eventName params:(NSDictionary *)params;
++ (void)trackEventName:(NSString *)eventName params:(NSDictionary *)params timed:(BOOL)timed;
++ (void)endTrackEventName:(NSString *)eventName;
++ (void)endTrackEventName:(NSString *)eventName params:(NSDictionary *)params;
 
 @end

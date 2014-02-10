@@ -1089,6 +1089,7 @@
 		76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF052164A285D00B7DB9C /* CoverPickerCell.m */; };
 		76DEF058164A37BB00B7DB9C /* cook_customise_btns_cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */; };
 		76DEF059164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */; };
+		76E0AE8B18A87A3300F8A73D /* libFlurry_4.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76E0AE8A18A87A3300F8A73D /* libFlurry_4.3.2.a */; };
 		76E0B95417903B7600AD70E3 /* BookNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95317903B7600AD70E3 /* BookNavigationViewController.m */; };
 		76E0B95717903B8E00AD70E3 /* BookNavigationLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95617903B8E00AD70E3 /* BookNavigationLayout.m */; };
 		76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B959179045FD00AD70E3 /* BookHeaderView.m */; };
@@ -2810,6 +2811,8 @@
 		76DEF052164A285D00B7DB9C /* CoverPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPickerCell.m; sourceTree = "<group>"; };
 		76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_btns_cancel.png; sourceTree = "<group>"; };
 		76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_cancel@2x.png"; sourceTree = "<group>"; };
+		76E0AE8918A87A3300F8A73D /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		76E0AE8A18A87A3300F8A73D /* libFlurry_4.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_4.3.2.a; sourceTree = "<group>"; };
 		76E0B95217903B7600AD70E3 /* BookNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationViewController.h; sourceTree = "<group>"; };
 		76E0B95317903B7600AD70E3 /* BookNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationViewController.m; sourceTree = "<group>"; };
 		76E0B95517903B8E00AD70E3 /* BookNavigationLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationLayout.h; sourceTree = "<group>"; };
@@ -3380,6 +3383,7 @@
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
 				761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */,
+				76E0AE8B18A87A3300F8A73D /* libFlurry_4.3.2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5032,6 +5036,15 @@
 			path = RSMaskedLabel;
 			sourceTree = "<group>";
 		};
+		76E0AE8818A87A3300F8A73D /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				76E0AE8918A87A3300F8A73D /* Flurry.h */,
+				76E0AE8A18A87A3300F8A73D /* libFlurry_4.3.2.a */,
+			);
+			path = Flurry;
+			sourceTree = "<group>";
+		};
 		76E9867417E2CEB700D9CAF3 /* CKSearchFieldView */ = {
 			isa = PBXGroup;
 			children = (
@@ -5417,6 +5430,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76E0AE8818A87A3300F8A73D /* Flurry */,
 				F67CE0EB187FB07500FE7AD0 /* PSPDFTextView */,
 				F6B169D71855897200D3FBB6 /* TTTAttributedLabel */,
 				76E9867417E2CEB700D9CAF3 /* CKSearchFieldView */,
@@ -7455,7 +7469,10 @@
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -7512,7 +7529,10 @@
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+				);
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -7598,7 +7618,10 @@
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -7626,7 +7649,10 @@
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+				);
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};

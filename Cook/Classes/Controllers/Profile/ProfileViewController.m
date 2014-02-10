@@ -333,7 +333,7 @@
         __weak typeof(self) weakSelf = self;
         [self.book addFollower:currentUser
                        success:^{
-                           [AnalyticsHelper trackEventName:@"Added to Bench" params:nil];
+                           [AnalyticsHelper trackEventName:kEventBookAdd params:nil];
                            [weakSelf.bookCoverView showFollowed];
                            [EventHelper postFollow:YES book:weakSelf.book];
                        }

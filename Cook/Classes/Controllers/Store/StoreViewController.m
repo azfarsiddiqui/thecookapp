@@ -21,6 +21,7 @@
 #import "CKSearchFieldView.h"
 #import "ViewHelper.h"
 #import "StoreUnitTabView.h"
+#import "AnalyticsHelper.h"
 
 @interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate,
     CKSearchFieldViewDelegate, UIGestureRecognizerDelegate>
@@ -205,42 +206,42 @@
 
 - (CategoriesStoreCollectionViewController *)categoriesViewController {
     if (!_categoriesViewController) {
-        _categoriesViewController = [[CategoriesStoreCollectionViewController alloc] initWithDelegate:self];
+        _categoriesViewController = [[CategoriesStoreCollectionViewController alloc] initWithDelegate:self sectionName:@"Collections"];
     }
     return _categoriesViewController;
 }
 
 - (FeaturedStoreCollectionViewController *)featuredViewController {
     if (!_featuredViewController) {
-        _featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
+        _featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self sectionName:@"Featured"];
     }
     return _featuredViewController;
 }
 
 - (WorldStoreCollectionViewController *)worldViewController {
     if (!_worldViewController) {
-        _worldViewController = [[WorldStoreCollectionViewController alloc] initWithDelegate:self];
+        _worldViewController = [[WorldStoreCollectionViewController alloc] initWithDelegate:self sectionName:@"World"];
     }
     return _worldViewController;
 }
 
 - (SearchStoreCollectionViewController *)searchViewController {
     if (!_searchViewController) {
-        _searchViewController = [[SearchStoreCollectionViewController alloc] initWithDelegate:self];
+        _searchViewController = [[SearchStoreCollectionViewController alloc] initWithDelegate:self sectionName:@"Search"];
     }
     return _searchViewController;
 }
 
 - (FriendsStoreCollectionViewController *)friendsViewController {
     if (!_friendsViewController) {
-        _friendsViewController = [[FriendsStoreCollectionViewController alloc] initWithDelegate:self];
+        _friendsViewController = [[FriendsStoreCollectionViewController alloc] initWithDelegate:self sectionName:@"Friends"];
     }
     return _friendsViewController;
 }
 
 - (SuggestedStoreCollectionViewController *)suggestedViewController {
     if (!_suggestedViewController) {
-        _suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self];
+        _suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self sectionName:@"Suggested"];
     }
     return _suggestedViewController;
 }
@@ -511,6 +512,9 @@
                          [storeCollectionViewController loadBooks];
                          self.animating = NO;
                      }];
+    
+    // Analytics.
+    [AnalyticsHelper trackEventName:kEventLibraryView params:@{ @"tab" : storeCollectionViewController.sectionName }];
 }
 
 - (void)enableSearchMode:(BOOL)searchMode {

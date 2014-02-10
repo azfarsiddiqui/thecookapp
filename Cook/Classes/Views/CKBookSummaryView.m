@@ -708,7 +708,8 @@
     __weak typeof(self) weakSelf = self;
     [self.book addFollower:self.currentUser
                    success:^{
-                       [AnalyticsHelper trackEventName:@"Added to Bench" params:nil];
+                       [AnalyticsHelper trackEventName:kEventBookAdd params:nil];
+                       
                        [weakSelf updateButtonText:@"BOOK ON BENCH" activity:NO
                                              icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
                                           enabled:NO target:nil selector:nil];

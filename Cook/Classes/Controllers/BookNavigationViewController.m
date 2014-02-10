@@ -25,6 +25,7 @@
 #import "BookContentImageView.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
+#import "AnalyticsHelper.h"
 #import "BookContentCell.h"
 #import "CKPhotoManager.h"
 #import "CardViewHelper.h"
@@ -93,6 +94,9 @@
 // Update execution block.
 @property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
 
+// Analytics
+@property (nonatomic, strong) NSMutableDictionary *pagesViewed;
+
 @end
 
 @implementation BookNavigationViewController
@@ -125,6 +129,7 @@
         self.currentUser = [CKUser currentUser];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
+        self.pagesViewed = [NSMutableDictionary dictionary];
         
         // Init the titleVC, which could be shared between RootVC and BookNavigationVC.
         if (!titleViewController) {
@@ -170,6 +175,11 @@
     leftEdgeGesture.delegate = self;
     leftEdgeGesture.edges = UIRectEdgeLeft;
     [self.collectionView addGestureRecognizer:leftEdgeGesture];
+    
+    // View book.
+    [AnalyticsHelper trackEventName:kEventBookView params:@{ @"owner" : @([self.book isOwner]),
+                                                             @"guest" : @(self.currentUser == nil) }
+                              timed:YES];
 }
 
 - (void)setActive:(BOOL)active {
@@ -793,10 +803,6 @@
         
         // Start on page 1.
         [self peekTheBook];
-        
-        //analytics
-        NSDictionary *dimensions = @{@"isOwnBook" : [NSString stringWithFormat:@"%i",([CKUser currentUser].objectId == self.user.objectId)]};
-        [AnalyticsHelper trackEventName:@"Book opened" params:dimensions];
     }
     
     // Left/right edges.
@@ -844,11 +850,13 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self updateNavigationButtons];
+        [self trackPageView];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavigationButtons];
+    [self trackPageView];
     
     //Tell headers images to load content now
     if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
@@ -866,6 +874,7 @@
     [self activatePageContent];
     
     [self updateNavigationButtons];
+    [self trackPageView];
     
     self.collectionView.userInteractionEnabled = YES;
     self.fastForward = NO;
@@ -1600,6 +1609,9 @@
 }
 
 - (void)closeBookWithPinch:(BOOL)pinch {
+    
+    [AnalyticsHelper endTrackEventName:kEventBookView params:nil];
+    
     self.book = nil;
     if (pinch) {
         [self.delegate bookNavigationControllerCloseRequested];
@@ -1670,6 +1682,9 @@
     CGRect bounds = self.collectionView.bounds;
     bounds.origin.x = kIndexSection * self.collectionView.bounds.size.width;
     self.collectionView.bounds = bounds;
+    
+    // Track start page view.
+    [self trackPageView];
 }
 
 - (void)cancelTapped:(id)sender {
@@ -1914,6 +1929,42 @@
 
 - (void)updateNavigationButtons {
     [self.bookNavigationView enableAddAndEdit:![self onLikesPage]];
+}
+
+- (void)trackPageView {
+    NSInteger pageIndex = [self currentPageIndex];
+    
+    // Have we tracked this page?
+    if ([self.pagesViewed objectForKey:@(pageIndex)]) {
+        return;
+    }
+    
+    NSString *page = nil;
+    
+    if (pageIndex == 0) {
+        page = @"Profile";
+    } else if (pageIndex == 1) {
+        page = @"Title";
+    } else {
+        
+        // Assume at content section
+        NSInteger contentPageIndex = pageIndex - 2;
+        if (contentPageIndex >= 0 && contentPageIndex < [self.pages count]) {
+            
+            // Get page name
+            page = [self.pages objectAtIndex:contentPageIndex];
+        }
+    }
+    
+    // Mark as tracked.
+    [self.pagesViewed setObject:@(YES) forKey:@(pageIndex)];
+    
+    // Capture page details.
+    NSMutableDictionary *pageParams = [NSMutableDictionary dictionaryWithObject:@(pageIndex) forKey:kEventParamsBookPageIndex];
+    if (page) {
+        [pageParams setObject:page forKey:kEventParamsBookPageName];
+    }
+    [AnalyticsHelper trackEventName:kEventPageView params:pageParams];
 }
 
 - (void)addPage:(NSString *)page {

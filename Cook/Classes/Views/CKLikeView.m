@@ -114,7 +114,7 @@
            completion:^{
                self.likeButton.userInteractionEnabled = YES;
                self.likeButton.enabled = YES;
-               [AnalyticsHelper trackEventName:@"Liked" params:nil];
+               [AnalyticsHelper trackEventName:kEventRecipeLike params:@{ @"liked" : @(like) }];
            } failure:^(NSError *error) {
                
                // Revert the liked state.

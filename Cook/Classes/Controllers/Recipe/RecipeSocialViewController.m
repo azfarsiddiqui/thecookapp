@@ -174,6 +174,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         [self loadData];
     }
     
+    [AnalyticsHelper trackEventName:kEventRecipeSocialView];
 }
 
 - (NSInteger)currentNumComments {
@@ -397,7 +398,8 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         // Saves the comment in the background.
         self.saving = YES;
         [comment saveInBackground];
-        [AnalyticsHelper trackEventName:@"Commented" params:nil];
+        
+        [AnalyticsHelper trackEventName:kEventRecipeComment];
     }
     
 }

@@ -31,6 +31,7 @@
 #import "RootViewController.h"
 #import "FollowReloadButtonView.h"
 #import "NSString+Utilities.h"
+#import "AnalyticsHelper.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -1199,6 +1200,7 @@
     [book removeFollower:currentUser
                  success:^{
                      
+                     [AnalyticsHelper trackEventName:kEventBookDelete];
                      [EventHelper postFollow:NO book:book];
                      
                      // Clear the book updates.

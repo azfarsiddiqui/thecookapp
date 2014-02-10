@@ -19,6 +19,7 @@
 #import "CKUser.h"
 #import "RecipeSocialViewController.h"
 #import "ProfileViewController.h"
+#import "AnalyticsHelper.h"
 
 @interface NotificationsViewController () <NotificationCellDelegate, UICollectionViewDataSource,
     UICollectionViewDelegateFlowLayout, RecipeSocialViewControllerDelegate>
@@ -57,6 +58,8 @@
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     [self loadData];
+    
+    [AnalyticsHelper trackEventName:kEventNotificationsView];
 }
 
 #pragma mark - NotificationCellDelegate methods

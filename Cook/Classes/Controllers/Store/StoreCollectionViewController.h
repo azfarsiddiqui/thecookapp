@@ -29,8 +29,9 @@
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL loading;
 @property (nonatomic, strong) NSMutableArray *books;
+@property (nonatomic, strong) NSString *sectionName;
 
-- (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate;
+- (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate sectionName:(NSString *)sectionName;
 - (void)enable:(BOOL)enable;
 - (void)loadData;
 - (void)unloadData;

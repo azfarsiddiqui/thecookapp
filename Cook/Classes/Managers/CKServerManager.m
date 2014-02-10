@@ -15,6 +15,7 @@
 #import "AppHelper.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
+#import "Flurry.h"
 
 @interface CKServerManager ()
 
@@ -65,6 +66,10 @@
     
     // Crashlytics.
     [Crashlytics startWithAPIKey:@"78b5ee31da5ef077dd802aa93ca267444ea27b07"];
+    
+    // Flurry.
+    [Flurry setCrashReportingEnabled:NO];
+    [Flurry startSession:@"WDJK6ZN6RJH9MV54CVY8"];
     
     // Start up setup.
     [[CKPhotoManager sharedInstance] setupBooks];

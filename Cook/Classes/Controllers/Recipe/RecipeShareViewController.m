@@ -374,6 +374,10 @@
 }
 
 - (void)sharePinterest {
+    
+    // Assume success as we don't deal with callbacks yet.
+    [self successWithType:CKSharePinterest];
+    
     self.pinterest = [[Pinterest alloc] initWithClientId:@"1436113"];
     NSString *recipeDescription = [NSString stringWithFormat:@""];
     [self.pinterest createPinWithImageURL:[NSURL URLWithString:self.recipe.recipeImage.imageFile.url] sourceURL:self.shareURL description:self.recipe.name];
@@ -449,6 +453,10 @@
             successString = @"Success in posting to Message";
             socialString = @"iMessage";
             break;
+        case CKSharePinterest:
+            successString = @"Success in posting to Pinterest";
+            socialString = @"Pinterest";
+            break;
         default:
             successString = @"Success";
             socialString = @"";
@@ -456,9 +464,7 @@
     }
     
     // Analytics
-    NSDictionary *dimensions = @{@"socialType" : socialString};
-    [AnalyticsHelper trackEventName:@"Social Share" params:dimensions];
-    DLog(@"%@", successString);
+    [AnalyticsHelper trackEventName:kEventRecipeShare params:@{ @"type" : socialString }];
 }
 
 #pragma mark - Mail and Message delegates

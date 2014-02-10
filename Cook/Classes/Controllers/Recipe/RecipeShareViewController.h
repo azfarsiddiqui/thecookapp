@@ -14,7 +14,8 @@ typedef enum {
     CKShareTwitter = 0,
     CKShareFacebook,
     CKShareMail,
-    CKShareMessage
+    CKShareMessage,
+    CKSharePinterest,
 } CKShareType;
 
 @protocol RecipeShareViewControllerDelegate <NSObject>
