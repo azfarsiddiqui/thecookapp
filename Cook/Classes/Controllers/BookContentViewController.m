@@ -422,7 +422,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (!self.editMode) {
+    if (!self.editMode && indexPath.item < [self.recipes count]) {
         [self showRecipeAtIndexPath:indexPath];
     }
 }

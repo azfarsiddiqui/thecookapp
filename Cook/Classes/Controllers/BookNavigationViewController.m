@@ -60,6 +60,7 @@
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, assign) BOOL navBarAnimating;
+@property (nonatomic, assign) BOOL isLoadMore;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
@@ -135,6 +136,7 @@
         self.titleViewController.delegate = self;
         self.titleViewController.bookPageDelegate = self;
         self.enableLikes = YES;
+        self.isLoadMore = NO;
         self.destinationIndexes = @[@([self contentStartSection])]; //Start with first page
         
         // Forget about dismissed states.
@@ -659,9 +661,10 @@
     NSInteger requestedBatchIndex = currentBatchIndex + 1;
     
     // Load if the requested batch index is within the number of batches.
-    if (requestedBatchIndex < numBatches) {
-        
-        DLog(@"Loading more for page[%@]", page);
+    if (requestedBatchIndex < numBatches && !self.isLoadMore) {
+        self.isLoadMore = YES;
+        //Cehck why its crashing here when doing airplane mode during load more
+        DLog(@"Loading more for page[%@], requestedIndex: %i, %i", page, requestedBatchIndex, numBatches);
         [self.book recipesForPage:page batchIndex:requestedBatchIndex
                           success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
                               if (self.book) {
@@ -675,9 +678,11 @@
                                   // Update the BookContentVC
                                   BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
                                   [contentViewController loadMoreRecipes:recipes];
+                                  self.isLoadMore = NO;
                               }
                           }
                           failure:^(NSError *error) {
+                              self.isLoadMore = NO;
                           }];
     }
     
