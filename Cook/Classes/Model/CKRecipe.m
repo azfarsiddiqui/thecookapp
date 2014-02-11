@@ -702,6 +702,10 @@
     return [[self.parseObject objectForKey:kRecipeAttrNumComments] integerValue];
 }
 
+- (NSInteger)rankScore {
+    return [[self.parseObject objectForKey:kRecipeAttrRankScore] integerValue];
+}
+
 - (void)setRecipeUpdatedDateTime:(NSDate *)recipeUpdatedDateTime {
     if (recipeUpdatedDateTime) {
         [self.parseObject setObject:recipeUpdatedDateTime forKey:kRecipeAttrUpdatedAt];

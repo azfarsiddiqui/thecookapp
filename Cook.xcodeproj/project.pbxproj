@@ -5830,7 +5830,7 @@
 						DevelopmentTeam = NW9NKBHY74;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};

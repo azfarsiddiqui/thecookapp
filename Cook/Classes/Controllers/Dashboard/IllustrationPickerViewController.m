@@ -13,6 +13,7 @@
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
 #import "ImageHelper.h"
+#import "CKPhotoManager.h"
 
 @interface IllustrationPickerViewController () <IllustrationBookCellDelegate>
 
@@ -132,11 +133,11 @@
 #pragma mark - IllustrationBookCellDelegate methods
 
 - (UIImage *)imageForIllustration:(NSString *)illustration size:(CGSize)size {
-    return [CKBookCover smallImageForIllustration:illustration];
+    return [[CKPhotoManager sharedInstance] imageAssetForName:[CKBookCover smallImageNameForIllustration:illustration]];
 }
 
 - (UIImage *)imageForCover:(NSString *)cover size:(CGSize)size {
-    return [CKBookCover smallImageForCover:cover];
+    return [[CKPhotoManager sharedInstance] imageAssetForName:[CKBookCover smallImageNameForCover:cover]];
 }
 
 #pragma mark - Private

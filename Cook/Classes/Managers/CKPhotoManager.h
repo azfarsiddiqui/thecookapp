@@ -51,7 +51,8 @@
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size;
 
 // Setup books, resizing etc.
-- (void)setupBooks;
+- (void)generateImageAssets;
+- (UIImage *)imageAssetForName:(NSString *)name;
 
 // Image caching.
 - (BOOL)imageCachedForKey:(NSString *)cacheKey;

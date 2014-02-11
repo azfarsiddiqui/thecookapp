@@ -32,5 +32,6 @@
 // Local directories/files.
 - (NSString *)documentsDirectoryPath;
 - (NSString *)documentsPathForFileName:(NSString *)name;
+- (NSString *)documentsPathForDirectoryName:(NSString *)name;
 
 @end

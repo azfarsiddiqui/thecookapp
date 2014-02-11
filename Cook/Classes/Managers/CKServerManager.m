@@ -72,7 +72,7 @@
     [Flurry startSession:@"WDJK6ZN6RJH9MV54CVY8"];
     
     // Start up setup.
-    [[CKPhotoManager sharedInstance] setupBooks];
+    [[CKPhotoManager sharedInstance] generateImageAssets];
     
     DLog(@"Started ServerManager");
 }

@@ -11,7 +11,15 @@
 #import "CKServerManager.h"
 #import "EventHelper.h"
 
+@interface AppDelegate ()
+
+@property (nonatomic, strong) NSDate *lastLaunchedDate;
+
+@end
+
 @implementation AppDelegate
+
+#define kFetchUpdateInterval    3600.0    // 1 hour.
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
@@ -27,6 +35,18 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    // Check if the time of last launch exceeded the expiry.
+    NSTimeInterval lastLaunchedElapsedSeconds = ABS([self.lastLaunchedDate timeIntervalSinceNow]);
+    DLog(@"lastLaunchedElapsedSeconds[%f] expiry[%f]", lastLaunchedElapsedSeconds, kFetchUpdateInterval);
+    if (lastLaunchedElapsedSeconds > kFetchUpdateInterval) {
+        DLog(@"trigger resume update");
+        [EventHelper postBackgroundFetch];
+    }
+    
+    // Mark as launched date.
+    self.lastLaunchedDate = [NSDate date];
+    
     [[CKServerManager sharedInstance] handleActive];
 }
 

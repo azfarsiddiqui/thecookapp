@@ -70,7 +70,7 @@
     CGFloat rankingScore = 0.0;
     
     if ([[rankingName lowercaseString] isEqualToString:kPopularRankingName]) {
-        rankingScore = recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
+        rankingScore = recipe.rankScore;
     } else if ([[rankingName lowercaseString] isEqualToString:kLatestRankingName]) {
         rankingScore = [recipe.recipeUpdatedDateTime timeIntervalSince1970];
     }

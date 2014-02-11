@@ -46,6 +46,7 @@ typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 @property (nonatomic, assign, readonly) NSInteger numLikes;
 @property (nonatomic, assign, readonly) NSInteger numComments;
 @property (nonatomic, strong) NSDate *recipeUpdatedDateTime;
+@property (nonatomic, readonly) NSInteger rankScore;
 
 
 // Max serves/prep/cook.
