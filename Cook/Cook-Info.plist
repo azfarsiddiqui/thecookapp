@@ -65,10 +65,6 @@
 		<string>Brandon_thin_it.otf</string>
 		<string>Brandon_thin.otf</string>
 	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-	</array>
 	<key>UILaunchImages~ipad</key>
 	<array>
 		<dict>
