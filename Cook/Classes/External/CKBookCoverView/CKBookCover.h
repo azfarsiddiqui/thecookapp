@@ -51,12 +51,6 @@ typedef enum {
 // Scaled and cached images that were setup upfront.
 + (NSString *)smallImageNameForCover:(NSString *)cover;
 + (NSString *)smallImageNameForIllustration:(NSString *)illustration;
-+ (NSString *)mediumImageNameForCover:(NSString *)cover;
-+ (NSString *)mediumImageNameForIllustration:(NSString *)illustration;
-+ (UIImage *)smallImageForCover:(NSString *)cover;
-+ (UIImage *)smallImageForIllustration:(NSString *)illustration;
-+ (UIImage *)mediumImageForCover:(NSString *)cover;
-+ (UIImage *)mediumImageForIllustration:(NSString *)illustration;
 
 // CKBookCoverView construction sizes.
 + (CGSize)coverImageSize;

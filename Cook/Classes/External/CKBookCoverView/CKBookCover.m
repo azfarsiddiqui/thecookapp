@@ -207,30 +207,6 @@
     return [[NSString stringWithFormat:@"illustration_%@_small", illustration] lowercaseString];
 }
 
-+ (NSString *)mediumImageNameForCover:(NSString *)cover {
-    return [[NSString stringWithFormat:@"cover_%@_medium", cover] lowercaseString];
-}
-
-+ (NSString *)mediumImageNameForIllustration:(NSString *)illustration {
-    return [[NSString stringWithFormat:@"illustration_%@_medium", illustration] lowercaseString];
-}
-
-+ (UIImage *)smallImageForCover:(NSString *)cover {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self smallImageNameForCover:cover]];
-}
-
-+ (UIImage *)smallImageForIllustration:(NSString *)illustration {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self smallImageNameForIllustration:illustration]];
-}
-
-+ (UIImage *)mediumImageForCover:(NSString *)cover {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self mediumImageNameForCover:cover]];
-}
-
-+ (UIImage *)mediumImageForIllustration:(NSString *)illustration {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self mediumImageNameForIllustration:illustration]];
-}
-
 + (NSArray *)covers {
     NSDictionary *settings = [CKBookCover settings];
     NSArray *enabledCovers = [[[settings valueForKey:@"Covers"] allKeys] select:^BOOL(NSString *cover) {

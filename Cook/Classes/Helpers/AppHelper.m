@@ -96,4 +96,8 @@
     return [[self documentsDirectoryPath] stringByAppendingPathComponent:name];
 }
 
+- (NSString *)documentsPathForDirectoryName:(NSString *)name {
+    return [[self documentsDirectoryPath] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@", name]];
+}
+
 @end
