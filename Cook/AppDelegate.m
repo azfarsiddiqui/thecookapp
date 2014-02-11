@@ -40,7 +40,7 @@
     NSTimeInterval lastLaunchedElapsedSeconds = ABS([self.lastLaunchedDate timeIntervalSinceNow]);
     DLog(@"lastLaunchedElapsedSeconds[%f] expiry[%f]", lastLaunchedElapsedSeconds, kFetchUpdateInterval);
     if (lastLaunchedElapsedSeconds > kFetchUpdateInterval) {
-        DLog(@"trigger resuke update");
+        DLog(@"trigger resume update");
         [EventHelper postBackgroundFetch];
     }
     
