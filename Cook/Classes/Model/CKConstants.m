@@ -107,6 +107,7 @@ NSString *const kRecipeAttrNumLikes             = @"numLikes";
 NSString *const kRecipeAttrNumComments          = @"numComments";
 NSString *const kRecipeAttrUserPhoto            = @"userPhoto";
 NSString *const kRecipeAttrUpdatedAt            = @"recipeUpdatedAt";
+NSString *const kRecipeAttrRankScore            = @"rankScore";
 
 #pragma mark - RecipeImage class
 
