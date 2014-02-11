@@ -7460,10 +7460,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					/Users/jtanang/Documents/workspace/xcode/Cook,
-					/Users/geraldk/Documents/iOS/PinItSDKiOS/Pinterest.embeddedframework,
-					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
-					/Users/geraldk/Documents/iOS/CookApp,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -7471,7 +7467,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -7520,10 +7516,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					/Users/jtanang/Documents/workspace/xcode/Cook,
-					/Users/geraldk/Documents/iOS/PinItSDKiOS/Pinterest.embeddedframework,
-					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
-					/Users/geraldk/Documents/iOS/CookApp,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -7531,7 +7523,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 				);
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -7609,10 +7601,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					/Users/jtanang/Documents/workspace/xcode/Cook,
-					/Users/geraldk/Documents/iOS/PinItSDKiOS/Pinterest.embeddedframework,
-					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
-					/Users/geraldk/Documents/iOS/CookApp,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -7620,7 +7608,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -7640,10 +7628,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					/Users/jtanang/Documents/workspace/xcode/Cook,
-					/Users/geraldk/Documents/iOS/PinItSDKiOS/Pinterest.embeddedframework,
-					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
-					/Users/geraldk/Documents/iOS/CookApp,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -7651,7 +7635,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/jtanang/Documents/workspace/xcode/Cook/Cook/Classes/External/Flurry,
+					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 				);
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
