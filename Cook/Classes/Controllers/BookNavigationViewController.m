@@ -1995,7 +1995,16 @@
     // Save the book in the background.
     [self.book saveInBackground];
     
-    [self loadData];
+    // Manually populate other dictionaries
+    NSMutableDictionary *pageNewRecipes = [NSMutableDictionary dictionaryWithDictionary:self.pageRecipes];
+    NSMutableDictionary *pageNewRankings = [NSMutableDictionary dictionaryWithDictionary:self.pageRankings];
+    [pageNewRecipes setObject:@[] forKey:page];
+    self.pageRecipes = pageNewRecipes;
+    [self.pageBatches setObject:@0 forKey:page];
+    [self.pageRecipeCount setObject:@0 forKey:page];
+    [pageNewRankings setObject:@"popular" forKey:page];
+    self.pageRankings = pageNewRankings;
+    [self.pageCurrentBatches setObject:@0 forKey:page];
 }
 
 - (CGFloat)alphaForBookNavigationViewWithOffset:(CGFloat)offset {
