@@ -228,7 +228,9 @@
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
     
     // Check if this was a new/updated recipe.
-    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -252,7 +254,9 @@
         NSMutableArray *recipes = [self.pageRecipes objectForKey:currentPage];
         
         // Look for the recipe to remove from the old page.
-        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+            
+            CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
             return [existingRecipe.objectId isEqualToString:recipe.objectId];
         }];
         
@@ -285,7 +289,13 @@
     // Remove the recipe.
     NSString *page = recipe.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    [recipes removeObject:recipe];
+    
+    NSMutableArray *updatedRecipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }]];
+    
+    [self.pageRecipes setObject:updatedRecipes forKey:page];
     
     // Decrement the recipe.
     [self decrementCountForPage:page];
@@ -306,8 +316,14 @@
     // Remove references to the pinned recipe.
     NSString *page = recipePin.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKRecipe *recipe) {
-        return [recipePin.recipe.objectId isEqualToString:recipe.objectId];
+    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKModel *recipeOrPin) {
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            return [recipePin.objectId isEqualToString:recipeOrPin.objectId];
+        } else {
+            return NO;
+        }
+        
     }]];
     [self.pageRecipes setObject:recipes forKey:page];
     
@@ -330,7 +346,7 @@
     // Add pinned recipe to the page in the book.
     NSString *page = recipePin.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    [recipes addObject:recipePin.recipe];
+    [recipes addObject:recipePin];
     
     // Re-sort the recipes.
     [self sortRecipes:recipes];
@@ -353,7 +369,8 @@
     NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
     
     // Look for the liked recipe if it was there from before.
-    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -389,7 +406,8 @@
     NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
     
     // Look for the liked recipe if it was there from before.
-    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -442,8 +460,16 @@
     
     // Renaming the recipes locally, as server-side has already occured.
     DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
-    [recipesToRename each:^(CKRecipe *recipe) {
-        recipe.page = page;
+    [recipesToRename each:^(CKModel *recipeOrPin) {
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            CKRecipePin *existingPin = (CKRecipePin *)recipeOrPin;
+            existingPin.page = page;
+        } else {
+            CKRecipe *existingRecipe = (CKRecipe *)recipeOrPin;
+            existingRecipe.page = page;
+        }
+
     }];
     
     // Rename the data.
@@ -678,6 +704,7 @@
         [self.book recipesForPage:page batchIndex:requestedBatchIndex
                           success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
                               if (self.book) {
+                                  
                                   // Append to the list of recipes.
                                   NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
                                   [pageRecipes addObjectsFromArray:recipes];
@@ -1239,7 +1266,9 @@
     for (NSString *page in self.pageRecipes) {
         
         NSArray *recipes = [self.pageRecipes objectForKey:page];
-        for (CKRecipe *recipe in recipes) {
+        for (CKModel *recipeOrPin in recipes) {
+            
+            CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
             
             // Update social cache.
             [[CKSocialManager sharedInstance] configureRecipe:recipe];
@@ -1391,8 +1420,12 @@
 }
 
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
-    return [recipes select:^BOOL(CKRecipe *recipe) {
-        return [recipe hasPhotos];
+    return [recipes select:^BOOL(CKModel *recipeOrPin) {
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            return [((CKRecipePin*)recipeOrPin).recipe hasPhotos];
+        } else {
+            return [((CKRecipe *)recipeOrPin) hasPhotos];
+        }
     }];
 }
 
@@ -1860,7 +1893,9 @@
     
     __block CKRecipe *highestRankedRecipe = nil;
     
-    for (CKRecipe *recipe in recipesWithPhotos) {
+    for (CKModel *recipeOrPin in recipesWithPhotos) {
+        
+        CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
         
         // Bypass non-owners if specified.
         if (excludeOthers && ![recipe isOwner:self.user]) {
@@ -2103,7 +2138,11 @@
 }
 
 - (void)sortRecipes:(NSMutableArray *)recipes {
-    [recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
+    [recipes sortUsingComparator:^NSComparisonResult(CKModel *recipeOrPin, CKModel *recipeOrPin2) {
+        
+        CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        CKRecipe *recipe2 = [self recipeFromRecipeOrPin:recipeOrPin2];
+        
         return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
     }];
 }
@@ -2135,6 +2174,16 @@
         [self updateNavigationTitleWithPage:page];
     } else {
         [self updateDefaultNavigationTitle];
+    }
+}
+
+- (CKRecipe *)recipeFromRecipeOrPin:(CKModel *)recipeOrPin {
+    
+    // Cast it to Recipe or Pin.
+    if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+        return ((CKRecipePin*)recipeOrPin).recipe;
+    } else {
+        return (CKRecipe *)recipeOrPin;
     }
 }
 

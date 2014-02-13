@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class CKRecipe;
+@class CKRecipePin;
 @class CKBook;
 @class GridRecipeStatsView;
 @class RecipeIngredientsView;
@@ -19,6 +20,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) CKRecipePin *recipePin;
 
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
@@ -37,6 +39,9 @@
 + (CGSize)imageSize;
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own;
+- (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book;
+- (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book own:(BOOL)own;
+
 
 - (void)updateImageView;
 - (void)updateProfilePhoto;

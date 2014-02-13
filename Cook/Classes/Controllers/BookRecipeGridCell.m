@@ -9,6 +9,7 @@
 #import "BookRecipeGridCell.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
+#import "CKRecipePin.h"
 #import "GridRecipeStatsView.h"
 #import "Theme.h"
 #import "NSString+Utilities.h"
@@ -81,6 +82,15 @@
     // Nil the image and stop spinning.
     self.imageView.image = nil;
     [self.activityView stopAnimating];
+}
+
+- (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book {
+    [self configureRecipe:recipePin.recipe book:book];
+}
+
+- (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book own:(BOOL)own {
+    self.recipePin = recipePin;
+    [self configureRecipe:recipePin.recipe book:book own:own];
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book {
@@ -183,6 +193,12 @@
 - (void)updateTimeInterval {
     
     NSDate *updatedTime = self.recipe.recipeUpdatedDateTime;
+    
+    // If it was a pinned recipe and not from featured book, then show pinned date.
+    if (!self.book.featured && self.recipePin) {
+        updatedTime = self.recipePin.createdDateTime;
+    }
+    
     self.timeIntervalLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:updatedTime] uppercaseString];
     [self.timeIntervalLabel sizeToFit];
     self.timeIntervalLabel.frame = (CGRect){

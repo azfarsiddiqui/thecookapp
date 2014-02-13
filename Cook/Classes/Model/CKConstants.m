@@ -149,6 +149,7 @@ NSString *const kRecipeCommentText              = @"text";
 
 #pragma mark - RecipePin class
 
+NSString *const kRecipePinModelName             = @"RecipePin";
 NSString *const kRecipePinPage                  = @"page";
 
 #pragma mark - RecipeTag class

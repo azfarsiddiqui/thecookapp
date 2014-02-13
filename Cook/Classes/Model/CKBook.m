@@ -443,8 +443,9 @@
 }
 
 - (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    DLog();
     
-    [PFCloud callFunctionInBackground:@"bookRecipes_v1_3"
+    [PFCloud callFunctionInBackground:@"bookRecipes_v1_4"
                        withParameters:@{ @"bookId": self.objectId, @"userId": self.user.objectId }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
@@ -468,24 +469,14 @@
                                         
                                         // Wrap the recipes in our model.
                                         NSMutableDictionary *pageRecipes = [NSMutableDictionary dictionary];
-                                        [parsePageRecipes each:^(NSString *page, NSArray *parseRecipes) {
-                                            NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
-                                                
-                                                // User will be populated for non-owned recipes, like pins.
-                                                PFUser *parseOwner = [parseRecipe objectForKey:kUserModelForeignKeyName];
-                                                if (parseOwner && ![parseOwner.objectId isEqualToString:self.user.objectId]) {
-                                                    
-                                                    return [CKRecipe recipeForParseRecipe:parseRecipe
-                                                                                     user:[CKUser userWithParseUser:parseOwner]
-                                                                                     book:self];
-                                                } else {
-                                                    
-                                                    // Otherwise these are my recipes.
-                                                    return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
-                                                }
-                                                
+                                        [parsePageRecipes each:^(NSString *page, NSArray *parseRecipesOrPins) {
+                                            
+                                            NSArray *recipesOrPins = [parseRecipesOrPins collect:^id(PFObject *parseRecipeOrPin) {
+                                                return [self modelRecipeOrPinForParseObject:parseRecipeOrPin];
                                             }];
-                                           [pageRecipes setObject:recipes forKey:page];
+                                            
+                                           [pageRecipes setObject:recipesOrPins forKey:page];
+                                            
                                         }];
                                         
                                         // Wrap the liked recipes in our model.
@@ -505,8 +496,9 @@
 
 - (void)recipesForPage:(NSString *)page batchIndex:(NSInteger)batchIndex success:(PageRecipesSuccessBlock)success
                failure:(ObjectFailureBlock)failure {
+    DLog();
     
-    [PFCloud callFunctionInBackground:@"pageRecipes_v1_3"
+    [PFCloud callFunctionInBackground:@"pageRecipes_v1_4"
                        withParameters:@{
                                         @"bookId" : self.objectId,
                                         @"userId" : self.user.objectId,
@@ -514,33 +506,21 @@
                                         @"batchIndex" : @(batchIndex)
                                         }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
+                                    
                                     if (!error) {
                                         
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
-                                        NSArray *parseRecipes = [recipeResults objectForKey:@"recipes"];
+                                        NSArray *parseRecipesOrPins = [recipeResults objectForKey:@"recipes"];
                                         NSInteger batchIndex = [recipeResults objectForKey:@"batchIndex"];
                                         NSString *page = [recipeResults objectForKey:@"page"];
                                         
-                                        // Wrap the recipes in our model.
-                                        NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
-                                            
-                                            // User will be populated for non-owned recipes, like pins.
-                                            PFUser *parseOwner = [parseRecipe objectForKey:kUserModelForeignKeyName];
-                                            if (parseOwner && ![parseOwner.objectId isEqualToString:self.user.objectId]) {
-                                                
-                                                return [CKRecipe recipeForParseRecipe:parseRecipe
-                                                                                 user:[CKUser userWithParseUser:parseOwner]
-                                                                                 book:self];
-                                            } else {
-                                                
-                                                // Otherwise these are my recipes.
-                                                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
-                                            }
-                                            
+                                        // Wrap the recipes or pins in our model.
+                                        NSArray *recipesOrPins = [parseRecipesOrPins collect:^id(PFObject *parseRecipeOrPin) {
+                                            return [self modelRecipeOrPinForParseObject:parseRecipeOrPin];
                                         }];
                                     
-                                        DLog(@"Loaded more recipes[%d] for page[%@] batchIndex[%d]", [recipes count], page, batchIndex);
-                                        success([CKBook bookWithParseObject:parseBook], page, batchIndex, recipes);
+                                        DLog(@"Loaded more recipes[%d] for page[%@] batchIndex[%d]", [recipesOrPins count], page, batchIndex);
+                                        success([CKBook bookWithParseObject:parseBook], page, batchIndex, recipesOrPins);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);
@@ -1151,6 +1131,37 @@
                         } failure:^(NSError *error) {
                             failure(error);
                         }];
+}
+
+- (CKModel *)modelRecipeOrPinForParseObject:(PFObject *)parseRecipeOrPin {
+    PFObject *parseRecipe = parseRecipeOrPin;
+    PFUser *parseUser = [parseRecipeOrPin objectForKey:kUserModelForeignKeyName];
+    
+    if ([parseRecipeOrPin.parseClassName isEqualToString:kRecipePinModelName]) {
+        parseRecipe = [parseRecipeOrPin objectForKey:kRecipeModelForeignKeyName];
+        parseUser = [parseRecipe objectForKey:kUserModelForeignKeyName];
+        
+        CKRecipe *recipe = [CKRecipe recipeForParseRecipe:parseRecipe
+                                                     user:[CKUser userWithParseUser:parseUser]
+                                                     book:self];
+        CKRecipePin *recipePin = [[CKRecipePin alloc] initWithParseObject:parseRecipeOrPin];
+        recipePin.recipe = recipe;
+        return recipePin;
+        
+    } else {
+        
+        // User will be populated for non-owned recipes, like pins.
+        if (parseUser && ![parseUser.objectId isEqualToString:self.user.objectId]) {
+            
+            return [CKRecipe recipeForParseRecipe:parseRecipe
+                                             user:[CKUser userWithParseUser:parseUser]
+                                             book:self];
+        } else {
+            
+            // Otherwise these are my recipes.
+            return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
+        }
+    }
 }
 
 @end
