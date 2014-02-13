@@ -1213,6 +1213,11 @@
         if (self.numRetries < MAX_NUM_RETRIES) {
             self.numRetries += 1;
             [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
+            
+        } else {
+            
+            [self.titleViewController configureLoading:NO];
+            
         }
     }];
 }
@@ -1231,7 +1236,6 @@
     for (NSString *page in pageRecipes) {
         NSMutableArray *recipes = [NSMutableArray arrayWithArray:[pageRecipes objectForKey:page]];
         [self.pageRecipes setObject:recipes forKey:page];
-        //Initialise pageCurrentBatches
         [self.pageCurrentBatches setObject:@0 forKey:page];
     }
     
@@ -1253,7 +1257,9 @@
     // If not my book, reject empty pages.
     if (![self.book isOwner]) {
         self.pages = [NSMutableArray arrayWithArray:[self.pages reject:^BOOL(NSString *page) {
-            return ([[self.pageRecipes objectForKey:page] count] == 0);
+            
+            return ([[self.pageRecipeCount objectForKey:page] integerValue] == 0);
+            
         }]];
     }
     NSMutableArray *uppercaseArray = [NSMutableArray new];
