@@ -106,8 +106,8 @@
     if (cachedTitleImage) {
         __weak BookTitleViewController *weakSelf = self;
         [self.photoView setFullImage:cachedTitleImage completion:^{
-//            weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-//            weakSelf.cachedImageLoaded = YES;
+            weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
+            weakSelf.cachedImageLoaded = YES;
         }];
     }
     
