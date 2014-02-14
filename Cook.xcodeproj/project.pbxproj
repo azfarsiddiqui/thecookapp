@@ -1374,7 +1374,6 @@
 		F684F5E018AB451500FCD0E3 /* TiledImageBuilder+Tile.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D218AB451500FCD0E3 /* TiledImageBuilder+Tile.m */; };
 		F684F5E118AB451500FCD0E3 /* TiledImageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D518AB451500FCD0E3 /* TiledImageBuilder.m */; };
 		F684F5E318AB451500FCD0E3 /* TilingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D818AB451500FCD0E3 /* TilingView.m */; };
-		F684F83718AB49B200FCD0E3 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F684F83318AB49B200FCD0E3 /* libturbojpeg.a */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
@@ -3737,28 +3736,6 @@
 		F684F81D18AB45E100FCD0E3 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		F684F81E18AB45E100FCD0E3 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		F684F81F18AB467400FCD0E3 /* PhotoScrollerCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoScrollerCommon.h; sourceTree = "<group>"; };
-		F684F82118AB49B200FCD0E3 /* bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bmp.h; sourceTree = "<group>"; };
-		F684F82218AB49B200FCD0E3 /* cderror.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cderror.h; sourceTree = "<group>"; };
-		F684F82318AB49B200FCD0E3 /* cdjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdjpeg.h; sourceTree = "<group>"; };
-		F684F82418AB49B200FCD0E3 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		F684F82518AB49B200FCD0E3 /* jchuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jchuff.h; sourceTree = "<group>"; };
-		F684F82618AB49B200FCD0E3 /* jconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jconfig.h; sourceTree = "<group>"; };
-		F684F82718AB49B200FCD0E3 /* jdct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jdct.h; sourceTree = "<group>"; };
-		F684F82818AB49B200FCD0E3 /* jdhuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jdhuff.h; sourceTree = "<group>"; };
-		F684F82918AB49B200FCD0E3 /* jerror.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jerror.h; sourceTree = "<group>"; };
-		F684F82A18AB49B200FCD0E3 /* jinclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jinclude.h; sourceTree = "<group>"; };
-		F684F82B18AB49B200FCD0E3 /* jmemsys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jmemsys.h; sourceTree = "<group>"; };
-		F684F82C18AB49B200FCD0E3 /* jmorecfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jmorecfg.h; sourceTree = "<group>"; };
-		F684F82D18AB49B200FCD0E3 /* jpegcomp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpegcomp.h; sourceTree = "<group>"; };
-		F684F82E18AB49B200FCD0E3 /* jpegint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpegint.h; sourceTree = "<group>"; };
-		F684F82F18AB49B200FCD0E3 /* jpeglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpeglib.h; sourceTree = "<group>"; };
-		F684F83018AB49B200FCD0E3 /* jsimd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsimd.h; sourceTree = "<group>"; };
-		F684F83118AB49B200FCD0E3 /* jsimddct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsimddct.h; sourceTree = "<group>"; };
-		F684F83218AB49B200FCD0E3 /* jversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jversion.h; sourceTree = "<group>"; };
-		F684F83318AB49B200FCD0E3 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libturbojpeg.a; sourceTree = "<group>"; };
-		F684F83418AB49B200FCD0E3 /* tjutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tjutil.h; sourceTree = "<group>"; };
-		F684F83518AB49B200FCD0E3 /* transupp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transupp.h; sourceTree = "<group>"; };
-		F684F83618AB49B200FCD0E3 /* turbojpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = turbojpeg.h; sourceTree = "<group>"; };
 		F686ED471817787600746A49 /* CKCommentEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCommentEditViewController.h; sourceTree = "<group>"; };
 		F686ED481817787600746A49 /* CKCommentEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCommentEditViewController.m; sourceTree = "<group>"; };
 		F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_email.png; sourceTree = "<group>"; };
@@ -3989,7 +3966,6 @@
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
 				761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */,
-				F684F83718AB49B200FCD0E3 /* libturbojpeg.a in Frameworks */,
 				76E0AE8B18A87A3300F8A73D /* libFlurry_4.3.2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6038,7 +6014,6 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
-				F684F82018AB49B200FCD0E3 /* libturbojpeg */,
 				F684F5AF18AB451500FCD0E3 /* TilingPhoto */,
 				76E0AE8818A87A3300F8A73D /* Flurry */,
 				F67CE0EB187FB07500FE7AD0 /* PSPDFTextView */,
@@ -7264,36 +7239,6 @@
 			);
 			path = TTTAttributedLabel;
 			sourceTree = "<group>";
-		};
-		F684F82018AB49B200FCD0E3 /* libturbojpeg */ = {
-			isa = PBXGroup;
-			children = (
-				F684F82118AB49B200FCD0E3 /* bmp.h */,
-				F684F82218AB49B200FCD0E3 /* cderror.h */,
-				F684F82318AB49B200FCD0E3 /* cdjpeg.h */,
-				F684F82418AB49B200FCD0E3 /* config.h */,
-				F684F82518AB49B200FCD0E3 /* jchuff.h */,
-				F684F82618AB49B200FCD0E3 /* jconfig.h */,
-				F684F82718AB49B200FCD0E3 /* jdct.h */,
-				F684F82818AB49B200FCD0E3 /* jdhuff.h */,
-				F684F82918AB49B200FCD0E3 /* jerror.h */,
-				F684F82A18AB49B200FCD0E3 /* jinclude.h */,
-				F684F82B18AB49B200FCD0E3 /* jmemsys.h */,
-				F684F82C18AB49B200FCD0E3 /* jmorecfg.h */,
-				F684F82D18AB49B200FCD0E3 /* jpegcomp.h */,
-				F684F82E18AB49B200FCD0E3 /* jpegint.h */,
-				F684F82F18AB49B200FCD0E3 /* jpeglib.h */,
-				F684F83018AB49B200FCD0E3 /* jsimd.h */,
-				F684F83118AB49B200FCD0E3 /* jsimddct.h */,
-				F684F83218AB49B200FCD0E3 /* jversion.h */,
-				F684F83318AB49B200FCD0E3 /* libturbojpeg.a */,
-				F684F83418AB49B200FCD0E3 /* tjutil.h */,
-				F684F83518AB49B200FCD0E3 /* transupp.h */,
-				F684F83618AB49B200FCD0E3 /* turbojpeg.h */,
-			);
-			name = libturbojpeg;
-			path = Cook/libturbojpeg;
-			sourceTree = SOURCE_ROOT;
 		};
 		F68E0EDD17D2AE6600B56E7A /* share */ = {
 			isa = PBXGroup;
@@ -9033,8 +8978,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
-					"\\\"$(SRCROOT)/libturbojpeg\\\"",
-					/Users/geraldk/Documents/iOS/CookApp/Cook/libturbojpeg,
+					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DLIBJPEG";
 				OTHER_LDFLAGS = (
@@ -9093,8 +9037,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
-					"\\\"$(SRCROOT)/libturbojpeg\\\"",
-					/Users/geraldk/Documents/iOS/CookApp/Cook/libturbojpeg,
+					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -9185,8 +9128,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
-					"\\\"$(SRCROOT)/libturbojpeg\\\"",
-					/Users/geraldk/Documents/iOS/CookApp/Cook/libturbojpeg,
+					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DLIBJPEG";
 				OTHER_LDFLAGS = (
@@ -9216,8 +9158,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
-					"\\\"$(SRCROOT)/libturbojpeg\\\"",
-					/Users/geraldk/Documents/iOS/CookApp/Cook/libturbojpeg,
+					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
