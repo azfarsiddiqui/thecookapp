@@ -108,6 +108,7 @@
             border:(BOOL)border overlay:(BOOL)overlay {
     
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize border:border]]) {
+        
         self.placeholderImage = placeholderImage;
         self.profileSize = profileSize;
         self.highlightOnTap = YES;
@@ -121,7 +122,7 @@
         }
         
         // Profile image view.
-        UIImageView *profileImageView = [[UIImageView alloc] initWithImage:placeholderImage];
+        UIImageView *profileImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_blank_profile.png"]];
         profileImageView.frame = [self profileImageFrameWithBorder:border];
         [self addSubview:profileImageView];
         self.profileImageView = profileImageView;
@@ -158,6 +159,8 @@
         // Load photo if user was given.
         if (user) {
             [self loadProfilePhotoForUser:user];
+        } else {
+            self.profileImageView.image = placeholderImage;
         }
         
     }
@@ -214,8 +217,16 @@
                                             progress:^(CGFloat progress){}
                                        isSynchronous:YES
                                           completion:^(UIImage *image, NSString *name) {
+                                              
                                               if ([name isEqualToString:[profileUrl absoluteString]]) {
-                                                  self.profileImageView.image = image;
+                                                  
+                                                  // Cross-fade the image.
+                                                  [UIView transitionWithView:self.profileImageView
+                                                                    duration:0.2
+                                                                     options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                                                                  animations:^{
+                                                                      self.profileImageView.image = image;
+                                                                  } completion:nil];
                                               }
                                           }];
     }

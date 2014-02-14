@@ -66,6 +66,7 @@
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
 @property (nonatomic, assign) NSUInteger numRetries;
+@property (nonatomic, strong) NSString *currentNavigationPageName;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -228,7 +229,9 @@
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
     
     // Check if this was a new/updated recipe.
-    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -252,7 +255,9 @@
         NSMutableArray *recipes = [self.pageRecipes objectForKey:currentPage];
         
         // Look for the recipe to remove from the old page.
-        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+            
+            CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
             return [existingRecipe.objectId isEqualToString:recipe.objectId];
         }];
         
@@ -285,7 +290,13 @@
     // Remove the recipe.
     NSString *page = recipe.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    [recipes removeObject:recipe];
+    
+    NSMutableArray *updatedRecipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }]];
+    
+    [self.pageRecipes setObject:updatedRecipes forKey:page];
     
     // Decrement the recipe.
     [self decrementCountForPage:page];
@@ -306,8 +317,14 @@
     // Remove references to the pinned recipe.
     NSString *page = recipePin.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKRecipe *recipe) {
-        return [recipePin.recipe.objectId isEqualToString:recipe.objectId];
+    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKModel *recipeOrPin) {
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            return [recipePin.objectId isEqualToString:recipeOrPin.objectId];
+        } else {
+            return NO;
+        }
+        
     }]];
     [self.pageRecipes setObject:recipes forKey:page];
     
@@ -330,7 +347,7 @@
     // Add pinned recipe to the page in the book.
     NSString *page = recipePin.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    [recipes addObject:recipePin.recipe];
+    [recipes addObject:recipePin];
     
     // Re-sort the recipes.
     [self sortRecipes:recipes];
@@ -353,7 +370,8 @@
     NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
     
     // Look for the liked recipe if it was there from before.
-    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -389,7 +407,8 @@
     NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
     
     // Look for the liked recipe if it was there from before.
-    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -442,8 +461,16 @@
     
     // Renaming the recipes locally, as server-side has already occured.
     DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
-    [recipesToRename each:^(CKRecipe *recipe) {
-        recipe.page = page;
+    [recipesToRename each:^(CKModel *recipeOrPin) {
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            CKRecipePin *existingPin = (CKRecipePin *)recipeOrPin;
+            existingPin.page = page;
+        } else {
+            CKRecipe *existingRecipe = (CKRecipe *)recipeOrPin;
+            existingRecipe.page = page;
+        }
+
     }];
     
     // Rename the data.
@@ -645,7 +672,7 @@
 }
 
 - (void)bookContentViewControllerShowNavigationView:(BOOL)show {
-    [self showNavigationView:show slide:YES];
+//    [self showNavigationView:show slide:YES];
 }
 
 - (NSInteger)bookContentViewControllerNumBatchesForPage:(NSString *)page {
@@ -678,6 +705,7 @@
         [self.book recipesForPage:page batchIndex:requestedBatchIndex
                           success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
                               if (self.book) {
+                                  
                                   // Append to the list of recipes.
                                   NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
                                   [pageRecipes addObjectsFromArray:recipes];
@@ -833,9 +861,6 @@
     [self capEdgeScrollPoints];
     [self updateStatusBarBetweenPages];
     [self updatePagingContent];
-    
-    // Restore navbar on any side-scroll.
-    [self showNavigationView:YES slide:NO];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -855,12 +880,14 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self updateNavigationButtons];
+        [self updateNavigationTitle];
         [self trackPageView];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavigationButtons];
+    [self updateNavigationTitle];
     [self trackPageView];
     
     //Tell headers images to load content now
@@ -1193,6 +1220,11 @@
         if (self.numRetries < MAX_NUM_RETRIES) {
             self.numRetries += 1;
             [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
+            
+        } else {
+            
+            [self.titleViewController configureLoading:NO];
+            
         }
     }];
 }
@@ -1211,7 +1243,6 @@
     for (NSString *page in pageRecipes) {
         NSMutableArray *recipes = [NSMutableArray arrayWithArray:[pageRecipes objectForKey:page]];
         [self.pageRecipes setObject:recipes forKey:page];
-        //Initialise pageCurrentBatches
         [self.pageCurrentBatches setObject:@0 forKey:page];
     }
     
@@ -1233,7 +1264,9 @@
     // If not my book, reject empty pages.
     if (![self.book isOwner]) {
         self.pages = [NSMutableArray arrayWithArray:[self.pages reject:^BOOL(NSString *page) {
-            return ([[self.pageRecipes objectForKey:page] count] == 0);
+            
+            return ([[self.pageRecipeCount objectForKey:page] integerValue] == 0);
+            
         }]];
     }
     NSMutableArray *uppercaseArray = [NSMutableArray new];
@@ -1246,7 +1279,9 @@
     for (NSString *page in self.pageRecipes) {
         
         NSArray *recipes = [self.pageRecipes objectForKey:page];
-        for (CKRecipe *recipe in recipes) {
+        for (CKModel *recipeOrPin in recipes) {
+            
+            CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
             
             // Update social cache.
             [[CKSocialManager sharedInstance] configureRecipe:recipe];
@@ -1369,37 +1404,13 @@
     cell.contentViewController = nil;
 }
 
-- (NSString *)currentPage {
-    NSString *page = nil;
-    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    BookNavigationLayout *layout = [self currentLayout];
-    
-    NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
-    if ([visibleIndexPaths count] > 0) {
-        
-        // This only returns cells not supplementary/decoration views.
-        for (NSIndexPath *indexPath in visibleIndexPaths) {
-            if (indexPath.section >= [self contentStartSection]) {
-                
-                NSInteger pageIndex = indexPath.section - [self contentStartSection];
-                
-                // Look for an indexPath that equals the visibleFrame, i.e. current category page in view.
-                CGFloat pageOffset = [layout pageOffsetForIndexPath:indexPath];
-                if (pageOffset == visibleFrame.origin.x) {
-                    if (pageIndex < [self.pages count]) {
-                        page = [self.pages objectAtIndex:pageIndex];
-                    }
-                }
-            }
-        }
-        
-    }
-    return page;
-}
-
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
-    return [recipes select:^BOOL(CKRecipe *recipe) {
-        return [recipe hasPhotos];
+    return [recipes select:^BOOL(CKModel *recipeOrPin) {
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            return [((CKRecipePin*)recipeOrPin).recipe hasPhotos];
+        } else {
+            return [((CKRecipe *)recipeOrPin) hasPhotos];
+        }
     }];
 }
 
@@ -1412,9 +1423,6 @@
 }
 
 - (void)showRecipe:(CKRecipe *)recipe {
-    
-    // Always show status bar when viewing recipe.
-    [self showNavigationView:YES slide:NO];
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
@@ -1867,7 +1875,9 @@
     
     __block CKRecipe *highestRankedRecipe = nil;
     
-    for (CKRecipe *recipe in recipesWithPhotos) {
+    for (CKModel *recipeOrPin in recipesWithPhotos) {
+        
+        CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
         
         // Bypass non-owners if specified.
         if (excludeOthers && ![recipe isOwner:self.user]) {
@@ -1906,6 +1916,22 @@
     CGFloat pageSpan = self.collectionView.contentOffset.x;
     NSInteger pageIndex = ceil(pageSpan / self.collectionView.bounds.size.width);
     return pageIndex;
+}
+
+- (NSString *)currentPage {
+    
+    NSString *page = nil;
+    NSInteger pageIndex = [self currentPageIndex];
+    
+    // Assume at content section
+    NSInteger contentPageIndex = pageIndex - 2;
+    if (contentPageIndex >= 0 && contentPageIndex < [self.pages count]) {
+        
+        // Get page name
+        page = [self.pages objectAtIndex:contentPageIndex];
+    }
+    
+    return page;
 }
 
 - (NSString *)resolveLikesPageName {
@@ -2110,7 +2136,11 @@
 }
 
 - (void)sortRecipes:(NSMutableArray *)recipes {
-    [recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
+    [recipes sortUsingComparator:^NSComparisonResult(CKModel *recipeOrPin, CKModel *recipeOrPin2) {
+        
+        CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        CKRecipe *recipe2 = [self recipeFromRecipeOrPin:recipeOrPin2];
+        
         return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
     }];
 }
@@ -2120,15 +2150,27 @@
 }
 
 - (void)updateNavigationTitle {
-    [self updateNavigationTitleWithPage:[self currentPage]];
+    NSString *currentPage = [self currentPage];
+    CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:currentPage] CGPointValue];
+    CGFloat offset = scrollOffset.y;
+    [self updateNavigationTitleWithPage:currentPage offset:offset];
 }
 
 - (void)updateNavigationTitleWithPage:(NSString *)pageName {
     if (self.book) {
+        
         NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
         if ([pageName length] > 0) {
             [navigationTitle appendFormat:@" - %@", pageName];
         }
+        
+        // Only update if it has changed.
+        if ([self.currentNavigationPageName isEqualToString:pageName]) {
+            return;
+        }
+        
+        // Remember the current page name.
+        self.currentNavigationPageName = pageName;
         [self.bookNavigationView updateTitle:navigationTitle];
     }
 }
@@ -2142,6 +2184,16 @@
         [self updateNavigationTitleWithPage:page];
     } else {
         [self updateDefaultNavigationTitle];
+    }
+}
+
+- (CKRecipe *)recipeFromRecipeOrPin:(CKModel *)recipeOrPin {
+    
+    // Cast it to Recipe or Pin.
+    if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+        return ((CKRecipePin*)recipeOrPin).recipe;
+    } else {
+        return (CKRecipe *)recipeOrPin;
     }
 }
 

@@ -261,6 +261,20 @@
     return [stretchImage resizableImageWithCapInsets:UIEdgeInsetsMake(stretchImage.size.height/2, 0, stretchImage.size.height/2, 0)];
 }
 
+#pragma mark - Image Generation
+
++ (UIImage *)imageWithColour:(UIColor *)colour size:(CGSize)size {
+    CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [colour CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+
 #pragma mark - Private
 
 + (UIImage *)coreImageBlurWithImage:(UIImage *)image {

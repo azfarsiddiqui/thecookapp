@@ -32,6 +32,7 @@
 #import "CKActivityIndicatorView.h"
 #import "CKContentContainerCell.h"
 #import "SDImageCache.h"
+#import "CKRecipePin.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
@@ -157,7 +158,7 @@
     
     // Gather the index paths to insert.
     NSInteger startIndex = [self.recipes count];
-    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKModel *recipeOrPin, NSUInteger recipeIndex) {
         return [NSIndexPath indexPathForItem:(startIndex + recipeIndex) inSection:0];
     }]];
     
@@ -282,10 +283,21 @@
     DLog();
     if (self.scrollToRecipe) {
         self.disableInformScrollOffset = YES;
-        if ([self.recipes containsObject:self.scrollToRecipe]) {
-            NSInteger scrollIndex = [self.recipes indexOfObject:self.scrollToRecipe];
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:scrollIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        
+        NSInteger foundIndex = [self.recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+            if ([recipeOrPin isKindOfClass:[CKRecipe class]]) {
+                CKRecipe *recipe = (CKRecipe *)recipeOrPin;
+                return [recipe.objectId isEqualToString:self.scrollToRecipe.objectId];
+                
+            } else {
+                return NO;
+            }
+        }];
+        
+        if (foundIndex != -1) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:foundIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
         }
+        
         self.disableInformScrollOffset = NO;
         self.scrollToRecipe = nil;
     }
@@ -300,7 +312,8 @@
 }
 
 - (BookContentGridType)bookContentGridTypeForItemAtIndex:(NSInteger)itemIndex {
-    CKRecipe *recipe = [self.recipes objectAtIndex:itemIndex];
+    CKModel *recipeOrPin = [self.recipes objectAtIndex:itemIndex];
+    CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
     return [self gridTypeForRecipe:recipe];
 }
 
@@ -453,16 +466,31 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = nil;
+    
     //Agressively flush cache to preserve memory usage
     if (indexPath.item < [self.recipes count]) {
         
-        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+        CKModel *recipeOrPin = [self.recipes objectAtIndex:indexPath.item];
+        CKRecipePin *recipePin = nil;
+        CKRecipe *recipe = nil;
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            recipePin = (CKRecipePin *)recipeOrPin;
+        } else {
+            recipe = (CKRecipe *)recipeOrPin;
+        }
+        
         BookContentGridType gridType = [self gridTypeForRecipe:recipe];
         NSString *cellId = [self cellIdentifierForGridType:gridType];
         
         BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
                                                                                                               forIndexPath:indexPath];
-        [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
+        
+        if (recipePin) {
+            [recipeCell configureRecipePin:recipePin book:self.book own:self.ownBook];
+        } else {
+            [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
+        }
         
         // Load more?
         if (indexPath.item == ([self.recipes count] - 1)) {
@@ -598,7 +626,8 @@
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+    CKModel *recipeOrPin = [self.recipes objectAtIndex:indexPath.item];
+    CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
     [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
 }
 
@@ -834,7 +863,8 @@
     }
     
     // Look for the recipe index.
-    NSInteger recipeIndex = [self.recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger recipeIndex = [self.recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     if (recipeIndex != -1) {
@@ -849,5 +879,14 @@
     }];
 }
 
+- (CKRecipe *)recipeFromRecipeOrPin:(CKModel *)recipeOrPin {
+    
+    // Cast it to Recipe or Pin.
+    if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+        return ((CKRecipePin*)recipeOrPin).recipe;
+    } else {
+        return (CKRecipe *)recipeOrPin;
+    }
+}
 
 @end

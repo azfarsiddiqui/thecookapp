@@ -958,7 +958,7 @@
                          // Shift Title.
                          CGRect signUpTitleFrame = [self titleFrameForSignUp:self.signUpMode];
                          if (enable) {
-                             signUpTitleFrame.origin.y = facebookButtonFrame.origin.y - 120.0;
+                             signUpTitleFrame.origin.y = facebookButtonFrame.origin.y - 98.0;
                          }
                          self.titleLabel.frame = signUpTitleFrame;
                          

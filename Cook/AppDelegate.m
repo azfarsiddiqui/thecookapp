@@ -25,9 +25,6 @@
     
     [[CKServerManager sharedInstance] startWithLaunchOptions:launchOptions];
     
-    // Hourly fetch.
-    [application setMinimumBackgroundFetchInterval:3600];
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [[RootViewController alloc] init];
     [self.window makeKeyAndVisible];

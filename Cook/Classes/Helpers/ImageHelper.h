@@ -56,4 +56,7 @@
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius
           completion:(void (^)(UIImage *blurredImage))completion;
 
+// Image generation.
++ (UIImage *)imageWithColour:(UIColor *)colour size:(CGSize)size;
+
 @end

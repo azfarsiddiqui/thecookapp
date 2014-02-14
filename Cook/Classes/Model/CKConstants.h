@@ -148,6 +148,7 @@ extern NSString *const kRecipeCommentText;
 
 #pragma mark - RecipePin class
 
+extern NSString *const kRecipePinModelName;
 extern NSString *const kRecipePinPage;
 
 #pragma mark - RecipeTag class

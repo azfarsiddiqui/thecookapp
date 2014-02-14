@@ -233,7 +233,7 @@
     
 }
 
-#pragma mark - PagingBenchtopViewController methods
+#pragma mark - BenchtopViewController methods
 
 - (void)enable:(BOOL)enable {
     [self enable:enable animated:NO];
@@ -253,10 +253,17 @@
 }
 
 - (void)bookWillOpen:(BOOL)open {
+    
+    // Make sure book closes down on the book as indicated by selectedIndexPath.
+    if (!open && self.selectedIndexPath) {
+        [self scrollToBookAtIndexPath:self.selectedIndexPath animated:NO];
+    }
+    
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     cell.bookCoverView.hidden = YES;
     [self showBookCell:cell show:!open];
     self.notificationView.alpha = open ? 0.0 : 1.0;
+    
 }
 
 - (void)bookDidOpen:(BOOL)open {
@@ -264,6 +271,10 @@
     // Restore the bookCover.
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     if (!open) {
+        
+        // Reset selectedIndexPath.
+        self.selectedIndexPath = nil;
+        
         cell.bookCoverView.hidden = NO;
         [cell.bookCoverView enable:YES];
         [self.delegate benchtopShowOtherViews];
@@ -398,7 +409,6 @@
     // Only open book if book was in the center.
     if ([self isCenterBookAtIndexPath:indexPath]) {
         
-        self.selectedIndexPath = indexPath;
         [self openBookAtIndexPath:indexPath];
         
     } else {
@@ -1227,6 +1237,9 @@
         return;
     }
     
+    // Remember selected book's indexPath.
+    self.selectedIndexPath = indexPath;
+    
     CGFloat bookScale = 0.98;
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
     [UIView animateWithDuration:0.1
@@ -1255,13 +1268,17 @@
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {
+    [self scrollToBookAtIndexPath:indexPath animated:YES];
+}
+
+- (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
     CGPoint requiredOffset = CGPointZero;
     CGSize cellSize = [BenchtopBookCoverViewCell cellSize];
     if (indexPath.section == kFollowSection) {
         requiredOffset.x += floorf(kSideMargin + (cellSize.width * 2.0) + (indexPath.item * cellSize.width) - (self.collectionView.bounds.size.width / 2.0) + (cellSize.width / 2.0));
     }
     
-    [self.collectionView setContentOffset:requiredOffset animated:YES];
+    [self.collectionView setContentOffset:requiredOffset animated:animated];
 }
 
 - (void)followUpdated:(NSNotification *)notification {
@@ -1283,7 +1300,18 @@
             [self.collectionView performBatchUpdates:^{
                 
                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kFollowSection]]];
+                
             } completion:^(BOOL finished) {
+                
+                // If the book was opened, bump the index of the selectecIndexPath.
+                if (self.selectedIndexPath) {
+                    self.selectedIndexPath = [NSIndexPath indexPathForItem:self.selectedIndexPath.item + 1
+                                                                 inSection:self.selectedIndexPath.section];
+                    
+                    // Make sure book is centered.
+                    [self scrollToBookAtIndexPath:self.selectedIndexPath animated:NO];
+                }
+                
                 [[self pagingLayout] enableFollowMode:NO];
                 [self.collectionView reloadData];
             }]; 
@@ -1523,6 +1551,7 @@
 }
 
 - (void)showBookCell:(BenchtopBookCoverViewCell *)cell show:(BOOL)show {
+    
     // Get a reference to all the visible cells.
     NSArray *visibleCells = [self.collectionView visibleCells];
     
@@ -1541,6 +1570,7 @@
                          }];
                      }
                      completion:^(BOOL finished) {
+                         
                      }];
 }
 
