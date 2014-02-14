@@ -259,7 +259,7 @@
 
 - (CKBookSummaryView *)summaryView {
     if (!_summaryView) {
-        _summaryView = [[CKBookSummaryView alloc] initWithBook:self.book];
+        _summaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:NO];
         _summaryView.delegate = self;
     }
     return _summaryView;
