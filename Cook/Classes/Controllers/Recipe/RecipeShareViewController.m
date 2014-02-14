@@ -379,8 +379,9 @@
     [self successWithType:CKSharePinterest];
     
     self.pinterest = [[Pinterest alloc] initWithClientId:@"1436113"];
-    NSString *recipeDescription = [NSString stringWithFormat:@""];
-    [self.pinterest createPinWithImageURL:[NSURL URLWithString:self.recipe.recipeImage.imageFile.url] sourceURL:self.shareURL description:self.recipe.name];
+    //www.worldscookbook.com/images/cook_defaultimage_pinterest@2x.jpg
+    NSURL *imageURL = [NSURL URLWithString:self.recipe.recipeImage ? self.recipe.recipeImage.imageFile.url : @"www.worldscookbook.com/images/cook_defaultimage_pinterest@2x.jpg"];
+    [self.pinterest createPinWithImageURL:imageURL sourceURL:self.shareURL description:self.recipe.name];
 }
 
 - (void)shareEmail

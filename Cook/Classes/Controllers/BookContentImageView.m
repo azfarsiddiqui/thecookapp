@@ -17,15 +17,15 @@
 #import "EventHelper.h"
 #import "CKPhotoManager.h"
 #import "NSString+Utilities.h"
+#import "CKPhotoView.h"
 
 @interface BookContentImageView ()
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) CKPhotoView *photoView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
-@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
 
 @end
@@ -35,9 +35,8 @@
 #define kForceVisibleOffset         1.0
 
 - (void)dealloc {
-    self.imageView.image = nil;
+    self.photoView = nil;
     self.vignetteOverlayView.image = nil;
-    self.blurredImageView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
 }
 
@@ -48,17 +47,15 @@
         // The containerView is merely to serve as an opaque background for smooth scrolling without much of it clear.
         self.containerView = [[UIView alloc] initWithFrame:[self contentBoundsWithoutForceVisibleOffset]];
         self.containerView.backgroundColor = [Theme recipeGridImageBackgroundColour];
-        [self.containerView addSubview:self.imageView];
+        [self.containerView addSubview:self.photoView];
         [self.containerView addSubview:self.vignetteOverlayView];
         
         // Scrolling overlays
-        [self.imageView addSubview:self.blurredImageView];
-        
         [self addSubview:self.containerView];
         
         // Motion effects.
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
-        [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
+        [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
         
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
@@ -68,20 +65,20 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-    self.imageView.image = nil;
-    self.blurredImageView.image = nil;
+    [self.photoView cleanImageViews];
     self.recipe = nil;
     self.book = nil;
     self.fullImageLoaded = NO;
 }
 
 - (void)applyOffset:(CGFloat)offset {
-    [self applyOffset:offset distance:200.0 view:self.blurredImageView];
+    [self applyOffset:offset distance:200.0 view:self.photoView.blurredImageView];
 }
 
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     self.recipe = recipe;
     self.book = book;
+    self.fullImageLoaded = NO;
     [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book];
     
     if ([recipe hasPhotos]) {
@@ -90,29 +87,28 @@
 }
 
 - (CGSize)imageSizeWithMotionOffset {
-    return self.imageView.frame.size;
+    return self.photoView.frame.size;
 }
 
 - (void)reloadWithBook:(CKBook *)book {
     self.isFullLoad = YES;
-    [self configureImage:self.imageView.image book:book];
+    [self configureFeaturedRecipe:self.recipe book:book];
+//    [self configureImage:self.imageView.image book:book];
 }
 
 #pragma mark - Properties
 
-- (UIImageView *)imageView {
-    if (!_imageView) {
+- (CKPhotoView *)photoView {
+    if (!_photoView) {
         UIOffset motionOffset = [ViewHelper standardMotionOffset];
-        _imageView = [[UIImageView alloc] initWithFrame:(CGRect){
+        _photoView = [[CKPhotoView alloc] initWithFrame:(CGRect){
             self.containerView.bounds.origin.x - motionOffset.horizontal,
             self.containerView.bounds.origin.y - motionOffset.vertical,
             self.containerView.bounds.size.width + (motionOffset.horizontal * 2.0),
             self.containerView.bounds.size.height + (motionOffset.vertical * 2.0),
         }];
-        _imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
     }
-    return _imageView;
+    return _photoView;
 }
 
 - (UIImageView *)vignetteOverlayView {
@@ -121,13 +117,6 @@
         _vignetteOverlayView.image = [UIImage imageNamed:@"cook_book_inner_page_overlay.png"];
     }
     return _vignetteOverlayView;
-}
-
-- (UIImageView *)blurredImageView {
-    if (!_blurredImageView) {
-        _blurredImageView = [[UIImageView alloc] initWithFrame:self.imageView.bounds];
-    }
-    return _blurredImageView;
 }
 
 #pragma mark - Private methods
@@ -184,19 +173,19 @@
 
 - (void)configureImage:(UIImage *)image book:(CKBook *)book {
     if (image) {
-        self.imageView.image = image;
         self.vignetteOverlayView.hidden = NO;
         
-        if (self.isFullLoad) {
+        //Only set blurred image if user has explicitly navigated or fast-forwarded to this page
+        if (self.isFullLoad && self.fullImageLoaded) {
             UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
-            [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-                self.blurredImageView.image = blurredImage;
-            }];
+            [self.photoView setFullImage:image];
+            [self.photoView setBlurredImage:image tintColor:tintColour];
+        } else {
+            [self.photoView setThumbnailImage:image];
         }
         
     } else {
-        self.imageView.image = nil;
-        self.blurredImageView.image = nil;
+        [self.photoView cleanImageViews];
         self.vignetteOverlayView.hidden = YES;
     }
 }
