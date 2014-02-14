@@ -66,6 +66,7 @@
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
 @property (nonatomic, assign) NSUInteger numRetries;
+@property (nonatomic, strong) NSString *currentNavigationPageName;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -671,7 +672,7 @@
 }
 
 - (void)bookContentViewControllerShowNavigationView:(BOOL)show {
-    [self showNavigationView:show slide:YES];
+//    [self showNavigationView:show slide:YES];
 }
 
 - (NSInteger)bookContentViewControllerNumBatchesForPage:(NSString *)page {
@@ -860,9 +861,6 @@
     [self capEdgeScrollPoints];
     [self updateStatusBarBetweenPages];
     [self updatePagingContent];
-    
-    // Restore navbar on any side-scroll.
-    [self showNavigationView:YES slide:NO];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -882,12 +880,14 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self updateNavigationButtons];
+        [self updateNavigationTitle];
         [self trackPageView];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavigationButtons];
+    [self updateNavigationTitle];
     [self trackPageView];
     
     //Tell headers images to load content now
@@ -1397,34 +1397,6 @@
     cell.contentViewController = nil;
 }
 
-- (NSString *)currentPage {
-    NSString *page = nil;
-    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    BookNavigationLayout *layout = [self currentLayout];
-    
-    NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
-    if ([visibleIndexPaths count] > 0) {
-        
-        // This only returns cells not supplementary/decoration views.
-        for (NSIndexPath *indexPath in visibleIndexPaths) {
-            if (indexPath.section >= [self contentStartSection]) {
-                
-                NSInteger pageIndex = indexPath.section - [self contentStartSection];
-                
-                // Look for an indexPath that equals the visibleFrame, i.e. current category page in view.
-                CGFloat pageOffset = [layout pageOffsetForIndexPath:indexPath];
-                if (pageOffset == visibleFrame.origin.x) {
-                    if (pageIndex < [self.pages count]) {
-                        page = [self.pages objectAtIndex:pageIndex];
-                    }
-                }
-            }
-        }
-        
-    }
-    return page;
-}
-
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
     return [recipes select:^BOOL(CKModel *recipeOrPin) {
         if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
@@ -1444,9 +1416,6 @@
 }
 
 - (void)showRecipe:(CKRecipe *)recipe {
-    
-    // Always show status bar when viewing recipe.
-    [self showNavigationView:YES slide:NO];
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
@@ -1942,6 +1911,22 @@
     return pageIndex;
 }
 
+- (NSString *)currentPage {
+    
+    NSString *page = nil;
+    NSInteger pageIndex = [self currentPageIndex];
+    
+    // Assume at content section
+    NSInteger contentPageIndex = pageIndex - 2;
+    if (contentPageIndex >= 0 && contentPageIndex < [self.pages count]) {
+        
+        // Get page name
+        page = [self.pages objectAtIndex:contentPageIndex];
+    }
+    
+    return page;
+}
+
 - (NSString *)resolveLikesPageName {
     NSString *resolvedLikePageName = nil;
     
@@ -2158,15 +2143,27 @@
 }
 
 - (void)updateNavigationTitle {
-    [self updateNavigationTitleWithPage:[self currentPage]];
+    NSString *currentPage = [self currentPage];
+    CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:currentPage] CGPointValue];
+    CGFloat offset = scrollOffset.y;
+    [self updateNavigationTitleWithPage:currentPage offset:offset];
 }
 
 - (void)updateNavigationTitleWithPage:(NSString *)pageName {
     if (self.book) {
+        
         NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
         if ([pageName length] > 0) {
             [navigationTitle appendFormat:@" - %@", pageName];
         }
+        
+        // Only update if it has changed.
+        if ([self.currentNavigationPageName isEqualToString:pageName]) {
+            return;
+        }
+        
+        // Remember the current page name.
+        self.currentNavigationPageName = pageName;
         [self.bookNavigationView updateTitle:navigationTitle];
     }
 }
