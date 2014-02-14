@@ -65,7 +65,7 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-    [self.photoView cleanImageViews];
+//    [self.photoView cleanImageViews];
     self.recipe = nil;
     self.book = nil;
     self.fullImageLoaded = NO;
@@ -79,7 +79,9 @@
     self.recipe = recipe;
     self.book = book;
     self.fullImageLoaded = NO;
-    [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book];
+    if (!self.photoView.thumbnailView.image) {
+        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book thumb:YES];
+    }
     
     if ([recipe hasPhotos]) {
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset]];
@@ -92,7 +94,9 @@
 
 - (void)reloadWithBook:(CKBook *)book {
     self.isFullLoad = YES;
+    if (!self.fullImageLoaded) {
     [self configureFeaturedRecipe:self.recipe book:book];
+    }
 //    [self configureImage:self.imageView.image book:book];
 }
 
@@ -107,6 +111,7 @@
             self.containerView.bounds.size.width + (motionOffset.horizontal * 2.0),
             self.containerView.bounds.size.height + (motionOffset.vertical * 2.0),
         }];
+        _photoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     }
     return _photoView;
 }
@@ -164,30 +169,39 @@
         if (!self.fullImageLoaded) {
             if ([EventHelper hasImageForPhotoLoading:notification]) {
                 UIImage *image = [EventHelper imageForPhotoLoading:notification];
-                [self configureImage:image book:self.book];
+                [self configureImage:image book:self.book thumb:thumb];
                 self.fullImageLoaded = !thumb;
             }
         }
     }
 }
 
-- (void)configureImage:(UIImage *)image book:(CKBook *)book {
+- (void)configureImage:(UIImage *)image book:(CKBook *)book thumb:(BOOL)isThumb {
     if (image) {
         self.vignetteOverlayView.hidden = NO;
         
-        //Only set blurred image if user has explicitly navigated or fast-forwarded to this page
-        if (self.isFullLoad && self.fullImageLoaded) {
-            UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
-            [self.photoView setFullImage:image];
-            [self.photoView setBlurredImage:image tintColor:tintColour];
-        } else {
+        if (isThumb) {
             [self.photoView setThumbnailImage:image];
+        }
+        
+        //Only set blurred image if user has explicitly navigated or fast-forwarded to this page
+        if (self.isFullLoad) {
+            if (!isThumb) {
+                [self.photoView setFullImage:image];
+            }
+            UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
+            [self.photoView setBlurredImage:image tintColor:tintColour];
         }
         
     } else {
         [self.photoView cleanImageViews];
         self.vignetteOverlayView.hidden = YES;
     }
+}
+
+- (void)deactivateImage {
+    self.photoView.imageView.imageView = nil;
+    self.photoView.blurredImageView.image = nil;
 }
 
 @end

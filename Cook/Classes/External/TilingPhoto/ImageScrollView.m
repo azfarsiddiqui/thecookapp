@@ -110,6 +110,7 @@
 
 - (void)displayObject:(id)obj
 {
+    self.alpha = 0.0;
 	CGSize size;
 
 	assert(obj);
@@ -145,6 +146,8 @@
 	
     [self setMaxMinZoomScalesForCurrentBounds];
     self.zoomScale = self.minimumZoomScale;
+    
+    self.alpha = 1.0;
 }
 
 - (void)setMaxMinZoomScalesForCurrentBounds
@@ -172,7 +175,7 @@
         minScale = maxScale;
     }
     
-    self.maximumZoomScale = 2.0;//maxScale;
+    self.maximumZoomScale = maxScale;
     self.minimumZoomScale = minScale;
 }
 

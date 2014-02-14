@@ -14,9 +14,11 @@
 @property (nonatomic, strong) UIImageView *thumbnailView;
 @property (nonatomic, strong) ImageScrollView *imageView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, assign) BOOL isImageLoaded;
 
 - (void)setThumbnailImage:(UIImage *)thumbImage;
 - (void)setFullImage:(UIImage *)fullImage;
+- (void)setFullImage:(UIImage *)fullImage completion:(void (^)())completion;
 - (void)setBlurredImage:(UIImage *)fullImage tintColor:(UIColor *)color;
 - (void)cleanImageViews;
 

@@ -1497,6 +1497,7 @@
 		F6B473A01851B571006D2ED4 /* cook_customise_icon_hint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6B4739E1851B571006D2ED4 /* cook_customise_icon_hint@2x.png */; };
 		F6BC0EE2180B5B4000B0F506 /* CKRecipeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */; };
 		F6C45ACD18AD982D00DCFA0B /* CKPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C45ACC18AD982D00DCFA0B /* CKPhotoView.m */; };
+		F6C45ACE18ADBD7800DCFA0B /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F694149718A8645F002F3F64 /* Reveal.framework */; };
 		F6C6772E182371B0000897A6 /* cook_library_icon_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6772C182371B0000897A6 /* cook_library_icon_facebook.png */; };
 		F6C6772F182371B0000897A6 /* cook_library_icon_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6772D182371B0000897A6 /* cook_library_icon_facebook@2x.png */; };
 		F6C6773418237F30000897A6 /* cook_library_btn_facebook_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6773018237F30000897A6 /* cook_library_btn_facebook_onpress.png */; };
@@ -3961,6 +3962,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6C45ACE18ADBD7800DCFA0B /* Reveal.framework in Frameworks */,
 				F694149A18A8792B002F3F64 /* Pinterest.framework in Frameworks */,
 				F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */,
 				F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */,
@@ -9020,6 +9022,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9079,6 +9082,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9170,6 +9174,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9200,6 +9205,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";

@@ -26,8 +26,8 @@
 + (CGSize)thumbSize {
     CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
     return (CGSize) {
-        512.0 / screenScale,
-        384.0 / screenScale
+        532.0 / screenScale,
+        404.0 / screenScale
     };
 }
 
@@ -159,25 +159,12 @@
 
 + (void)generateTilesFromImage:(UIImage *)image size:(CGSize)size completion:(void (^)(TiledImageBuilder *tileImage))completion {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        TiledImageBuilder *tb = [[TiledImageBuilder alloc] initWithImage:[[ImageHelper scaledImage:image size:size] CGImage] size:CGSizeMake(256, 256) orientation:image.imageOrientation];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(tb);
-        });
-    });
-}
-
-+ (void)blurredTiledImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius
-               completion:(void (^)(TiledImageBuilder *blurredImage))completion {
-    dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(concurrentQueue, ^{
-        
-        // This might take awhile.
-        UIImage *blurredImage = [self blurredImage:image tintColour:tintColour radius:radius];
-        TiledImageBuilder *tb = [[TiledImageBuilder alloc] initWithImage:[blurredImage CGImage] size:CGSizeMake(256, 256) orientation:image.imageOrientation];
-        // Cascade up to UIKit again on the mainthread.
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(tb);
-        });
+        @autoreleasepool {
+            TiledImageBuilder *tb = [[TiledImageBuilder alloc] initWithImage:[image CGImage] size:CGSizeMake(256, 256) orientation:image.imageOrientation];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(tb);
+            });
+        }
     });
 }
 

@@ -41,8 +41,6 @@
 
 // Image tiling
 + (void)generateTilesFromImage:(UIImage *)image size:(CGSize)size completion:(void (^)(TiledImageBuilder *tileImage))completion;
-+ (void)blurredTiledImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius
-               completion:(void (^)(TiledImageBuilder *blurredImage))completion;
 
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;

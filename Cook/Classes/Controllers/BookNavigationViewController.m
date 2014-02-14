@@ -899,6 +899,13 @@
             NSString *page = [self.pages objectAtIndex:currentPageIndex - [self contentStartSection]];
             BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
             [headerView reloadWithBook:self.book];
+            
+            //Deactivate all other headerViews
+            [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                if (![key isEqualToString:page]) {
+                    [(BookContentImageView *)obj deactivateImage];
+                }
+            }];
         }
     }
 }

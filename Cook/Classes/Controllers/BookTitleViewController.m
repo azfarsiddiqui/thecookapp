@@ -30,7 +30,7 @@
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
 #import "CKProgressView.h"
-#import "ImageScrollView.h"
+#import "CKPhotoView.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate, BooKTitlePhotoViewDelegate>
@@ -42,9 +42,8 @@
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 
 //@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) ImageScrollView *imageScrollView;
+@property (nonatomic, strong) CKPhotoView *photoView;
 @property (nonatomic, strong) UIImageView *topShadowView;
-@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) BookTitlePhotoView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
@@ -78,9 +77,8 @@
 #define kHeaderCellGap          135.0
 
 - (void)dealloc {
-    self.imageScrollView.imageView = nil;
+    [self.photoView cleanImageViews]; self.photoView = nil;
     self.topShadowView.image = nil;
-    self.blurredImageView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
     [EventHelper unregisterPhotoLoadingProgress:self];
 }
@@ -106,10 +104,10 @@
     // Attempt to load a cached title image.
     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
     if (cachedTitleImage) {
-        [ImageHelper generateTilesFromImage:cachedTitleImage size:self.view.frame.size completion:^(TiledImageBuilder *tileImage) {
-            [self.imageScrollView displayObject:tileImage];
-            self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-            self.cachedImageLoaded = YES;
+        __weak BookTitleViewController *weakSelf = self;
+        [self.photoView setFullImage:cachedTitleImage completion:^{
+//            weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
+//            weakSelf.cachedImageLoaded = YES;
         }];
     }
     
@@ -238,7 +236,7 @@
         [self.view addSubview:self.progressView];
         [self.progressView setProgress:0.1 animated:YES];
         
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageScrollView.bounds.size];
+        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.photoView.bounds.size];
     }
 }
 
@@ -324,7 +322,7 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self applyOffset:scrollView.contentOffset.y distance:200.0 view:self.blurredImageView];
+    [self applyOffset:scrollView.contentOffset.y distance:200.0 view:self.photoView.blurredImageView];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -615,29 +613,19 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     imageContainerView.clipsToBounds = YES;
     [self.view addSubview:imageContainerView];
     
-    ImageScrollView *imageView = [[ImageScrollView alloc] initWithFrame:(CGRect) {
+    self.photoView = [[CKPhotoView alloc] initWithFrame:(CGRect) {
         imageContainerView.bounds.origin.x - motionOffset.horizontal,
         imageContainerView.bounds.origin.y - motionOffset.vertical,
         imageContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
         imageContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
     }];
-    imageView.aspectFill = YES;
-    imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
-    [ImageHelper generateTilesFromImage:[ImageHelper imageFromDiskNamed:@"cook_edit_bg_blank" type:@"png"] size:imageView.frame.size completion:^(TiledImageBuilder *tileImage) {
-        [self.imageScrollView displayObject:tileImage];
-    }];
-    [imageContainerView addSubview:imageView];
-    self.imageScrollView = imageView;
-    
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:imageView.bounds];
-    self.blurredImageView.alpha = 0.0;
-    [self.imageScrollView addSubview:self.blurredImageView];
+    [imageContainerView addSubview:self.photoView];
     
     // Apply top shadow.
-    [self.view insertSubview:self.topShadowView aboveSubview:self.imageScrollView];
+    [self.view insertSubview:self.topShadowView aboveSubview:self.photoView];
     
     // Motion effects.
-    [ViewHelper applyDraggyMotionEffectsToView:self.imageScrollView];
+    [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
     
     // Borders.
     [self initBorders];
@@ -677,24 +665,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.bookPageDelegate bookPageViewControllerPanEnable:!addMode];
 }
 
-- (void)configureHeroRecipeImage:(UIImage *)image {
+- (void)configureHeroRecipeImage:(UIImage *)image thumb:(BOOL)isThumb {
     self.progressView.hidden = self.fullImageLoaded;
     
     if (self.cachedImageLoaded) {
-        [ImageHelper generateTilesFromImage:image size:self.view.frame.size completion:^(TiledImageBuilder *tileImage) {
-            [self.imageScrollView displayObject:tileImage];
-        }];
+        //Do nothing, iamge already loaded
+    } else if (!isThumb) {
+        [self.photoView setFullImage:image];
     } else {
-        [ImageHelper generateTilesFromImage:image size:self.view.frame.size completion:^(TiledImageBuilder *tileImage) {
-            [self.imageScrollView displayObject:tileImage];
-            self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-        }];
+        [self.photoView setThumbnailImage:image];
+        self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     }
     
     UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
-    [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-        self.blurredImageView.image = blurredImage;
-    }];
+    [self.photoView setBlurredImage:image tintColor:tintColour];
     
     if (self.fullImageLoaded) {
         [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
@@ -751,7 +735,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             if ([EventHelper hasImageForPhotoLoading:notification]) {
                 UIImage *image = [EventHelper imageForPhotoLoading:notification];
                 self.fullImageLoaded = !thumb;
-                [self configureHeroRecipeImage:image];
+                [self configureHeroRecipeImage:image thumb:thumb];
             } else {
                 self.progressView.hidden = YES;
             }
