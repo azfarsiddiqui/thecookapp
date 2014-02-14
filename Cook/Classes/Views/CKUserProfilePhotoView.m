@@ -217,8 +217,16 @@
                                             progress:^(CGFloat progress){}
                                        isSynchronous:YES
                                           completion:^(UIImage *image, NSString *name) {
+                                              
                                               if ([name isEqualToString:[profileUrl absoluteString]]) {
-                                                  self.profileImageView.image = image;
+                                                  
+                                                  // Cross-fade the image.
+                                                  [UIView transitionWithView:self.profileImageView
+                                                                    duration:0.2
+                                                                     options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                                                                  animations:^{
+                                                                      self.profileImageView.image = image;
+                                                                  } completion:nil];
                                               }
                                           }];
     }
