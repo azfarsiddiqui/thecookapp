@@ -1222,9 +1222,7 @@
             [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
             
         } else {
-            
-            [self.titleViewController configureLoading:NO];
-            
+            [self.titleViewController configureError:error];
         }
     }];
 }

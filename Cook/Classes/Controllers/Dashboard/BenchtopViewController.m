@@ -97,7 +97,7 @@
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterThemeChange:self];
-    [EventHelper unregisterBackgroundFetch:self];
+    [EventHelper unregisterDashFetch:self];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
                                                   object:[UIApplication sharedApplication]];
@@ -135,7 +135,7 @@
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerThemeChange:self selector:@selector(themeChanged:)];
-    [EventHelper registerBackgroundFetch:self selector:@selector(backgroundFetch:)];
+    [EventHelper registerDashFetch:self selector:@selector(dashFetch:)];
     
     // Register for notification that app did enter background
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -1384,8 +1384,9 @@
     [self updatePagingBenchtopView];
 }
 
-- (void)backgroundFetch:(NSNotification *)notification {
-    [self loadBenchtopBackgroundFetch:YES];
+- (void)dashFetch:(NSNotification *)notification {
+    BOOL backgroundMode = [EventHelper isBackgroundForDashFetch:notification];
+    [self loadBenchtopBackgroundFetch:backgroundMode];
 }
 
 - (void)updatePagingBenchtopView {

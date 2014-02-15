@@ -31,6 +31,8 @@
 #import "EventHelper.h"
 #import "CKProgressView.h"
 #import "CKPhotoView.h"
+#import "CKServerManager.h"
+#import "CardViewHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate, BooKTitlePhotoViewDelegate>
@@ -160,6 +162,16 @@
                              [self.activityView removeFromSuperview];
                          }];
     }
+}
+
+- (void)configureError:(NSError *)error {
+    [self configureLoading:NO];
+    
+    // No connection?
+    if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+        [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:(CGPoint) { self.view.center.x, 100.0 }];
+    }
+    
 }
 
 - (void)configurePages:(NSArray *)pages {
