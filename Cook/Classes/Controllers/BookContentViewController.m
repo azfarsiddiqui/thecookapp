@@ -422,10 +422,14 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
+        CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+        [self.delegate bookContentViewControllerScrollFinishedOffset:visibleFrame.origin.y page:self.page];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    [self.delegate bookContentViewControllerScrollFinishedOffset:visibleFrame.origin.y page:self.page];
 }
 
 #pragma mark - UICollectionViewDelegate methods

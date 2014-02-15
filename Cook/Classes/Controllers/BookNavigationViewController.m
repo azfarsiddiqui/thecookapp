@@ -667,6 +667,13 @@
     // [self showOrHideNavigationViewWithOffset:offset page:page];
 }
 
+- (void)bookContentViewControllerScrollFinishedOffset:(CGFloat)offset page:(NSString *)page {
+    
+    // Remember its current offset so we can restore later.
+    [self.contentControllerOffsets setObject:[NSValue valueWithCGPoint:(CGPoint){ 0.0, offset }] forKey:page];
+    
+}
+
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page {
     return (![page isEqualToString:self.likesPageName]);
 }
