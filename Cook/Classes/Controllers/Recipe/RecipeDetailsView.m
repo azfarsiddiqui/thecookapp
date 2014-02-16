@@ -200,6 +200,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    //Should only have 1 edit controller up at a time
+    if (self.editViewController) {
+        return;
+    }
+    
     if (editingView == self.titleTextView) {
 //        CKTextEditViewController *editViewController;
 //        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")) {
