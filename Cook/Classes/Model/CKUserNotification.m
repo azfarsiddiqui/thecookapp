@@ -30,7 +30,7 @@
 
 + (void)notificationsCompletion:(ListObjectsSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"notifications"
+    [PFCloud callFunctionInBackground:@"notifications_v1_4"
                        withParameters:@{}
                                 block:^(NSArray *notificationObjects, NSError *error) {
                                     if (!error) {
