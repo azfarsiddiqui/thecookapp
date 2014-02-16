@@ -16,10 +16,10 @@
 
 @implementation IngredientsKeyboardAccessoryCell
 
-#define kLabelOffset    (UIOffset) { 1.0, -2.0 }
+#define kLabelOffset    (UIOffset) { 1.0, -3.0 }
 
 + (CGSize)cellSize {
-    return (CGSize){ 61.0, 40.0 };
+    return (CGSize){ 60.0, 40.0 };
 }
 
 - (id)initWithFrame:(CGRect)frame {
