@@ -406,6 +406,8 @@
         self.nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         self.nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.nameLabel.numberOfLines = 1;
+        self.nameLabel.minimumScaleFactor = 0.8;
+        self.nameLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:self.nameLabel];
     }
     
@@ -415,6 +417,7 @@
     availableSize.width -= (nameInsets.left + nameInsets.right);
     self.nameLabel.text = [name uppercaseString];
     [self.nameLabel sizeToFit];
+    
     CGFloat requiredWidth = (self.nameLabel.frame.size.width > availableSize.width) ? availableSize.width : self.nameLabel.frame.size.width;
     
     self.nameLabel.frame = (CGRect){
