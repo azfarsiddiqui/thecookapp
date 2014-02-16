@@ -36,7 +36,8 @@
 #define kThumbPhotoLoading          @"CKThumbPhotoLoading"
 #define kEventPhotoLoadingProgress  @"CKEventPhotoLoadingProgress"
 #define kProgressPhotoLoading       @"CKProgressPhotoLoading"
-#define kEventBackgroundFetch       @"CKEventBackgroundFetch"
+#define kEventDashFetch             @"CKEventDashFetch"
+#define kBoolDashFetchBackground    @"CKBoolDashFetchBackground"
 #define kEventSocialUpdates         @"CKEventSocialUpdates"
 #define kRecipeSocialUpdates        @"CKRecipeSocialUpdates"
 #define kNumLikesSocialUpdates      @"CKNumLikesSocialUpdates"
@@ -319,16 +320,20 @@
 
 #pragma mark - Background fetch.
 
-+ (void)registerBackgroundFetch:(id)observer selector:(SEL)selector {
-    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventBackgroundFetch];
++ (void)registerDashFetch:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventDashFetch];
 }
 
-+ (void)postBackgroundFetch {
-    [EventHelper postEvent:kEventBackgroundFetch];
++ (void)postDashFetchBackground:(BOOL)background {
+    [EventHelper postEvent:kEventDashFetch withUserInfo:@{ kBoolDashFetchBackground : @(background) }];
 }
 
-+ (void)unregisterBackgroundFetch:(id)observer {
-    [EventHelper unregisterObserver:observer toEventName:kEventBackgroundFetch];
++ (void)unregisterDashFetch:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventDashFetch];
+}
+
++ (BOOL)isBackgroundForDashFetch:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kBoolDashFetchBackground] boolValue];
 }
 
 #pragma mark - Social stuff.

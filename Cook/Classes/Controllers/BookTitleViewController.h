@@ -34,6 +34,7 @@
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate;
 - (void)configureLoading:(BOOL)loading;
+- (void)configureError:(NSError *)error;
 - (void)configurePages:(NSArray *)pages;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
 - (void)refresh;

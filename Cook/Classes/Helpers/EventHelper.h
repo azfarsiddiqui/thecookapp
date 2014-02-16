@@ -85,9 +85,10 @@
 + (void)unregisterPhotoLoadingProgress:(id)observer;
 
 // Background fetch.
-+ (void)registerBackgroundFetch:(id)observer selector:(SEL)selector;
-+ (void)postBackgroundFetch;
-+ (void)unregisterBackgroundFetch:(id)observer;
++ (void)registerDashFetch:(id)observer selector:(SEL)selector;
++ (void)postDashFetchBackground:(BOOL)background;
++ (void)unregisterDashFetch:(id)observer;
++ (BOOL)isBackgroundForDashFetch:(NSNotification *)notification;
 
 // Social stuff.
 + (void)registerSocialUpdates:(id)observer selector:(SEL)selector;

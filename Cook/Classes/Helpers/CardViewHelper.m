@@ -129,6 +129,7 @@
     label.font = [Theme cardViewTitleFont];
     label.textColor = [Theme cardViewTitleColour];
     label.text = text;
+    label.shadowOffset = CGSizeZero;
     [label sizeToFit];
     CGRect labelFrame = label.frame;
     
@@ -141,6 +142,7 @@
         subtitleLabel.font = [Theme cardViewSubtitleFont];
         subtitleLabel.textColor = [Theme cardViewSubtitleColour];
         subtitleLabel.text = subtitle;
+        subtitleLabel.shadowOffset = CGSizeZero;
         [subtitleLabel sizeToFit];
         subtitleFrame = subtitleLabel.frame;
         subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;

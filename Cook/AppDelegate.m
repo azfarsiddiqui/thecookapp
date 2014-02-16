@@ -38,7 +38,7 @@
     DLog(@"lastLaunchedElapsedSeconds[%f] expiry[%f]", lastLaunchedElapsedSeconds, kFetchUpdateInterval);
     if (lastLaunchedElapsedSeconds > kFetchUpdateInterval) {
         DLog(@"trigger resume update");
-        [EventHelper postBackgroundFetch];
+        [EventHelper postDashFetchBackground:NO];
     }
     
     // Mark as launched date.
@@ -72,7 +72,7 @@
 - (void)application:(UIApplication *)application
     performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     DLog();
-    [EventHelper postBackgroundFetch];
+    [EventHelper postDashFetchBackground:YES];
     completionHandler(UIBackgroundFetchResultNewData);
 }
 
