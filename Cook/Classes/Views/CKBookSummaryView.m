@@ -356,8 +356,9 @@
     NSString *name = [self.book.user.name uppercaseString];
     [self updateName:name];
     
-    // Pages
-    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnit:@"FOLLOWER"];
+    // Downloads
+    NSString *followersDisplay = self.book.featured ? @"DOWNLOAD" : @"FOLLOWER";
+    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnit:followersDisplay];
     [self addSubview:pagesStatView];
     self.followersStatView = pagesStatView;
     
