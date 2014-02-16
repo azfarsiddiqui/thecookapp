@@ -65,8 +65,9 @@
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [self.collectionView registerClass:[IngredientsKeyboardAccessoryCell class] forCellWithReuseIdentifier:kCellId];
-    
-    [self.collectionView scrollToItemAtIndexPath:[self indexOfElementForCurrentLocale] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+
+//    [self.collectionView scrollToItemAtIndexPath:[self indexOfElementForCurrentLocale] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+    [self.collectionView setContentOffset:CGPointMake([self posOfElementForCurrentLocale], 0) animated:YES];
 }
 
 - (NSArray *)allUnitOfMeasureOptions {
@@ -84,14 +85,14 @@
 }
 
 //Auto scroll to guessed locale. This will eventually default to current measure type once Conversions are implemented
-- (NSIndexPath *)indexOfElementForCurrentLocale {
-    NSIndexPath *measureIndexImperial = [NSIndexPath indexPathForItem:0 inSection:0];
-    NSIndexPath *measureIndexMetric = [NSIndexPath indexPathForItem:0 inSection:7];
+- (CGFloat)posOfElementForCurrentLocale {
+    NSInteger metricCellPos = 1024 * 2;
+    
     NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
     if ([countryCode isEqualToString:@"US"]) {
-        return measureIndexImperial;
+        return 0;
     } else {
-        return measureIndexMetric;
+        return metricCellPos;
     }
 }
 
@@ -105,7 +106,7 @@
     if (section == 0) {
         insets.left = 10.0;
     } else if (section == numSections - 1) {
-        insets.right = 10.0;
+        insets.right = 6.0;
     }
     return insets;
 }
