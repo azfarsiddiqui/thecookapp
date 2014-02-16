@@ -37,8 +37,15 @@
 
 @class TiledImageBuilder;
 
+@protocol TilingViewDelegate <NSObject>
+
+- (void)finishedRenderingTiles;
+
+@end
+
 @interface TilingView : UIView
 @property (nonatomic, assign) BOOL annotates;
+@property (nonatomic, weak) id<TilingViewDelegate> tileDelegate;
 
 - (id)initWithImageBuilder:(TiledImageBuilder *)imageBuilder;
 - (CGSize)imageSize;

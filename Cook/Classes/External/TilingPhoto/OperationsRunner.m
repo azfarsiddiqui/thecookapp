@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#define LOG NSLog
+#define LOG DLog
 
 #import "OperationsRunner.h"
 
@@ -60,9 +60,6 @@ static char *opContext = "opContext";
 - (void)dealloc
 {
 	[self cancelOperations];
-
-#warning NEEDED FOR 5.1
-	// dispatch_release(operationsQueue);
 }
 
 - (void)runOperation:(NSOperation *)op withMsg:(NSString *)msg

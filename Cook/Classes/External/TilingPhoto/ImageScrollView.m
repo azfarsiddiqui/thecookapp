@@ -44,6 +44,12 @@
 #import "TilingView.h"
 #import "TiledImageBuilder.h"
 
+@interface ImageScrollView () <TilingViewDelegate>
+
+@property (nonatomic, strong) RenderCompleteBlock renderComplete;
+
+@end
+
 @implementation ImageScrollView
 {
 	CGFloat scale;
@@ -108,7 +114,7 @@
 #pragma mark -
 #pragma mark Configure scrollView to display new image (tiled or not)
 
-- (void)displayObject:(id)obj
+- (void)displayObject:(id)obj completion:(RenderCompleteBlock)completion
 {
     self.alpha = 0.0;
 	CGSize size;
@@ -128,6 +134,10 @@
 		// make a new TilingView for the new image
 		TilingView *view = [[TilingView alloc] initWithImageBuilder:tiledImage];
 		view.annotates = ANNOTATE_TILES;
+        if (completion) {
+            view.tileDelegate = self;
+            self.renderComplete = completion;
+        }
 		imageView =  view;
 		scale = [[UIScreen mainScreen] scale];
 	} else
@@ -233,6 +243,11 @@
     offset.x = MAX(minOffset.x, MIN(maxOffset.x, offset.x));
     offset.y = MAX(minOffset.y, MIN(maxOffset.y, offset.y));
     self.contentOffset = offset;
+}
+
+#pragma mark TilingViewDelegate method
+- (void)finishedRenderingTiles {
+    self.renderComplete();
 }
 
 @end

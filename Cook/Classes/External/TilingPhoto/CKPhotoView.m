@@ -38,6 +38,7 @@
     self.blurredImageView.image = nil;
     self.imageView.imageView = nil;
     self.isImageLoaded = NO;
+    self.thumbnailView.alpha = 1.0;
 }
 
 - (CGRect)imageViewFrame {
@@ -93,15 +94,17 @@
 - (void)setFullImage:(UIImage *)fullImage completion:(void (^)())completion {
     if (!self.thumbnailView.image || !self.isImageLoaded) {
         self.thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
-        self.thumbnailView.image = [ImageHelper thumbImageForImage:fullImage];
+        self.thumbnailView.image = fullImage;//[ImageHelper thumbImageForImage:fullImage];
     }
     
     [ImageHelper generateTilesFromImage:fullImage size:self.imageView.frame.size completion:^(TiledImageBuilder *tileImage) {
-        [self.imageView displayObject:tileImage];
+        [self.imageView displayObject:tileImage completion:^{
+            self.thumbnailView.image = nil;
+            if (completion) {
+                completion();
+            }
+        }];
         self.isImageLoaded = YES;
-        if (completion) {
-            completion();
-        }
     }];
 }
 

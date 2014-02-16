@@ -95,7 +95,7 @@
 - (void)reloadWithBook:(CKBook *)book {
     self.isFullLoad = YES;
     if (!self.fullImageLoaded) {
-    [self configureFeaturedRecipe:self.recipe book:book];
+        [self configureFeaturedRecipe:self.recipe book:book];
     }
 //    [self configureImage:self.imageView.image book:book];
 }
@@ -182,13 +182,12 @@
         
         if (isThumb) {
             [self.photoView setThumbnailImage:image];
+        } else {
+            [self.photoView setFullImage:image];
         }
         
         //Only set blurred image if user has explicitly navigated or fast-forwarded to this page
         if (self.isFullLoad) {
-            if (!isThumb) {
-                [self.photoView setFullImage:image];
-            }
             UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
             [self.photoView setBlurredImage:image tintColor:tintColour];
         }

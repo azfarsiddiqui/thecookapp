@@ -37,11 +37,13 @@
 
 @class TiledImageBuilder;
 
+typedef void(^RenderCompleteBlock)();
+
 @interface ImageScrollView : UIScrollView <UIScrollViewDelegate>
 @property (nonatomic, assign) BOOL aspectFill;
 @property (nonatomic, strong) UIView *imageView;	// in case you want to grab the image for other purposes, and then nil it
 
-- (void)displayObject:(id)obj;
+- (void)displayObject:(id)obj completion:(RenderCompleteBlock)completion;
 - (void)setMaxMinZoomScalesForCurrentBounds;
 
 - (CGPoint)pointToCenterAfterRotation;
