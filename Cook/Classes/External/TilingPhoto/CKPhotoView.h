@@ -19,7 +19,7 @@
 - (void)setThumbnailImage:(UIImage *)thumbImage;
 - (void)setFullImage:(UIImage *)fullImage;
 - (void)setFullImage:(UIImage *)fullImage completion:(void (^)())completion;
-- (void)setBlurredImage:(UIImage *)fullImage tintColor:(UIColor *)color;
+- (void)setBlurredImage:(UIImage *)thumbImage tintColor:(UIColor *)color;
 - (void)cleanImageViews;
 - (void)deactivateImage;
 

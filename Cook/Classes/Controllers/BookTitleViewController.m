@@ -114,10 +114,6 @@
     }
     
     [self addCloseButtonLight:YES];
-    
-    // Register photo loading events.
-    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-    [EventHelper registerPhotoLoadingProgress:self selector:@selector(photoLoadingProgress:)];
 }
 
 - (void)configureLoading:(BOOL)loading {
@@ -247,8 +243,25 @@
         };
         [self.view addSubview:self.progressView];
         [self.progressView setProgress:0.1 animated:YES];
-        
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.photoView.bounds.size];
+        [[CKPhotoManager sharedInstance] featuredImageForRecipe:recipe
+                                                           size:self.view.frame.size
+                                                       progress:^(CGFloat progressRatio, NSString *name) {
+                                                           NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
+                                                           if ([recipePhotoName isEqualToString:name]) {
+                                                               [self.progressView setProgress:progressRatio animated:YES];
+                                                           }
+                                                       }
+                                                thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
+                                                    if ([recipePhotoName isEqualToString:name]) {
+                                                        [self configureHeroRecipeImage:thumbImage thumb:YES];
+                                                    }
+                                                }
+                                                     completion:^(UIImage *image, NSString *name) {
+                                                         self.fullImageLoaded = YES;
+                                                         [self configureHeroRecipeImage:image thumb:NO];
+                                                         self.progressView.hidden = YES;
+                                                     }];
     }
 }
 
@@ -680,20 +693,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)configureHeroRecipeImage:(UIImage *)image thumb:(BOOL)isThumb {
     self.progressView.hidden = self.fullImageLoaded;
     
-    if (self.cachedImageLoaded) {
-        //Do nothing, iamge already loaded
-    } else if (!isThumb) {
-        [self.photoView setFullImage:image];
-    } else {
+    if (isThumb) {
         [self.photoView setThumbnailImage:image];
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-    }
-    
-    UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
-    [self.photoView setBlurredImage:image tintColor:tintColour];
-    
-    if (self.fullImageLoaded) {
+        
+        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        [self.photoView setBlurredImage:image tintColor:tintColour];
+    } else {
+        [self.photoView setFullImage:image];
         [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
+        self.fullImageLoaded = YES;
     }
 }
 
@@ -732,38 +741,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
-}
-
-- (void)photoLoadingReceived:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
-    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
-    
-    if ([recipePhotoName isEqualToString:name]) {
-        
-        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
-        if (!self.fullImageLoaded) {
-            
-            if ([EventHelper hasImageForPhotoLoading:notification]) {
-                UIImage *image = [EventHelper imageForPhotoLoading:notification];
-                self.fullImageLoaded = !thumb;
-                [self configureHeroRecipeImage:image thumb:thumb];
-            } else {
-                self.progressView.hidden = YES;
-            }
-        }
-        
-    }
-}
-
-- (void)photoLoadingProgress:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
-    
-    if ([recipePhotoName isEqualToString:name]) {
-        CGFloat progress = [EventHelper progressForPhotoLoading:notification];
-        [self.progressView setProgress:progress animated:YES];
-    }
 }
 
 - (void)addPageWithName:(NSString *)page {

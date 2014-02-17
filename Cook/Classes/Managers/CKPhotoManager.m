@@ -170,7 +170,9 @@
 }
 
 // Image retrieval for featured image for recipe to return a thumb and full size
-- (void)featuredImageForRecipe:(CKRecipe *)recipe size:(CGSize)size
+- (void)featuredImageForRecipe:(CKRecipe *)recipe
+                          size:(CGSize)size
+                      progress:(void (^)(CGFloat progressRatio, NSString *name))progress
        thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
@@ -193,7 +195,11 @@
                                      } else {
                                          // Get the fullsize image with progress reporting.
                                          [weakSelf imageForRecipe:recipe size:size name:name
-                                                         progress:^(CGFloat progressRatio, NSString *name) {}
+                                                         progress:^(CGFloat progressRatio, NSString *name) {
+                                                             if (progress) {
+                                                                 progress(progressRatio, name);
+                                                             }
+                                                         }
                                                        completion:^(UIImage *image, NSString *name) {
                                                            completion(image, name);
                                                        }];

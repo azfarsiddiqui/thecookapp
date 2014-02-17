@@ -59,7 +59,7 @@
         _imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         _imageView.aspectFill = YES;
         [self addSubview:_imageView];
-//        _imageView.alpha = 0.0;
+        _imageView.alpha = 0.0;
     }
     return _imageView;
 }
@@ -90,9 +90,6 @@
     self.imageView.alpha = 0.0;
     [ImageHelper generateTilesFromImage:fullImage size:self.imageView.frame.size completion:^(TiledImageBuilder *tileImage) {
         [self.imageView displayObject:tileImage completion:^{
-//            if (!self.blurredImageView.image) {
-//                [self setBlurredImage:fullImage tintColor:[UIColor colorWithHexString:@"3D5766"]];
-//            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.imageView.alpha = 1.0;
                 self.thumbnailView.image = nil;
@@ -105,9 +102,9 @@
     }];
 }
 
-- (void)setBlurredImage:(UIImage *)fullImage tintColor:(UIColor *)color {
+- (void)setBlurredImage:(UIImage *)thumbImage tintColor:(UIColor *)color {
     //Generate blurred image now as well
-    [ImageHelper blurredImage:fullImage tintColour:color radius:10.0 completion:^(UIImage *blurredImage) {
+    [ImageHelper blurredImage:thumbImage tintColour:color radius:10.0 completion:^(UIImage *blurredImage) {
         self.blurredImageView.image = blurredImage;
     }];
 }

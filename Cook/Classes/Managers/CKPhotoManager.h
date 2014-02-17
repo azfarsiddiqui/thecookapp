@@ -44,6 +44,7 @@
       isSynchronous:(BOOL)isSynchronous
          completion:(void (^)(UIImage *image, NSString *name))completion;
 - (void)featuredImageForRecipe:(CKRecipe *)recipe size:(CGSize)size
+                      progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
                     completion:(void (^)(UIImage *image, NSString *name))completion;
 

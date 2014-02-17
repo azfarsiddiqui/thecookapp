@@ -87,13 +87,10 @@
     if ([recipe hasPhotos]) {
         [[CKPhotoManager sharedInstance] featuredImageForRecipe:recipe
                                                            size:[self imageSizeWithMotionOffset]
+                                                       progress:nil
                                                 thumbCompletion:^(UIImage *thumbImage, NSString *name) {
             [self configureImage:thumbImage book:self.book thumb:YES];
             self.fullImageLoaded = NO;
-            if (self.isFullLoad) {
-                UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
-                [self.photoView setBlurredImage:thumbImage tintColor:tintColour];
-            }
         }
                                                      completion:^(UIImage *image, NSString *name) {
             //When image is loaded, delay for an additional second to allow for user to decide if they like this page
@@ -117,9 +114,7 @@
 
 - (void)reloadWithBook:(CKBook *)book {
     self.isFullLoad = YES;
-    if (!self.fullImageLoaded) {
         [self configureFeaturedRecipe:self.recipe book:book];
-    }
 //    [self configureImage:self.imageView.image book:book];
 }
 
@@ -187,8 +182,10 @@
         
         if (isThumb) {
             [self.photoView setThumbnailImage:image];
-            UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
-            [self.photoView setBlurredImage:image tintColor:tintColour];
+            if (self.isFullLoad) {
+                UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
+                [self.photoView setBlurredImage:image tintColor:tintColour];
+            }
         } else {
             [self.photoView setFullImage:image];
             image = nil;
