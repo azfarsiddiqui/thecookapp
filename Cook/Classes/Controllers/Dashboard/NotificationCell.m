@@ -277,9 +277,32 @@
         text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
         text = [NSString stringWithFormat:@"%@ added your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+    } else if ([notificationName isEqualToString:kUserNotificationTypeFeedPin]) {
+        
+        NSArray *pages = notification.pages;
+        NSString *pagesDisplay = [self pagesDisplayFor:pages];
+        text = [NSString stringWithFormat:@"\"%@\" is now featured in %@ in %@.", [notification.recipe.name CK_mixedCase], pagesDisplay, [actionUser friendlyName]];
     }
     
     return text;
+}
+
+- (NSString *)pagesDisplayFor:(NSArray *)pages {
+    NSString *pagesDisplay = @"";
+    if ([pages count] > 0) {
+        
+        if ([pages count] == 1) {
+            pagesDisplay = pages[0];
+        } else if ([pages count] == 2) {
+            pagesDisplay = [pages componentsJoinedByString:@" and "];
+        } else {
+            NSArray *frontPages = [pages subarrayWithRange:(NSRange){ 0, [pages count] - 1 }];
+            NSString *lastPage = [pages objectAtIndex:[pages count] - 1];
+            pagesDisplay = [NSString stringWithFormat:@"%@ and %@", [frontPages componentsJoinedByString:@", "], lastPage];
+        }
+        
+    }
+    return pagesDisplay;
 }
 
 - (void)acceptFriendTapped:(id)sender {

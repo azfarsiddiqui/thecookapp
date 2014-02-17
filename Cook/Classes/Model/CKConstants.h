@@ -171,9 +171,13 @@ extern NSString *const kActivityNameLikeRecipe;
 extern NSString *const kUserNotificationModelName;
 extern NSString *const kUserNotificationAttrRead;               // Whether notification was read.
 extern NSString *const kUserNotificationAttrFriendRequestAccepted;
+extern NSString *const kUserNotificationAttrComment;
+extern NSString *const kUserNotificationAttrPages;
 extern NSString *const kUserNotificationAttrActionUser;
 extern NSString *const kUserNotificationTypeFriendRequest;
 extern NSString *const kUserNotificationTypeFriendAccept;
 extern NSString *const kUserNotificationTypeComment;
 extern NSString *const kUserNotificationTypeLike;
 extern NSString *const kUserNotificationTypePin;
+extern NSString *const kUserNotificationTypeFeedPin;
+

@@ -96,4 +96,12 @@
     }
 }
 
+- (NSString *)comment {
+    return [self.parseObject objectForKey:kUserNotificationAttrComment];
+}
+
+- (NSArray *)pages {
+    return [self.parseObject objectForKey:kUserNotificationAttrPages];
+}
+
 @end

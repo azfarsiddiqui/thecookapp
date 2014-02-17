@@ -162,7 +162,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
-               || [notificationName isEqualToString:kUserNotificationTypePin]) {
+               || [notificationName isEqualToString:kUserNotificationTypePin]
+               || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
+               ) {
         
         CKRecipe *recipe = notification.recipe;
         if (recipe) {
@@ -217,7 +219,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             
         } else {
             
-            // No comments.
+            // No notifications.
             [self.overlayActivityView stopAnimating];
             [self.overlayActivityView removeFromSuperview];
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
@@ -343,7 +345,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSArray *)acceptedNotificationNames {
     return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment,
-             kUserNotificationTypeLike, kUserNotificationTypePin];
+             kUserNotificationTypeLike, kUserNotificationTypePin, kUserNotificationTypeFeedPin];
 }
 
 - (BOOL)notificationActionInProgressForNotification:(CKUserNotification *)notification {
