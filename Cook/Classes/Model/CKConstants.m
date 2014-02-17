@@ -178,6 +178,7 @@ NSString *const kUserNotificationAttrPages                  = @"pages";
 NSString *const kUserNotificationTypeFriendRequest          = @"FriendRequest";
 NSString *const kUserNotificationTypeFriendAccept           = @"FriendAccept";
 NSString *const kUserNotificationTypeComment                = @"Comment";
+NSString *const kUserNotificationTypeReply                  = @"Reply";
 NSString *const kUserNotificationTypeLike                   = @"Like";
 NSString *const kUserNotificationTypePin                    = @"Pin";
 NSString *const kUserNotificationTypeFeedPin                = @"FeedPin";

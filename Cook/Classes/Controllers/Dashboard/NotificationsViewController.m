@@ -153,7 +153,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     NSString *notificationName = notification.name;
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
-        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
+        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]
+        || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
+        ) {
 
         CKUser *user = notification.actionUser;
         if (user) {
@@ -161,9 +163,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
+               || [notificationName isEqualToString:kUserNotificationTypeReply]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
                || [notificationName isEqualToString:kUserNotificationTypePin]
-               || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
                ) {
         
         CKRecipe *recipe = notification.recipe;
@@ -345,7 +347,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSArray *)acceptedNotificationNames {
     return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment,
-             kUserNotificationTypeLike, kUserNotificationTypePin, kUserNotificationTypeFeedPin];
+             kUserNotificationTypeLike, kUserNotificationTypePin, kUserNotificationTypeFeedPin, kUserNotificationTypeReply];
 }
 
 - (BOOL)notificationActionInProgressForNotification:(CKUserNotification *)notification {

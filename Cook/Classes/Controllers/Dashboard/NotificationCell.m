@@ -273,6 +273,8 @@
         text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]) {
         text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+    } else if ([notificationName isEqualToString:kUserNotificationTypeReply]) {
+        text = [NSString stringWithFormat:@"%@ commented on their recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
         text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
