@@ -153,7 +153,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     NSString *notificationName = notification.name;
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
-        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
+        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]
+        || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
+        ) {
 
         CKUser *user = notification.actionUser;
         if (user) {
@@ -161,8 +163,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
+               || [notificationName isEqualToString:kUserNotificationTypeReply]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
-               || [notificationName isEqualToString:kUserNotificationTypePin]) {
+               || [notificationName isEqualToString:kUserNotificationTypePin]
+               ) {
         
         CKRecipe *recipe = notification.recipe;
         if (recipe) {
@@ -217,7 +221,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             
         } else {
             
-            // No comments.
+            // No notifications.
             [self.overlayActivityView stopAnimating];
             [self.overlayActivityView removeFromSuperview];
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
@@ -343,7 +347,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSArray *)acceptedNotificationNames {
     return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment,
-             kUserNotificationTypeLike, kUserNotificationTypePin];
+             kUserNotificationTypeLike, kUserNotificationTypePin, kUserNotificationTypeFeedPin, kUserNotificationTypeReply];
 }
 
 - (BOOL)notificationActionInProgressForNotification:(CKUserNotification *)notification {
