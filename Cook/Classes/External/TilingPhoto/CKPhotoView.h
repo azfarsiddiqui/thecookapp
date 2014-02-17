@@ -21,5 +21,6 @@
 - (void)setFullImage:(UIImage *)fullImage completion:(void (^)())completion;
 - (void)setBlurredImage:(UIImage *)fullImage tintColor:(UIColor *)color;
 - (void)cleanImageViews;
+- (void)deactivateImage;
 
 @end

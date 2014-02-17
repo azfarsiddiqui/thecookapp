@@ -58,14 +58,15 @@
         [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
         
         // Register photo loading events.
-        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+//        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
     }
     return self;
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-//    [self.photoView cleanImageViews];
+    [self.photoView cleanImageViews];
+    self.isFullLoad = NO;
     self.recipe = nil;
     self.book = nil;
     self.fullImageLoaded = NO;
@@ -84,7 +85,29 @@
     }
     
     if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset]];
+        [[CKPhotoManager sharedInstance] featuredImageForRecipe:recipe
+                                                           size:[self imageSizeWithMotionOffset]
+                                                thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+            [self configureImage:thumbImage book:self.book thumb:YES];
+            self.fullImageLoaded = NO;
+            if (self.isFullLoad) {
+                UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
+                [self.photoView setBlurredImage:thumbImage tintColor:tintColour];
+            }
+        }
+                                                     completion:^(UIImage *image, NSString *name) {
+            //When image is loaded, delay for an additional second to allow for user to decide if they like this page
+            double delayInSeconds = 1.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                if (self.isFullLoad) {
+                    [self configureImage:image book:self.book thumb:NO];
+                    self.fullImageLoaded = YES;
+                } else {
+                    self.fullImageLoaded = NO;
+                }
+            });
+        }];
     }
 }
 
@@ -158,49 +181,29 @@
     };
 }
 
-- (void)photoLoadingReceived:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
-    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
-    
-    if ([recipePhotoName isEqualToString:name]) {
-        
-        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
-        if (!self.fullImageLoaded) {
-            if ([EventHelper hasImageForPhotoLoading:notification]) {
-                UIImage *image = [EventHelper imageForPhotoLoading:notification];
-                [self configureImage:image book:self.book thumb:thumb];
-                self.fullImageLoaded = !thumb;
-            }
-        }
-    }
-}
-
 - (void)configureImage:(UIImage *)image book:(CKBook *)book thumb:(BOOL)isThumb {
     if (image) {
         self.vignetteOverlayView.hidden = NO;
         
         if (isThumb) {
             [self.photoView setThumbnailImage:image];
-        } else {
-            [self.photoView setFullImage:image];
-        }
-        
-        //Only set blurred image if user has explicitly navigated or fast-forwarded to this page
-        if (self.isFullLoad) {
             UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
             [self.photoView setBlurredImage:image tintColor:tintColour];
+        } else {
+            [self.photoView setFullImage:image];
+            image = nil;
         }
         
     } else {
         [self.photoView cleanImageViews];
+        self.isFullLoad = NO;
         self.vignetteOverlayView.hidden = YES;
     }
 }
 
 - (void)deactivateImage {
-    self.photoView.imageView.imageView = nil;
-    self.photoView.blurredImageView.image = nil;
+    self.isFullLoad = NO;
+    [self.photoView deactivateImage];
 }
 
 @end

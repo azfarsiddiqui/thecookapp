@@ -882,6 +882,11 @@
         }
         self.destinationIndexes = destinationArray;
     }
+    [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [(BookContentImageView *)obj deactivateImage];
+        });
+    }];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -931,9 +936,11 @@
             [contentCell.contentViewController loadPageContent];
             
             NSString *page = [self.pages objectAtIndex:currentPageIndex - [self contentStartSection]];
-            BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
-            [headerView reloadWithBook:self.book];
-            
+            //Only load current page
+            if ([page isEqualToString:[self currentPage]]) {
+                BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
+                [headerView reloadWithBook:self.book];
+            }
             //Deactivate all other headerViews
             [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
                 if (![key isEqualToString:page]) {

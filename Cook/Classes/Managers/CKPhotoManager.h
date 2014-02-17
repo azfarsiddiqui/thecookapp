@@ -43,6 +43,9 @@
            progress:(void (^)(CGFloat progressRatio))progress
       isSynchronous:(BOOL)isSynchronous
          completion:(void (^)(UIImage *image, NSString *name))completion;
+- (void)featuredImageForRecipe:(CKRecipe *)recipe size:(CGSize)size
+               thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+                    completion:(void (^)(UIImage *image, NSString *name))completion;
 
 // Event-based photo loading.
 - (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;

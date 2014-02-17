@@ -8,8 +8,11 @@
 
 #import "CKPhotoView.h"
 #import "ImageHelper.h"
+#import "UIColor+Expanded.h"
 
 @interface CKPhotoView ()
+
+@property (nonatomic, strong) UIImage *thumbnailImage;
 
 @end
 
@@ -31,14 +34,6 @@
     self.blurredImageView = nil;
     self.thumbnailView = nil;
     [self.thumbnailView removeFromSuperview];
-}
-
-- (void)cleanImageViews {
-    self.thumbnailView.image = nil;
-    self.blurredImageView.image = nil;
-    self.imageView.imageView = nil;
-    self.isImageLoaded = NO;
-    self.thumbnailView.alpha = 1.0;
 }
 
 - (CGRect)imageViewFrame {
@@ -92,17 +87,19 @@
 }
 
 - (void)setFullImage:(UIImage *)fullImage completion:(void (^)())completion {
-    if (!self.thumbnailView.image || !self.isImageLoaded) {
-        self.thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
-        self.thumbnailView.image = fullImage;//[ImageHelper thumbImageForImage:fullImage];
-    }
-    
+    self.imageView.alpha = 0.0;
     [ImageHelper generateTilesFromImage:fullImage size:self.imageView.frame.size completion:^(TiledImageBuilder *tileImage) {
         [self.imageView displayObject:tileImage completion:^{
-            self.thumbnailView.image = nil;
-            if (completion) {
-                completion();
-            }
+//            if (!self.blurredImageView.image) {
+//                [self setBlurredImage:fullImage tintColor:[UIColor colorWithHexString:@"3D5766"]];
+//            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.imageView.alpha = 1.0;
+                self.thumbnailView.image = nil;
+                if (completion) {
+                    completion();
+                }
+            });
         }];
         self.isImageLoaded = YES;
     }];
@@ -113,6 +110,20 @@
     [ImageHelper blurredImage:fullImage tintColour:color radius:10.0 completion:^(UIImage *blurredImage) {
         self.blurredImageView.image = blurredImage;
     }];
+}
+
+#pragma mark - Clean up methods
+
+- (void)cleanImageViews {
+    self.thumbnailView.image = nil;
+    self.blurredImageView.image = nil;
+    self.imageView.imageView = nil;
+    self.isImageLoaded = NO;
+}
+
+- (void)deactivateImage {
+    self.imageView.imageView = nil;
+    self.blurredImageView.image = nil;
 }
 
 @end

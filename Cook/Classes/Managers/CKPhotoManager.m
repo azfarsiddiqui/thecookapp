@@ -153,12 +153,67 @@
                                          // Get the fullsize image with progress reporting.
                                          [weakSelf imageForRecipe:recipe size:size name:name
                                                          progress:^(CGFloat progressRatio, NSString *name) {
-                                                             progress(progressRatio, name);
+                                                             if (progress) {
+                                                                 progress(progressRatio, name);
+                                                             }
                                                          }
                                                        completion:^(UIImage *image, NSString *name) {
                                                            completion(image, name);
                                                        }];
                                          
+                                     }
+                                     
+                                 } else {
+                                     completion(nil, name);
+                                 }
+                             }];
+}
+
+// Image retrieval for featured image for recipe to return a thumb and full size
+- (void)featuredImageForRecipe:(CKRecipe *)recipe size:(CGSize)size
+       thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+            completion:(void (^)(UIImage *image, NSString *name))completion {
+    
+    __weak CKPhotoManager *weakSelf = self;
+    [self checkInTransferImageForRecipe:recipe size:size name:[self photoNameForRecipe:recipe]
+                             completion:^(UIImage *image, NSString *name) {
+                                 
+                                 // Found in-transfer image, return immediately.
+                                 completion(image, name);
+                                 
+                             } otherwiseHandler:^{
+                                 NSString *name = [self photoNameForRecipe:recipe];
+                                 PFFile *fullsizeFile = recipe.recipeImage.imageFile;
+                                 if (fullsizeFile) {
+                                     
+                                     // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
+                                     UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
+                                     if (cachedFullsizeImage) {
+                                         completion(cachedFullsizeImage, name);
+                                     } else {
+                                         // Get the fullsize image with progress reporting.
+                                         [weakSelf imageForRecipe:recipe size:size name:name
+                                                         progress:^(CGFloat progressRatio, NSString *name) {}
+                                                       completion:^(UIImage *image, NSString *name) {
+                                                           completion(image, name);
+                                                       }];
+                                     }
+                                     
+                                     // Get thumb file and return either cached or downloaded image
+                                     PFFile *thumbFile = recipe.recipeImage.thumbImageFile;
+                                     if (thumbFile) {
+                                         UIImage *cachedThumbImage = [self cachedImageForParseFile:thumbFile size:size];
+                                         if (cachedThumbImage) {
+                                             thumbCompletion(cachedThumbImage, name);
+                                         } else {
+                                             // Get the thumbnail.
+                                             [weakSelf thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
+                                                                  progress:^(CGFloat progressRatio, NSString *name) {
+                                                                      // No reporting of progress for thumbnail.
+                                                                  } completion:^(UIImage *thumbImage, NSString *name) {
+                                                                      thumbCompletion(thumbImage, name);
+                                                                  }];
+                                         }
                                      }
                                      
                                  } else {
@@ -984,7 +1039,7 @@
                     
                     UIImage *image = [UIImage imageWithData:data];
                     UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
-                    
+                    image = nil;
                     // Keep it in the cache.
                     [self storeImage:imageToFit forKey:cacheKey];
                     
