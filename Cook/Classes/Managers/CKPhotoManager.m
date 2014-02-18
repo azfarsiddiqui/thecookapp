@@ -62,8 +62,12 @@
               progress:(void (^)(CGFloat progressRatio, NSString *name))progress
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    NSString *imageName = name;
+    if (!imageName) {
+        imageName = [self photoNameForRecipe:recipe];
+    }
     __weak CKPhotoManager *weakSelf = self;
-    [self checkInTransferImageForRecipe:recipe size:size name:name
+    [self checkInTransferImageForRecipe:recipe size:size name:imageName
                              completion:^(UIImage *image, NSString *name) {
                                  
                                  // Found in-transfer image, return immediately.
@@ -85,9 +89,12 @@
 - (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
                    progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                  completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
-    
+    NSString *imageName = name;
+    if (!imageName) {
+        imageName = [self photoNameForRecipe:recipe];
+    }
     __weak CKPhotoManager *weakSelf = self;
-    [self checkInTransferImageForRecipe:recipe size:size name:name
+    [self checkInTransferImageForRecipe:recipe size:size name:imageName
                              completion:^(UIImage *image, NSString *name) {
                                  
                                  // Found in-transfer image, return immediately.

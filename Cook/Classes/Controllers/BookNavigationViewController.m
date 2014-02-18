@@ -882,13 +882,13 @@
         }
         self.destinationIndexes = destinationArray;
     }
-//    [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if (![key isEqualToString:[self currentPage]]) {
-//                [(BookContentImageView *)obj deactivateImage];
-//            }
-//        });
-//    }];
+    [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (![key isEqualToString:[self currentPage]]) {
+                [(BookContentImageView *)obj deactivateImage];
+            }
+        });
+    }];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
