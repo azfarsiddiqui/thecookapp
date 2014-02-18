@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TiledImageBuilder.h"
 
 @interface ImageHelper : NSObject
 
@@ -38,9 +37,6 @@
 
 // Image merge/blending.
 + (UIImage *)mergeImage:(UIImage *)image overImage:(UIImage *)image;
-
-// Image tiling
-+ (void)generateTilesFromImage:(UIImage *)image size:(CGSize)size completion:(void (^)(TiledImageBuilder *tileImage))completion;
 
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;
