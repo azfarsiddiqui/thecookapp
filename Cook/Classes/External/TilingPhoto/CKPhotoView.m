@@ -104,9 +104,11 @@
 
 - (void)setBlurredImage:(UIImage *)thumbImage tintColor:(UIColor *)color {
     //Generate blurred image now as well
-    [ImageHelper blurredImage:thumbImage tintColour:color radius:10.0 completion:^(UIImage *blurredImage) {
-        self.blurredImageView.image = blurredImage;
-    }];
+    if (thumbImage) {
+        [ImageHelper blurredImage:thumbImage tintColour:color radius:10.0 completion:^(UIImage *blurredImage) {
+            self.blurredImageView.image = blurredImage;
+        }];
+    }
 }
 
 #pragma mark - Clean up methods
@@ -120,7 +122,7 @@
 
 - (void)deactivateImage {
     self.imageView.imageView = nil;
-    self.blurredImageView.image = nil;
+//    self.blurredImageView.image = nil;
 }
 
 @end

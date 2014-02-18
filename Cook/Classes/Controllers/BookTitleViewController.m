@@ -106,11 +106,10 @@
     // Attempt to load a cached title image.
     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
     if (cachedTitleImage) {
-        __weak BookTitleViewController *weakSelf = self;
-        [self.photoView setFullImage:cachedTitleImage completion:^{
-            weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-            weakSelf.cachedImageLoaded = YES;
-        }];
+        [self.photoView setThumbnailImage:cachedTitleImage];
+        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        [self.photoView setBlurredImage:cachedTitleImage tintColor:tintColour];
+        self.cachedImageLoaded = YES;
     }
     
     [self addCloseButtonLight:YES];
@@ -220,6 +219,15 @@
                                  // Open ze gates.
                                  [self openGates];
                                  
+                                 if (self.cachedImageLoaded) {
+                                     //Tile backgroundImage, which will get rid of heavy imageView
+                                     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
+                                     __weak BookTitleViewController *weakSelf = self;
+                                     [self.photoView setFullImage:cachedTitleImage completion:^{
+                                         weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
+                                     }];
+                                 }
+                                 
                              }];
         }];
     }
@@ -232,7 +240,7 @@
     // Make sure view is available when this is invoked.
     self.view.hidden = NO;
     
-    if ([recipe hasPhotos]) {
+    if ([recipe hasPhotos] && !self.cachedImageLoaded) {
         
         // Add progress.
         self.progressView.frame = (CGRect){

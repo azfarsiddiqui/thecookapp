@@ -81,7 +81,7 @@
     self.book = book;
     self.fullImageLoaded = NO;
     if (!self.photoView.thumbnailView.image) {
-        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book thumb:YES];
+        [self.photoView setThumbnailImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover]];
     }
     
     if ([recipe hasPhotos]) {
