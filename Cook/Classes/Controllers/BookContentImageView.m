@@ -80,31 +80,42 @@
     self.recipe = recipe;
     self.book = book;
     self.fullImageLoaded = NO;
-    if (!self.photoView.thumbnailView.image) {
+    if (!recipe.recipeImage) {
         [self.photoView setThumbnailImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover]];
     }
     
     if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe
-                                                        size:[self imageSizeWithMotionOffset]
-                                                        name:nil
-                                                    progress:^(CGFloat progressRatio, NSString *name) {}
-                                                  completion:^(UIImage *thumbImage, NSString *name) {
-                                                      [self configureImage:thumbImage book:self.book thumb:YES];
-                                                      self.fullImageLoaded = NO;
-                                                      //When image is loaded, delay for an additional second to allow for user to decide if they like this page
-                                                      double delayInSeconds = 1.0;
-                                                      dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                                      dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                                          if (self.isFullLoad) {
-                                                              [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
-                                                                  [self configureImage:image book:self.book thumb:NO];
-                                                                  self.fullImageLoaded = YES;
-                                                              }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe
+                                                            size:[self imageSizeWithMotionOffset]
+                                                            name:nil
+                                                        progress:^(CGFloat progressRatio, NSString *name) {}
+                                                      completion:^(UIImage *thumbImage, NSString *name) {
+                                                          NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
+                                                          
+                                                          if ([recipePhotoName isEqualToString:name]) {
+                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                                  [self configureImage:thumbImage book:self.book thumb:YES];
+                                                              });
+                                                              self.fullImageLoaded = NO;
+                                                              //When image is loaded, delay for an additional second to allow for user to decide if they like this page
+                                                              if (!self.fullImageLoaded) {
+                                                                  double delayInSeconds = 1.0;
+                                                                  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                                                  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                                      if (self.isFullLoad) {
+                                                                          [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
+                                                                              [self configureImage:image book:self.book thumb:NO];
+                                                                              self.fullImageLoaded = YES;
+                                                                          }];
+                                                                      }
+                                                                      
+                                                                  });
+                                                              }
                                                           }
-                                                      });
-                                                      
-                                                  }];
+                                                      }];
+
+        });
     }
 }
 
