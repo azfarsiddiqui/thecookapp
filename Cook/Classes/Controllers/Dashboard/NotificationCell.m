@@ -272,13 +272,13 @@
     } else if ([notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
         text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]) {
-        text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ commented on \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeReply]) {
-        text = [NSString stringWithFormat:@"%@ commented on their recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ commented on \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
-        text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ liked \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
-        text = [NSString stringWithFormat:@"%@ added your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ added \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeFeedPin]) {
         
         NSArray *pages = notification.pages;
