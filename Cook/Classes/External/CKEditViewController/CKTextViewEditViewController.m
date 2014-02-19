@@ -58,7 +58,11 @@
     // Initial TextView height taking into account containing text.
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textView.text = self.forceUppercase ? [currentText uppercaseString] : currentText;
-    CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
+    CGFloat accessoryViewHeight = 0;
+    if (self.textView.inputAccessoryView) {
+        accessoryViewHeight = self.accessoryView.view.frame.size.height;
+    }
+    CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom - accessoryViewHeight;
     // TextView positioning.
     self.textView.frame = (CGRect){
         textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
