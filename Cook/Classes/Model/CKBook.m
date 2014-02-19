@@ -109,7 +109,7 @@
 + (void)dashboardBooksForUser:(CKUser *)user success:(DashboardBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"dashboardBooks"
-                       withParameters:@{}
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     // My book.
@@ -138,7 +138,7 @@
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"followBooks_v1_1"
-                       withParameters:@{ @"sortDescending" : @"true" }
+                       withParameters:@{ @"sortDescending" : @"true", @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     NSArray *books = [results objectForKey:@"books"];
                                     NSDictionary *bookUpdates = [results objectForKey:@"updates"];
@@ -446,7 +446,7 @@
     DLog();
     
     [PFCloud callFunctionInBackground:@"bookRecipes_v1_4"
-                       withParameters:@{ @"bookId": self.objectId, @"userId": self.user.objectId }
+                       withParameters:@{ @"bookId": self.objectId, @"userId": self.user.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
                                         
@@ -500,6 +500,7 @@
     
     [PFCloud callFunctionInBackground:@"pageRecipes_v1_4"
                        withParameters:@{
+                                        @"cookVersion": [[AppHelper sharedInstance] appVersion],
                                         @"bookId" : self.objectId,
                                         @"userId" : self.user.objectId,
                                         @"page" : page,
@@ -690,7 +691,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"bookDeletePage"
-                       withParameters:@{ @"bookId" : self.objectId, @"page" : page }
+                       withParameters:@{ @"bookId" : self.objectId, @"page" : page, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(id result, NSError *error) {
                                     if (!error) {
                                         DLog(@"Deleted page from book and its associated recipes");
@@ -719,7 +720,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"bookRenamePage"
-                       withParameters:@{ @"bookId" : self.objectId, @"fromPage" : page, @"toPage" : toPage }
+                       withParameters:@{ @"bookId" : self.objectId, @"fromPage" : page, @"toPage" : toPage, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(id result, NSError *error) {
                                     if (!error) {
                                         DLog(@"Renamed page for book and its associated recipes");
@@ -741,7 +742,7 @@
 
 - (void)bookInfoCompletion:(BookInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure; {
     [PFCloud callFunctionInBackground:@"bookInfo"
-                       withParameters:@{ @"bookId" : self.objectId, @"userId" : self.user.objectId }
+                       withParameters:@{ @"bookId" : self.objectId, @"userId" : self.user.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     NSUInteger followCount = [[results objectForKey:@"followCount"] unsignedIntegerValue];

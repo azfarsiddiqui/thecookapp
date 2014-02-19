@@ -10,6 +10,7 @@
 #import "CKUser.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
+#import "AppHelper.h"
 
 @implementation CKUserNotification
 
@@ -31,7 +32,7 @@
 + (void)notificationsCompletion:(ListObjectsSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"notifications_v1_4"
-                       withParameters:@{}
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSArray *notificationObjects, NSError *error) {
                                     if (!error) {
                                         NSArray *notifications = [notificationObjects collect:^id(PFObject *parseNotification) {

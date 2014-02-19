@@ -15,6 +15,7 @@
 #import "CKServerManager.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "EventHelper.h"
+#import "AppHelper.h"
 
 @interface CKUser ()
 
@@ -570,7 +571,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (void)userInfoCompletion:(UserInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"userInfo"
-                       withParameters:@{ @"userId" : self.objectId }
+                       withParameters:@{ @"userId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     NSUInteger friendCount = [[results objectForKey:@"friendCount"] unsignedIntegerValue];
@@ -606,7 +607,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (void)numUnreadNotificationsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"unreadNotificationsCount"
-                       withParameters:@{}
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     NSInteger unreadCount = [[results objectForKey:@"unread"] integerValue];
                                     if (!error) {
