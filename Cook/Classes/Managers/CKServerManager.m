@@ -90,6 +90,8 @@
         [currentInstallation saveEventually];
     }
     
+    // Post app active
+    [EventHelper postAppActive:YES];
 }
 
 - (void)stop {

@@ -20,6 +20,7 @@
 #import "CKPhotoManager.h"
 #import "CKRecipeTag.h"
 #import "CKLocation.h"
+#import "AppHelper.h"
 
 @interface CKRecipe ()
 
@@ -186,7 +187,7 @@
 - (void)infoAndViewedWithCompletion:(RecipeInfoSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"recipeInfo"
-                       withParameters:@{ @"recipeId" : self.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -309,7 +310,7 @@
              failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"recipeIsPinnedToBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -333,7 +334,7 @@
           failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"pinRecipeToBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page }
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -355,7 +356,7 @@
 - (void)unpinnedFromBook:(CKBook *)book completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"unpinRecipeFromBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         DLog(@"Unpinned recipe[%@] from book[%@]", self.objectId, book.objectId);
@@ -415,7 +416,7 @@
 
 - (void)commentsLikesWithCompletion:(RecipeCommentsLikesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"recipeCommentsLikes"
-                       withParameters:@{ @"recipeId" : self.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
