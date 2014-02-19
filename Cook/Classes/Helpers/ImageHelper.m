@@ -11,10 +11,6 @@
 #import "UIImage+ImageEffects.h"
 #import "AppHelper.h"
 
-#import "ConcurrentOp.h"
-#import "OperationsRunnerProtocol.h"
-#import "OperationsRunner.h"
-
 @implementation ImageHelper
 
 #define kBlurDefaultRadius  30.0
@@ -153,19 +149,6 @@
     UIGraphicsEndImageContext();
     
     return newImage;
-}
-
-#pragma mark - Tiling
-
-+ (void)generateTilesFromImage:(UIImage *)image size:(CGSize)size completion:(void (^)(TiledImageBuilder *tileImage))completion {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        @autoreleasepool {
-            TiledImageBuilder *tb = [[TiledImageBuilder alloc] initWithImage:[image CGImage] size:CGSizeMake(1024, 768) orientation:image.imageOrientation];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(tb);
-            });
-        }
-    });
 }
 
 #pragma mark - Blurring

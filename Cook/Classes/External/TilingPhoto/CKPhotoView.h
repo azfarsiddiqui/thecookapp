@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ImageScrollView.h"
 
 @interface CKPhotoView : UIView
 
 @property (nonatomic, strong) UIImageView *thumbnailView;
-@property (nonatomic, strong) ImageScrollView *imageView;
+@property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, assign) BOOL isImageLoaded;
 

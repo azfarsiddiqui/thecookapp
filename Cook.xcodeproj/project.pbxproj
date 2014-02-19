@@ -1365,15 +1365,6 @@
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
 		F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */; };
 		F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */; };
-		F684F5D918AB451500FCD0E3 /* ConcurrentOp.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5B118AB451500FCD0E3 /* ConcurrentOp.m */; };
-		F684F5DA18AB451500FCD0E3 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5B318AB451500FCD0E3 /* ImageScrollView.m */; };
-		F684F5DB18AB451500FCD0E3 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F684F5C718AB451500FCD0E3 /* libturbojpeg.a */; };
-		F684F5DC18AB451500FCD0E3 /* OperationsRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5CC18AB451500FCD0E3 /* OperationsRunner.m */; };
-		F684F5DE18AB451500FCD0E3 /* TiledImageBuilder+Draw.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D018AB451500FCD0E3 /* TiledImageBuilder+Draw.m */; };
-		F684F5DF18AB451500FCD0E3 /* TiledImageBuilder+JPEG.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D118AB451500FCD0E3 /* TiledImageBuilder+JPEG.m */; };
-		F684F5E018AB451500FCD0E3 /* TiledImageBuilder+Tile.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D218AB451500FCD0E3 /* TiledImageBuilder+Tile.m */; };
-		F684F5E118AB451500FCD0E3 /* TiledImageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D518AB451500FCD0E3 /* TiledImageBuilder.m */; };
-		F684F5E318AB451500FCD0E3 /* TilingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F684F5D818AB451500FCD0E3 /* TilingView.m */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
@@ -1497,7 +1488,6 @@
 		F6B4739F1851B571006D2ED4 /* cook_customise_icon_hint.png in Resources */ = {isa = PBXBuildFile; fileRef = F6B4739D1851B571006D2ED4 /* cook_customise_icon_hint.png */; };
 		F6B473A01851B571006D2ED4 /* cook_customise_icon_hint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6B4739E1851B571006D2ED4 /* cook_customise_icon_hint@2x.png */; };
 		F6BC0EE2180B5B4000B0F506 /* CKRecipeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */; };
-		F6C45ACD18AD982D00DCFA0B /* CKPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C45ACC18AD982D00DCFA0B /* CKPhotoView.m */; };
 		F6C6772E182371B0000897A6 /* cook_library_icon_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6772C182371B0000897A6 /* cook_library_icon_facebook.png */; };
 		F6C6772F182371B0000897A6 /* cook_library_icon_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6772D182371B0000897A6 /* cook_library_icon_facebook@2x.png */; };
 		F6C6773418237F30000897A6 /* cook_library_btn_facebook_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6773018237F30000897A6 /* cook_library_btn_facebook_onpress.png */; };
@@ -1506,6 +1496,7 @@
 		F6C6773718237F30000897A6 /* cook_library_btn_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6773318237F30000897A6 /* cook_library_btn_facebook@2x.png */; };
 		F6C6773A18238A00000897A6 /* cook_library_buttonicon_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6773818238A00000897A6 /* cook_library_buttonicon_facebook.png */; };
 		F6C6773B18238A00000897A6 /* cook_library_buttonicon_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6773918238A00000897A6 /* cook_library_buttonicon_facebook@2x.png */; };
+		F6CB584C18B32C0000CD368C /* CKPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6CB584B18B32C0000CD368C /* CKPhotoView.m */; };
 		F6CEFEBE1839B4D9002D9DB1 /* TagLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F6CEFEBD1839B4D9002D9DB1 /* TagLayout.m */; };
 		F6DD424A180BB4B900AD3803 /* TagListEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DD4249180BB4B900AD3803 /* TagListEditViewController.m */; };
 		F6DD424D180BBD3300AD3803 /* TagListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DD424C180BBD3300AD3803 /* TagListCell.m */; };
@@ -3168,43 +3159,6 @@
 		F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialMediaActionHeader.m; sourceTree = "<group>"; };
 		F67CE0EC187FB07500FE7AD0 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
 		F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
-		F684F5B018AB451500FCD0E3 /* ConcurrentOp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcurrentOp.h; sourceTree = "<group>"; };
-		F684F5B118AB451500FCD0E3 /* ConcurrentOp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcurrentOp.m; sourceTree = "<group>"; };
-		F684F5B218AB451500FCD0E3 /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
-		F684F5B318AB451500FCD0E3 /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
-		F684F5B518AB451500FCD0E3 /* bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bmp.h; sourceTree = "<group>"; };
-		F684F5B618AB451500FCD0E3 /* cderror.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cderror.h; sourceTree = "<group>"; };
-		F684F5B718AB451500FCD0E3 /* cdjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdjpeg.h; sourceTree = "<group>"; };
-		F684F5B818AB451500FCD0E3 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		F684F5B918AB451500FCD0E3 /* jchuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jchuff.h; sourceTree = "<group>"; };
-		F684F5BA18AB451500FCD0E3 /* jconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jconfig.h; sourceTree = "<group>"; };
-		F684F5BB18AB451500FCD0E3 /* jdct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jdct.h; sourceTree = "<group>"; };
-		F684F5BC18AB451500FCD0E3 /* jdhuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jdhuff.h; sourceTree = "<group>"; };
-		F684F5BD18AB451500FCD0E3 /* jerror.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jerror.h; sourceTree = "<group>"; };
-		F684F5BE18AB451500FCD0E3 /* jinclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jinclude.h; sourceTree = "<group>"; };
-		F684F5BF18AB451500FCD0E3 /* jmemsys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jmemsys.h; sourceTree = "<group>"; };
-		F684F5C018AB451500FCD0E3 /* jmorecfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jmorecfg.h; sourceTree = "<group>"; };
-		F684F5C118AB451500FCD0E3 /* jpegcomp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpegcomp.h; sourceTree = "<group>"; };
-		F684F5C218AB451500FCD0E3 /* jpegint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpegint.h; sourceTree = "<group>"; };
-		F684F5C318AB451500FCD0E3 /* jpeglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpeglib.h; sourceTree = "<group>"; };
-		F684F5C418AB451500FCD0E3 /* jsimd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsimd.h; sourceTree = "<group>"; };
-		F684F5C518AB451500FCD0E3 /* jsimddct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsimddct.h; sourceTree = "<group>"; };
-		F684F5C618AB451500FCD0E3 /* jversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jversion.h; sourceTree = "<group>"; };
-		F684F5C718AB451500FCD0E3 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libturbojpeg.a; sourceTree = "<group>"; };
-		F684F5C818AB451500FCD0E3 /* tjutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tjutil.h; sourceTree = "<group>"; };
-		F684F5C918AB451500FCD0E3 /* transupp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transupp.h; sourceTree = "<group>"; };
-		F684F5CA18AB451500FCD0E3 /* turbojpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = turbojpeg.h; sourceTree = "<group>"; };
-		F684F5CB18AB451500FCD0E3 /* OperationsRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OperationsRunner.h; sourceTree = "<group>"; };
-		F684F5CC18AB451500FCD0E3 /* OperationsRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OperationsRunner.m; sourceTree = "<group>"; };
-		F684F5CD18AB451500FCD0E3 /* OperationsRunnerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OperationsRunnerProtocol.h; sourceTree = "<group>"; };
-		F684F5D018AB451500FCD0E3 /* TiledImageBuilder+Draw.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TiledImageBuilder+Draw.m"; sourceTree = "<group>"; };
-		F684F5D118AB451500FCD0E3 /* TiledImageBuilder+JPEG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TiledImageBuilder+JPEG.m"; sourceTree = "<group>"; };
-		F684F5D218AB451500FCD0E3 /* TiledImageBuilder+Tile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TiledImageBuilder+Tile.m"; sourceTree = "<group>"; };
-		F684F5D318AB451500FCD0E3 /* TiledImageBuilder-Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TiledImageBuilder-Private.h"; sourceTree = "<group>"; };
-		F684F5D418AB451500FCD0E3 /* TiledImageBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiledImageBuilder.h; sourceTree = "<group>"; };
-		F684F5D518AB451500FCD0E3 /* TiledImageBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TiledImageBuilder.m; sourceTree = "<group>"; };
-		F684F5D718AB451500FCD0E3 /* TilingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TilingView.h; sourceTree = "<group>"; };
-		F684F5D818AB451500FCD0E3 /* TilingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TilingView.m; sourceTree = "<group>"; };
 		F684F5E618AB45DF00FCD0E3 /* CKActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKActivityIndicatorView.h; sourceTree = "<group>"; };
 		F684F5E718AB45DF00FCD0E3 /* CKActivityIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKActivityIndicatorView.m; sourceTree = "<group>"; };
 		F684F5E918AB45DF00FCD0E3 /* cook_book_inner_loading_large_inner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_loading_large_inner.png; sourceTree = "<group>"; };
@@ -3693,49 +3647,8 @@
 		F684F7EF18AB45E100FCD0E3 /* UIImage+WebP.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+WebP.m"; sourceTree = "<group>"; };
 		F684F7F018AB45E100FCD0E3 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		F684F7F118AB45E100FCD0E3 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
-		F684F7F318AB45E100FCD0E3 /* ConcurrentOp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConcurrentOp.h; sourceTree = "<group>"; };
-		F684F7F418AB45E100FCD0E3 /* ConcurrentOp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConcurrentOp.m; sourceTree = "<group>"; };
-		F684F7F518AB45E100FCD0E3 /* ImageScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
-		F684F7F618AB45E100FCD0E3 /* ImageScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
-		F684F7F818AB45E100FCD0E3 /* bmp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bmp.h; sourceTree = "<group>"; };
-		F684F7F918AB45E100FCD0E3 /* cderror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cderror.h; sourceTree = "<group>"; };
-		F684F7FA18AB45E100FCD0E3 /* cdjpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cdjpeg.h; sourceTree = "<group>"; };
-		F684F7FB18AB45E100FCD0E3 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		F684F7FC18AB45E100FCD0E3 /* jchuff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jchuff.h; sourceTree = "<group>"; };
-		F684F7FD18AB45E100FCD0E3 /* jconfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jconfig.h; sourceTree = "<group>"; };
-		F684F7FE18AB45E100FCD0E3 /* jdct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jdct.h; sourceTree = "<group>"; };
-		F684F7FF18AB45E100FCD0E3 /* jdhuff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jdhuff.h; sourceTree = "<group>"; };
-		F684F80018AB45E100FCD0E3 /* jerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jerror.h; sourceTree = "<group>"; };
-		F684F80118AB45E100FCD0E3 /* jinclude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jinclude.h; sourceTree = "<group>"; };
-		F684F80218AB45E100FCD0E3 /* jmemsys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jmemsys.h; sourceTree = "<group>"; };
-		F684F80318AB45E100FCD0E3 /* jmorecfg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jmorecfg.h; sourceTree = "<group>"; };
-		F684F80418AB45E100FCD0E3 /* jpegcomp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jpegcomp.h; sourceTree = "<group>"; };
-		F684F80518AB45E100FCD0E3 /* jpegint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jpegint.h; sourceTree = "<group>"; };
-		F684F80618AB45E100FCD0E3 /* jpeglib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jpeglib.h; sourceTree = "<group>"; };
-		F684F80718AB45E100FCD0E3 /* jsimd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsimd.h; sourceTree = "<group>"; };
-		F684F80818AB45E100FCD0E3 /* jsimddct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsimddct.h; sourceTree = "<group>"; };
-		F684F80918AB45E100FCD0E3 /* jversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jversion.h; sourceTree = "<group>"; };
-		F684F80A18AB45E100FCD0E3 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libturbojpeg.a; sourceTree = "<group>"; };
-		F684F80B18AB45E100FCD0E3 /* tjutil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tjutil.h; sourceTree = "<group>"; };
-		F684F80C18AB45E100FCD0E3 /* transupp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = transupp.h; sourceTree = "<group>"; };
-		F684F80D18AB45E100FCD0E3 /* turbojpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = turbojpeg.h; sourceTree = "<group>"; };
-		F684F80E18AB45E100FCD0E3 /* OperationsRunner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationsRunner.h; sourceTree = "<group>"; };
-		F684F80F18AB45E100FCD0E3 /* OperationsRunner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationsRunner.m; sourceTree = "<group>"; };
-		F684F81018AB45E100FCD0E3 /* OperationsRunnerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationsRunnerProtocol.h; sourceTree = "<group>"; };
-		F684F81118AB45E100FCD0E3 /* PhotoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
-		F684F81218AB45E100FCD0E3 /* PhotoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
-		F684F81318AB45E100FCD0E3 /* TiledImageBuilder+Draw.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "TiledImageBuilder+Draw.m"; sourceTree = "<group>"; };
-		F684F81418AB45E100FCD0E3 /* TiledImageBuilder+JPEG.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "TiledImageBuilder+JPEG.m"; sourceTree = "<group>"; };
-		F684F81518AB45E100FCD0E3 /* TiledImageBuilder+Tile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "TiledImageBuilder+Tile.m"; sourceTree = "<group>"; };
-		F684F81618AB45E100FCD0E3 /* TiledImageBuilder-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TiledImageBuilder-Private.h"; sourceTree = "<group>"; };
-		F684F81718AB45E100FCD0E3 /* TiledImageBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TiledImageBuilder.h; sourceTree = "<group>"; };
-		F684F81818AB45E100FCD0E3 /* TiledImageBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TiledImageBuilder.m; sourceTree = "<group>"; };
-		F684F81918AB45E100FCD0E3 /* TiledImageBuilderXXX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TiledImageBuilderXXX.m; sourceTree = "<group>"; };
-		F684F81A18AB45E100FCD0E3 /* TilingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TilingView.h; sourceTree = "<group>"; };
-		F684F81B18AB45E100FCD0E3 /* TilingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TilingView.m; sourceTree = "<group>"; };
 		F684F81D18AB45E100FCD0E3 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		F684F81E18AB45E100FCD0E3 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
-		F684F81F18AB467400FCD0E3 /* PhotoScrollerCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoScrollerCommon.h; sourceTree = "<group>"; };
 		F686ED471817787600746A49 /* CKCommentEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCommentEditViewController.h; sourceTree = "<group>"; };
 		F686ED481817787600746A49 /* CKCommentEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCommentEditViewController.m; sourceTree = "<group>"; };
 		F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_email.png; sourceTree = "<group>"; };
@@ -3863,8 +3776,6 @@
 		F6B4739E1851B571006D2ED4 /* cook_customise_icon_hint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_icon_hint@2x.png"; sourceTree = "<group>"; };
 		F6BC0EE0180B5B4000B0F506 /* CKRecipeTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeTag.h; sourceTree = "<group>"; };
 		F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeTag.m; sourceTree = "<group>"; };
-		F6C45ACB18AD982C00DCFA0B /* CKPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPhotoView.h; sourceTree = "<group>"; };
-		F6C45ACC18AD982D00DCFA0B /* CKPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPhotoView.m; sourceTree = "<group>"; };
 		F6C6772C182371B0000897A6 /* cook_library_icon_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_icon_facebook.png; sourceTree = "<group>"; };
 		F6C6772D182371B0000897A6 /* cook_library_icon_facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_icon_facebook@2x.png"; sourceTree = "<group>"; };
 		F6C6773018237F30000897A6 /* cook_library_btn_facebook_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_btn_facebook_onpress.png; sourceTree = "<group>"; };
@@ -3873,6 +3784,8 @@
 		F6C6773318237F30000897A6 /* cook_library_btn_facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_btn_facebook@2x.png"; sourceTree = "<group>"; };
 		F6C6773818238A00000897A6 /* cook_library_buttonicon_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_buttonicon_facebook.png; sourceTree = "<group>"; };
 		F6C6773918238A00000897A6 /* cook_library_buttonicon_facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_buttonicon_facebook@2x.png"; sourceTree = "<group>"; };
+		F6CB584A18B32C0000CD368C /* CKPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CKPhotoView.h; path = TilingPhoto/CKPhotoView.h; sourceTree = "<group>"; };
+		F6CB584B18B32C0000CD368C /* CKPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CKPhotoView.m; path = TilingPhoto/CKPhotoView.m; sourceTree = "<group>"; };
 		F6CEFEBC1839B4D9002D9DB1 /* TagLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLayout.h; sourceTree = "<group>"; };
 		F6CEFEBD1839B4D9002D9DB1 /* TagLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagLayout.m; sourceTree = "<group>"; };
 		F6DD4248180BB4B900AD3803 /* TagListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagListEditViewController.h; sourceTree = "<group>"; };
@@ -3962,7 +3875,6 @@
 				76ED27761612DCC60012E479 /* StoreKit.framework in Frameworks */,
 				76ED27771612DCC60012E479 /* SystemConfiguration.framework in Frameworks */,
 				76ED27421612DC180012E479 /* UIKit.framework in Frameworks */,
-				F684F5DB18AB451500FCD0E3 /* libturbojpeg.a in Frameworks */,
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
 				761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */,
@@ -6014,7 +5926,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
-				F684F5AF18AB451500FCD0E3 /* TilingPhoto */,
+				F6CB584918B32BE100CD368C /* CKPhotoView */,
 				76E0AE8818A87A3300F8A73D /* Flurry */,
 				F67CE0EB187FB07500FE7AD0 /* PSPDFTextView */,
 				F6B169D71855897200D3FBB6 /* TTTAttributedLabel */,
@@ -6327,61 +6239,6 @@
 			path = PSPDFTextView;
 			sourceTree = "<group>";
 		};
-		F684F5AF18AB451500FCD0E3 /* TilingPhoto */ = {
-			isa = PBXGroup;
-			children = (
-				F684F81F18AB467400FCD0E3 /* PhotoScrollerCommon.h */,
-				F684F5B018AB451500FCD0E3 /* ConcurrentOp.h */,
-				F684F5B118AB451500FCD0E3 /* ConcurrentOp.m */,
-				F684F5B218AB451500FCD0E3 /* ImageScrollView.h */,
-				F684F5B318AB451500FCD0E3 /* ImageScrollView.m */,
-				F684F5B418AB451500FCD0E3 /* libturbojpeg */,
-				F684F5CB18AB451500FCD0E3 /* OperationsRunner.h */,
-				F684F5CC18AB451500FCD0E3 /* OperationsRunner.m */,
-				F684F5CD18AB451500FCD0E3 /* OperationsRunnerProtocol.h */,
-				F684F5D018AB451500FCD0E3 /* TiledImageBuilder+Draw.m */,
-				F684F5D118AB451500FCD0E3 /* TiledImageBuilder+JPEG.m */,
-				F684F5D218AB451500FCD0E3 /* TiledImageBuilder+Tile.m */,
-				F684F5D318AB451500FCD0E3 /* TiledImageBuilder-Private.h */,
-				F684F5D418AB451500FCD0E3 /* TiledImageBuilder.h */,
-				F684F5D518AB451500FCD0E3 /* TiledImageBuilder.m */,
-				F684F5D718AB451500FCD0E3 /* TilingView.h */,
-				F684F5D818AB451500FCD0E3 /* TilingView.m */,
-				F6C45ACB18AD982C00DCFA0B /* CKPhotoView.h */,
-				F6C45ACC18AD982D00DCFA0B /* CKPhotoView.m */,
-			);
-			path = TilingPhoto;
-			sourceTree = "<group>";
-		};
-		F684F5B418AB451500FCD0E3 /* libturbojpeg */ = {
-			isa = PBXGroup;
-			children = (
-				F684F5B518AB451500FCD0E3 /* bmp.h */,
-				F684F5B618AB451500FCD0E3 /* cderror.h */,
-				F684F5B718AB451500FCD0E3 /* cdjpeg.h */,
-				F684F5B818AB451500FCD0E3 /* config.h */,
-				F684F5B918AB451500FCD0E3 /* jchuff.h */,
-				F684F5BA18AB451500FCD0E3 /* jconfig.h */,
-				F684F5BB18AB451500FCD0E3 /* jdct.h */,
-				F684F5BC18AB451500FCD0E3 /* jdhuff.h */,
-				F684F5BD18AB451500FCD0E3 /* jerror.h */,
-				F684F5BE18AB451500FCD0E3 /* jinclude.h */,
-				F684F5BF18AB451500FCD0E3 /* jmemsys.h */,
-				F684F5C018AB451500FCD0E3 /* jmorecfg.h */,
-				F684F5C118AB451500FCD0E3 /* jpegcomp.h */,
-				F684F5C218AB451500FCD0E3 /* jpegint.h */,
-				F684F5C318AB451500FCD0E3 /* jpeglib.h */,
-				F684F5C418AB451500FCD0E3 /* jsimd.h */,
-				F684F5C518AB451500FCD0E3 /* jsimddct.h */,
-				F684F5C618AB451500FCD0E3 /* jversion.h */,
-				F684F5C718AB451500FCD0E3 /* libturbojpeg.a */,
-				F684F5C818AB451500FCD0E3 /* tjutil.h */,
-				F684F5C918AB451500FCD0E3 /* transupp.h */,
-				F684F5CA18AB451500FCD0E3 /* turbojpeg.h */,
-			);
-			path = libturbojpeg;
-			sourceTree = "<group>";
-		};
 		F684F5E418AB45DF00FCD0E3 /* External */ = {
 			isa = PBXGroup;
 			children = (
@@ -6407,7 +6264,6 @@
 				F684F7CE18AB45E100FCD0E3 /* PSPDFTextView */,
 				F684F7D118AB45E100FCD0E3 /* RSMaskedLabel */,
 				F684F7D418AB45E100FCD0E3 /* SDWebImage */,
-				F684F7F218AB45E100FCD0E3 /* TilingPhoto */,
 				F684F81C18AB45E100FCD0E3 /* TTTAttributedLabel */,
 			);
 			name = External;
@@ -7176,61 +7032,6 @@
 			path = SDWebImage;
 			sourceTree = "<group>";
 		};
-		F684F7F218AB45E100FCD0E3 /* TilingPhoto */ = {
-			isa = PBXGroup;
-			children = (
-				F684F7F318AB45E100FCD0E3 /* ConcurrentOp.h */,
-				F684F7F418AB45E100FCD0E3 /* ConcurrentOp.m */,
-				F684F7F518AB45E100FCD0E3 /* ImageScrollView.h */,
-				F684F7F618AB45E100FCD0E3 /* ImageScrollView.m */,
-				F684F7F718AB45E100FCD0E3 /* libturbojpeg */,
-				F684F80E18AB45E100FCD0E3 /* OperationsRunner.h */,
-				F684F80F18AB45E100FCD0E3 /* OperationsRunner.m */,
-				F684F81018AB45E100FCD0E3 /* OperationsRunnerProtocol.h */,
-				F684F81118AB45E100FCD0E3 /* PhotoViewController.h */,
-				F684F81218AB45E100FCD0E3 /* PhotoViewController.m */,
-				F684F81318AB45E100FCD0E3 /* TiledImageBuilder+Draw.m */,
-				F684F81418AB45E100FCD0E3 /* TiledImageBuilder+JPEG.m */,
-				F684F81518AB45E100FCD0E3 /* TiledImageBuilder+Tile.m */,
-				F684F81618AB45E100FCD0E3 /* TiledImageBuilder-Private.h */,
-				F684F81718AB45E100FCD0E3 /* TiledImageBuilder.h */,
-				F684F81818AB45E100FCD0E3 /* TiledImageBuilder.m */,
-				F684F81918AB45E100FCD0E3 /* TiledImageBuilderXXX.m */,
-				F684F81A18AB45E100FCD0E3 /* TilingView.h */,
-				F684F81B18AB45E100FCD0E3 /* TilingView.m */,
-			);
-			path = TilingPhoto;
-			sourceTree = "<group>";
-		};
-		F684F7F718AB45E100FCD0E3 /* libturbojpeg */ = {
-			isa = PBXGroup;
-			children = (
-				F684F7F818AB45E100FCD0E3 /* bmp.h */,
-				F684F7F918AB45E100FCD0E3 /* cderror.h */,
-				F684F7FA18AB45E100FCD0E3 /* cdjpeg.h */,
-				F684F7FB18AB45E100FCD0E3 /* config.h */,
-				F684F7FC18AB45E100FCD0E3 /* jchuff.h */,
-				F684F7FD18AB45E100FCD0E3 /* jconfig.h */,
-				F684F7FE18AB45E100FCD0E3 /* jdct.h */,
-				F684F7FF18AB45E100FCD0E3 /* jdhuff.h */,
-				F684F80018AB45E100FCD0E3 /* jerror.h */,
-				F684F80118AB45E100FCD0E3 /* jinclude.h */,
-				F684F80218AB45E100FCD0E3 /* jmemsys.h */,
-				F684F80318AB45E100FCD0E3 /* jmorecfg.h */,
-				F684F80418AB45E100FCD0E3 /* jpegcomp.h */,
-				F684F80518AB45E100FCD0E3 /* jpegint.h */,
-				F684F80618AB45E100FCD0E3 /* jpeglib.h */,
-				F684F80718AB45E100FCD0E3 /* jsimd.h */,
-				F684F80818AB45E100FCD0E3 /* jsimddct.h */,
-				F684F80918AB45E100FCD0E3 /* jversion.h */,
-				F684F80A18AB45E100FCD0E3 /* libturbojpeg.a */,
-				F684F80B18AB45E100FCD0E3 /* tjutil.h */,
-				F684F80C18AB45E100FCD0E3 /* transupp.h */,
-				F684F80D18AB45E100FCD0E3 /* turbojpeg.h */,
-			);
-			path = libturbojpeg;
-			sourceTree = "<group>";
-		};
 		F684F81C18AB45E100FCD0E3 /* TTTAttributedLabel */ = {
 			isa = PBXGroup;
 			children = (
@@ -7278,6 +7079,15 @@
 				F6B169D91855897200D3FBB6 /* TTTAttributedLabel.m */,
 			);
 			path = TTTAttributedLabel;
+			sourceTree = "<group>";
+		};
+		F6CB584918B32BE100CD368C /* CKPhotoView */ = {
+			isa = PBXGroup;
+			children = (
+				F6CB584A18B32C0000CD368C /* CKPhotoView.h */,
+				F6CB584B18B32C0000CD368C /* CKPhotoView.m */,
+			);
+			name = CKPhotoView;
 			sourceTree = "<group>";
 		};
 		F6CEFEBB1839A307002D9DB1 /* tags */ = {
@@ -8672,9 +8482,7 @@
 				7634612E17B9C3C000876AE9 /* BookContentGridLayout.m in Sources */,
 				7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */,
 				7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */,
-				F684F5DA18AB451500FCD0E3 /* ImageScrollView.m in Sources */,
 				7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */,
-				F684F5E018AB451500FCD0E3 /* TiledImageBuilder+Tile.m in Sources */,
 				76709003181402ED0065DE51 /* CKInfoView.m in Sources */,
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
 				7666B40616143713001D1BA1 /* AppHelper.m in Sources */,
@@ -8726,7 +8534,6 @@
 				76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */,
 				76735C9117BA5C770027CA3B /* BookRecipeGridMediumCell.m in Sources */,
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
-				F684F5DC18AB451500FCD0E3 /* OperationsRunner.m in Sources */,
 				76C8FAF617966FDC00488A80 /* BookSocialLayout.m in Sources */,
 				7698ED4D17D362D9003898A4 /* NotificationsFlowLayout.m in Sources */,
 				769D22E017B49AC50048C572 /* RecipeServesCookView.m in Sources */,
@@ -8737,7 +8544,6 @@
 				76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */,
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
-				F6C45ACD18AD982D00DCFA0B /* CKPhotoView.m in Sources */,
 				76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */,
 				89A906F9166460DD0056E4CF /* Theme.m in Sources */,
 				76381C9516683E9500404FB1 /* RootViewController.m in Sources */,
@@ -8757,6 +8563,7 @@
 				76381CAB16685A8900404FB1 /* FriendsStoreCollectionViewController.m in Sources */,
 				76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */,
 				892282B61671933D002FE936 /* CKRecipeLike.m in Sources */,
+				F6CB584C18B32C0000CD368C /* CKPhotoView.m in Sources */,
 				7649240217EB247700C4E347 /* DataHelper.m in Sources */,
 				76D2BF7017B90A3700BA46A1 /* UIImage+MultiFormat.m in Sources */,
 				F6CEFEBE1839B4D9002D9DB1 /* TagLayout.m in Sources */,
@@ -8773,13 +8580,11 @@
 				769880CB17F16AAC00D1E760 /* RecipeSocialLayout.m in Sources */,
 				76D6E7EA16D5EEE8007B1851 /* ImageHelper.m in Sources */,
 				7643B8C916D7037B001A2452 /* TTTAddressFormatter.m in Sources */,
-				F684F5D918AB451500FCD0E3 /* ConcurrentOp.m in Sources */,
 				7643B8CA16D7037B001A2452 /* TTTArrayFormatter.m in Sources */,
 				7643B8CB16D7037B001A2452 /* TTTLocationFormatter.m in Sources */,
 				F6B169DA1855897200D3FBB6 /* TTTAttributedLabel.m in Sources */,
 				764963211810138F0014047B /* PinRecipeViewController.m in Sources */,
 				7643B8CC16D7037B001A2452 /* TTTOrdinalNumberFormatter.m in Sources */,
-				F684F5E318AB451500FCD0E3 /* TilingView.m in Sources */,
 				76FC077717C5E89B00ABF96F /* CKNotificationView.m in Sources */,
 				7643B8CD16D7037B001A2452 /* TTTTimeIntervalFormatter.m in Sources */,
 				7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */,
@@ -8824,7 +8629,6 @@
 				76EA65F417A639D10093B9D9 /* CKImageDecorationView.m in Sources */,
 				767EEA5717BE5E59001E7D0B /* DashboardTutorialViewController.m in Sources */,
 				7603DB6D1807A90A00D011AB /* BookCoverPhotoViewController.m in Sources */,
-				F684F5DE18AB451500FCD0E3 /* TiledImageBuilder+Draw.m in Sources */,
 				7647853B17A697D800387A7B /* CKPrivacySliderView.m in Sources */,
 				76EBE62E179522210099E2CB /* BookSocialViewController.m in Sources */,
 				7619515A179382C3008AB495 /* BookProfileHeaderView.m in Sources */,
@@ -8858,7 +8662,6 @@
 				76EF95D117363BF50033DBCE /* CKListCollectionViewFlowLayout.m in Sources */,
 				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
 				769FE3F4180B920E00B3DBB2 /* CKLocationManager.m in Sources */,
-				F684F5E118AB451500FCD0E3 /* TiledImageBuilder.m in Sources */,
 				F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */,
 				764A75C31833317C0003594E /* WorldStoreCollectionViewController.m in Sources */,
 				766D96F817D2E80000A9104E /* NotificationCell.m in Sources */,
@@ -8908,7 +8711,6 @@
 				7698ED5017D37368003898A4 /* DateHelper.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,
 				7680103717A92A370065B2C6 /* ThemeTabView.m in Sources */,
-				F684F5DF18AB451500FCD0E3 /* TiledImageBuilder+JPEG.m in Sources */,
 				7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8984,7 +8786,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
-				OTHER_CFLAGS = "-DLIBJPEG";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -9045,10 +8847,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
-				OTHER_CFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"-DLIBJPEG",
-				);
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -9143,7 +8942,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
-				OTHER_CFLAGS = "-DLIBJPEG";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -9172,10 +8971,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/Flurry",
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
-				OTHER_CFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"-DLIBJPEG",
-				);
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};

@@ -85,26 +85,26 @@
     }
     
     if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] featuredImageForRecipe:recipe
-                                                           size:[self imageSizeWithMotionOffset]
-                                                       progress:nil
-                                                thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-            [self configureImage:thumbImage book:self.book thumb:YES];
-            self.fullImageLoaded = NO;
-        }
-                                                     completion:^(UIImage *image, NSString *name) {
-            //When image is loaded, delay for an additional second to allow for user to decide if they like this page
-            double delayInSeconds = 1.0;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                if (self.isFullLoad) {
-                    [self configureImage:image book:self.book thumb:NO];
-                    self.fullImageLoaded = YES;
-                } else {
-                    self.fullImageLoaded = NO;
-                }
-            });
-        }];
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe
+                                                        size:[self imageSizeWithMotionOffset]
+                                                        name:nil
+                                                    progress:^(CGFloat progressRatio, NSString *name) {}
+                                                  completion:^(UIImage *thumbImage, NSString *name) {
+                                                      [self configureImage:thumbImage book:self.book thumb:YES];
+                                                      self.fullImageLoaded = NO;
+                                                      //When image is loaded, delay for an additional second to allow for user to decide if they like this page
+                                                      double delayInSeconds = 1.0;
+                                                      dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                                      dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                          if (self.isFullLoad) {
+                                                              [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
+                                                                  [self configureImage:image book:self.book thumb:NO];
+                                                                  self.fullImageLoaded = YES;
+                                                              }];
+                                                          }
+                                                      });
+                                                      
+                                                  }];
     }
 }
 
@@ -114,7 +114,7 @@
 
 - (void)reloadWithBook:(CKBook *)book {
     self.isFullLoad = YES;
-        [self configureFeaturedRecipe:self.recipe book:book];
+    [self configureFeaturedRecipe:self.recipe book:book];
 //    [self configureImage:self.imageView.image book:book];
 }
 

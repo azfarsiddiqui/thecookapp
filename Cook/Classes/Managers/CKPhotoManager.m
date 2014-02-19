@@ -58,12 +58,16 @@
 #pragma mark - Image retrieval and downloads.
 
 // Fullsize image retrieval for the given recipe at the specified size and name for callback completion comparison.
-- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
+- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)iname
               progress:(void (^)(CGFloat progressRatio, NSString *name))progress
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    NSString *imageName = iname;
+    if (!imageName) {
+        imageName = [self photoNameForRecipe:recipe];
+    }
     __weak CKPhotoManager *weakSelf = self;
-    [self checkInTransferImageForRecipe:recipe size:size name:name
+    [self checkInTransferImageForRecipe:recipe size:size name:imageName
                              completion:^(UIImage *image, NSString *name) {
                                  
                                  // Found in-transfer image, return immediately.
@@ -72,9 +76,9 @@
                              } otherwiseHandler:^{
                                  
                                  // Otherwise try and load the parseFile.
-                                 [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                 [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:imageName
                                                     progress:^(CGFloat progressRatio) {
-                                                        progress(progressRatio, name);
+                                                        progress(progressRatio, imageName);
                                                     } completion:^(UIImage *image, NSString *name) {
                                                         completion(image, name);
                                                     }];
@@ -82,12 +86,15 @@
 }
 
 // Thumbnail image retrieval for the given recipe at the specified size and name for callbacl completion comparison.
-- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
+- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)iname
                    progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                  completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
-    
+    NSString *imageName = iname;
+    if (!imageName) {
+        imageName = [self photoNameForRecipe:recipe];
+    }
     __weak CKPhotoManager *weakSelf = self;
-    [self checkInTransferImageForRecipe:recipe size:size name:name
+    [self checkInTransferImageForRecipe:recipe size:size name:imageName
                              completion:^(UIImage *image, NSString *name) {
                                  
                                  // Found in-transfer image, return immediately.
@@ -97,17 +104,17 @@
                                  
                                  // Check if we have a thumbnail image, otherwise load the big one.
                                  if (recipe.recipeImage.thumbImageFile) {
-                                     [weakSelf imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
+                                     [weakSelf imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:imageName
                                                            thumb:YES
                                                         progress:^(CGFloat progressRatio) {
-                                                            progress(progressRatio, name);
+                                                            progress(progressRatio, imageName);
                                                         } completion:^(UIImage *image, NSString *name) {
                                                             completion(image, name);
                                                         }];
                                  } else {
-                                     [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                     [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:imageName
                                                         progress:^(CGFloat progressRatio) {
-                                                            progress(progressRatio, name);
+                                                            progress(progressRatio, imageName);
                                                         } completion:^(UIImage *image, NSString *name) {
                                                             completion(image, name);
                                                         }];
