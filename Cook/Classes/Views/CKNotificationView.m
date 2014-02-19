@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UIButton *onButtonIcon;
 @property (nonatomic, strong) UILabel *badgeLabel;
 @property (nonatomic, assign) BOOL on;
+@property (nonatomic, assign) BOOL loading;
 @property (nonatomic, assign) NSUInteger badgeCount;
 
 @end
@@ -32,6 +33,7 @@
 #define kMinFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0]
 
 - (void)dealloc {
+    [EventHelper unregisterAppActive:self];
     [EventHelper unregisterUserNotifications:self];
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
@@ -45,6 +47,7 @@
         [self addSubview:self.onButtonIcon];
         [self addSubview:self.badgeLabel];
         
+        [EventHelper registerAppActive:self selector:@selector(appActive:)];
         [EventHelper registerUserNotifications:self selector:@selector(notificationsReceived:)];
         [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
         [EventHelper registerLoginSucessful:self selector:@selector(loggedOut:)];
@@ -119,6 +122,13 @@
 
 - (void)loggedOut:(NSNotification *)notification {
     [self loadData];
+}
+
+- (void)appActive:(NSNotification *)notification {
+    BOOL appActive = [EventHelper appActiveForNotification:notification];
+    if (appActive) {
+        [self loadData];
+    }
 }
 
 - (void)updateBadge {
@@ -197,27 +207,35 @@
 }
 
 - (void)loadData {
+    DLog();
+    
+    if (self.loading) {
+        return;
+    }
+    self.loading = YES;
     
     if ([CKUser isLoggedIn]) {
         
         [[CKUser currentUser] numUnreadNotificationsCompletion:^(int count) {
             
             self.badgeCount = count;
+            self.loading = NO;
             [self updateBadge];
             
         } failure:^(NSError *error) {
             
             // Ignore error.
             self.badgeCount = 0;
+            self.loading = NO;
             [self updateBadge];
         }];
         
     } else {
         
         self.badgeCount = 0;
+        self.loading = NO;
         [self updateBadge];
     }
-    
 }
 
 @end

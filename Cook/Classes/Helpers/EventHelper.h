@@ -102,4 +102,11 @@
 + (NSInteger)numCommentsForNotification:(NSNotification *)notification;
 + (CKRecipe *)socialUpdatesRecipeForNotification:(NSNotification *)notification;
 
+// Lifecycle events.
++ (void)registerAppActive:(id)observer selector:(SEL)selector;
++ (void)postAppActive:(BOOL)active;
++ (void)unregisterAppActive:(id)observer;
++ (BOOL)appActiveForNotification:(NSNotification *)notification;
+
+
 @end

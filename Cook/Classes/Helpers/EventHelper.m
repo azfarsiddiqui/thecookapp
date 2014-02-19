@@ -44,6 +44,8 @@
 #define kNumCommentsSocialUpdates   @"CKNumCommentsSocialUpdates"
 #define kLikedSocialUpdates         @"CKLikedSocialUpdates"
 #define kUserChangeNotification     @"UserChangedNotification"
+#define kEventAppActive             @"CKEventAppActive"
+#define kBoolAppActive              @"CKAppActive"
 
 #pragma mark - Login successful event
 
@@ -391,6 +393,24 @@
     return [[notification userInfo] objectForKey:kRecipeSocialUpdates];
 }
 
+#pragma mark - Lifecycle events.
+
++ (void)registerAppActive:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventAppActive];
+}
+
++ (void)postAppActive:(BOOL)active {
+    [EventHelper postEvent:kEventAppActive withUserInfo:@{ kBoolAppActive : @(active) } ];
+}
+
++ (void)unregisterAppActive:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventAppActive];
+}
+
++ (BOOL)appActiveForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kBoolAppActive] boolValue];
+}
+
 #pragma mark - Private
 
 + (void)registerObserver:(id)observer withSelector:(SEL)selector toEventName:(NSString *)eventName {
@@ -404,6 +424,7 @@
 }
 
 + (void)postEvent:(NSString *)eventName withUserInfo:(NSDictionary *)theUserInfo {
+    DLog("postEvent[%@] userInfo[%@]", eventName, theUserInfo);
     
     // Post all events on main thread as all involve UI updates.
     dispatch_async(dispatch_get_main_queue(), ^{
