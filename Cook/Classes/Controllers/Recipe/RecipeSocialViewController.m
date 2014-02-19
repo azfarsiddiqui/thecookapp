@@ -611,6 +611,15 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             } completion:^(BOOL finished) {
                 
+                CGSize contentSize = self.collectionView.contentSize;
+                if (contentSize.height > self.collectionView.bounds.size.height) {
+                    CGPoint bottomOffset = (CGPoint){
+                        self.collectionView.contentOffset.x,
+                        contentSize.height - self.collectionView.bounds.size.height
+                    };
+                    [self.collectionView setContentOffset:bottomOffset animated:YES];
+                }
+                
             }];
             
         } else {
