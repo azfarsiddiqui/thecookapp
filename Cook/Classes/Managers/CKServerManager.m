@@ -79,14 +79,29 @@
 
 - (void)handleActive {
     
+    BOOL saveInstallation = NO;
+    
     // Resets the badge.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    
+    // Set the owner for this installation by associating with the currently logged on user if not set.
+    if ([CKUser isLoggedIn] && ![currentInstallation objectForKey:kUserModelForeignKeyName]) {
+        [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+        saveInstallation = YES;
+    }
+    
+    // Update badge if non-zero.
     if (currentInstallation.badge != 0) {
         
         // Inform received notification.
         [EventHelper postUserNotifications:currentInstallation.badge];
         
         currentInstallation.badge = 0;
+        saveInstallation = YES;
+    }
+    
+    // Save if required.
+    if (saveInstallation) {
         [currentInstallation saveEventually];
     }
     
@@ -117,7 +132,7 @@
     }
     
     [currentInstallation setDeviceTokenFromData:deviceToken];
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
 }
 
 - (void)handleDeviceTokenError:(NSError *)error {
@@ -145,6 +160,13 @@
     
     if (isSuccess) {
         
+        // Set owner owner from the current installation.
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        if ([CKUser isLoggedIn]) {
+            [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+        }
+        [currentInstallation saveEventually];
+        
         // Register for push.
         [self registerForPush];
         
@@ -158,7 +180,7 @@
     // Remove owner from the current installation.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation removeObjectForKey:kUserModelForeignKeyName];
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
     
     // Remove crash identification.
     [Crashlytics setUserIdentifier:nil];
