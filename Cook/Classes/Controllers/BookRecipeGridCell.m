@@ -34,7 +34,7 @@
 #define kViewDebug              0
 #define kImageSize              (CGSize){316.0, 260.0}
 #define kBlockUnitHeight        140.0
-#define kContentInsets          (UIEdgeInsets){42.0, 40.0, 51.0, 40.0}
+#define kContentInsets          (UIEdgeInsets){72.0, 40.0, 51.0, 40.0}
 
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0
@@ -59,7 +59,6 @@
     if (self = [super initWithFrame:frame]) {
         [self initBackground];
         [self initImageView];
-//        [self initProfilePhoto];
         [self initTitleLabel];
         [self initIngredientsView];
         [self initStoryLabel];
@@ -67,6 +66,7 @@
         [self initStatsView];
         [self initTimeIntervalLabel];
         [self initPrivacyIcon];
+        [self initProfilePhoto];
         
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
@@ -103,7 +103,6 @@
     self.ownBook = own;
     
     [self updateImageView];
-//    [self updateProfilePhoto];
     [self updateTitle];
     [self updateTimeInterval];
     [self updateIngredients];
@@ -111,6 +110,7 @@
     [self updateMethod];
     [self updateStats];
     [self updatePrivacyIcon];
+    [self updateProfilePhoto];
     
     CGSize imageSize = [BookRecipeGridCell imageSize];
     if ([recipe hasPhotos]) {
@@ -131,14 +131,20 @@
 }
 
 - (void)updateProfilePhoto {
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect frame = self.profilePhotoView.frame;
+    CGSize availableSize = [self availableSize];
+    frame.origin.x = contentInsets.left + floorf((availableSize.width - frame.size.width) / 2.0);
     
-    // Show photo only if book user and recipe user is not the same.
-    if (![self.book.user.objectId isEqualToString:self.recipe.user.objectId]) {
-        self.profilePhotoView.hidden = NO;
-        [self.profilePhotoView loadProfilePhotoForUser:self.recipe.user];
-    } else {
-        self.profilePhotoView.hidden = YES;
+    if (!self.titleLabel.hidden) {
+        frame.origin.y = self.titleLabel.frame.origin.y - frame.size.height - 5.0;
+    } else if (!self.storyLabel.hidden) {
+        frame.origin.y = self.storyLabel.frame.origin.y - frame.size.height - 5.0;
     }
+    
+    self.profilePhotoView.frame = CGRectIntegral(frame);
+    self.profilePhotoView.hidden = NO;
+    [self.profilePhotoView loadProfilePhotoForUser:self.recipe.user];
 }
 
 - (void)updateTitle {
@@ -291,11 +297,11 @@
 }
 
 - (NSInteger)maxStoryLines {
-    return 7;
+    return 6;
 }
 
 - (NSInteger)maxMethodLines {
-    return 7;
+    return 6;
 }
 
 #pragma mark - UICollectionViewCell methods
@@ -399,7 +405,7 @@
 }
 
 - (void)initProfilePhoto {
-    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeTiny];
+    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMini];
     CGRect frame = self.profilePhotoView.frame;
     frame.origin = (CGPoint){ 5.0, 5.0 };
     self.profilePhotoView.frame = frame;

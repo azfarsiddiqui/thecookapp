@@ -12,7 +12,7 @@
 
 @implementation BookRecipeGridSmallCell
 
-#define kImageTitleGap          30.0
+#define kImageTitleGap          60.0
 #define kAfterTimeGap           30.0
 
 - (UIEdgeInsets)contentInsets {

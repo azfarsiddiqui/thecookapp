@@ -10,11 +10,12 @@
 #import "RecipeIngredientsView.h"
 #import "CKRecipe.h"
 #import "GridRecipeStatsView.h"
+#import "CKUserProfilePhotoView.h"
 
 @implementation BookRecipeGridExtraSmallCell
 
 #define kTimeGap        29.0
-#define kStandardGap    30.0
+#define kStandardGap    60.0
 
 // Title centered vertically.
 - (void)updateTitle {
@@ -28,7 +29,7 @@
         CGSize size = [self.titleLabel sizeThatFits:[self availableSize]];
         self.titleLabel.frame = CGRectIntegral((CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-            floorf((self.statsView.frame.origin.y - size.height) / 2.0),
+            floorf((self.statsView.frame.origin.y - size.height) / 2.0) + self.profilePhotoView.frame.size.height,
             size.width,
             size.height
         });
