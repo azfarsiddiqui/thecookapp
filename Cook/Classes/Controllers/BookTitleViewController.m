@@ -110,6 +110,8 @@
         UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
         [self.photoView setBlurredImage:cachedTitleImage tintColor:tintColour];
         self.cachedImageLoaded = YES;
+    } else {
+        [self.photoView setThumbnailImage:[ImageHelper imageFromDiskNamed:@"cook_edit_bg_blank" type:@"png"]];
     }
     
     [self addCloseButtonLight:YES];
