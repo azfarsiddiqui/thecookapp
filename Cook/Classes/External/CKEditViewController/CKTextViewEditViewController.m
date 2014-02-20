@@ -63,10 +63,20 @@
         accessoryViewHeight = self.accessoryView.view.frame.size.height;
     }
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom - accessoryViewHeight;
+    if ([self.titleLabel.text length] > 0) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.textView.frame.origin.y/2 + 20, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        minHeight += self.titleLabel.frame.size.height;
+    }
+    
+    CGFloat labelHeight = 0;
+    if ([self.titleLabel.text length] > 0) {
+        labelHeight = self.titleLabel.frame.size.height;
+    }
+    
     // TextView positioning.
     self.textView.frame = (CGRect){
         textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
-        MAX(kKeyboardDefaultFrame.origin.y/2 - minHeight/2, contentInsets.top) ,
+        MAX(kKeyboardDefaultFrame.origin.y/2 - minHeight/2, contentInsets.top + labelHeight/2),
         textViewAdjustments.left + width + textViewAdjustments.right,
         ceilf(minHeight)
     };
@@ -266,8 +276,12 @@
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     if (targetTextBoxView) {
         CGRect targetEditViewFrame = self.textView.frame;
-
-        targetEditViewFrame.origin.y = MAX(kKeyboardDefaultFrame.origin.y/2 - self.textView.frame.size.height/2, [self contentInsets].top);
+        
+        CGFloat labelHeight = 0;
+        if ([self.titleLabel.text length] > 0) {
+            labelHeight = self.titleLabel.frame.size.height;
+        }
+        targetEditViewFrame.origin.y = MAX(kKeyboardDefaultFrame.origin.y/2 - self.textView.frame.size.height/2, [self contentInsets].top) + labelHeight/2;
 
         [UIView animateWithDuration:0.2 animations:^{
             self.textView.frame = targetEditViewFrame;
