@@ -252,12 +252,8 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventUserNotifications];
 }
 
-+ (void)postUserNotifications:(NSInteger)notificationsCount {
-    [EventHelper postEvent:kEventUserNotifications withUserInfo:@{ kUserNotificationsCount : @(notificationsCount) }];
-}
-
-+ (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification {
-    return [[[notification userInfo] objectForKey:kUserNotificationsCount] integerValue];
++ (void)postUserNotifications {
+    [EventHelper postEvent:kEventUserNotifications];
 }
 
 + (void)unregisterUserNotifications:(id)observer {

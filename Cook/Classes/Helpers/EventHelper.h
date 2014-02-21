@@ -67,8 +67,7 @@
 + (void)unregisterStatusBarChange:(id)observer;
 
 + (void)registerUserNotifications:(id)observer selector:(SEL)selector;
-+ (void)postUserNotifications:(NSInteger)notificationsCount;
-+ (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification;
++ (void)postUserNotifications;
 + (void)unregisterUserNotifications:(id)observer;
 
 // Image loading events.

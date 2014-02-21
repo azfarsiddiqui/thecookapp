@@ -110,12 +110,6 @@
     }
 }
 
-- (void)notificationsReceived:(NSNotification *)notification {
-    NSInteger badgeCount = [EventHelper userNotificationsCountForNotification:notification];
-    self.badgeCount = badgeCount;
-    [self updateBadge];
-}
-
 - (void)loggedIn:(NSNotification *)notification {
     [self loadData];
 }
@@ -129,6 +123,10 @@
     if (appActive) {
         [self loadData];
     }
+}
+
+- (void)notificationsReceived:(NSNotification *)notification {
+    [self loadData];
 }
 
 - (void)updateBadge {
