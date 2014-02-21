@@ -80,8 +80,10 @@
     self.recipe = recipe;
     self.book = book;
     self.fullImageLoaded = NO;
-    if (!recipe.recipeImage) {
-        [self.photoView setThumbnailImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover]];
+    
+    //Set initial image but don't use provided method because we don't want to trigger imageLoaded flag
+    if (!self.photoView.thumbnailView.image) {
+        self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:book.cover];
     }
     
     if ([recipe hasPhotos]) {
