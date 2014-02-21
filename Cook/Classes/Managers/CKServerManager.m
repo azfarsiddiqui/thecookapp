@@ -93,9 +93,6 @@
     // Update badge if non-zero.
     if (currentInstallation.badge != 0) {
         
-        // Inform received notification.
-        [EventHelper postUserNotifications:currentInstallation.badge];
-        
         currentInstallation.badge = 0;
         saveInstallation = YES;
     }
@@ -144,7 +141,7 @@
 }
 
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
+    [EventHelper postUserNotifications];
 }
 
 #pragma mark - Parse no connection error.
