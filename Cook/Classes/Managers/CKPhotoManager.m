@@ -397,6 +397,8 @@
                                                         progress:^(CGFloat progressRatio) {
                                                             // Ignore progress for event-based loading.
                                                         } completion:^(UIImage *image, NSString *name) {
+                                                            NSString *cacheKey = [self cacheKeyForParseFile:recipe.recipeImage.thumbImageFile size:size];
+                                                            [[SDImageCache sharedImageCache] storeThumbInCache:image forKey:cacheKey];
                                                             [EventHelper postPhotoLoadingImage:image name:name thumb:YES];
                                                         }];
                                  } else {
@@ -888,13 +890,6 @@
 
 - (NSString *)photoNameForBook:(CKBook *)book {
     return [NSString stringWithFormat:@"book_%@", book.objectId];
-}
-
-#pragma mark - Cached featured thumb images for recipe
-
-- (UIImage *)cachedThumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
-    NSString *cacheKey = [self cacheKeyForParseFile:recipe.recipeImage.imageFile size:size];
-    return [self cachedImageForKey:cacheKey];
 }
 
 #pragma mark - Cached title images for book.

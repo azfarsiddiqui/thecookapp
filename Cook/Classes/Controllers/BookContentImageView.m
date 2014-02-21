@@ -190,7 +190,6 @@
 }
 
 - (void)configureImage:(UIImage *)image book:(CKBook *)book thumb:(BOOL)isThumb {
-    __block UIImage *blockImage = image;
     if (image) {
         self.vignetteOverlayView.hidden = NO;
         
@@ -201,6 +200,7 @@
                 [self.photoView setBlurredImage:image tintColor:tintColour];
             }
         } else {
+            __block UIImage *blockImage = image;
             [UIView animateWithDuration:0.2 animations:^{
                 [self.photoView setFullImage:blockImage];
             }];
