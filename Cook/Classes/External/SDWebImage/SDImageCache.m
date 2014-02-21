@@ -26,7 +26,6 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 
 @end
 
-
 @implementation SDImageCache
 
 + (SDImageCache *)sharedImageCache
@@ -198,6 +197,10 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
     }
 }
 
+- (void)storeThumbInCache:(UIImage *)image forKey:(NSString *)key {
+    [self storeImage:image imageData:nil forKey:key png:NO toDisk:YES skipMemory:NO];
+}
+
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key
 {
     [self storeImage:image imageData:nil forKey:key toDisk:YES];
@@ -229,15 +232,12 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 }
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key skipMemory:(BOOL)skipMemory {
-    
     UIImage *image = nil;
     
     // First check the in-memory cache...
-    if (!skipMemory) {
-        image = [self imageFromMemoryCacheForKey:key];
-        if (image) {
-            return image;
-        }
+    image = [self imageFromMemoryCacheForKey:key];
+    if (image) {
+        return image;
     }
     
     // Second check the disk cache...

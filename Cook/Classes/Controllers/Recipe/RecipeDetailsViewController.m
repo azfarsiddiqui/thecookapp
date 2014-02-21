@@ -42,6 +42,7 @@
 #import "CKBookManager.h"
 #import "ProfileViewController.h"
 #import "RecipeFooterView.h"
+#import "SDImageCache.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -276,7 +277,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #pragma mark - RecipeDetailsViewDelegate methods
 
 - (void)recipeDetailsViewEditing:(BOOL)editing {
-    
+    if (editing) {
+        [[SDImageCache sharedImageCache] clearMemory];
+    }
     // Fade cancel/save buttons.
     [UIView animateWithDuration:0.3
                           delay:0.0

@@ -424,7 +424,7 @@
 }
 
 + (void)postEvent:(NSString *)eventName withUserInfo:(NSDictionary *)theUserInfo {
-    DLog("postEvent[%@] userInfo[%@]", eventName, theUserInfo);
+//    DLog("postEvent[%@] userInfo[%@]", eventName, theUserInfo);
     
     // Post all events on main thread as all involve UI updates.
     dispatch_async(dispatch_get_main_queue(), ^{

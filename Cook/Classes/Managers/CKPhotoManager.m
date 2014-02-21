@@ -109,6 +109,8 @@
                                                         progress:^(CGFloat progressRatio) {
                                                             progress(progressRatio, imageName);
                                                         } completion:^(UIImage *image, NSString *name) {
+                                                            NSString *cacheKey = [self cacheKeyForParseFile:recipe.recipeImage.thumbImageFile size:size];
+                                                            [[SDImageCache sharedImageCache] storeThumbInCache:image forKey:cacheKey];
                                                             completion(image, name);
                                                         }];
                                  } else {
@@ -176,12 +178,11 @@
                              }];
 }
 
-// Image retrieval for featured image for recipe to return a thumb and full size
 - (void)featuredImageForRecipe:(CKRecipe *)recipe
                           size:(CGSize)size
                       progress:(void (^)(CGFloat progressRatio, NSString *name))progress
-       thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
-            completion:(void (^)(UIImage *image, NSString *name))completion {
+               thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+                    completion:(void (^)(UIImage *image, NSString *name))completion {
     
     __weak CKPhotoManager *weakSelf = self;
     [self checkInTransferImageForRecipe:recipe size:size name:[self photoNameForRecipe:recipe]
@@ -889,6 +890,13 @@
     return [NSString stringWithFormat:@"book_%@", book.objectId];
 }
 
+#pragma mark - Cached featured thumb images for recipe
+
+- (UIImage *)cachedThumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
+    NSString *cacheKey = [self cacheKeyForParseFile:recipe.recipeImage.imageFile size:size];
+    return [self cachedImageForKey:cacheKey];
+}
+
 #pragma mark - Cached title images for book.
 
 - (UIImage *)cachedTitleImageForBook:(CKBook *)book {
@@ -1053,7 +1061,7 @@
                     UIImage *image = [UIImage imageWithData:data];
                     UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
                     image = nil;
-                    // Keep it in the cache.
+                    // Keep it in the cache. If thumbnail, store in memory cache
                     [self storeImage:imageToFit forKey:cacheKey];
                     
                     // Mark as completed transfer.

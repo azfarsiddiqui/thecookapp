@@ -211,24 +211,26 @@
 - (void)loadProfileUrl:(NSURL *)profileUrl {
     self.profilePhotoUrl = profileUrl;
     if (profileUrl) {
-        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl
-                                                size:[ImageHelper profileSize]
-                                                name:[profileUrl absoluteString]
-                                            progress:^(CGFloat progress){}
-                                       isSynchronous:YES
-                                          completion:^(UIImage *image, NSString *name) {
-                                              
-                                              if ([name isEqualToString:[profileUrl absoluteString]]) {
-                                                  
-                                                  // Cross-fade the image.
-                                                  [UIView transitionWithView:self.profileImageView
-                                                                    duration:0.2
-                                                                     options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
-                                                                  animations:^{
-                                                                      self.profileImageView.image = image;
-                                                                  } completion:nil];
-                                              }
-                                          }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[CKPhotoManager sharedInstance] imageForUrl:profileUrl
+                                                    size:[ImageHelper profileSize]
+                                                    name:[profileUrl absoluteString]
+                                                progress:^(CGFloat progress){}
+                                           isSynchronous:YES
+                                              completion:^(UIImage *image, NSString *name) {
+                                                  if ([name isEqualToString:[profileUrl absoluteString]]) {
+                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                          // Cross-fade the image.
+                                                          [UIView transitionWithView:self.profileImageView
+                                                                            duration:0.2
+                                                                             options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                                                                          animations:^{
+                                                                              self.profileImageView.image = image;
+                                                                          } completion:nil];
+                                                      });
+                                                  }
+                                              }];
+        });
     }
 }
 
