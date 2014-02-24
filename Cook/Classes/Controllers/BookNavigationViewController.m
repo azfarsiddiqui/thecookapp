@@ -36,7 +36,7 @@
 
 @interface BookNavigationViewController () <BookNavigationLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
-    UIGestureRecognizerDelegate>
+    UIGestureRecognizerDelegate, BookContentImageViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *user;
@@ -862,6 +862,16 @@
     return self.bookNavigationView ? self.bookNavigationView.alpha : 1.0;
 }
 
+#pragma mark - BookContentImageViewDelegate methods 
+
+- (BOOL)shouldRunFullLoadForIndex:(NSInteger)pageIndex {
+    if (pageIndex == [self currentPageIndex]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1469,16 +1479,9 @@
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
     
-    //Only do a full load if the panel is the final destination
-    if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.section]])
-    {
-        categoryHeaderView.isFullLoad = YES;
-    }
-    else
-    {
-        categoryHeaderView.isFullLoad = NO;
-    }
     [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
+    categoryHeaderView.delegate = self;
+    categoryHeaderView.pageIndex = indexPath.section;
     
     // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];

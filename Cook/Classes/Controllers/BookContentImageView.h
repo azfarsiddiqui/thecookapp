@@ -11,9 +11,16 @@
 @class CKBook;
 @class CKRecipe;
 
+@protocol BookContentImageViewDelegate <NSObject>
+
+- (BOOL)shouldRunFullLoadForIndex:(NSInteger)pageIndex;
+
+@end
+
 @interface BookContentImageView : UICollectionReusableView
 
-@property BOOL isFullLoad;
+@property (nonatomic, weak) id<BookContentImageViewDelegate> delegate;
+@property (nonatomic, assign) NSInteger pageIndex;
 
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)applyOffset:(CGFloat)offset;

@@ -66,7 +66,6 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     [self.photoView cleanImageViews];
-    self.isFullLoad = NO;
     self.recipe = nil;
     self.book = nil;
     self.fullImageLoaded = NO;
@@ -105,7 +104,7 @@
                                                                   double delayInSeconds = 1.0;
                                                                   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                                                                   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                                                      if (self.isFullLoad) {
+                                                                      if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
                                                                           [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
                                                                               [self configureImage:image book:self.book thumb:NO];
                                                                               self.fullImageLoaded = YES;
@@ -126,7 +125,6 @@
 }
 
 - (void)reloadWithBook:(CKBook *)book {
-    self.isFullLoad = YES;
     [self configureFeaturedRecipe:self.recipe book:book];
 //    [self configureImage:self.imageView.image book:book];
 }
@@ -195,7 +193,7 @@
         
         if (isThumb) {
             [self.photoView setThumbnailImage:image];
-            if (self.isFullLoad) {
+            if (self.delegate && ([self.delegate shouldRunFullLoadForIndex:self.pageIndex] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex - 1] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex + 1])) {
                 UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
                 [self.photoView setBlurredImage:image tintColor:tintColour];
             }
@@ -208,13 +206,11 @@
         
     } else {
         [self.photoView cleanImageViews];
-        self.isFullLoad = NO;
         self.vignetteOverlayView.hidden = YES;
     }
 }
 
 - (void)deactivateImage {
-    self.isFullLoad = NO;
     [self.photoView deactivateImage];
 }
 
