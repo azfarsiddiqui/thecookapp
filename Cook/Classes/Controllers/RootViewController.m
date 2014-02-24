@@ -24,6 +24,7 @@
 #import "DashboardTutorialViewController.h"
 #import "ImageHelper.h"
 #import "ViewHelper.h"
+#import "SDImageCache.h"
 
 @interface RootViewController () <WelcomeViewControllerDelegate, BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate,
@@ -261,6 +262,9 @@
         [self updateStatusBarHidden:NO];
         
     } else {
+        // Clear up memory in preparation for the deluge
+        [[SDImageCache sharedImageCache] clearMemory];
+        
         self.bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
                                                                            titleViewController:self.bookTitleViewController
                                                                                       delegate:self];

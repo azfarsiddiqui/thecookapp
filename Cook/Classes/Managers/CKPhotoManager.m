@@ -109,8 +109,6 @@
                                                         progress:^(CGFloat progressRatio) {
                                                             progress(progressRatio, imageName);
                                                         } completion:^(UIImage *image, NSString *name) {
-                                                            NSString *cacheKey = [self cacheKeyForParseFile:recipe.recipeImage.thumbImageFile size:size];
-                                                            [[SDImageCache sharedImageCache] storeThumbInCache:image forKey:cacheKey];
                                                             completion(image, name);
                                                         }];
                                  } else {
@@ -397,8 +395,6 @@
                                                         progress:^(CGFloat progressRatio) {
                                                             // Ignore progress for event-based loading.
                                                         } completion:^(UIImage *image, NSString *name) {
-                                                            NSString *cacheKey = [self cacheKeyForParseFile:recipe.recipeImage.thumbImageFile size:size];
-                                                            [[SDImageCache sharedImageCache] storeThumbInCache:image forKey:cacheKey];
                                                             [EventHelper postPhotoLoadingImage:image name:name thumb:YES];
                                                         }];
                                  } else {
@@ -846,6 +842,10 @@
     UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:cacheKey];
     if (!cachedImage) {
         cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
+        
+        if ([[cacheKey uppercaseString] rangeOfString:@"THUMBNAIL"].location != NSNotFound) {
+            [[SDImageCache sharedImageCache] storeThumbInCache:cachedImage forKey:cacheKey];
+        }
     }
     return cachedImage;
 }
