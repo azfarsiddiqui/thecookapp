@@ -16,6 +16,7 @@
 NSString *const kEventLibraryView                   = @"Library View";
 NSString *const kEventLibraryBookSummaryView        = @"Library Book Summary";
 NSString *const kEventBookView                      = @"Book View";
+NSString *const kEventBookLoad                      = @"Book Load";
 NSString *const kEventBookAdd                       = @"Book Add";
 NSString *const kEventBookDelete                    = @"Book Delete";
 NSString *const kEventPageView                      = @"Page View";

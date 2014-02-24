@@ -405,7 +405,7 @@
 }
 
 - (void)initProfilePhoto {
-    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMini];
+    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMini tappable:NO];
     CGRect frame = self.profilePhotoView.frame;
     frame.origin = (CGPoint){ 5.0, 5.0 };
     self.profilePhotoView.frame = frame;

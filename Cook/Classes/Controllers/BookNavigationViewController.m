@@ -180,9 +180,7 @@
     [self.collectionView addGestureRecognizer:leftEdgeGesture];
     
     // View book.
-    [AnalyticsHelper trackEventName:kEventBookView params:@{ @"owner" : @([self.book isOwner]),
-                                                             @"guest" : @(self.currentUser == nil) }
-                              timed:YES];
+    [AnalyticsHelper trackEventName:kEventBookView params:[self analyticsDataForBookOpen] timed:YES];
 }
 
 - (void)setActive:(BOOL)active {
@@ -1215,6 +1213,13 @@
 }
 
 - (void)loadData {
+    [self loadDataIsRetry:NO];
+}
+
+- (void)loadDataIsRetry:(BOOL)retry {
+    
+    // Book load start.
+    [AnalyticsHelper trackEventName:kEventBookLoad params:[self analyticsDataForBookOpen] timed:YES];
     
     // Spin the title page.
     [self.titleViewController configureLoading:YES];
@@ -1239,19 +1244,32 @@
         [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings
                 likedRecipes:likedRecipes];
         
+        // Book load completed.
+        [AnalyticsHelper endTrackEventName:kEventBookLoad params:@{ @"success" : @(YES),
+                                                                    @"retries" : @(self.numRetries),
+                                                                    }];
+        
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
         
         // Attempt to reload data.
         if (self.numRetries < MAX_NUM_RETRIES) {
             self.numRetries += 1;
-            [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self loadDataIsRetry:YES];
+            });
             
         } else {
+            
+            // Book load error.
+            [AnalyticsHelper endTrackEventName:kEventBookLoad params:@{ @"success" : @(NO),
+                                                                        @"retries" : @(self.numRetries),
+                                                                        }];
+            
             [self.titleViewController configureError:error];
         }
-    }];
-}
+    }];}
 
 - (void)processRecipes:(NSDictionary *)pageRecipes pageBatches:(NSDictionary *)pageBatches
             pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings
@@ -2212,6 +2230,14 @@
     } else {
         return (CKRecipe *)recipeOrPin;
     }
+}
+
+- (NSDictionary *)analyticsDataForBookOpen {
+    return @{
+             @"owner"       : @([self.book isOwner]),
+             @"featured"    : @(self.book.featured),
+             @"guest"       : @(self.currentUser == nil)
+             };
 }
 
 @end

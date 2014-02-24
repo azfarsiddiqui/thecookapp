@@ -36,6 +36,7 @@ typedef enum {
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 
 - (id)initWithProfileSize:(ProfileViewSize)profileSize;
+- (id)initWithProfileSize:(ProfileViewSize)profileSize tappable:(BOOL)tappable;
 - (id)initWithProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize;
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize border:(BOOL)border;

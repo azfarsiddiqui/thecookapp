@@ -80,6 +80,12 @@
     return [self initWithUser:nil profileSize:profileSize];
 }
 
+- (id)initWithProfileSize:(ProfileViewSize)profileSize tappable:(BOOL)tappable {
+    
+    return [self initWithUser:nil placeholder:[UIImage imageNamed:@"cook_default_profile.png"] profileSize:profileSize
+                       border:NO overlay:NO tappable:tappable];
+}
+
 - (id)initWithProfileSize:(ProfileViewSize)profileSize border:(BOOL)border {
     return [self initWithUser:nil profileSize:profileSize border:border];
 }
@@ -106,6 +112,13 @@
 
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
             border:(BOOL)border overlay:(BOOL)overlay {
+    
+    return [self initWithUser:user placeholder:placeholderImage profileSize:profileSize border:border overlay:overlay
+                     tappable:YES];
+}
+
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
+            border:(BOOL)border overlay:(BOOL)overlay tappable:(BOOL)tappable {
     
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize border:border]]) {
         
@@ -146,13 +159,6 @@
             self.profileOverlay = profileOverlay;
         }
         
-        // Add edit.
-        [self initEditButton];
-        
-        // Register taps.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileTapped:)];
-        [self addGestureRecognizer:tapGesture];
-        
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
         
@@ -161,6 +167,18 @@
             [self loadProfilePhotoForUser:user];
         } else {
             self.profileImageView.image = placeholderImage;
+        }
+        
+        // Add tappable related controls.
+        self.userInteractionEnabled = tappable;
+        if (tappable) {
+            
+            // Add edit.
+            [self initEditButton];
+            
+            // Register taps.
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileTapped:)];
+            [self addGestureRecognizer:tapGesture];
         }
         
     }
