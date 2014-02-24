@@ -16,6 +16,7 @@ extern NSString *const kEventLibraryView;
 extern NSString *const kEventLibraryBookSummaryView;
 
 extern NSString *const kEventBookView;
+extern NSString *const kEventBookLoad;
 extern NSString *const kEventBookAdd;
 extern NSString *const kEventBookDelete;
 extern NSString *const kEventPageView;
