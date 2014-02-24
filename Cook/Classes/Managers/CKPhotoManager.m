@@ -1130,24 +1130,22 @@
                                                              
                                                              if (!error) {
                                                                  
-                                                                 @autoreleasepool {
-                                                                     UIImage *image = [UIImage imageWithData:data];
-                                                                     UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
-                                                                     
-                                                                     // Keep it in the cache.
-                                                                     [weakSelf storeImage:imageToFit forKey:cacheKey png:YES];
-                                                                     
-                                                                     if (!isSynchronous)
-                                                                     {
-                                                                         // Mark as completed transfer.
-                                                                         [weakSelf.transferInProgress removeObjectForKey:cacheKey];
-                                                                     }
-                                                                     
-                                                                     // Callback on mainqueue.
-                                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         completion(imageToFit, name);
-                                                                     });
+                                                                 UIImage *image = [UIImage imageWithData:data];
+                                                                 UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                                                                 
+                                                                 // Keep it in the cache.
+                                                                 [weakSelf storeImage:imageToFit forKey:cacheKey png:YES];
+                                                                 
+                                                                 if (!isSynchronous)
+                                                                 {
+                                                                     // Mark as completed transfer.
+                                                                     [weakSelf.transferInProgress removeObjectForKey:cacheKey];
                                                                  }
+                                                                 
+                                                                 // Callback on mainqueue.
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     completion(imageToFit, name);
+                                                                 });
                                                                  
                                                              } else {
                                                                  

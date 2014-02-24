@@ -27,6 +27,7 @@
 @property (nonatomic, strong) CKPhotoView *photoView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
+@property (nonatomic, assign) BOOL isThumbLoading;
 
 @end
 
@@ -57,8 +58,7 @@
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
         [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
         
-        // Register photo loading events.
-//        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+        self.isThumbLoading = NO;
     }
     return self;
 }
@@ -79,21 +79,25 @@
     self.recipe = recipe;
     self.book = book;
     self.fullImageLoaded = NO;
-    
+    self.isThumbLoading = YES;
+    [self assignRecipeImage];
+}
+
+- (void)assignRecipeImage {
     //Set initial image but don't use provided method because we don't want to trigger imageLoaded flag
     if (!self.photoView.thumbnailView.image) {
-        self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:book.cover];
+        self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
     }
     
-    if ([recipe hasPhotos]) {
+    if ([self.recipe hasPhotos]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe
+            [[CKPhotoManager sharedInstance] thumbImageForRecipe:self.recipe
                                                             size:[self imageSizeWithMotionOffset]
                                                             name:nil
                                                         progress:^(CGFloat progressRatio, NSString *name) {}
                                                       completion:^(UIImage *thumbImage, NSString *name) {
                                                           NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
-                                                          
+                                                          self.isThumbLoading = NO;
                                                           if ([recipePhotoName isEqualToString:name]) {
                                                               dispatch_async(dispatch_get_main_queue(), ^{
                                                                   [self configureImage:thumbImage book:self.book thumb:YES];
@@ -105,7 +109,7 @@
                                                                   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                                                                   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                                                       if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
-                                                                          [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
+                                                                          [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
                                                                               [self configureImage:image book:self.book thumb:NO];
                                                                               self.fullImageLoaded = YES;
                                                                           }];
@@ -115,9 +119,10 @@
                                                               }
                                                           }
                                                       }];
-
+            
         });
     }
+
 }
 
 - (CGSize)imageSizeWithMotionOffset {
@@ -125,8 +130,9 @@
 }
 
 - (void)reloadWithBook:(CKBook *)book {
-    [self configureFeaturedRecipe:self.recipe book:book];
-//    [self configureImage:self.imageView.image book:book];
+    if (!self.isThumbLoading) {
+        [self assignRecipeImage];
+    }
 }
 
 #pragma mark - Properties
@@ -198,9 +204,9 @@
                 [self.photoView setBlurredImage:image tintColor:tintColour];
             }
         } else {
-            __block UIImage *blockImage = image;
+            DLog(@"Activate FULL LOAD: %@", self.recipe.name);
             [UIView animateWithDuration:0.2 animations:^{
-                [self.photoView setFullImage:blockImage];
+                [self.photoView setFullImage:image];
             }];
         }
         
@@ -212,6 +218,10 @@
 
 - (void)deactivateImage {
     [self.photoView deactivateImage];
+}
+
+- (void)cleanImage {
+    [self.photoView cleanImageViews];
 }
 
 @end

@@ -949,6 +949,7 @@
             //Only load current page
             if ([page isEqualToString:[self currentPage]]) {
                 BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
+                DLog(@"ACTIVATING PAGE");
                 [headerView reloadWithBook:self.book];
             }
             //Deactivate all other headerViews
@@ -1034,6 +1035,8 @@
             NSInteger pageIndex = indexPath.section - [self contentStartSection];
             if (pageIndex < [self.pages count]) {
                 NSString *page = [self.pages objectAtIndex:pageIndex];
+                BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
+                [headerView cleanImage];
                 [self.pageHeaderViews removeObjectForKey:page];
             }
         }
@@ -1061,7 +1064,6 @@
                 [self.contentControllers removeObjectForKey:page];
                 contentViewController = nil;
             }
-            
         }
     }
     
@@ -1496,7 +1498,6 @@
     
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
-    
     [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
     categoryHeaderView.delegate = self;
     categoryHeaderView.pageIndex = indexPath.section;

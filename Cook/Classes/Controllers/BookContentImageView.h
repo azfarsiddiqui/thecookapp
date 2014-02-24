@@ -27,5 +27,6 @@
 - (CGSize)imageSizeWithMotionOffset;
 - (void)reloadWithBook:(CKBook *)book;
 - (void)deactivateImage;
+- (void)cleanImage;
 
 @end
