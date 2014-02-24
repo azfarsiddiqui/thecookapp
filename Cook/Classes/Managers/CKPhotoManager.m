@@ -844,7 +844,7 @@
         cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
         
         if ([[cacheKey uppercaseString] rangeOfString:@"THUMBNAIL"].location != NSNotFound) {
-            [[SDImageCache sharedImageCache] storeThumbInCache:cachedImage forKey:cacheKey];
+            [[SDImageCache sharedImageCache] storeThumbInMemoryCache:cachedImage forKey:cacheKey];
         }
     }
     return cachedImage;

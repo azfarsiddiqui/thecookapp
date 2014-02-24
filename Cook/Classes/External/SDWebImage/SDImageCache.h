@@ -129,7 +129,7 @@ typedef enum SDImageCacheType SDImageCacheType;
 /**
  * Cook specific methods to pull from dedicated cache for thumb images
  */
-- (void)storeThumbInCache:(UIImage *)image forKey:(NSString *)key;
+- (void)storeThumbInMemoryCache:(UIImage *)image forKey:(NSString *)key;
 
 /**
  * Remove the image from memory and disk cache synchronously

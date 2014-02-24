@@ -197,8 +197,10 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
     }
 }
 
-- (void)storeThumbInCache:(UIImage *)image forKey:(NSString *)key {
-    [self storeImage:image imageData:nil forKey:key png:NO toDisk:YES skipMemory:NO];
+- (void)storeThumbInMemoryCache:(UIImage *)image forKey:(NSString *)key {
+    if (image) {
+        [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    }
 }
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key
