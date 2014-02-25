@@ -198,6 +198,10 @@
     [self loadProfilePhotoForUser:self.user];
 }
 
+- (void)clearProfilePhoto {
+    self.profileImageView.image = nil;
+}
+
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     self.editMode = editMode;
     
@@ -229,25 +233,25 @@
 - (void)loadProfileUrl:(NSURL *)profileUrl {
     self.profilePhotoUrl = profileUrl;
     if (profileUrl) {
+        // If blank profile, just load from app bundle
+        if ([[profileUrl absoluteString] isEqualToString:[[CKUser defaultBlankProfileUrl] absoluteString]]) {
+            self.profileImageView.image = [UIImage imageNamed:@"cook_blank_profile.png"];
+            return;
+        }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[CKPhotoManager sharedInstance] imageForUrl:profileUrl
-                                                    size:[ImageHelper profileSize]
-                                                    name:[profileUrl absoluteString]
-                                                progress:^(CGFloat progress){}
-                                           isSynchronous:YES
-                                              completion:^(UIImage *image, NSString *name) {
-                                                  if ([name isEqualToString:[profileUrl absoluteString]]) {
-                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                          // Cross-fade the image.
-                                                          [UIView transitionWithView:self.profileImageView
-                                                                            duration:0.2
-                                                                             options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
-                                                                          animations:^{
-                                                                              self.profileImageView.image = image;
-                                                                          } completion:nil];
-                                                      });
-                                                  }
-                                              }];
+            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:self.profileImageView.bounds.size completion:^(UIImage *image, NSString *name) {
+                if ([name isEqualToString:[profileUrl absoluteString]]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        // Cross-fade the image.
+                        [UIView transitionWithView:self.profileImageView
+                                          duration:0.2
+                                           options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                                        animations:^{
+                                            self.profileImageView.image = image;
+                                        } completion:nil];
+                    });
+                }
+            }];
         });
     }
 }

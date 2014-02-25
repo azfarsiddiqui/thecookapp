@@ -250,10 +250,10 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
         NSString *defaultPath = [NSString stringWithFormat:@"file:///private%@", [self defaultCachePathForKey:key]];
         [self.lastAccessedDictionary setObject:[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge] forKey:defaultPath];
         
-//        if (!skipMemory) {
-//            CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
-//            [self.memCache setObject:diskImage forKey:key cost:cost];
-//        }
+        if (!skipMemory) {
+            CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
+            [self.memCache setObject:diskImage forKey:key cost:cost];
+        }
     }
     
     return diskImage;

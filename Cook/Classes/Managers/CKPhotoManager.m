@@ -123,6 +123,23 @@
                              }];
 }
 
+- (void)blurredImageForRecipe:(CKRecipe *)recipe
+                    tintColor:(UIColor *)tint
+                   thumbImage:(UIImage *)image
+                   completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
+    NSString *imageName = [self photoNameForBlurredRecipe:recipe];
+    UIImage *cachedImage = [self cachedImageForName:imageName size:[ImageHelper blurredSize]];
+    if (cachedImage) {
+        // Return cached image.
+        completion(cachedImage, imageName);
+    } else if (image) {
+        [ImageHelper blurredImage:image tintColour:tint radius:10.0 completion:^(UIImage *blurredImage) {
+            [self storeImage:blurredImage forKey:[self cacheKeyForName:imageName size:[ImageHelper blurredSize]] toDisk:YES skipMemory:NO];
+            completion(blurredImage, imageName);
+        }];
+    }
+}
+
 // Image retrieval for the given recipe at the specified size and with logical name for callback completion comparison.
 // Returns the thumbnail first if both required network access, otherwise fullsized image is returned first. Use case
 // is for full recipe details screen. The progress is of the fullsize image.
@@ -375,6 +392,44 @@
     }
 }
 
+- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
+              completion:(void (^)(UIImage *image, NSString *name))completion {
+    NSString *thumbName = [url absoluteString];
+    if (url) {
+        
+        __weak CKPhotoManager *weakSelf = self;
+        
+        @autoreleasepool {
+            // Get cached image for the persisted parseFile.
+            
+            UIImage *image = [weakSelf cachedImageForName:thumbName size:size];
+            if (image) {
+                
+                // Return cached image.
+                completion(image, thumbName);
+                
+            } else {
+                
+                // Otherwise download directly via URL.
+                [weakSelf downloadImageForUrl:url size:size name:thumbName
+                                     progress:^(CGFloat progressRatio) {}
+                                isSynchronous:YES
+                                   completion:^(UIImage *image, NSString *name) {
+                                       //Should already be stored in disk cache, store in memory cache as well
+//                                       NSString *cacheKey = [self cacheKeyForName:thumbName size:size];
+//                                       [[SDImageCache sharedImageCache] storeThumbInMemoryCache:image forKey:cacheKey];
+                                       completion(image, name);
+                                   }];
+            }
+        }
+        
+    } else {
+        
+        // Return no image.
+        completion(nil, thumbName);
+    }
+}
+
 #pragma mark - Event-based image loading.
 
 - (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
@@ -556,7 +611,7 @@
     [self updateTransferProgress:@(0) cacheKey:recipe.recipeImage.imageUuid];
     
     // Save a copy while transfer is being processed. This is so that the user could still see his/her own images.
-    [self storeImage:image forKey:recipeImage.imageUuid toDisk:YES skipMemory:NO];
+    [self storeImage:image forKey:recipeImage.imageUuid toDisk:YES skipMemory:YES];
     
     // Now upload the thumb sized.
     __weak CKPhotoManager *weakSelf = self;
@@ -842,8 +897,9 @@
     UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:cacheKey];
     if (!cachedImage) {
         cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
-        
-        if ([[cacheKey uppercaseString] rangeOfString:@"THUMBNAIL"].location != NSNotFound) {
+        // Cache thumbnails and profile pics to memory
+        if ([[cacheKey uppercaseString] rangeOfString:@"THUMBNAIL"].location != NSNotFound ||
+            [[cacheKey uppercaseString] rangeOfString:@"PROFILE"].location != NSNotFound) {
             [[SDImageCache sharedImageCache] storeThumbInMemoryCache:cachedImage forKey:cacheKey];
         }
     }
@@ -890,6 +946,10 @@
 
 - (NSString *)photoNameForBook:(CKBook *)book {
     return [NSString stringWithFormat:@"book_%@", book.objectId];
+}
+
+- (NSString *)photoNameForBlurredRecipe:(CKRecipe *)recipe {
+    return [NSString stringWithFormat:@"recipe_%@_blurred_thumbnail", recipe.objectId];
 }
 
 #pragma mark - Cached title images for book.

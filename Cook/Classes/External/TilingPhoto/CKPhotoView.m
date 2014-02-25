@@ -9,6 +9,7 @@
 #import "CKPhotoView.h"
 #import "ImageHelper.h"
 #import "UIColor+Expanded.h"
+#import "CKPhotoManager.h"
 
 @interface CKPhotoView ()
 
@@ -89,12 +90,10 @@
     self.isImageLoaded = YES;
 }
 
-- (void)setBlurredImage:(UIImage *)thumbImage tintColor:(UIColor *)color {
+- (void)setBlurredImage:(UIImage *)thumbImage {
     //Generate blurred image now as well
     if (thumbImage) {
-        [ImageHelper blurredImage:thumbImage tintColour:color radius:10.0 completion:^(UIImage *blurredImage) {
-            self.blurredImageView.image = blurredImage;
-        }];
+        self.blurredImageView.image = thumbImage;
     }
 }
 

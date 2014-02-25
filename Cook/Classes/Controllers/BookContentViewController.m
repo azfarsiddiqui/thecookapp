@@ -498,7 +498,7 @@
         
         // Load more?
         if (indexPath.item == ([self.recipes count] - 1)) {
-            [[SDImageCache sharedImageCache] setValue:nil forKey:@"memCache"];
+//            [[SDImageCache sharedImageCache] setValue:nil forKey:@"memCache"];
             [self.delegate bookContentViewControllerLoadMoreForPage:self.page];
         }
         

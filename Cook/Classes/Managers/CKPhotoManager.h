@@ -54,6 +54,12 @@
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
 - (void)imageForBook:(CKBook *)book size:(CGSize)size;
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size;
+- (void)blurredImageForRecipe:(CKRecipe *)recipe
+                    tintColor:(UIColor *)tint
+                   thumbImage:(UIImage *)image
+                   completion:(void (^)(UIImage *thumbImage, NSString *name))completion;
+- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
+              completion:(void (^)(UIImage *image, NSString *name))completion;
 
 // Setup books, resizing etc.
 - (void)generateImageAssets;
