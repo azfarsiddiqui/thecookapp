@@ -108,7 +108,13 @@
     if (cachedTitleImage) {
         [self.photoView setThumbnailImage:cachedTitleImage];
         UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
-        [self.photoView setBlurredImage:cachedTitleImage tintColor:tintColour];
+        [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
+                                                     tintColor:tintColour
+                                                    thumbImage:cachedTitleImage
+                                                    completion:^(UIImage *thumbImage, NSString *name) {
+                                                        [self.photoView setBlurredImage:thumbImage];
+                                                    }];
+        
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
         self.cachedImageLoaded = YES;
     } else {
@@ -709,7 +715,12 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
         
         UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
-        [self.photoView setBlurredImage:image tintColor:tintColour];
+        [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
+                                                     tintColor:tintColour
+                                                    thumbImage:image
+                                                    completion:^(UIImage *thumbImage, NSString *name) {
+            [self.photoView setBlurredImage:thumbImage];
+        }];
     } else {
         [self.photoView setFullImage:image];
         [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];

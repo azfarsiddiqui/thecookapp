@@ -144,6 +144,7 @@
     
     self.profilePhotoView.frame = CGRectIntegral(frame);
     self.profilePhotoView.hidden = NO;
+    [self.profilePhotoView clearProfilePhoto];
     [self.profilePhotoView loadProfilePhotoForUser:self.recipe.user];
 }
 

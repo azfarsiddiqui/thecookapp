@@ -201,7 +201,12 @@
             [self.photoView setThumbnailImage:image];
             if (self.delegate && ([self.delegate shouldRunFullLoadForIndex:self.pageIndex] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex - 1] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex + 1])) {
                 UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
-                [self.photoView setBlurredImage:image tintColor:tintColour];
+                [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.recipe
+                                                             tintColor:tintColour
+                                                            thumbImage:image
+                                                            completion:^(UIImage *thumbImage, NSString *name) {
+                                                                 [self.photoView setBlurredImage:thumbImage];
+                                                             }];
             }
         } else {
             DLog(@"Activate FULL LOAD: %@", self.recipe.name);
