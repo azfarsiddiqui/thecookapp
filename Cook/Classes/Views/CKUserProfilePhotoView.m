@@ -199,7 +199,7 @@
 }
 
 - (void)clearProfilePhoto {
-    self.profileImageView.image = nil;
+    self.profileImageView.image = [UIImage imageNamed:@"cook_blank_profile.png"];
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
