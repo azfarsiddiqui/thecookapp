@@ -493,7 +493,6 @@
 
 - (void)recipesForPage:(NSString *)page batchIndex:(NSInteger)batchIndex success:(PageRecipesSuccessBlock)success
                failure:(ObjectFailureBlock)failure {
-    DLog();
     
     [PFCloud callFunctionInBackground:@"pageRecipes_v1_4"
                        withParameters:@{
@@ -509,7 +508,7 @@
                                         
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSArray *parseRecipesOrPins = [recipeResults objectForKey:@"recipes"];
-                                        NSInteger batchIndex = [recipeResults objectForKey:@"batchIndex"];
+                                        NSInteger batchIndex = [[recipeResults objectForKey:@"batchIndex"] integerValue];
                                         NSString *page = [recipeResults objectForKey:@"page"];
                                         
                                         // Wrap the recipes or pins in our model.
