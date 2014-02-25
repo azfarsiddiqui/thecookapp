@@ -446,7 +446,11 @@
     DLog();
     
     [PFCloud callFunctionInBackground:@"bookRecipes_v1_4"
-                       withParameters:@{ @"bookId": self.objectId, @"userId": self.user.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:@{
+                                        @"bookId": self.objectId,
+                                        @"userId": self.user.objectId,
+                                        @"cookVersion": [[AppHelper sharedInstance] appVersion]
+                                        }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
                                         
@@ -454,7 +458,6 @@
                                         NSDictionary *parsePageRecipes = [recipeResults objectForKey:@"pageRecipes"];
                                         NSDictionary *pageBatches = [recipeResults objectForKey:@"pageBatches"];
                                         NSDictionary *pageRecipeCount = [recipeResults objectForKey:@"pageRecipeCount"];
-                                        NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
                                         NSDictionary *pageRankings = [recipeResults objectForKey:@"pageRankings"];
                                         
@@ -479,13 +482,7 @@
                                             
                                         }];
                                         
-                                        // Wrap the liked recipes in our model.
-                                        NSArray *likedRecipes = [parseLikes collect:^id(PFObject *parseRecipe) {
-                                            return [CKRecipe recipeForParseRecipe:parseRecipe user:nil book:nil];
-                                        }];
-                                        
-                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, pageRankings,
-                                                likedRecipes, accessDate);
+                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, pageRankings, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);
@@ -522,6 +519,39 @@
                                     
                                         DLog(@"Loaded more recipes[%d] for page[%@] batchIndex[%d]", [recipesOrPins count], page, batchIndex);
                                         success([CKBook bookWithParseObject:parseBook], page, batchIndex, recipesOrPins);
+                                        
+                                    } else {
+                                        DLog(@"Error loading recipes: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
+- (void)likedRecipesForBatchIndex:(NSInteger)batchIndex success:(LikedRecipesSuccessBlock)success
+               failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"likedRecipes_v1_4"
+                       withParameters:@{
+                                        @"cookVersion": [[AppHelper sharedInstance] appVersion],
+                                        @"bookId" : self.objectId,
+                                        @"userId" : self.user.objectId,
+                                        @"batchIndex" : @(batchIndex)
+                                        }
+                                block:^(NSDictionary *recipeResults, NSError *error) {
+                                    
+                                    if (!error) {
+                                        
+                                        PFObject *parseBook = [recipeResults objectForKey:@"book"];
+                                        NSArray *parseRecipesOrPins = [recipeResults objectForKey:@"recipes"];
+                                        NSInteger batchIndex = [recipeResults objectForKey:@"batchIndex"];
+                                        
+                                        // Wrap the recipes or pins in our model.
+                                        NSArray *likedRecipes = [parseRecipesOrPins collect:^id(PFObject *parseRecipeOrPin) {
+                                            return [self modelRecipeOrPinForParseObject:parseRecipeOrPin];
+                                        }];
+                                        
+                                        DLog(@"Loaded more recipes[%d] for batchIndex[%d]", [likedRecipes count], batchIndex);
+                                        success([CKBook bookWithParseObject:parseBook], batchIndex, likedRecipes);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);

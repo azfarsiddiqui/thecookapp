@@ -46,11 +46,10 @@
 @property (nonatomic, strong) NSString *saveOrUpdatedPage;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
-@property (nonatomic, strong) NSMutableArray *likedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipeCount;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageBatches;
-@property (nonatomic, strong) NSDictionary *pageRankings;
+@property (nonatomic, strong) NSMutableDictionary *pageRankings;
 @property (nonatomic, strong) NSMutableDictionary *pageCurrentBatches;
 @property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
@@ -89,7 +88,6 @@
 @property (nonatomic, strong) BookPageViewController *currentEditViewController;
 
 // Likes
-@property (nonatomic, strong) CKRecipe *featuredLikedRecipe;
 @property (nonatomic, assign) BOOL enableLikes;
 @property (nonatomic, strong) NSString *likesPageName;
 
@@ -704,29 +702,40 @@
     
     // Load if the requested batch index is within the number of batches.
     if (requestedBatchIndex < numBatches && !self.isLoadMore) {
+        
         self.isLoadMore = YES;
         //Cehck why its crashing here when doing airplane mode during load more
         DLog(@"Loading more for page[%@], requestedIndex: %i, %i", page, requestedBatchIndex, numBatches);
-        [self.book recipesForPage:page batchIndex:requestedBatchIndex
-                          success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
-                              if (self.book) {
+        
+        if ([self onLikesPage]) {
+            
+            // Load more for likes page.
+            [self.book likedRecipesForBatchIndex:requestedBatchIndex
+                                         success:^(CKBook *book, NSInteger batchIndex, NSArray *recipes) {
+                                             
+                                              [self processLoadMoreForBook:book page:self.likesPageName
+                                                                batchIndex:batchIndex recipes:recipes];
+                                             
+                                              self.isLoadMore = NO;
+                                         }
+                                         failure:^(NSError *error) {
+                                             self.isLoadMore = NO;
+                                         }];
+            
+        } else {
+            
+            // Load more for page.
+            [self.book recipesForPage:page batchIndex:requestedBatchIndex
+                              success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
                                   
-                                  // Append to the list of recipes.
-                                  NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
-                                  [pageRecipes addObjectsFromArray:recipes];
-                                  
-                                  // Update the batch index.
-                                  [self.pageCurrentBatches setObject:@(requestedBatchIndex) forKey:page];
-                                  
-                                  // Update the BookContentVC
-                                  BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
-                                  [contentViewController loadMoreRecipes:recipes];
+                                  [self processLoadMoreForBook:book page:page batchIndex:batchIndex recipes:recipes];
                                   self.isLoadMore = NO;
                               }
-                          }
-                          failure:^(NSError *error) {
-                              self.isLoadMore = NO;
-                          }];
+                              failure:^(NSError *error) {
+                                  self.isLoadMore = NO;
+                              }];
+        }
+        
     }
     
 }
@@ -1228,8 +1237,7 @@
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSArray *likedRecipes,
-                                    NSDate *lastAccessedDate) {
+                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSDate *lastAccessedDate) {
         
         if (parseBook && self.book) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
@@ -1243,8 +1251,7 @@
         }
         self.bookLastAccessedDate = lastAccessedDate;
         
-        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings
-                likedRecipes:likedRecipes];
+        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings];
         
         // Book load completed.
         [AnalyticsHelper endTrackEventName:kEventBookLoad params:@{ @"success" : @(YES),
@@ -1271,17 +1278,17 @@
             
             [self.titleViewController configureError:error];
         }
-    }];}
+    }];
+}
 
 - (void)processRecipes:(NSDictionary *)pageRecipes pageBatches:(NSDictionary *)pageBatches
-            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings
-          likedRecipes:(NSArray *)likedRecipes {
-    
+            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings {
+
     // Loop through to initialise each recipe.
     self.pageRecipes = [NSMutableDictionary new];
     self.pageBatches = [NSMutableDictionary dictionaryWithDictionary:pageBatches];
     self.pageRecipeCount = [NSMutableDictionary dictionaryWithDictionary:pageCounts];
-    self.pageRankings = pageRankings;
+    self.pageRankings = [NSMutableDictionary dictionaryWithDictionary:pageRankings];
     self.pageCurrentBatches = [NSMutableDictionary new];
     
     for (NSString *page in pageRecipes) {
@@ -1290,8 +1297,40 @@
         [self.pageCurrentBatches setObject:@0 forKey:page];
     }
     
-    self.pageRecipes = [NSMutableDictionary dictionaryWithDictionary:pageRecipes];
-    self.likedRecipes = [NSMutableArray arrayWithArray:likedRecipes];
+    // Do we have likes?
+    if (self.enableLikes && [self.book isOwner]) {
+        
+        // Resolve a Likes page name.
+        self.likesPageName = [self resolveLikesPageName];
+        
+        NSString *serverLikesKey = @"CKLIKES14";
+        
+        // Move the likes data to local book's likes page name.
+        if (![self.likesPageName isEqualToString:serverLikesKey]) {
+            
+            NSArray *likedRecipes = [self.pageRecipes objectForKey:serverLikesKey];
+            [self.pageRecipes setObject:((likedRecipes == nil) ? @[] : likedRecipes) forKey:self.likesPageName];
+            [self.pageRecipes removeObjectForKey:serverLikesKey];
+            
+            NSInteger likesBatches = [[self.pageBatches objectForKey:serverLikesKey] integerValue];
+            [self.pageBatches setObject:@(likesBatches) forKey:self.likesPageName];
+            [self.pageBatches removeObjectForKey:serverLikesKey];
+            
+            NSInteger likesCount = [[self.pageRecipeCount objectForKey:serverLikesKey] integerValue];
+            [self.pageRecipeCount setObject:@(likesCount) forKey:self.likesPageName];
+            [self.pageRecipeCount removeObjectForKey:serverLikesKey];
+
+            NSString *likesRankName = [self.pageRankings objectForKey:serverLikesKey];
+            [self.pageRankings setObject:((likesRankName == nil) ? @"latest" : likesRankName) forKey:self.likesPageName];
+            [self.pageRankings removeObjectForKey:serverLikesKey];
+            
+            NSInteger likesCurrentBatch = [[self.pageCurrentBatches objectForKey:serverLikesKey] integerValue];
+            [self.pageCurrentBatches setObject:@(likesCurrentBatch) forKey:self.likesPageName];
+            [self.pageCurrentBatches setObject:@(likesCount) forKey:serverLikesKey];
+        }
+        
+    }
+    
     [self loadRecipes];
 }
 
@@ -1304,6 +1343,10 @@
     
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
+    
+    if (self.enableLikes && [self.book isOwner]) {
+        [self.pages addObject:self.likesPageName];
+    }
     
     // If not my book, reject empty pages.
     if (![self.book isOwner]) {
@@ -1339,9 +1382,6 @@
             }
         }
     }
-    
-    // Add likes if we have at least one page.
-    [self processLikes];
     
     // Process rankings.
     [self processRanks];
@@ -1809,15 +1849,6 @@
                      }];
 }
 
-- (void)processLikes {
-    if (self.enableLikes && [self.book isOwner]) {
-        self.likesPageName = [self resolveLikesPageName];
-        [self.pages addObject:self.likesPageName];
-        [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
-        [self.pageRecipeCount setObject:@([self.likedRecipes count]) forKey:self.likesPageName];
-    }
-}
-
 - (void)processRanks {
     [self processRanksForAllPages];
     [self processRanksForBook];
@@ -2239,6 +2270,25 @@
              @"featured"    : @(self.book.featured),
              @"guest"       : @(self.currentUser == nil)
              };
+}
+
+- (void)processLoadMoreForBook:(CKBook *)book page:(NSString *)page batchIndex:(NSInteger)batchIndex
+                       recipes:(NSArray *)recipes {
+    
+    if (self.book) {
+        
+        // Append to the list of recipes.
+        NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
+        [pageRecipes addObjectsFromArray:recipes];
+        
+        // Update the batch index.
+        [self.pageCurrentBatches setObject:@(batchIndex) forKey:page];
+        
+        // Update the BookContentVC
+        BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
+        [contentViewController loadMoreRecipes:recipes];
+
+    }
 }
 
 @end
