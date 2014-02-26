@@ -50,10 +50,14 @@
     //
     // 1. +Photo +Title -Story -Method +Ingredients
     // 2. -Photo +Title +Ingredients (+/-)Story (+/-)Method
+    // 2. -Photo -Title +Ingredients (+/-)Story (+/-)Method
     //
     // DONE
     if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients])
-        || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])) {
+        || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])
+        || (![self hasPhotos] && ![self hasTitle] && [self hasStory])
+        || (![self hasPhotos] && ![self hasTitle] && ![self hasStory])
+        ) {
         
         self.ingredientsView.hidden = NO;
         CGSize blockSize = [self availableBlockSize];
@@ -65,7 +69,7 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
       
-        // And it only appears after title.
+        // And it only appears after time.
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
@@ -106,7 +110,9 @@
         };
         
     // DONE
-    } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
+    } else if ((![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients])
+               || (![self hasPhotos] && ![self hasTitle] && [self hasStory] && [self hasIngredients])
+               ) {
     
         // -Photo +Title +Story (+/-)Method +Ingredients
         self.storyLabel.hidden = NO;
@@ -123,7 +129,8 @@
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsStoryGap,
             size.width,
-            size.height};
+            size.height
+        };
         
     } else {
         self.storyLabel.hidden = YES;
@@ -156,10 +163,9 @@
             size.height
         };
         
-    // DONE
-    } else if (![self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
+    } else if (![self hasPhotos] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
         
-        // -Photo +Title -Story +Method +Ingredients
+        // -Photo -Title -Story +Method +Ingredients
         self.methodLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
@@ -168,18 +174,18 @@
         CGSize blockSize = [self availableBlockSize];
         CGSize size = [self.methodLabel sizeThatFits:blockSize];
         
-        // And it comes before stats view (ingredientsView not rendered yet).
+        // Comes after ingredients.
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsMethodGap,
             size.width,
             size.height
         };
-        
-
+    
     } else {
         self.methodLabel.hidden = YES;
     }
 }
+
 
 @end
