@@ -969,6 +969,11 @@
             }];
         }
     }
+    
+    //Reset fast forward flag
+    [self.contentControllers enumerateKeysAndObjectsUsingBlock:^(id key, BookContentViewController *obj, BOOL *stop) {
+        obj.isFastForward = NO;
+    }];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -1003,7 +1008,8 @@
         
         if (indexPath.section == kProfileSection) {
             headerView = [self profileHeaderViewAtIndexPath:indexPath];
-        } else if (indexPath.section >= [self contentStartSection]) {
+        }
+        else if (indexPath.section >= [self contentStartSection]) {
             headerView = [self contentHeaderViewAtIndexPath:indexPath];
         }
         
@@ -1034,24 +1040,6 @@
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
-      forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.section >= [self contentStartSection]) {
-        
-        // Remove a reference to the content image view.
-        if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-            NSInteger pageIndex = indexPath.section - [self contentStartSection];
-            if (pageIndex < [self.pages count]) {
-                NSString *page = [self.pages objectAtIndex:pageIndex];
-                BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
-                [headerView cleanImage];
-                [self.pageHeaderViews removeObjectForKey:page];
-            }
-        }
-    }
-    
-}
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
     forItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -1484,10 +1472,6 @@
     [self updateNavigationTitleWithPage:page offset:scrollOffset.y];
 }
 
-- (void)clearFastForwardContentForPage:(NSString *)page cell:(BookContentCell *)cell {
-    cell.contentViewController = nil;
-}
-
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
     return [recipes select:^BOOL(CKModel *recipeOrPin) {
         if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
@@ -1527,23 +1511,33 @@
     UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                    withReuseIdentifier:kContentHeaderId
                                                                                           forIndexPath:indexPath];
-    BookContentImageView *categoryHeaderView = (BookContentImageView *)headerView;
+    
     
     NSInteger pageIndex = indexPath.section - [self contentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
-    // Get the corresponding categoryVC to retrieve current scroll offset.
-    CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
-    [categoryHeaderView applyOffset:contentOffset.y];
-    
-    // Load featured recipe image.
-    CKRecipe *coverRecipe = [self coverRecipeForPage:page];
-    [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
-    categoryHeaderView.delegate = self;
-    categoryHeaderView.pageIndex = indexPath.section;
-    
-    // Keep track of category views keyed on page name.
-    [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
+    if ([self.pageHeaderViews objectForKey:page]) {
+        //Pulling from cached array
+        BookContentImageView *categoryHeaderView = (BookContentImageView *)[self.pageHeaderViews objectForKey:page];
+        // Get the corresponding categoryVC to retrieve current scroll offset.
+        CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
+        [categoryHeaderView applyOffset:contentOffset.y];
+        headerView = categoryHeaderView;
+    } else {
+        BookContentImageView *categoryHeaderView = (BookContentImageView *)headerView;
+        // Get the corresponding categoryVC to retrieve current scroll offset.
+        CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
+        [categoryHeaderView applyOffset:contentOffset.y];
+        
+        // Load featured recipe image.
+        CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+        [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
+        categoryHeaderView.delegate = self;
+        categoryHeaderView.pageIndex = indexPath.section;
+        
+        // Keep track of category views keyed on page name.
+        [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
+    }
     return headerView;
 }
 
@@ -1734,6 +1728,11 @@
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
+    
+    // Set all content controllers to be fast forwarded
+    [self.contentControllers enumerateKeysAndObjectsUsingBlock:^(id key, BookContentViewController *obj, BOOL *stop) {
+        obj.isFastForward = YES;
+    }];
     
     // Clear offset at target page.
     if (pageIndex >= [self contentStartSection]) {

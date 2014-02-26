@@ -100,7 +100,7 @@
 #pragma mark - Clean up methods
 
 - (void)cleanImageViews {
-    self.thumbnailView.image = nil;
+//    self.thumbnailView.image = nil;
     self.blurredImageView.image = nil;
     self.imageView.image = nil;
     self.isImageLoaded = NO;
