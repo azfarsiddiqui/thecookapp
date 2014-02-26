@@ -1014,9 +1014,7 @@
         }
         
     } else if ([kind isEqualToString:[BookNavigationLayout bookNavigationLayoutElementKind]]) {
-        
         headerView = [self navigationHeaderViewAtIndexPath:indexPath];
-        
     }
     
     return headerView;
@@ -1533,6 +1531,11 @@
         [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
         categoryHeaderView.delegate = self;
         categoryHeaderView.pageIndex = indexPath.section;
+        
+        // Clear page header view cache if too big
+        if ([self.pageHeaderViews count] > 10) {
+            [self.pageHeaderViews removeAllObjects];
+        }
         
         // Keep track of category views keyed on page name.
         [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
