@@ -55,6 +55,7 @@
     // DONE
     if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients])
         || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])
+        || (![self hasPhotos] && ![self hasTitle] && [self hasStory])
         ) {
         
         self.ingredientsView.hidden = NO;
@@ -67,7 +68,7 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
       
-        // And it only appears after title.
+        // And it only appears after time.
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
@@ -108,7 +109,9 @@
         };
         
     // DONE
-    } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
+    } else if ((![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients])
+               || (![self hasPhotos] && ![self hasTitle] && [self hasStory] && [self hasIngredients])
+               ) {
     
         // -Photo +Title +Story (+/-)Method +Ingredients
         self.storyLabel.hidden = NO;
@@ -128,8 +131,6 @@
             size.height
         };
         
-    } else if (![self hasPhotos] && ![self hasTitle] && [self hasStory] && [self hasIngredients]) {
-    
     } else {
         self.storyLabel.hidden = YES;
     }
