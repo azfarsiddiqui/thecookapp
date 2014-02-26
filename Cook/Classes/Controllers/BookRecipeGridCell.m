@@ -98,7 +98,6 @@
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own {
-    DLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> recipe[%@][%@]", recipe.name, NSStringFromClass(self.class));
     
     self.recipe = recipe;
     self.book = book;
