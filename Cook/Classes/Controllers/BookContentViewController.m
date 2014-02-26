@@ -652,7 +652,7 @@
         if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
             // +Photo -Title -Story -Method -Ingredients
-            gridType = BookContentGridTypeExtraSmall;
+            gridType = BookContentGridTypeSmall;
             
         } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             

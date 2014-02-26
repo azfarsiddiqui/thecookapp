@@ -21,7 +21,7 @@
 - (void)updateTitle {
     [super updateTitle];
     
-    if ([self hasTitle]) {
+    if (![self hasPhotos] && [self hasTitle]) {
         self.titleLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
