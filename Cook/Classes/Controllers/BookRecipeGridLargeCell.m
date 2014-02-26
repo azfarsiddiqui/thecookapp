@@ -50,10 +50,12 @@
     //
     // 1. +Photo +Title -Story -Method +Ingredients
     // 2. -Photo +Title +Ingredients (+/-)Story (+/-)Method
+    // 2. -Photo -Title +Ingredients (+/-)Story (+/-)Method
     //
     // DONE
     if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients])
-        || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])) {
+        || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])
+        ) {
         
         self.ingredientsView.hidden = NO;
         CGSize blockSize = [self availableBlockSize];
@@ -123,8 +125,11 @@
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsStoryGap,
             size.width,
-            size.height};
+            size.height
+        };
         
+    } else if (![self hasPhotos] && ![self hasTitle] && [self hasStory] && [self hasIngredients]) {
+    
     } else {
         self.storyLabel.hidden = YES;
     }
@@ -156,6 +161,25 @@
             size.height
         };
         
+    } else if (![self hasPhotos] && ![self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
+        
+        // -Photo -Title -Story +Method +Ingredients
+        self.methodLabel.hidden = NO;
+        
+        UIEdgeInsets contentInsets = [self contentInsets];
+        NSString *method = self.recipe.method;
+        self.methodLabel.text = method;
+        CGSize blockSize = [self availableBlockSize];
+        CGSize size = [self.methodLabel sizeThatFits:blockSize];
+        
+        // Comes after interval.
+        self.methodLabel.frame = (CGRect){
+            contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
+            size.width,
+            size.height
+        };
+    
     // DONE
     } else if (![self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
         
@@ -176,10 +200,10 @@
             size.height
         };
         
-
     } else {
         self.methodLabel.hidden = YES;
     }
 }
+
 
 @end

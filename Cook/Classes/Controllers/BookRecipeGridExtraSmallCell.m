@@ -42,17 +42,29 @@
 - (void)updateTimeInterval {
     [super updateTimeInterval];
     
-    self.timeIntervalLabel.hidden = [self hasPhotos];
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect frame = self.timeIntervalLabel.frame;
     
-    if (![self hasTitle]) {
-        
-        self.timeIntervalLabel.frame = (CGRect){
-            floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
-            kTimeGap,
-            self.timeIntervalLabel.frame.size.width,
-            self.timeIntervalLabel.frame.size.height
-        };
+    if (![self hasPhotos] && ![self hasTitle]) {
+        frame.origin.y = contentInsets.top + 20.0;
     }
+    
+    self.timeIntervalLabel.frame = frame;
+}
+
+- (void)updateProfilePhoto {
+    [super updateProfilePhoto];
+    
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect frame = self.profilePhotoView.frame;
+    CGSize availableSize = [self availableSize];
+    frame.origin.x = contentInsets.left + floorf((availableSize.width - frame.size.width) / 2.0);
+    
+    if (self.titleLabel.hidden && !self.storyLabel.hidden) {
+        frame.origin.y = self.timeIntervalLabel.frame.origin.y - frame.size.height - 12.0;
+    }
+
+    self.profilePhotoView.frame = frame;
 }
 
 - (void)updateIngredients {
@@ -89,6 +101,7 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
+        
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),

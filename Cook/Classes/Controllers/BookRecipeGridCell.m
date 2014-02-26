@@ -98,6 +98,8 @@
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own {
+    DLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> recipe[%@][%@]", recipe.name, NSStringFromClass(self.class));
+    
     self.recipe = recipe;
     self.book = book;
     self.ownBook = own;
@@ -138,8 +140,8 @@
     
     if (!self.titleLabel.hidden) {
         frame.origin.y = self.titleLabel.frame.origin.y - frame.size.height - 5.0;
-    } else if (!self.storyLabel.hidden) {
-        frame.origin.y = self.storyLabel.frame.origin.y - frame.size.height - 5.0;
+    } else if (!self.timeIntervalLabel.hidden) {
+        frame.origin.y = self.timeIntervalLabel.frame.origin.y - frame.size.height - 12.0;
     }
     
     self.profilePhotoView.frame = CGRectIntegral(frame);
