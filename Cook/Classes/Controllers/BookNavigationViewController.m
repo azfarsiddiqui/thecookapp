@@ -1512,19 +1512,18 @@
                                                                                    withReuseIdentifier:kContentHeaderId
                                                                                           forIndexPath:indexPath];
     
-    
     NSInteger pageIndex = indexPath.section - [self contentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
-    if ([self.pageHeaderViews objectForKey:page]) {
-        //Pulling from cached array
-        BookContentImageView *categoryHeaderView = (BookContentImageView *)[self.pageHeaderViews objectForKey:page];
+    BookContentImageView *categoryHeaderView = (BookContentImageView *)[self.pageHeaderViews objectForKey:page];
+    CKRecipe *currentRecipe = [self coverRecipeForPage:page];
+    if (categoryHeaderView && [categoryHeaderView.recipe.objectId isEqualToString:currentRecipe.objectId]) {
         // Get the corresponding categoryVC to retrieve current scroll offset.
         CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
         [categoryHeaderView applyOffset:contentOffset.y];
-        headerView = categoryHeaderView;
+        return categoryHeaderView;
     } else {
-        BookContentImageView *categoryHeaderView = (BookContentImageView *)headerView;
+        categoryHeaderView = (BookContentImageView *)headerView;
         // Get the corresponding categoryVC to retrieve current scroll offset.
         CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
         [categoryHeaderView applyOffset:contentOffset.y];
@@ -1537,8 +1536,8 @@
         
         // Keep track of category views keyed on page name.
         [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
+        return headerView;
     }
-    return headerView;
 }
 
 - (UICollectionReusableView *)navigationHeaderViewAtIndexPath:(NSIndexPath *)indexPath {

@@ -21,6 +21,7 @@
 
 @property (nonatomic, weak) id<BookContentImageViewDelegate> delegate;
 @property (nonatomic, assign) NSInteger pageIndex;
+@property (nonatomic, strong) CKRecipe *recipe;
 
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)applyOffset:(CGFloat)offset;

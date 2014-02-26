@@ -22,7 +22,6 @@
 @interface BookContentImageView ()
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) CKPhotoView *photoView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
