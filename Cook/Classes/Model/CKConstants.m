@@ -105,6 +105,7 @@ NSString *const kRecipeAttrLocale               = @"locale";
 NSString *const kRecipeAttrNumViews             = @"numViews";
 NSString *const kRecipeAttrNumLikes             = @"numLikes";
 NSString *const kRecipeAttrNumComments          = @"numComments";
+NSString *const kRecipeAttrNumShares            = @"numShares";
 NSString *const kRecipeAttrUserPhoto            = @"userPhoto";
 NSString *const kRecipeAttrUpdatedAt            = @"recipeUpdatedAt";
 NSString *const kRecipeAttrRankScore            = @"rankScore";

@@ -772,6 +772,18 @@
     return pictureUrl;
 }
 
+- (void)markShared {
+    [PFCloud callFunctionInBackground:@"markRecipeShared"
+                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Recipe[%@] marked shared.", self.objectId);
+                                    } else {
+                                        DLog(@"Error marking recipe[%@] shared.", self.objectId);
+                                    }
+                                }];
+}
+
 #pragma mark - Private Methods
 
 - (NSArray *)assembleIngredients {

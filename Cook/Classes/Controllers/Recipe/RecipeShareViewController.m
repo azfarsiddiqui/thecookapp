@@ -468,6 +468,11 @@
     
     // Analytics
     [AnalyticsHelper trackEventName:kEventRecipeShare params:@{ @"type" : socialString }];
+    
+    // Mark shared.
+    if (![self.recipe isOwner]) {
+        [self.recipe markShared];
+    }
 }
 
 #pragma mark - Mail and Message delegates
