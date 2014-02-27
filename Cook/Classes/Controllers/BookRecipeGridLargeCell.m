@@ -34,7 +34,7 @@
     frame.origin.x = contentInsets.left + floorf((availableSize.width - size.width) / 2.0);
     
     if (self.imageView.hidden) {
-        frame.origin.y = contentInsets.top + 20.0;
+        frame.origin.y = contentInsets.top + 17.0;
     } else {
         frame.origin.y = self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top;
     }
@@ -42,6 +42,18 @@
     frame.size.width = size.width;
     frame.size.height = size.height;
     self.titleLabel.frame = CGRectIntegral(frame);
+}
+
+- (void)updateTimeInterval {
+    [super updateTimeInterval];
+    
+    if (![self hasPhotos] && ![self hasTitle]) {
+        UIEdgeInsets contentInsets = [self contentInsets];
+        CGRect frame = self.timeIntervalLabel.frame;
+        frame.origin.y = contentInsets.top + 30.0;
+        self.timeIntervalLabel.frame = frame;
+    }
+    
 }
 
 - (void)updateIngredients {
@@ -61,9 +73,12 @@
         
         self.ingredientsView.hidden = NO;
         CGSize blockSize = [self availableBlockSize];
-        if (![self multilineTitle]) {
-            blockSize.height += 30.0;
+        blockSize.height += [self multilineTitle] ? 0.0 : 10.0;
+        
+        if (![self hasPhotos]) {
+            blockSize.height += [self hasTitle] ? 30.0 : 80.0;
         }
+        
         self.ingredientsView.maxSize = blockSize;
         
         UIEdgeInsets contentInsets = [self contentInsets];
@@ -106,7 +121,6 @@
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             size.width,
-            size.height
         };
         
     // DONE
@@ -117,11 +131,15 @@
         // -Photo +Title +Story (+/-)Method +Ingredients
         self.storyLabel.hidden = NO;
         
+        // Let sizeThatFits to fit below,
+        self.storyLabel.numberOfLines = 0;
+        
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
         CGSize availableSize = [self availableSize];
         CGSize blockSize = [self availableBlockSize];
+        blockSize.height = self.statsView.frame.origin.y - self.ingredientsView.frame.origin.y - self.ingredientsView.frame.size.height - kStoryStatsGap;
         CGSize size = [self.storyLabel sizeThatFits:blockSize];
         
         // And it comes before stats view (ingredientsView not rendered yet).
@@ -129,7 +147,7 @@
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsStoryGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     } else {
@@ -168,10 +186,15 @@
         // -Photo -Title -Story +Method +Ingredients
         self.methodLabel.hidden = NO;
         
+        // Let sizeThatFits to fit below,
+        self.methodLabel.numberOfLines = 0;
+        
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
         self.methodLabel.text = method;
+        
         CGSize blockSize = [self availableBlockSize];
+        blockSize.height = self.statsView.frame.origin.y - self.ingredientsView.frame.origin.y - self.ingredientsView.frame.size.height - kMethodStatsGap;
         CGSize size = [self.methodLabel sizeThatFits:blockSize];
         
         // Comes after ingredients.
@@ -179,7 +202,7 @@
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsMethodGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
     
     } else {
