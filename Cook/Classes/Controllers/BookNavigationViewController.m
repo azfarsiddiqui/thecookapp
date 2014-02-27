@@ -608,7 +608,6 @@
 }
 
 - (void)bookNavigationViewHomeTapped {
-    self.collectionView.userInteractionEnabled = NO;
     // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
     double delayInSeconds = 0.1;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -1718,8 +1717,9 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
+    self.collectionView.userInteractionEnabled = NO;
     self.destinationIndexes = @[@(pageIndex)];
-
+    
     [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
