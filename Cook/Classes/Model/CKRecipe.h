@@ -107,4 +107,7 @@ typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 
 - (NSURL *)userPhotoUrl;
 
+// Shares
+- (void)markShared;
+
 @end

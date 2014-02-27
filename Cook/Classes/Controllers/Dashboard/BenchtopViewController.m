@@ -32,6 +32,7 @@
 #import "FollowReloadButtonView.h"
 #import "NSString+Utilities.h"
 #import "AnalyticsHelper.h"
+#import "Theme.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -88,8 +89,8 @@
 #define kFollowSection      1
 #define kPagingRate         2.0
 #define kBlendPageWidth     1024.0
-#define kHasSeenUpdateIntro @"HasSeen1.3"
-#define kHasSeenDashArrow   @"HasSeenArrows1.3"
+#define kHasSeenUpdateIntro @"HasSeen1.4"
+#define kHasSeenDashArrow   @"HasSeenArrows1.4"
 #define kContentInsets      (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
@@ -1051,6 +1052,9 @@
             // Mark as not loading follow books anymore.
             self.dashboardBooksLoading = NO;
             
+            [self showUpdateNotesIfRequired];
+            [self flashIntrosIfRequired];
+            
             if (completion != nil) {
                 completion();
             }
@@ -1722,7 +1726,7 @@
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
-        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_13"]];
+        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_14"]];
         introImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         introImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:introImageView];
@@ -1739,8 +1743,8 @@
         [self.updateIntroView addSubview:closeButton];
         
         // Bottom Find out More and Continue buttons.
-        UIButton *moreButton = [self updateIntroButtonWithText:@"FIND OUT MORE" textAlpha:0.7 target:self selector:@selector(updateIntroMoreTapped)];
-        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" textAlpha:0.7 target:self selector:@selector(updateIntroContinueTapped)];
+        UIButton *moreButton = [self updateIntroButtonWithText:@"READ MORE" target:self selector:@selector(updateIntroMoreTapped)];
+        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" target:self selector:@selector(updateIntroContinueTapped)];
         CGFloat buttonOffsetFromBottom = 145.0;
         CGFloat buttonOffset = -16.0;
         CGFloat buttonGap = 117.0;
@@ -1864,10 +1868,6 @@
 }
 
 - (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
-    return [self updateIntroButtonWithText:text textAlpha:1.0 target:target selector:selector];
-}
-
-- (UIButton *)updateIntroButtonWithText:(NSString *)text textAlpha:(CGFloat)textAlpha target:(id)target selector:(SEL)selector {
 
     // Soft shadow.
     NSShadow *shadow = [NSShadow new];
@@ -1875,8 +1875,8 @@
     shadow.shadowOffset = CGSizeMake(0.0, 1.0);
     shadow.shadowBlurRadius = 3.0;
     NSDictionary *textAttributes = @{
-                                     NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0],
-                                     NSForegroundColorAttributeName : [UIColor colorWithWhite:255 alpha:textAlpha],
+                                     NSFontAttributeName: [Theme updateNotesFont],
+                                     NSForegroundColorAttributeName : [Theme updateNotesColour],
                                      NSShadowAttributeName : shadow
                                      };
     NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:text attributes:textAttributes];

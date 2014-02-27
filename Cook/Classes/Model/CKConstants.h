@@ -104,6 +104,7 @@ extern NSString *const kRecipeAttrLocale;
 extern NSString *const kRecipeAttrNumViews;
 extern NSString *const kRecipeAttrNumLikes;
 extern NSString *const kRecipeAttrNumComments;
+extern NSString *const kRecipeAttrNumShares;
 extern NSString *const kRecipeAttrUserPhoto;
 extern NSString *const kRecipeAttrUpdatedAt;
 extern NSString *const kRecipeAttrRankScore;
