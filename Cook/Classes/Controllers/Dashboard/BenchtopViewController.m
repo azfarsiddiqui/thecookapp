@@ -89,8 +89,8 @@
 #define kFollowSection      1
 #define kPagingRate         2.0
 #define kBlendPageWidth     1024.0
-#define kHasSeenUpdateIntro @"HasSeen1.4"
-#define kHasSeenDashArrow   @"HasSeenArrows1.4"
+#define kHasSeenUpdateIntro @"HasSeen1.4.17"
+#define kHasSeenDashArrow   @"HasSeenArrows1.4.17"
 #define kContentInsets      (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
@@ -907,6 +907,8 @@
                                          
                                      } completion:^(BOOL finished) {
                                          
+                                         [self showUpdateNotesIfRequired];
+                                         
                                      }];
                                      
                                  }
@@ -957,6 +959,7 @@
                     if ([self.delegate respondsToSelector:@selector(benchtopFirstTimeLaunched)]) {
                         [self.delegate benchtopFirstTimeLaunched];
                         [self flashIntros];
+                        [self showUpdateNotesIfRequired];
                     }
                     
                 }];
@@ -1051,9 +1054,6 @@
             
             // Mark as not loading follow books anymore.
             self.dashboardBooksLoading = NO;
-            
-            [self showUpdateNotesIfRequired];
-            [self flashIntrosIfRequired];
             
             if (completion != nil) {
                 completion();
