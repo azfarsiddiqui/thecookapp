@@ -15,6 +15,11 @@
 
 + (BOOL)IOS7Look;
 
+#pragma mark - Update Notes Buttons
+
++ (UIFont *)updateNotesFont;
++ (UIColor *)updateNotesColour;
+
 #pragma mark - Common Fonts
 +(UIFont*) defaultFontWithSize:(CGFloat)size;
 +(UIFont*) defaultLabelFont;
