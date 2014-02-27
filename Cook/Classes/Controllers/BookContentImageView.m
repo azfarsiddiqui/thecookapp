@@ -74,17 +74,24 @@
     [self applyOffset:offset distance:200.0 view:self.photoView.blurredImageView];
 }
 
-- (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+- (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book cachedImage:(UIImage *)cachedImage {
     self.recipe = recipe;
     self.book = book;
     self.fullImageLoaded = NO;
-    self.isThumbLoading = YES;
-    [self assignRecipeImage];
+    
+    if (cachedImage) {
+        //If cached thumb image, skip to directly assigning it
+        self.isThumbLoading = NO;
+        [self configureImage:cachedImage book:self.book thumb:YES];
+    } else {
+        self.isThumbLoading = YES;
+        [self assignRecipeImage];
+    }
 }
 
 - (void)assignRecipeImage {
     //Set initial image but don't use provided method because we don't want to trigger imageLoaded flag
-    if (!self.photoView.thumbnailView.image) {
+    if (!self.photoView.thumbnailView.image || !self.recipe || !self.recipe.recipeImage) {
         self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
     }
     
@@ -99,29 +106,33 @@
                                                           self.isThumbLoading = NO;
                                                           if ([recipePhotoName isEqualToString:name]) {
                                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                                  if (self.delegate && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
+                                                                      [self.delegate retrievedThumb:thumbImage forRecipe:self.recipe];
+                                                                  }
                                                                   [self configureImage:thumbImage book:self.book thumb:YES];
                                                               });
-                                                              self.fullImageLoaded = NO;
                                                               //When image is loaded, delay for an additional second to allow for user to decide if they like this page
                                                               if (!self.fullImageLoaded) {
-                                                                  double delayInSeconds = 1.0;
-                                                                  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                                                  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                                                      if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
-                                                                          [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
-                                                                              [self configureImage:image book:self.book thumb:NO];
-                                                                              self.fullImageLoaded = YES;
-                                                                          }];
-                                                                      }
-                                                                      
-                                                                  });
+                                                                  [self assignFullImage];
                                                               }
                                                           }
                                                       }];
-            
         });
     }
+}
 
+- (void)assignFullImage {
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+            [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
+                [self configureImage:image book:self.book thumb:NO];
+                self.fullImageLoaded = YES;
+            }];
+        }
+        
+    });
 }
 
 - (CGSize)imageSizeWithMotionOffset {
@@ -192,6 +203,8 @@
     };
 }
 
+#pragma mark - Public methods
+
 - (void)configureImage:(UIImage *)image book:(CKBook *)book thumb:(BOOL)isThumb {
     if (image) {
         self.vignetteOverlayView.hidden = NO;
@@ -226,6 +239,10 @@
 
 - (void)cleanImage {
     [self.photoView cleanImageViews];
+}
+
+- (BOOL)hasImage {
+    return self.photoView.thumbnailView.image;
 }
 
 @end
