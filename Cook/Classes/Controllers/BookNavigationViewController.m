@@ -56,6 +56,7 @@
 @property (nonatomic, strong) NSMutableDictionary *contentControllerOffsets;
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
+@property (nonatomic, strong) NSMutableDictionary *thumbnailImageCache;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
@@ -142,6 +143,8 @@
         self.enableLikes = YES;
         self.isLoadMore = NO;
         self.destinationIndexes = @[@([self contentStartSection])]; //Start with first page
+        
+        self.thumbnailImageCache = [NSMutableDictionary new];
         
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
@@ -872,11 +875,15 @@
 #pragma mark - BookContentImageViewDelegate methods 
 
 - (BOOL)shouldRunFullLoadForIndex:(NSInteger)pageIndex {
-    if (pageIndex == [self currentPageIndex]) {
+    if (pageIndex == [self currentPageIndex] - [self contentStartSection]) {
         return YES;
     } else {
         return NO;
     }
+}
+
+- (void)retrievedThumb:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    [self.thumbnailImageCache setObject:savedImage forKey:recipe.objectId];
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -1038,7 +1045,6 @@
     return cell;
 }
 
-
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
     forItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -1061,8 +1067,9 @@
             }
         }
     }
-    
 }
+
+
 
 #pragma mark - Properties
 
@@ -1509,38 +1516,25 @@
     UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                    withReuseIdentifier:kContentHeaderId
                                                                                           forIndexPath:indexPath];
+    BookContentImageView *categoryHeaderView = (BookContentImageView *)headerView;
     
     NSInteger pageIndex = indexPath.section - [self contentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
-    BookContentImageView *categoryHeaderView = (BookContentImageView *)[self.pageHeaderViews objectForKey:page];
-    CKRecipe *currentRecipe = [self coverRecipeForPage:page];
-    if (categoryHeaderView && [categoryHeaderView.recipe.objectId isEqualToString:currentRecipe.objectId]) {
-        // Get the corresponding categoryVC to retrieve current scroll offset.
-        CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
-        [categoryHeaderView applyOffset:contentOffset.y];
-        return categoryHeaderView;
-    } else {
-        categoryHeaderView = (BookContentImageView *)headerView;
-        // Get the corresponding categoryVC to retrieve current scroll offset.
-        CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
-        [categoryHeaderView applyOffset:contentOffset.y];
-        
-        // Load featured recipe image.
-        CKRecipe *coverRecipe = [self coverRecipeForPage:page];
-        [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
-        categoryHeaderView.delegate = self;
-        categoryHeaderView.pageIndex = indexPath.section;
-        
-        // Clear page header view cache if too big
-        if ([self.pageHeaderViews count] > 10) {
-            [self.pageHeaderViews removeAllObjects];
-        }
-        
-        // Keep track of category views keyed on page name.
-        [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
-        return headerView;
-    }
+    // Get the corresponding categoryVC to retrieve current scroll offset.
+    CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
+    [categoryHeaderView applyOffset:contentOffset.y];
+    
+    // Load featured recipe image.
+    CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+    UIImage *cachedImage = [self.thumbnailImageCache objectForKey:coverRecipe.objectId];
+    [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book cachedImage:cachedImage];
+    categoryHeaderView.delegate = self;
+    categoryHeaderView.pageIndex = pageIndex;
+    
+    // Keep track of category views keyed on page name.
+    [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
+    return headerView;
 }
 
 - (UICollectionReusableView *)navigationHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
