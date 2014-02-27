@@ -18,10 +18,12 @@
 - (void)updateTimeInterval {
     [super updateTimeInterval];
     
+    UIEdgeInsets contentInsets = [self contentInsets];
+    
     if (![self hasTitle]) {
         self.timeIntervalLabel.frame = (CGRect){
             floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
-            self.imageView.frame.origin.y + self.imageView.frame.size.height + kTimeGap,
+            self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top,
             self.timeIntervalLabel.frame.size.width,
             self.timeIntervalLabel.frame.size.height
         };
@@ -29,12 +31,17 @@
 }
 
 - (void)updateIngredients {
+    
     if ([self hasIngredients]) {
         
         // Image + Ingredients.
         self.ingredientsView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height -= 30.0;   // Have more vertical space.
+        self.ingredientsView.maxSize = blockSize;
+        
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
@@ -57,7 +64,7 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
-        self.storyLabel.numberOfLines = 5;
+        self.storyLabel.numberOfLines = 4;
         self.storyLabel.text = story;
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
@@ -81,7 +88,7 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
-        self.methodLabel.numberOfLines = 5;
+        self.methodLabel.numberOfLines = 4;
         self.methodLabel.text = method;
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
@@ -94,12 +101,6 @@
     } else {
         self.methodLabel.hidden = YES;
     }
-}
-
-- (CGSize)availableBlockSize {
-    CGSize blockSize = [super availableBlockSize];
-    blockSize.height -= 30.0;
-    return blockSize;
 }
 
 @end
