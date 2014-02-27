@@ -118,7 +118,7 @@
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
         self.cachedImageLoaded = YES;
     } else {
-        [self.photoView setThumbnailImage:[ImageHelper imageFromDiskNamed:@"cook_edit_bg_blank" type:@"png"]];
+        [self.photoView setThumbnailImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]];
     }
     
     [self addCloseButtonLight:YES];
