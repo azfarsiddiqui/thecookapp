@@ -636,10 +636,6 @@
     }
 }
 
-- (UIColor *)bookNavigationColour {
-    return [CKBookCover textColourForCover:self.book.cover];
-}
-
 #pragma mark - BookContentViewControllerDelegate methods
 
 - (NSArray *)recipesForBookContentViewControllerForPage:(NSString *)page {
@@ -1545,7 +1541,6 @@
         self.bookNavigationView = [[BookNavigationView alloc] initWithFrame:containerView.bounds];
         self.bookNavigationView.delegate = self;
         [self.bookNavigationView setTitle:[self bookNavigationAuthorName] editable:[self.book isOwner] book:self.book];
-        [self.bookNavigationView setDark:NO];
     }
     [containerView configureContentView:self.bookNavigationView];
     return headerView;
@@ -1709,7 +1704,16 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self contentStartSection];
     
-    [self fastForwardToPageIndex:pageIndex];
+    if (animated) {
+        [self fastForwardToPageIndex:pageIndex];
+    } else {
+        
+        // Go straight there.
+        [self.collectionView setContentOffset:(CGPoint){
+            pageIndex * self.collectionView.bounds.size.width,
+            self.collectionView.contentOffset.y
+        } animated:NO];
+    }
 }
 
 - (void)scrollToHome {

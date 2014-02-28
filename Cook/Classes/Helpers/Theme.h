@@ -164,6 +164,7 @@
 
 #pragma mark - Book navigation view.
 + (UIFont *)navigationTitleFont;
++ (UIColor *)navigationTitleColour;
 + (UIFont *)suggestFacebookFont;
 
 #pragma mark - Card messages

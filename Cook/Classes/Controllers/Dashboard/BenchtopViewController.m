@@ -24,7 +24,7 @@
 #import "ImageHelper.h"
 #import "ModalOverlayHelper.h"
 #import "NotificationsViewController.h"
-#import "CKServerManager.h"
+#import "CKError.h"
 #import "CardViewHelper.h"
 #import "CKNavigationController.h"
 #import "CKBookManager.h"
@@ -970,7 +970,7 @@
             
             // Only show no connection card if non-background fetch mode.
             if (!backgroundFetch) {
-                if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                if ([CKError noConnectionError:error]) {
                     [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
                 }
             }
@@ -1069,7 +1069,7 @@
         
         // Only show no connection card if non-background fetch mode.
         if (!backgroundFetch) {
-            if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+            if ([CKError noConnectionError:error]) {
                 [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
             }
         }

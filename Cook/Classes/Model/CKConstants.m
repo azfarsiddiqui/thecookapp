@@ -183,3 +183,8 @@ NSString *const kUserNotificationTypeReply                  = @"Reply";
 NSString *const kUserNotificationTypeLike                   = @"Like";
 NSString *const kUserNotificationTypePin                    = @"Pin";
 NSString *const kUserNotificationTypeFeedPin                = @"FeedPin";
+
+#pragma mark - CK Error Codes
+
+NSString *const kCookCloudCodeKey                           = @"ckcode";
+NSInteger const kCookCloudPageRenameBlockErrorCode          = 130;

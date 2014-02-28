@@ -86,6 +86,14 @@
     return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_add" cover:cover selected:selected]];
 }
 
++ (UIImage *)editImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_edit" cover:cover selected:selected]];
+}
+
++ (UIImage *)backImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_back" cover:cover selected:selected]];
+}
+
 + (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected {
     return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_new" cover:cover selected:selected]];
 }
