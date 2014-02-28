@@ -505,6 +505,10 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
 }
 
++ (UIColor *)navigationTitleColour {
+    return [UIColor colorWithHexString:@"505050"];
+}
+
 + (UIFont *)suggestFacebookFont {
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 }

@@ -636,10 +636,6 @@
     }
 }
 
-- (UIColor *)bookNavigationColour {
-    return [CKBookCover textColourForCover:self.book.cover];
-}
-
 #pragma mark - BookContentViewControllerDelegate methods
 
 - (NSArray *)recipesForBookContentViewControllerForPage:(NSString *)page {
@@ -1545,7 +1541,6 @@
         self.bookNavigationView = [[BookNavigationView alloc] initWithFrame:containerView.bounds];
         self.bookNavigationView.delegate = self;
         [self.bookNavigationView setTitle:[self bookNavigationAuthorName] editable:[self.book isOwner] book:self.book];
-        [self.bookNavigationView setDark:NO];
     }
     [containerView configureContentView:self.bookNavigationView];
     return headerView;
