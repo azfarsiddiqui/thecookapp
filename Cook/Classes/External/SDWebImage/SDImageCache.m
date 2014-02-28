@@ -22,8 +22,6 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 @property (strong, nonatomic) NSMutableArray *customPaths;
 @property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t ioQueue;
 
-@property (nonatomic, strong) NSMutableDictionary *lastAccessedDictionary; //key:NSDate
-
 @end
 
 @implementation SDImageCache
@@ -60,9 +58,6 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
         // Init the disk cache
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         _diskCachePath = [paths[0] stringByAppendingPathComponent:fullNamespace];
-        
-        //Init access expiration dictionary
-        _lastAccessedDictionary = [NSMutableDictionary new];
         
 #if TARGET_OS_IPHONE
         // Subscribe to app events
@@ -189,9 +184,6 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
                                }
                                
                                [fileManager createFileAtPath:[self defaultCachePathForKey:key] contents:data attributes:nil];
-                               
-                               //Also store expiration in accessedDictionary
-                               [self.lastAccessedDictionary setObject:[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge] forKey:key];
                            }
                        });
     }
@@ -248,7 +240,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
     {
         //Update expiration on access
         NSString *defaultPath = [NSString stringWithFormat:@"file:///private%@", [self defaultCachePathForKey:key]];
-        [self.lastAccessedDictionary setObject:[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge] forKey:defaultPath];
+        [self touchFileAtPath:defaultPath];
         
         if (!skipMemory) {
             CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
@@ -422,11 +414,6 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 
             // Remove files that are older than the expiration date;
             NSDate *modificationDate = resourceValues[NSURLContentModificationDateKey];
-            if ([self.lastAccessedDictionary objectForKey:fileURL.absoluteString]) {
-                NSDate *accessDate = [self.lastAccessedDictionary objectForKey:fileURL.absoluteString];
-                modificationDate =  modificationDate < accessDate ? accessDate : modificationDate;
-            }
-                
             if ([[modificationDate laterDate:expirationDate] isEqualToDate:expirationDate])
             {
                 [fileManager removeItemAtURL:fileURL error:nil];
@@ -550,6 +537,18 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
             });
         }
     });
+}
+
+- (void)touchFileAtPath:(NSString *)filePath {
+    NSDate *extendedDate =[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge];
+    
+    // Dispatch touching of modificaton.
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSFileManager *fileManager = NSFileManager.new;
+        [fileManager setAttributes:@{ NSURLContentModificationDateKey : extendedDate }
+                                         ofItemAtPath:filePath error:nil];
+    });
+
 }
 
 @end
