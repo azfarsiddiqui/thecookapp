@@ -1709,7 +1709,16 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self contentStartSection];
     
-    [self fastForwardToPageIndex:pageIndex];
+    if (animated) {
+        [self fastForwardToPageIndex:pageIndex];
+    } else {
+        
+        // Go straight there.
+        [self.collectionView setContentOffset:(CGPoint){
+            pageIndex * self.collectionView.bounds.size.width,
+            self.collectionView.contentOffset.y
+        } animated:NO];
+    }
 }
 
 - (void)scrollToHome {
