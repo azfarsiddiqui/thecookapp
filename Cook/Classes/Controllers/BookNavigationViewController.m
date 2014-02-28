@@ -225,7 +225,7 @@
     
     NSString *page = recipe.page;
     
-    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
+    NSMutableArray *recipes = [NSMutableArray arrayWithArray:[self.pageRecipes objectForKey:page]];
     
     // Check if this was a new/updated recipe.
     NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {

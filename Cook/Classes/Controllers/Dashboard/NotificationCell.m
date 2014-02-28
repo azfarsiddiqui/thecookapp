@@ -144,6 +144,10 @@
     }
 }
 
+- (void)prepareForReuse {
+    [self.profileView clearProfilePhoto];
+}
+
 #pragma mark - CKUserProfilePhotoViewDelegate methods
 
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
