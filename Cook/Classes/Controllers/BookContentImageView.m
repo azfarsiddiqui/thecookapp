@@ -107,7 +107,7 @@
                                                           self.isThumbLoading = NO;
                                                           if ([recipePhotoName isEqualToString:name]) {
                                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                                  if (self.delegate && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
+                                                                  if (self.delegate && thumbImage && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
                                                                       [self.delegate retrievedThumb:thumbImage forRecipe:self.recipe];
                                                                   }
                                                                   [self configureImage:thumbImage book:self.book thumb:YES];
