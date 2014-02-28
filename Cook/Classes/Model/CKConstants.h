@@ -183,3 +183,7 @@ extern NSString *const kUserNotificationTypeLike;
 extern NSString *const kUserNotificationTypePin;
 extern NSString *const kUserNotificationTypeFeedPin;
 
+#pragma mark - CK Error Codes
+
+extern NSString *const kCookCloudCodeKey;
+extern NSInteger const kCookCloudPageRenameBlockErrorCode;

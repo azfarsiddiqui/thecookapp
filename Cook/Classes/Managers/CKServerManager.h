@@ -28,7 +28,4 @@
 - (void)handleDeviceTokenError:(NSError *)error;
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo;
 
-// No connection error.
-- (BOOL)noConnectionError:(NSError *)error;
-
 @end
