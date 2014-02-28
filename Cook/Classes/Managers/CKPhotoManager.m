@@ -611,7 +611,8 @@
     [self updateTransferProgress:@(0) cacheKey:recipe.recipeImage.imageUuid];
     
     // Save a copy while transfer is being processed. This is so that the user could still see his/her own images.
-    [self storeImage:image forKey:recipeImage.imageUuid toDisk:YES skipMemory:YES];
+    // Don't skip memory, as it is used straight away by in-transfer cache.
+    [self storeImage:image forKey:recipeImage.imageUuid toDisk:YES skipMemory:NO];
     
     // Now upload the thumb sized.
     __weak CKPhotoManager *weakSelf = self;
