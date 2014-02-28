@@ -199,7 +199,7 @@
 }
 
 - (void)clearProfilePhoto {
-    self.profileImageView.image = [UIImage imageNamed:@"cook_blank_profile.png"];
+    self.profileImageView.image = [UIImage imageNamed:@"cook_default_profile.png"];
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
@@ -235,9 +235,10 @@
     if (profileUrl) {
         // If blank profile, just load from app bundle
         if ([[profileUrl absoluteString] isEqualToString:[[CKUser defaultBlankProfileUrl] absoluteString]]) {
-            self.profileImageView.image = [UIImage imageNamed:@"cook_blank_profile.png"];
+            self.profileImageView.image = [UIImage imageNamed:@"cook_default_profile.png"];
             return;
         }
+        self.profileImageView.image = [UIImage imageNamed:@"cook_blank_profile.png"];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:self.profileImageView.bounds.size completion:^(UIImage *image, NSString *name) {
                 if ([name isEqualToString:[profileUrl absoluteString]]) {
