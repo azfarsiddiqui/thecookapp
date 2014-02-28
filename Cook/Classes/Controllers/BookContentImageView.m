@@ -79,6 +79,8 @@
     self.book = book;
     self.fullImageLoaded = NO;
     
+    self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+    
     if (cachedImage) {
         //If cached thumb image, skip to directly assigning it
         self.isThumbLoading = NO;
@@ -94,7 +96,6 @@
     if (!self.photoView.thumbnailView.image || !self.recipe || !self.recipe.recipeImage) {
         self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
     }
-    
     if ([self.recipe hasPhotos]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[CKPhotoManager sharedInstance] thumbImageForRecipe:self.recipe
@@ -239,6 +240,7 @@
 
 - (void)cleanImage {
     [self.photoView cleanImageViews];
+    self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
 }
 
 - (BOOL)hasImage {
