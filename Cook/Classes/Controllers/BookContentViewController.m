@@ -33,6 +33,7 @@
 #import "CKContentContainerCell.h"
 #import "SDImageCache.h"
 #import "CKRecipePin.h"
+#import "CKError.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
@@ -810,10 +811,18 @@
                                                                      
                                                                  }
                                                                  failure:^(NSError *error) {
+                                                                     
                                                                      [weakSelf.progressOverlayViewController updateWithTitle:@"Unable to Rename" delay:1.5 completion:^{
                                                                          
-                                                                         [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
+                                                                         // Unable to rename error.
+                                                                         if ([CKError bookPageRenameBlockedError:error]) {
+                                                                             [[[UIAlertView alloc] initWithTitle:nil
+                                                                                                         message:@"Sorry, this page contains too many recipes to rename."
+                                                                                                        delegate:nil cancelButtonTitle:@"OK"
+                                                                                               otherButtonTitles:nil] show];
+                                                                         }
                                                                          
+                                                                         [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
                                                                          [self restorePage];
                                                                      }];
                                                                  }];
