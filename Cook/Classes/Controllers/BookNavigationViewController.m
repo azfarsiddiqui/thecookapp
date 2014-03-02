@@ -592,6 +592,9 @@
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editModeRequested:(BOOL)editMode {
     self.currentEditViewController = bookPageViewController;
     [self enableEditMode:editMode];
+    if (!editMode) {
+        self.collectionView.userInteractionEnabled = YES;
+    }
 }
 
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editing:(BOOL)editing {

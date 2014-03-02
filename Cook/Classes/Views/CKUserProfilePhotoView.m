@@ -135,8 +135,8 @@
         }
         
         // Profile image view.
-        UIImageView *profileImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_blank_profile.png"]];
-        profileImageView.frame = [self profileImageFrameWithBorder:border];
+        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:[self profileImageFrameWithBorder:border]];
+        profileImageView.backgroundColor = [UIColor colorWithWhite:0.902 alpha:1.000];
         [self addSubview:profileImageView];
         self.profileImageView = profileImageView;
         
@@ -199,7 +199,7 @@
 }
 
 - (void)clearProfilePhoto {
-    self.profileImageView.image = [UIImage imageNamed:@"cook_default_profile.png"];
+    self.profileImageView.image = nil;
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
@@ -238,7 +238,7 @@
             self.profileImageView.image = [UIImage imageNamed:@"cook_default_profile.png"];
             return;
         }
-        self.profileImageView.image = [UIImage imageNamed:@"cook_blank_profile.png"];
+        self.profileImageView.image = nil;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:self.profileImageView.bounds.size completion:^(UIImage *image, NSString *name) {
                 if ([name isEqualToString:[profileUrl absoluteString]]) {
