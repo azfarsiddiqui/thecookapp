@@ -935,8 +935,10 @@
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    
-    // Re-activate the content for the resulting content page after a scrolling animation there.
+    [self pageContentDidShow];
+}
+
+- (void)pageContentDidShow {
     [self activatePageContent];
     
     [self updateNavigationButtons];
@@ -1705,7 +1707,7 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self contentStartSection];
     
-    [self fastForwardToPageIndex:pageIndex];
+    [self fastForwardToPageIndex:pageIndex animated:animated];
 }
 
 - (void)scrollToHome {
@@ -1713,6 +1715,10 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
+    [self fastForwardToPageIndex:pageIndex animated:YES];
+}
+
+- (void)fastForwardToPageIndex:(NSUInteger)pageIndex animated:(BOOL)animated {
 
     self.collectionView.userInteractionEnabled = NO;
     self.destinationIndexes = @[@(pageIndex)];
@@ -1734,27 +1740,46 @@
         [contentHeaderView applyOffset:0.0];
     }
     
-    // Fast forward to the intended page.
-    if (self.fastForward && pageIndex > currentPageIndex) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - [self contentStartSection]]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:NO];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:YES];
+    if (animated) {
         
-    } else if (self.fastForward && pageIndex < currentPageIndex) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + [self contentStartSection]]
+        // Fast forward to the intended page.
+        if (self.fastForward && pageIndex > currentPageIndex) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - [self contentStartSection]]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:NO];
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+            
+        } else if (self.fastForward && pageIndex < currentPageIndex) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + [self contentStartSection]]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:NO];
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+        } else if (pageIndex == currentPageIndex) {
+            
+            // Same page, scroll nothing but activate page.
+            [self pageContentDidShow];
+            
+        } else {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+        }
+        
+    } else {
+        
+        // Scroll there without animation.
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:NO];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:YES];
-    } else {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:YES];
+        
+        // Same page, scroll nothing but activate page.
+        [self pageContentDidShow];
     }
+    
 }
 
 - (void)scrollToHomeAnimated:(BOOL)animated {
