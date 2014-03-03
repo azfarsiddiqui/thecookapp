@@ -87,7 +87,8 @@
     if (scaling) {
         CGContextSetInterpolationQuality(context, kCGInterpolationNone);
     }
-    [view.layer renderInContext:context];
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+//    [view.layer renderInContext:context];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
@@ -187,7 +188,8 @@
 
 + (UIImage *)blurredImageFromView:(UIView *)view {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    // [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return [self blurredOverlayImage:image];
@@ -195,7 +197,8 @@
 
 + (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
