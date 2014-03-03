@@ -1649,7 +1649,13 @@
 
 - (void)snapshotBenchtopCompletion:(void (^)())completion {
     
+    // Skip snapshotting if no book or follow books.
+    if (!self.myBook && [self.followBooks count] == 0) {
+        return;
+    }
+
     if (![self.currentUser isSignedIn] || ([self.currentUser isSignedIn] && ![self hasSeenUpdateIntro])) {
+        
         [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
             self.signupBlurImage = blurredImage;
             if (completion != nil) {
