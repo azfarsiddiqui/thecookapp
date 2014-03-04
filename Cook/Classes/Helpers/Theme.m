@@ -502,11 +502,11 @@
 #pragma mark - Book navigation view.
 
 + (UIFont *)navigationTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 }
 
 + (UIColor *)navigationTitleColour {
-    return [UIColor colorWithHexString:@"505050"];
+    return [UIColor colorWithHexString:@"707070"];
 }
 
 + (UIFont *)suggestFacebookFont {

@@ -1738,7 +1738,7 @@
         [self.updateIntroView addSubview:introImageView];
         
         // Top-left close button.
-        UIButton *closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(closeIntroTapped)];
+        UIButton *closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeIntroTapped)];
         closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         closeButton.frame = (CGRect){
             kContentInsets.left,

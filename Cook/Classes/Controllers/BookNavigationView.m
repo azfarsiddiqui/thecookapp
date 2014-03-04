@@ -137,10 +137,6 @@
 
 - (UIButton *)editButton {
     if (!_editButton && self.editable) {
-        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark.png"]
-                       selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark_onpress.png"]
-                                           target:self
-                                         selector:@selector(editTapped:)];
         _editButton = [ViewHelper buttonWithImage:[CKBookCover editImageForCover:self.book.cover selected:NO]
                                     selectedImage:[CKBookCover editImageForCover:self.book.cover selected:YES]
                                            target:self selector:@selector(editTapped:)];

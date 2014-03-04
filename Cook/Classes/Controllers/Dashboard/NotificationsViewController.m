@@ -263,7 +263,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(closeTapped:)];
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _closeButton.frame = (CGRect){
             kContentInsets.left,
