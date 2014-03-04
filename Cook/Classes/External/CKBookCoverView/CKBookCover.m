@@ -330,10 +330,11 @@
 
 + (NSString *)imageNameForBaseName:(NSString *)baseName cover:(NSString *)cover selected:(BOOL)selected {
     NSMutableString *imageName = [NSMutableString stringWithString:baseName];
+    [imageName appendFormat:@"_%@", [cover lowercaseString]];
     if (selected) {
         [imageName appendString:@"_onpress"];
     }
-    [imageName appendFormat:@"_%@.png", [cover lowercaseString]];
+    [imageName appendString:@".png"];
     return imageName;
 }
 

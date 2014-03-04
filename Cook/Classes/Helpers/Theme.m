@@ -506,7 +506,7 @@
 }
 
 + (UIColor *)navigationTitleColour {
-    return [UIColor colorWithHexString:@"505050"];
+    return [UIColor colorWithHexString:@"707070"];
 }
 
 + (UIFont *)suggestFacebookFont {
