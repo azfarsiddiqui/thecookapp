@@ -502,7 +502,7 @@
 #pragma mark - Book navigation view.
 
 + (UIFont *)navigationTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 }
 
 + (UIColor *)navigationTitleColour {
