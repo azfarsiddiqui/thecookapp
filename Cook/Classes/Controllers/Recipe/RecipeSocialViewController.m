@@ -165,12 +165,12 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         self.likesCollectionView.alpha = 0.0;
         
         if ([self.cookNavigationController isTopViewController:self]) {
-            self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+            self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
         } else {
-            self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
+            self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(backTapped:)];
         }
     } else {
-        self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+        self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
         [self loadData];
     }
     
