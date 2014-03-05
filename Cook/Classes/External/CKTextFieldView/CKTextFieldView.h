@@ -50,7 +50,7 @@
 
 - (NSString *)inputText;
 - (void)setValidated:(BOOL)validated;
-- (void)setValidated:(BOOL)validated message:(NSString *)message;
+- (void)setValidated:(BOOL)validated showIcon:(BOOL)showIcon;
 - (void)focusTextFieldView:(BOOL)focus;
 - (void)setText:(NSString *)text;
 - (NSAttributedString *)attributedTextForPlaceholderWithText:(NSString *)text;

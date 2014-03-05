@@ -119,8 +119,13 @@
 }
 
 - (void)setValidated:(BOOL)validated {
+    [self setValidated:validated showIcon:YES];
+}
+
+- (void)setValidated:(BOOL)validated showIcon:(BOOL)showIcon {
     
     // Change the validation icon image.
+    self.validationImageView.hidden = !showIcon;
     self.validationImageView.image = [self validationImageForValidated:validated];
     
     // Position it at the end.
@@ -138,10 +143,6 @@
     
     // Mark as validated.
     self.dataValidated = validated;
-}
-
-- (void)setValidated:(BOOL)validated message:(NSString *)message {
-    [self setValidated:validated];
 }
 
 - (void)focusTextFieldView:(BOOL)focus {
