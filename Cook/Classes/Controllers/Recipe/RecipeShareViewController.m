@@ -218,10 +218,7 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"]
-                                     selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_close_dark_onpress.png"]
-                                            target:self
-                                          selector:@selector(closeTapped:)];
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _closeButton.frame = (CGRect){
             kContentInsets.left,
