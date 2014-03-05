@@ -153,6 +153,10 @@
 }
 
 - (void)loadMoreRecipes:(NSArray *)recipes {
+    //If callback happens after colletionView has been deactivated and purged, cancel
+    if (self.collectionView && [self.collectionView numberOfItemsInSection:0] == 0) {
+        return;
+    }
     
     // Delete spinner cell.
     NSIndexPath *activityDeleteIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
