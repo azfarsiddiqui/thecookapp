@@ -219,10 +219,12 @@
 - (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
     [self showPhotoPicker:NO];
     
-    [self.profilePhotoView loadProfileImage:image];
+    UIImage *resizedImage = [ImageHelper scaledImage:image size:[ImageHelper profileSize]];
+    
+    [self.profilePhotoView loadProfileImage:resizedImage];
     
     // Save photo to be uploaded.
-    self.updatedProfileImage = image;
+    self.updatedProfileImage = resizedImage;
 }
 
 - (void)photoPickerViewControllerCloseRequested {
