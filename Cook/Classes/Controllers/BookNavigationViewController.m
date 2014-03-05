@@ -57,6 +57,7 @@
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
 @property (nonatomic, strong) NSMutableDictionary *thumbnailImageCache;
+@property (nonatomic, strong) NSMutableDictionary *blurredImageCache;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
@@ -119,6 +120,8 @@
 #define kIndexSectionTag            950
 #define kProfileSectionTag          951
 #define MAX_NUM_RETRIES             5
+#define MAX_CACHED_THUMBNAILS       15
+#define MAX_CACHED_BLURRED          15
 
 - (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
           delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -145,6 +148,7 @@
         self.destinationIndexes = @[@([self contentStartSection])]; //Start with first page
         
         self.thumbnailImageCache = [NSMutableDictionary new];
+        self.blurredImageCache = [NSMutableDictionary new];
         
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
@@ -882,7 +886,21 @@
 }
 
 - (void)retrievedThumb:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    // Limit size of thumbnail cache
+    if ([self.thumbnailImageCache count] > MAX_CACHED_THUMBNAILS) {
+        [self.thumbnailImageCache removeAllObjects];
+    }
+    
     [self.thumbnailImageCache setObject:savedImage forKey:recipe.objectId];
+}
+
+- (void)retrievedBlurredImage:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    // Limit size of blurred cache
+    if ([self.blurredImageCache count] > MAX_CACHED_BLURRED) {
+        [self.blurredImageCache removeAllObjects];
+    }
+    
+    [self.blurredImageCache setObject:savedImage forKey:recipe.objectId];
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -1529,7 +1547,10 @@
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
     UIImage *cachedImage = [self.thumbnailImageCache objectForKey:coverRecipe.objectId];
+    UIImage *cachedBlurredImage = [self.blurredImageCache objectForKey:coverRecipe.objectId];
     [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book cachedImage:cachedImage];
+    [categoryHeaderView configureBlurredImage:cachedBlurredImage];
+    
     categoryHeaderView.delegate = self;
     categoryHeaderView.pageIndex = pageIndex;
     
@@ -1697,7 +1718,8 @@
 - (void)closeBookWithPinch:(BOOL)pinch {
     
     [AnalyticsHelper endTrackEventName:kEventBookView params:nil];
-    
+    [self.thumbnailImageCache removeAllObjects];
+    [self.blurredImageCache removeAllObjects];
     self.book = nil;
     if (pinch) {
         [self.delegate bookNavigationControllerCloseRequested];

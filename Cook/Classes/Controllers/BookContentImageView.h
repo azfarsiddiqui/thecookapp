@@ -16,6 +16,7 @@
 - (BOOL)shouldRunFullLoadForIndex:(NSInteger)pageIndex;
 @optional
 - (void)retrievedThumb:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe;
+- (void)retrievedBlurredImage:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe;
 
 @end
 
@@ -26,6 +27,7 @@
 @property (nonatomic, strong) CKRecipe *recipe;
 
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book cachedImage:(UIImage *)cachedImage;
+- (void)configureBlurredImage:(UIImage *)blurredImage;
 - (void)applyOffset:(CGFloat)offset;
 - (CGSize)imageSizeWithMotionOffset;
 - (void)reloadWithBook:(CKBook *)book;

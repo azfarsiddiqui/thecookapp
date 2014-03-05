@@ -218,7 +218,8 @@
                                                              tintColor:tintColour
                                                             thumbImage:image
                                                             completion:^(UIImage *thumbImage, NSString *name) {
-                                                                 [self.photoView setBlurredImage:thumbImage];
+                                                                [self.photoView setBlurredImage:thumbImage];
+                                                                [self.delegate retrievedBlurredImage:thumbImage forRecipe:self.recipe];
                                                              }];
             }
         } else {
@@ -231,6 +232,12 @@
     } else {
         [self.photoView cleanImageViews];
         self.vignetteOverlayView.hidden = YES;
+    }
+}
+
+- (void)configureBlurredImage:(UIImage *)blurredImage {
+    if (blurredImage) {
+        [self.photoView setBlurredImage:blurredImage];
     }
 }
 
