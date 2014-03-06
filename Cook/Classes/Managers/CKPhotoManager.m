@@ -837,11 +837,6 @@
             
             // Do we have generated assets already?
             NSString *documentsDirectoryPath = [[AppHelper sharedInstance] documentsPathForDirectoryName:kGeneratedAssetDirectory];
-            BOOL isDir;
-            [[NSFileManager defaultManager] fileExistsAtPath:documentsDirectoryPath isDirectory:&isDir];
-            if (isDir) {
-                return;
-            }
             
             // Create the generated assets.
             [[NSFileManager defaultManager] createDirectoryAtPath:documentsDirectoryPath withIntermediateDirectories:NO attributes:nil error:nil];
