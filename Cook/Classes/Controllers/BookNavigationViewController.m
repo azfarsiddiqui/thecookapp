@@ -186,6 +186,9 @@
     
     // View book.
     [AnalyticsHelper trackEventName:kEventBookView params:[self analyticsDataForBookOpen] timed:YES];
+    
+    // Safegaurd against long backgrounding making the book disabled bug
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnFromBackground) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)setActive:(BOOL)active {
@@ -1177,6 +1180,14 @@
                                          _saveButton.frame.size.height)];
     }
     return _saveButton;
+}
+
+#pragma mark - Return from Background notification
+
+- (void)returnFromBackground {
+    if ([self.delegate bookNavigationShouldResumeEnable]) {
+        self.collectionView.userInteractionEnabled = YES;
+    }
 }
 
 #pragma mark - Private methods

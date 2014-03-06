@@ -383,6 +383,14 @@
     [self.benchtopViewController showVisibleBooks:!isPeek];
 }
 
+- (BOOL)bookNavigationShouldResumeEnable {
+    if (self.bookModalViewController) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 #pragma mark - DashboardTutorialViewControllerDelegate methods
 
 - (void)dashboardTutorialViewControllerDismissRequested {

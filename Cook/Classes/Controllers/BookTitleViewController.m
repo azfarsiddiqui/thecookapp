@@ -122,6 +122,8 @@
     }
     
     [self addCloseButtonLight:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnFromBackground) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)configureLoading:(BOOL)loading {
@@ -854,6 +856,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (BOOL)hasPages {
     return [self.collectionView numberOfItemsInSection:0];
+}
+
+- (void)returnFromBackground {
+    self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
 }
 
 @end
