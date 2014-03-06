@@ -64,7 +64,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "ReleaseDemo"
+      buildConfiguration = "DebugDemo"
       debugDocumentVersioning = "YES">
       <BuildableProductRunnable>
          <BuildableReference
@@ -80,7 +80,7 @@
       buildConfiguration = "DebugDemo">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "DebugDemo"
+      buildConfiguration = "ReleaseDemo"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
