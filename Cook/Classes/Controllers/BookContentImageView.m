@@ -132,7 +132,6 @@
                 self.fullImageLoaded = YES;
             }];
         }
-        
     });
 }
 
@@ -224,13 +223,12 @@
             }
         } else {
             DLog(@"Activate FULL LOAD: %@", self.recipe.name);
-            [UIView animateWithDuration:0.2 animations:^{
-                [self.photoView setFullImage:image];
-            }];
+            [self.photoView setFullImage:image];
         }
         
     } else {
         [self.photoView cleanImageViews];
+        self.fullImageLoaded = NO;
         self.vignetteOverlayView.hidden = YES;
     }
 }
@@ -243,10 +241,12 @@
 
 - (void)deactivateImage {
     [self.photoView deactivateImage];
+    self.fullImageLoaded = NO;
 }
 
 - (void)cleanImage {
     [self.photoView cleanImageViews];
+    self.fullImageLoaded = NO;
     self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
 }
 
