@@ -138,7 +138,7 @@
     frame.origin.x = contentInsets.left + floorf((availableSize.width - frame.size.width) / 2.0);
     
     if (!self.titleLabel.hidden) {
-        frame.origin.y = self.titleLabel.frame.origin.y - frame.size.height - 5.0;
+        frame.origin.y = self.titleLabel.frame.origin.y - frame.size.height - 8.0;
     } else if (!self.timeIntervalLabel.hidden) {
         frame.origin.y = self.timeIntervalLabel.frame.origin.y - frame.size.height - 12.0;
     }
