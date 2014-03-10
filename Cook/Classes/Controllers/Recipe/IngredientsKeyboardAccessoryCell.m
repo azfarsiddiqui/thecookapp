@@ -19,7 +19,7 @@
 #define kLabelOffset    (UIOffset) { 1.0, -3.0 }
 
 + (CGSize)cellSize {
-    return (CGSize){ 60.0, 40.0 };
+    return (CGSize){ 62.0, 40.0 };
 }
 
 - (id)initWithFrame:(CGRect)frame {
