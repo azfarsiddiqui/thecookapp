@@ -44,18 +44,6 @@
     self.titleLabel.frame = CGRectIntegral(frame);
 }
 
-- (void)updateTimeInterval {
-    [super updateTimeInterval];
-    
-    if (![self hasPhotos] && ![self hasTitle]) {
-        UIEdgeInsets contentInsets = [self contentInsets];
-        CGRect frame = self.timeIntervalLabel.frame;
-        frame.origin.y = contentInsets.top + 30.0;
-        self.timeIntervalLabel.frame = frame;
-    }
-    
-}
-
 - (void)updateIngredients {
     
     // Ingredients appear only in the following situations:
@@ -103,7 +91,7 @@
     self.storyLabel.numberOfLines = [self maxStoryLines];
     
     // DONE
-    if ([self hasPhotos] && [self hasTitle] && [self hasStory]) {
+    if ([self hasPhotos] && [self hasStory]) {
         
         // +Photo +Title +Story (+/-)Method (+/-)Ingredients
         self.storyLabel.hidden = NO;

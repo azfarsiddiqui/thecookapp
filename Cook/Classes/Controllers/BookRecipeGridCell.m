@@ -209,13 +209,27 @@
     
     self.timeIntervalLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:updatedTime] uppercaseString];
     [self.timeIntervalLabel sizeToFit];
-    self.timeIntervalLabel.frame = (CGRect){
+    
+    CGRect frame = (CGRect){
         floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
         self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleTimeGap,
         self.timeIntervalLabel.frame.size.width,
         self.timeIntervalLabel.frame.size.height
     };
     
+    // No title?
+    if (self.titleLabel.hidden) {
+        UIEdgeInsets contentInsets = [self contentInsets];
+        
+        // No photo?
+        if (self.imageView.hidden) {
+            frame.origin.y = contentInsets.top + 14.0;
+        } else {
+            frame.origin.y = self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top + 4.0;
+        }
+    }
+    
+    self.timeIntervalLabel.frame = frame;
 }
 
 - (void)updatePrivacyIcon {
