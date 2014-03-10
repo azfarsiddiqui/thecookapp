@@ -191,14 +191,14 @@
 }
 
 - (void)processChosenImage:(UIImage *)chosenImage {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
-        dispatch_async(dispatch_get_main_queue(), ^{
+//        dispatch_async(dispatch_get_main_queue(), ^{
             [self updateImagePreview];
             [self updateButtons];
             [self.activityView stopAnimating];
-        });
-    });
+//        });
+//    });
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -726,7 +726,6 @@
 
 - (UIImageOrientation)adjustedOrientationofImage:(UIImage *)image
 {
-    DLog(@"Image orientation is: %i", image.imageOrientation);
     UIInterfaceOrientation appOrientation = [UIApplication sharedApplication].statusBarOrientation;
     if (appOrientation == UIInterfaceOrientationLandscapeLeft) {
         if (self.currentOrientation == UIDeviceOrientationPortrait) {

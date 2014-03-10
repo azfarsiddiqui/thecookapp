@@ -103,7 +103,7 @@
 //            YOU'RE KILLING ME JERRY!
 //            DLog(@"Saved activity[%@] name[%@] user[%@]", parseActivity, name, currentUser);
         } else {
-            DLog(@"Unable to save name[%@] user[%@]", name, currentUser);
+            DLog(@"Unable to save name[%@] user[%@] error[%@]", name, currentUser, error);
         }
     }];
 }
