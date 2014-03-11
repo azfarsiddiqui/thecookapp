@@ -74,7 +74,7 @@
     // Start up setup.
     [[CKPhotoManager sharedInstance] generateImageAssets];
     
-    DLog(@"Started ServerManager");
+    DLog(@"Started ServerManager iOS[%f]", [[AppHelper sharedInstance] systemVersionAsFloat]);
 }
 
 - (void)handleActive {

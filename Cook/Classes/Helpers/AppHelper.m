@@ -61,6 +61,14 @@
     return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 }
 
+- (NSString *)systemVersion {
+    return [[UIDevice currentDevice] systemVersion];
+}
+
+- (float)systemVersionAsFloat {
+    return [[self systemVersion] floatValue];
+}
+
 - (CGRect)fullScreenFrame {
     return [self rootView].bounds;
 }

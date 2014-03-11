@@ -19,6 +19,8 @@
 
 // App version
 - (NSString *)appVersion;
+- (NSString *)systemVersion;
+- (float)systemVersionAsFloat;
 
 // Provides a landscape frame which can be tricky to obtain in pre-rotation situations.
 - (CGRect)fullScreenFrame;
