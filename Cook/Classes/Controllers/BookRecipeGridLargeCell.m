@@ -96,12 +96,15 @@
         // +Photo +Title +Story (+/-)Method (+/-)Ingredients
         self.storyLabel.hidden = NO;
         
+        // Let sizeThatFits to fit below,
+        self.storyLabel.numberOfLines = 0;
+        
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
         CGSize availableSize = [self availableSize];
         CGSize blockSize = [self availableBlockSize];
-        self.storyLabel.numberOfLines -= [self multilineTitle] ? 1 : 0;
+        blockSize.height = self.statsView.frame.origin.y - self.timeIntervalLabel.frame.origin.y - self.timeIntervalLabel.frame.size.height - kTimeAfterGap;
         CGSize size = [self.storyLabel sizeThatFits:blockSize];
         
         // And it comes after Title.
@@ -109,7 +112,7 @@
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     // DONE
@@ -150,16 +153,20 @@
     self.methodLabel.numberOfLines = [self maxMethodLines];
     
     // DONE
-    if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod]) {
+    if ([self hasPhotos] && ![self hasStory] && [self hasMethod]) {
         
         // +Photo +Title -Story +Method (+/-)Ingredients
         self.methodLabel.hidden = NO;
+        
+        // Let sizeThatFits to fit below,
+        self.methodLabel.numberOfLines = 0;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
         self.methodLabel.text = method;
         CGSize blockSize = [self availableBlockSize];
-        self.methodLabel.numberOfLines -= [self multilineTitle] ? 1 : 0;
+        blockSize.height = self.statsView.frame.origin.y - self.timeIntervalLabel.frame.origin.y - self.timeIntervalLabel.frame.size.height - kTimeAfterGap;
+        
         CGSize size = [self.methodLabel sizeThatFits:blockSize];
         
         // Comes after Title.
@@ -167,7 +174,7 @@
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     } else if (![self hasPhotos] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {

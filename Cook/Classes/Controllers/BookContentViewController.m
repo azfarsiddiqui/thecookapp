@@ -491,6 +491,7 @@
         
         BookContentGridType gridType = [self gridTypeForRecipe:recipe];
         NSString *cellId = [self cellIdentifierForGridType:gridType];
+        DLog(@"cellId: %@", cellId);
         
         BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
                                                                                                               forIndexPath:indexPath];
@@ -718,6 +719,10 @@
             // -Photo +Title -Story -Method +Ingredients
             gridType = BookContentGridTypeSmall;
             
+        } else if (![recipe hasTitle] && [recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo -Title +Story +Method
+            gridType = BookContentGridTypeExtraSmall;
         }
     }
     
@@ -727,7 +732,7 @@
 }
 
 - (NSString *)cellIdentifierForGridType:(BookContentGridType)gridType {
-    return [NSString stringWithFormat:@"GridType%d", gridType];
+    return [NSString stringWithFormat:@"GridType%ld", (unsigned long)gridType];
 }
 
 - (void)deleteTapped:(id)sender {

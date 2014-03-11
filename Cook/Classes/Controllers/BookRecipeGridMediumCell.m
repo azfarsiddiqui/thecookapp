@@ -9,6 +9,7 @@
 #import "BookRecipeGridMediumCell.h"
 #import "RecipeIngredientsView.h"
 #import "CKRecipe.h"
+#import "GridRecipeStatsView.h"
 
 @implementation BookRecipeGridMediumCell
 
@@ -64,14 +65,16 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
-        self.storyLabel.numberOfLines = 4;
+        self.storyLabel.numberOfLines = 0;
         self.storyLabel.text = story;
-        CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height = self.statsView.frame.origin.y - self.timeIntervalLabel.frame.origin.y - self.timeIntervalLabel.frame.size.height - kAfterTimeGap;
+        CGSize size = [self.storyLabel sizeThatFits:blockSize];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     } else {
@@ -90,12 +93,14 @@
         NSString *method = self.recipe.method;
         self.methodLabel.numberOfLines = 4;
         self.methodLabel.text = method;
-        CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height = self.statsView.frame.origin.y - self.timeIntervalLabel.frame.origin.y - self.timeIntervalLabel.frame.size.height - kAfterTimeGap;
+        CGSize size = [self.methodLabel sizeThatFits:blockSize];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     } else {
