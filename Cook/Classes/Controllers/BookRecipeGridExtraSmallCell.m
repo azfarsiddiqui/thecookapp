@@ -118,7 +118,7 @@
 
 - (void)updateMethod {
     
-    if ([self hasMethod]) {
+    if (![self hasStory] && [self hasMethod]) {
         
         // Method only.
         self.methodLabel.hidden = NO;
