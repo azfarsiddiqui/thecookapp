@@ -75,6 +75,16 @@
     [EventHelper unregisterUserChange:self];
 }
 
+- (id)init {
+    if (self = [super init]) {
+        
+        // Light status bar.
+        self.lightStatusBar = YES;
+        
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -89,9 +99,6 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
-    
-    // Light status bar.
-    self.lightStatusBar = YES;
     
     // Register login/logout events.
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
