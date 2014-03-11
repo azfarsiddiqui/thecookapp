@@ -65,8 +65,8 @@
     return [[UIDevice currentDevice] systemVersion];
 }
 
-- (float)systemVersionAsFloat {
-    return [[self systemVersion] floatValue];
+- (BOOL)systemVersionAtLeast:(NSString *)version {
+    return ([[self systemVersion] compare:version options:NSNumericSearch] != NSOrderedAscending);
 }
 
 - (CGRect)fullScreenFrame {

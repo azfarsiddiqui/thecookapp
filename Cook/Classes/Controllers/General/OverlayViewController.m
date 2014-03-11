@@ -99,7 +99,7 @@
     [self.progressLabel sizeToFit];
     self.progressLabel.frame = (CGRect){
         floorf((self.view.bounds.size.width - self.progressLabel.frame.size.width) / 2.0),
-        self.progressView.frame.origin.y - self.progressLabel.frame.size.height + 13.0,
+        self.progressView.frame.origin.y - self.progressLabel.frame.size.height + [self progressOffset],
         self.progressLabel.frame.size.width,
         self.progressLabel.frame.size.height
     };
@@ -140,6 +140,7 @@
 
 - (UILabel *)progressLabel {
     if (!_progressLabel) {
+        
         _progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _progressLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
         _progressLabel.backgroundColor = [UIColor clearColor];
@@ -149,7 +150,7 @@
         [_progressLabel sizeToFit];
         _progressLabel.frame = (CGRect){
             floorf((self.view.bounds.size.width - _progressLabel.frame.size.width) / 2.0),
-            self.progressView.frame.origin.y - _progressLabel.frame.size.height + 13.0,
+            self.progressView.frame.origin.y - _progressLabel.frame.size.height + [self progressOffset],
             _progressLabel.frame.size.width,
             _progressLabel.frame.size.height
         };
@@ -168,15 +169,22 @@
 
 - (CKProgressView *)progressView {
     if (!_progressView) {
+        
         _progressView = [[CKProgressView alloc] initWithWidth:300.0];
         _progressView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
         _progressView.frame = (CGRect){
             floorf((self.view.bounds.size.width - _progressView.frame.size.width) / 2.0),
-            floorf((self.view.bounds.size.height - _progressView.frame.size.height) / 2.0) - 13.0,
+            floorf((self.view.bounds.size.height - _progressView.frame.size.height) / 2.0) - [self progressOffset],
             _progressView.frame.size.width,
             _progressView.frame.size.height};
     }
     return _progressView;
+}
+
+#pragma mark - Private methods
+
+- (CGFloat)progressOffset {
+    return [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? -20.0 : 13.0;
 }
 
 @end

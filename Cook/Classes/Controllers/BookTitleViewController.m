@@ -253,10 +253,12 @@
     
     if ([recipe hasPhotos] && !self.cachedImageLoaded) {
         
+        CGFloat progressOffset = [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? 60.0 : 20.0;
+        
         // Add progress.
         self.progressView.frame = (CGRect){
             floorf((self.view.bounds.size.width - self.progressView.frame.size.width) / 2.0),
-            20.0,
+            progressOffset,
             self.progressView.frame.size.width,
             self.progressView.frame.size.height
         };

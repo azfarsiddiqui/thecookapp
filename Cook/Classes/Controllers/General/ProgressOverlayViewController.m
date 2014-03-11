@@ -10,6 +10,7 @@
 #import "ModalOverlayHelper.h"
 #import "CKProgressView.h"
 #import "Theme.h"
+#import "AppHelper.h"
 
 @interface ProgressOverlayViewController ()
 
@@ -36,11 +37,12 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     // Add progress view.
+    CGFloat progressOffset = [self progressOffset];
     CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
     progressView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     progressView.frame = (CGRect){
         floorf((self.view.bounds.size.width - progressView.frame.size.width) / 2.0),
-        floorf((self.view.bounds.size.height - progressView.frame.size.height) / 2.0) - 13.0,
+        floorf((self.view.bounds.size.height - progressView.frame.size.height) / 2.0) - progressOffset,
         progressView.frame.size.width,
         progressView.frame.size.height};
     [self.view addSubview:progressView];
@@ -56,7 +58,7 @@
     [titleLabel sizeToFit];
     titleLabel.frame = (CGRect){
         floorf((self.view.bounds.size.width - titleLabel.frame.size.width) / 2.0),
-        self.progressView.frame.origin.y - titleLabel.frame.size.height + 13.0,
+        self.progressView.frame.origin.y - titleLabel.frame.size.height + progressOffset,
         titleLabel.frame.size.width,
         titleLabel.frame.size.height
     };
@@ -69,12 +71,13 @@
 }
 
 - (void)updateWithTitle:(NSString *)title delay:(NSTimeInterval)delay completion:(void (^)())completion {
+    CGFloat progressOffset = [self progressOffset];
     self.title = title;
     self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = (CGRect){
         floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-        self.progressView.frame.origin.y - self.titleLabel.frame.size.height + 13.0,
+        self.progressView.frame.origin.y - self.titleLabel.frame.size.height + progressOffset,
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
@@ -96,6 +99,12 @@
 
 - (void)updateProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion {
     [self.progressView setProgress:progress delay:delay completion:completion];
+}
+
+#pragma mark - Private methods
+
+- (CGFloat)progressOffset {
+    return [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? -20.0 : 13.0;
 }
 
 @end
