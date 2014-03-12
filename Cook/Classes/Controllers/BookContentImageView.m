@@ -126,10 +126,14 @@
     double delayInSeconds = 1.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        //Check with BookNavigation to see if we should run a full load
         if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
             [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
-                [self configureImage:image book:self.book thumb:NO];
-                self.fullImageLoaded = YES;
+                //Check again after getting image
+                if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+                    [self configureImage:image book:self.book thumb:NO];
+                    self.fullImageLoaded = YES;
+                }
             }];
         }
     });
