@@ -906,9 +906,7 @@
                                          }
                                          
                                      } completion:^(BOOL finished) {
-                                         
                                          [self showUpdateNotesIfRequired];
-                                         
                                      }];
                                      
                                  }
@@ -1770,6 +1768,7 @@
         [self.updateIntroView addSubview:moreButton];
         [self.updateIntroView addSubview:continueButton];
         
+        self.collectionView.userInteractionEnabled = NO;
         [self.view addSubview:self.updateIntroView];
         [UIView animateWithDuration:0.4
                               delay:0.0
@@ -1780,6 +1779,7 @@
                              self.signupBlurImage = nil;
                              [self.delegate panEnabledRequested:NO];
                              [self markHasSeenUpdateIntro];
+                             self.collectionView.userInteractionEnabled = YES;
                          }];
     }
 }
