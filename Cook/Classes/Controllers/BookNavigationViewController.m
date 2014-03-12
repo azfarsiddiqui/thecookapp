@@ -926,6 +926,8 @@
         }
         self.destinationIndexes = destinationArray;
     }
+    
+    //Disable full-size image on all page except the current one
     [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![key isEqualToString:[self currentPage]]) {
@@ -933,6 +935,37 @@
             }
         });
     }];
+    
+    //Pre-load thumbnails on the next 2 and previous 2 pages
+    for (int i = -1; i <= 2; i++) {
+        NSInteger pageIndex = [self currentPageIndex] - [self contentStartSection] + i;
+        if (pageIndex < 0 || pageIndex >= [self.pages count]) continue;
+        NSString *page = [self.pages objectAtIndex:pageIndex];
+        
+        // Load featured recipe image.
+        CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+        
+        if ([coverRecipe hasPhotos]) {
+            
+            if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) continue;
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe
+                                                                size:self.view.frame.size
+                                                                name:nil
+                                                            progress:^(CGFloat progressRatio, NSString *name) {}
+                                                          completion:^(UIImage *thumbImage, NSString *name) {
+                                                              NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:coverRecipe];
+                                                              if ([recipePhotoName isEqualToString:name]) {
+                                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                                      DLog(@"Precached: %@", coverRecipe.name);
+                                                                      [self retrievedThumb:thumbImage forRecipe:coverRecipe];
+                                                                  });
+                                                              }
+                                                          }];
+            });
+        }
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
