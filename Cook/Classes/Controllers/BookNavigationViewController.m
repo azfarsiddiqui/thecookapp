@@ -120,8 +120,8 @@
 #define kIndexSectionTag            950
 #define kProfileSectionTag          951
 #define MAX_NUM_RETRIES             5
-#define MAX_CACHED_THUMBNAILS       5
-#define MAX_CACHED_BLURRED          5
+#define MAX_CACHED_THUMBNAILS       10
+#define MAX_CACHED_BLURRED          10
 
 - (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
           delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -899,7 +899,7 @@
         [self.thumbnailImageCache removeAllObjects];
     }
     
-    if (savedImage) {
+    if (savedImage && recipe) {
         [self.thumbnailImageCache setObject:savedImage forKey:recipe.objectId];
     }
 }
@@ -911,7 +911,7 @@
         [self.blurredImageCache removeAllObjects];
     }
     
-    if (savedImage) {
+    if (savedImage && recipe) {
         [self.blurredImageCache setObject:savedImage forKey:recipe.objectId];
     }
 }
@@ -1044,7 +1044,7 @@
     
 }
 
-- (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
                                  atIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionReusableView *headerView = nil;
@@ -2379,13 +2379,14 @@
             __weak BookNavigationViewController *weakSelf = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe
-                                                                size:self.view.frame.size
+                                                                size:CGSizeMake(1064, 808)
                                                                 name:nil
                                                             progress:^(CGFloat progressRatio, NSString *name) {}
                                                           completion:^(UIImage *thumbImage, NSString *name) {
                                                               NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:coverRecipe];
                                                               if ([recipePhotoName isEqualToString:name]) {
                                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                                      if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) return;
                                                                       DLog(@"Precached: %@", coverRecipe.name);
                                                                       [weakSelf retrievedThumb:thumbImage forRecipe:coverRecipe];
                                                                   });
