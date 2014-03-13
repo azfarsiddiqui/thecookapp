@@ -69,11 +69,11 @@
     [[CKServerManager sharedInstance] handlePushWithUserInfo:userInfo];
 }
 
-- (void)application:(UIApplication *)application
-    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    DLog();
-    [EventHelper postDashFetchBackground:YES];
-    completionHandler(UIBackgroundFetchResultNewData);
-}
+//- (void)application:(UIApplication *)application
+//    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+//    DLog();
+//    [EventHelper postDashFetchBackground:YES];
+//    completionHandler(UIBackgroundFetchResultNewData);
+//}
 
 @end
