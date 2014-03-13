@@ -108,11 +108,13 @@
     if (cachedTitleImage) {
         [self.photoView setThumbnailImage:cachedTitleImage];
         UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        
+        __weak BookTitleViewController *weakSelf = self;
         [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
                                                      tintColor:tintColour
                                                     thumbImage:cachedTitleImage
                                                     completion:^(UIImage *thumbImage, NSString *name) {
-                                                        [self.photoView setBlurredImage:thumbImage];
+                                                        [weakSelf.photoView setBlurredImage:thumbImage];
                                                     }];
         
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
@@ -264,24 +266,26 @@
         };
         [self.view addSubview:self.progressView];
         [self.progressView setProgress:0.1 animated:YES];
+        
+        __weak BookTitleViewController *weakSelf = self;
         [[CKPhotoManager sharedInstance] featuredImageForRecipe:recipe
                                                            size:self.view.frame.size
                                                        progress:^(CGFloat progressRatio, NSString *name) {
                                                            NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
                                                            if ([recipePhotoName isEqualToString:name]) {
-                                                               [self.progressView setProgress:progressRatio animated:YES];
+                                                               [weakSelf.progressView setProgress:progressRatio animated:YES];
                                                            }
                                                        }
                                                 thumbCompletion:^(UIImage *thumbImage, NSString *name) {
                                                     NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
                                                     if ([recipePhotoName isEqualToString:name]) {
-                                                        [self configureHeroRecipeImage:thumbImage thumb:YES];
+                                                        [weakSelf configureHeroRecipeImage:thumbImage thumb:YES];
                                                     }
                                                 }
                                                      completion:^(UIImage *image, NSString *name) {
-                                                         self.fullImageLoaded = YES;
-                                                         [self configureHeroRecipeImage:image thumb:NO];
-                                                         self.progressView.hidden = YES;
+                                                         weakSelf.fullImageLoaded = YES;
+                                                         [weakSelf configureHeroRecipeImage:image thumb:NO];
+                                                         weakSelf.progressView.hidden = YES;
                                                      }];
     }
 }
@@ -719,12 +723,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
         
         UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        
+        __weak BookTitleViewController *weakSelf = self;
         [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
                                                      tintColor:tintColour
                                                     thumbImage:image
                                                     completion:^(UIImage *thumbImage, NSString *name) {
-            [self.photoView setBlurredImage:thumbImage];
+            [weakSelf.photoView setBlurredImage:thumbImage];
         }];
+        
     } else {
         [self.photoView setFullImage:image];
         [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];

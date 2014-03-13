@@ -98,23 +98,25 @@
     }
     if ([self.recipe hasPhotos]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+            __weak BookContentImageView *weakSelf = self;
             [[CKPhotoManager sharedInstance] thumbImageForRecipe:self.recipe
                                                             size:[self imageSizeWithMotionOffset]
                                                             name:nil
                                                         progress:^(CGFloat progressRatio, NSString *name) {}
                                                       completion:^(UIImage *thumbImage, NSString *name) {
-                                                          NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
-                                                          self.isThumbLoading = NO;
+                                                          NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:weakSelf.recipe];
+                                                          weakSelf.isThumbLoading = NO;
                                                           if ([recipePhotoName isEqualToString:name]) {
                                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                                  if (self.delegate && thumbImage && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
-                                                                      [self.delegate retrievedThumb:thumbImage forRecipe:self.recipe];
+                                                                  if (weakSelf.delegate && thumbImage && [weakSelf.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
+                                                                      [weakSelf.delegate retrievedThumb:thumbImage forRecipe:weakSelf.recipe];
                                                                   }
-                                                                  [self configureImage:thumbImage book:self.book thumb:YES];
+                                                                  [weakSelf configureImage:thumbImage book:weakSelf.book thumb:YES];
                                                               });
                                                               //When image is loaded, delay for an additional second to allow for user to decide if they like this page
-                                                              if (!self.fullImageLoaded) {
-                                                                  [self assignFullImage];
+                                                              if (!weakSelf.fullImageLoaded) {
+                                                                  [weakSelf assignFullImage];
                                                               }
                                                           }
                                                       }];
@@ -128,11 +130,13 @@
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         //Check with BookNavigation to see if we should run a full load
         if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+            
+            __weak BookContentImageView *weakSelf = self;
             [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
                 //Check again after getting image
-                if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
-                    [self configureImage:image book:self.book thumb:NO];
-                    self.fullImageLoaded = YES;
+                if ([weakSelf.delegate shouldRunFullLoadForIndex:weakSelf.pageIndex]) {
+                    [weakSelf configureImage:image book:weakSelf.book thumb:NO];
+                    weakSelf.fullImageLoaded = YES;
                 }
             }];
         }
@@ -217,12 +221,14 @@
             [self.photoView setThumbnailImage:image];
             if (self.delegate && ([self.delegate shouldRunFullLoadForIndex:self.pageIndex] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex - 1] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex + 1])) {
                 UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
+                
+                __weak BookContentImageView *weakSelf = self;
                 [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.recipe
                                                              tintColor:tintColour
                                                             thumbImage:image
                                                             completion:^(UIImage *thumbImage, NSString *name) {
-                                                                [self.photoView setBlurredImage:thumbImage];
-                                                                [self.delegate retrievedBlurredImage:thumbImage forRecipe:self.recipe];
+                                                                [weakSelf.photoView setBlurredImage:thumbImage];
+                                                                [weakSelf.delegate retrievedBlurredImage:thumbImage forRecipe:weakSelf.recipe];
                                                              }];
             }
         } else {

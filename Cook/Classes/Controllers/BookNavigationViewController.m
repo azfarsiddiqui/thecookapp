@@ -120,8 +120,8 @@
 #define kIndexSectionTag            950
 #define kProfileSectionTag          951
 #define MAX_NUM_RETRIES             5
-#define MAX_CACHED_THUMBNAILS       15
-#define MAX_CACHED_BLURRED          15
+#define MAX_CACHED_THUMBNAILS       5
+#define MAX_CACHED_BLURRED          5
 
 - (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
           delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -621,9 +621,11 @@
 - (void)bookNavigationViewHomeTapped {
     // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
     double delayInSeconds = 0.1;
+    
+    __weak BookNavigationViewController *weakSelf = self;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self scrollToHome];
+        [weakSelf scrollToHome];
     });
 }
 
@@ -763,9 +765,11 @@
     self.collectionView.userInteractionEnabled = NO;
     // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
     double delayInSeconds = 0.1;
+    
+    __weak BookNavigationViewController *weakSelf = self;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self scrollToPage:page animated:YES];
+        [weakSelf scrollToPage:page animated:YES];
     });
 }
 
@@ -889,21 +893,27 @@
 }
 
 - (void)retrievedThumb:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    
     // Limit size of thumbnail cache
     if ([self.thumbnailImageCache count] > MAX_CACHED_THUMBNAILS) {
         [self.thumbnailImageCache removeAllObjects];
     }
     
-    [self.thumbnailImageCache setObject:savedImage forKey:recipe.objectId];
+    if (savedImage) {
+        [self.thumbnailImageCache setObject:savedImage forKey:recipe.objectId];
+    }
 }
 
 - (void)retrievedBlurredImage:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    
     // Limit size of blurred cache
     if ([self.blurredImageCache count] > MAX_CACHED_BLURRED) {
         [self.blurredImageCache removeAllObjects];
     }
     
-    [self.blurredImageCache setObject:savedImage forKey:recipe.objectId];
+    if (savedImage) {
+        [self.blurredImageCache setObject:savedImage forKey:recipe.objectId];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -928,44 +938,17 @@
     }
     
     //Disable full-size image on all page except the current one
+    __weak BookNavigationViewController *weakSelf = self;
     [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (![key isEqualToString:[self currentPage]]) {
+            if (![key isEqualToString:[weakSelf currentPage]]) {
                 [(BookContentImageView *)obj deactivateImage];
             }
         });
     }];
     
     //Pre-load thumbnails on the next 2 and previous 2 pages
-    for (int i = -1; i <= 2; i++) {
-        NSInteger pageIndex = [self currentPageIndex] - [self contentStartSection] + i;
-        if (pageIndex < 0 || pageIndex >= [self.pages count]) continue;
-        NSString *page = [self.pages objectAtIndex:pageIndex];
-        
-        // Load featured recipe image.
-        CKRecipe *coverRecipe = [self coverRecipeForPage:page];
-        
-        if ([coverRecipe hasPhotos]) {
-            
-            if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) continue;
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe
-                                                                size:self.view.frame.size
-                                                                name:nil
-                                                            progress:^(CGFloat progressRatio, NSString *name) {}
-                                                          completion:^(UIImage *thumbImage, NSString *name) {
-                                                              NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:coverRecipe];
-                                                              if ([recipePhotoName isEqualToString:name]) {
-                                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                                      DLog(@"Precached: %@", coverRecipe.name);
-                                                                      [self retrievedThumb:thumbImage forRecipe:coverRecipe];
-                                                                  });
-                                                              }
-                                                          }];
-            });
-        }
-    }
+    [self preloadThumbnails];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -1321,8 +1304,9 @@
         if (self.numRetries < MAX_NUM_RETRIES) {
             self.numRetries += 1;
             
+            __weak BookNavigationViewController *weakSelf = self;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [self loadDataIsRetry:YES];
+                [weakSelf loadDataIsRetry:YES];
             });
             
         } else {
@@ -2374,6 +2358,41 @@
         BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
         [contentViewController loadMoreRecipes:recipes];
 
+    }
+}
+
+- (void)preloadThumbnails {
+    
+    for (int i = -1; i <= 2; i++) {
+        
+        NSInteger pageIndex = [self currentPageIndex] - [self contentStartSection] + i;
+        if (pageIndex < 0 || pageIndex >= [self.pages count]) continue;
+        NSString *page = [self.pages objectAtIndex:pageIndex];
+        
+        // Load featured recipe image.
+        CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+        
+        if ([coverRecipe hasPhotos]) {
+            
+            if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) continue;
+            
+            __weak BookNavigationViewController *weakSelf = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe
+                                                                size:self.view.frame.size
+                                                                name:nil
+                                                            progress:^(CGFloat progressRatio, NSString *name) {}
+                                                          completion:^(UIImage *thumbImage, NSString *name) {
+                                                              NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:coverRecipe];
+                                                              if ([recipePhotoName isEqualToString:name]) {
+                                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                                      DLog(@"Precached: %@", coverRecipe.name);
+                                                                      [weakSelf retrievedThumb:thumbImage forRecipe:coverRecipe];
+                                                                  });
+                                                              }
+                                                          }];
+            });
+        }
     }
 }
 
