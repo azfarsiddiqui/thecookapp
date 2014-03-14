@@ -57,7 +57,7 @@
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
         [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
         
-        [EventHelper registerPhotoLoading:self selector:@selector(thumbLoadingReceived:)];
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
         
         self.isThumbLoading = NO;
     }
@@ -107,17 +107,10 @@
     double delayInSeconds = 1.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
         //Check with BookNavigation to see if we should run a full load
         if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
-            
-            __weak BookContentImageView *weakSelf = self;
-            [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset] name:nil progress:^(CGFloat progressRatio, NSString *name) {} completion:^(UIImage *image, NSString *name) {
-                //Check again after getting image
-                if ([weakSelf.delegate shouldRunFullLoadForIndex:weakSelf.pageIndex]) {
-                    [weakSelf configureImage:image book:weakSelf.book thumb:NO];
-                    weakSelf.fullImageLoaded = YES;
-                }
-            }];
+            [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset]];
         }
     });
 }
@@ -190,22 +183,35 @@
     };
 }
 
-- (void)thumbLoadingReceived:(NSNotification *)notification {
+- (void)photoLoadingReceived:(NSNotification *)notification {
     NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
+    
     if ([[self photoName] isEqualToString:recipePhotoName]) {
+        
+        UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        
         if ([EventHelper thumbForPhotoLoading:notification]) {
-            UIImage *thumbImage = [EventHelper imageForPhotoLoading:notification];
+            
+            // Thumb image processing
             self.isThumbLoading = NO;
 
-                    if (self.delegate && thumbImage && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
-                        [self.delegate retrievedThumb:thumbImage forRecipe:self.recipe];
-                    }
-                    [self configureImage:thumbImage book:self.book thumb:YES];
+            if (self.delegate && image && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
+                [self.delegate retrievedThumb:image forRecipe:self.recipe];
+            }
+            [self configureImage:image book:self.book thumb:YES];
+        
+            //When image is loaded, delay for an additional second to allow for user to decide if they like this page
+            if (!self.fullImageLoaded) {
+                [self assignFullImage];
+            }
             
-                //When image is loaded, delay for an additional second to allow for user to decide if they like this page
-                if (!self.fullImageLoaded) {
-                    [self assignFullImage];
-                }
+        } else {
+            
+            // Fullsize image processing.
+            if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+                [self configureImage:image book:self.book thumb:NO];
+                self.fullImageLoaded = YES;
+            }
             
         }
     }
