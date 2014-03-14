@@ -189,6 +189,8 @@
     
     // Safegaurd against long backgrounding making the book disabled bug
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnFromBackground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    
+    [EventHelper registerPhotoLoading:self selector:@selector(thumbLoadingReceived:)];
 }
 
 - (void)setActive:(BOOL)active {
@@ -2375,26 +2377,26 @@
         if ([coverRecipe hasPhotos]) {
             
             if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) continue;
-            
-            __weak BookNavigationViewController *weakSelf = self;
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe
-                                                                size:CGSizeMake(1064, 808)
-                                                                name:nil
-                                                            progress:^(CGFloat progressRatio, NSString *name) {}
-                                                          completion:^(UIImage *thumbImage, NSString *name) {
-                                                              NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:coverRecipe];
-                                                              if ([recipePhotoName isEqualToString:name]) {
-                                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                                      if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) return;
-                                                                      DLog(@"Precached: %@", coverRecipe.name);
-                                                                      [weakSelf retrievedThumb:thumbImage forRecipe:coverRecipe];
-                                                                  });
-                                                              }
-                                                          }];
-            });
+            [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe name:[self photoNameForRecipe:coverRecipe] size:CGSizeMake(1064, 808)];
         }
     }
+}
+
+- (void)thumbLoadingReceived:(NSNotification *)notification {
+    NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
+    [self.pages enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+        CKRecipe *coverRecipe = [self coverRecipeForPage:obj];
+        if ([coverRecipe.name isEqualToString:recipePhotoName] && [EventHelper thumbForPhotoLoading:notification]) {
+            UIImage *thumbImage = [EventHelper imageForPhotoLoading:notification];
+            if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) return;
+            DLog(@"Precached: %@", coverRecipe.name);
+            [self retrievedThumb:thumbImage forRecipe:coverRecipe];
+        }
+    }];
+}
+
+- (NSString *)photoNameForRecipe:(CKRecipe *)recipe {
+    return [NSString stringWithFormat:@"background_%@", recipe.objectId];
 }
 
 @end

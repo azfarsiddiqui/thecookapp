@@ -115,7 +115,7 @@
     
     CGSize imageSize = [BookRecipeGridCell imageSize];
     if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize];
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe name:nil size:imageSize];
     }
 
 }

@@ -57,6 +57,8 @@
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
         [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
         
+        [EventHelper registerPhotoLoading:self selector:@selector(thumbLoadingReceived:)];
+        
         self.isThumbLoading = NO;
     }
     return self;
@@ -97,30 +99,7 @@
         self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
     }
     if ([self.recipe hasPhotos]) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-            __weak BookContentImageView *weakSelf = self;
-            [[CKPhotoManager sharedInstance] thumbImageForRecipe:self.recipe
-                                                            size:[self imageSizeWithMotionOffset]
-                                                            name:nil
-                                                        progress:^(CGFloat progressRatio, NSString *name) {}
-                                                      completion:^(UIImage *thumbImage, NSString *name) {
-                                                          NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:weakSelf.recipe];
-                                                          weakSelf.isThumbLoading = NO;
-                                                          if ([recipePhotoName isEqualToString:name]) {
-                                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                                  if (weakSelf.delegate && thumbImage && [weakSelf.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
-                                                                      [weakSelf.delegate retrievedThumb:thumbImage forRecipe:weakSelf.recipe];
-                                                                  }
-                                                                  [weakSelf configureImage:thumbImage book:weakSelf.book thumb:YES];
-                                                              });
-                                                              //When image is loaded, delay for an additional second to allow for user to decide if they like this page
-                                                              if (!weakSelf.fullImageLoaded) {
-                                                                  [weakSelf assignFullImage];
-                                                              }
-                                                          }
-                                                      }];
-        });
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:self.recipe name:[self photoName] size:[self imageSizeWithMotionOffset]];
     }
 }
 
@@ -209,6 +188,31 @@
         self.bounds.size.width - (kForceVisibleOffset * 2.0),
         self.bounds.size.height
     };
+}
+
+- (void)thumbLoadingReceived:(NSNotification *)notification {
+    NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
+    if ([[self photoName] isEqualToString:recipePhotoName]) {
+        if ([EventHelper thumbForPhotoLoading:notification]) {
+            UIImage *thumbImage = [EventHelper imageForPhotoLoading:notification];
+            self.isThumbLoading = NO;
+
+                    if (self.delegate && thumbImage && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
+                        [self.delegate retrievedThumb:thumbImage forRecipe:self.recipe];
+                    }
+                    [self configureImage:thumbImage book:self.book thumb:YES];
+            
+                //When image is loaded, delay for an additional second to allow for user to decide if they like this page
+                if (!self.fullImageLoaded) {
+                    [self assignFullImage];
+                }
+            
+        }
+    }
+}
+
+- (NSString *)photoName {
+    return [NSString stringWithFormat:@"background_%@", self.recipe.objectId];
 }
 
 #pragma mark - Public methods

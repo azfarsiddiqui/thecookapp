@@ -50,7 +50,7 @@
                     completion:(void (^)(UIImage *image, NSString *name))completion;
 
 // Event-based photo loading.
-- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
+- (void)thumbImageForRecipe:(CKRecipe *)recipe name:(NSString *)name size:(CGSize)size;
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
 - (void)imageForBook:(CKBook *)book size:(CGSize)size;
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size;

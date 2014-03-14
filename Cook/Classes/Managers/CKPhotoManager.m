@@ -432,9 +432,11 @@
 
 #pragma mark - Event-based image loading.
 
-- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
+- (void)thumbImageForRecipe:(CKRecipe *)recipe name:(NSString *)photoName size:(CGSize)size {
     
-    NSString *photoName = [self photoNameForRecipe:recipe];
+    if (!photoName) {
+        photoName = [self photoNameForRecipe:recipe];
+    }
     
     __weak CKPhotoManager *weakSelf = self;
     [self checkInTransferImageForRecipe:recipe size:size name:photoName
