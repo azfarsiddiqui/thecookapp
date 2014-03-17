@@ -110,7 +110,7 @@
         
         //Check with BookNavigation to see if we should run a full load
         if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
-            [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:[self imageSizeWithMotionOffset]];
+            [[CKPhotoManager sharedInstance] fullImageForRecipe:self.recipe size:[self imageSizeWithMotionOffset]];
         }
     });
 }

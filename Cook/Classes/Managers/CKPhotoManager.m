@@ -512,6 +512,43 @@
                              }];
 }
 
+- (void)fullImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
+    NSString *photoName = [self photoNameForRecipe:recipe];
+    
+    __weak CKPhotoManager *weakSelf = self;
+    [self checkInTransferImageForRecipe:recipe size:size
+                                   name:photoName
+                             completion:^(UIImage *image, NSString *name) {
+                                 
+                                 [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+                                 
+                             } otherwiseHandler:^{
+                                 
+                                 PFFile *fullsizeFile = recipe.recipeImage.imageFile;
+                                 if (fullsizeFile) {
+                                     
+                                     // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
+                                     UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
+                                     if (cachedFullsizeImage) {
+                                         [EventHelper postPhotoLoadingImage:cachedFullsizeImage name:photoName thumb:NO];
+                                     } else {
+                                         
+                                         // Get the fullsize image with progress reporting.
+                                         [weakSelf imageForRecipe:recipe size:size name:photoName
+                                                         progress:^(CGFloat progressRatio, NSString *name) {
+                                                             // Ignore progress for event-based loading.
+                                                         }
+                                                       completion:^(UIImage *image, NSString *name) {
+                                                           [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+                                                       }];
+                                     }
+                                     
+                                 } else {
+                                     [EventHelper postPhotoLoadingImage:nil name:photoName thumb:NO];
+                                 }
+                             }];
+}
+
 - (void)imageForBook:(CKBook *)book size:(CGSize)size {
     
     NSString *photoName = [self photoNameForBook:book];
