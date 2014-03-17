@@ -10,10 +10,10 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ViewHelper.h"
 #import "AppHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "CKEditingViewHelper.h"
 #import "CKOffsetMotionEffect.h"
 #import "Theme.h"
+#import "UIImage+Resize.h"
 
 @implementation ViewHelper
 
@@ -171,7 +171,7 @@
 //    UIGraphicsEndImageContext();
     
     if (!CGSizeEqualToSize(image.size, size)) {
-        image = [image imageScaledToFitSize:size];
+        image = [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:NO];
     }
     
     return image;

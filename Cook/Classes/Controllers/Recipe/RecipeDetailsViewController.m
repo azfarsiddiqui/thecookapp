@@ -26,7 +26,6 @@
 #import "Theme.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "NSString+Utilities.h"
 #import "BookNavigationHelper.h"
 #import "CKLocationManager.h"

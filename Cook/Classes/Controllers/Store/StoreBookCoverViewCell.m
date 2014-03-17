@@ -9,7 +9,6 @@
 #import "StoreBookCoverViewCell.h"
 #import "CKBookCoverView.h"
 #import "ViewHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "BenchtopBookCoverViewCell.h"
 #import "CKBookCover.h"
 

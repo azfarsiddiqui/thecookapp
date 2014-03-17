@@ -16,11 +16,11 @@
 #import "EventHelper.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "CKEditingViewHelper.h"
 #import "CKPhotoManager.h"
 #import "CKBookCover.h"
 #import "CardViewHelper.h"
+#import "UIImage+Resize.h"
 
 @interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate,
     CKBookSummaryViewDelegate>
@@ -160,7 +160,7 @@
     [self showPhotoPicker:NO];
     
     // Present the image.
-    UIImage *croppedImage = [image imageCroppedToFitSize:self.imageView.bounds.size];
+    UIImage *croppedImage = [image resizedImage:self.imageView.bounds.size interpolationQuality:kCGInterpolationDefault cropping:NO];
     [self loadImage:croppedImage placeholder:NO];
     
     // Save photo to be uploaded.

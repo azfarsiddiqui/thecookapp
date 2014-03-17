@@ -7,7 +7,6 @@
 //
 
 #import "CKPhotoPickerViewController.h"
-#import "UIImage+ProportionalFill.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreImage/CoreImage.h>

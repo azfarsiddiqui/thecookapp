@@ -7,7 +7,6 @@
 //
 
 #import "ImageHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "UIImage+ImageEffects.h"
 #import "UIImage+Resize.h"
 #import "AppHelper.h"
