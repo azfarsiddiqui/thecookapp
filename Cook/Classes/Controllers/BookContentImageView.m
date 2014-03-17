@@ -186,6 +186,7 @@
 - (void)photoLoadingReceived:(NSNotification *)notification {
     NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
     
+    //If matching thumbnail image name
     if ([[self photoName] isEqualToString:recipePhotoName]) {
         
         UIImage *image = [EventHelper imageForPhotoLoading:notification];
@@ -205,14 +206,14 @@
                 [self assignFullImage];
             }
             
-        } else {
-            
-            // Fullsize image processing.
-            if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
-                [self configureImage:image book:self.book thumb:NO];
-                self.fullImageLoaded = YES;
-            }
-            
+        }
+        //If matching full-size image name
+    } else if ([[[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe] isEqualToString:recipePhotoName] && ![EventHelper thumbForPhotoLoading:notification]) {
+        UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        // Fullsize image processing.
+        if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+            [self configureImage:image book:self.book thumb:NO];
+            self.fullImageLoaded = YES;
         }
     }
 }
