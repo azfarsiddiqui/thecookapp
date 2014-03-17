@@ -998,7 +998,7 @@
         
         NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:currentPageIndex];
         BookContentCell *contentCell = (BookContentCell *)[self.collectionView cellForItemAtIndexPath:activeIndex];
-        if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:currentPageIndex]]) {
+        if ([self.destinationIndexes containsObject:[NSNumber numberWithInteger:currentPageIndex]]) {
             [contentCell.contentViewController loadPageContent];
             
             NSString *page = [self.pages objectAtIndex:currentPageIndex - [self contentStartSection]];

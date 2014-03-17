@@ -52,6 +52,7 @@
 // Event-based photo loading.
 - (void)thumbImageForRecipe:(CKRecipe *)recipe name:(NSString *)name size:(CGSize)size;
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
+- (void)fullImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
 - (void)imageForBook:(CKBook *)book size:(CGSize)size;
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size;
 - (void)blurredImageForRecipe:(CKRecipe *)recipe

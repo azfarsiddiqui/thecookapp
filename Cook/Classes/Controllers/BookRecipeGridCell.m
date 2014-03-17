@@ -558,7 +558,6 @@
     NSString *name = [EventHelper nameForPhotoLoading:notification];
     BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
     NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
-    
     if ([recipePhotoName isEqualToString:name] && thumb) {
         if ([EventHelper hasImageForPhotoLoading:notification]) {
             UIImage *image = [EventHelper imageForPhotoLoading:notification];
