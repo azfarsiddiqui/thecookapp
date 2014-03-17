@@ -137,7 +137,6 @@
         // Profile image view.
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:[self profileImageFrameWithBorder:border]];
         profileImageView.backgroundColor = [UIColor blackColor];
-        profileImageView.contentMode = UIViewContentModeCenter;
         [self addSubview:profileImageView];
         self.profileImageView = profileImageView;
         
@@ -233,12 +232,15 @@
 
 - (void)loadProfileUrl:(NSURL *)profileUrl {
     self.profilePhotoUrl = profileUrl;
+    
     if (profileUrl) {
+        
         // If blank profile, just load from app bundle
         if ([[profileUrl absoluteString] isEqualToString:[[CKUser defaultBlankProfileUrl] absoluteString]]) {
             self.profileImageView.image = [UIImage imageNamed:@"cook_default_profile.png"];
             return;
         }
+        
         self.profileImageView.image = nil;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:self.profileImageView.bounds.size completion:^(UIImage *image, NSString *name) {
