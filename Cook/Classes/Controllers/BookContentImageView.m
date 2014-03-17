@@ -184,6 +184,12 @@
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {
+    
+    // Skip processing if no recipe attached.
+    if (!self.recipe) {
+        return;
+    }
+    
     NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
     
     //If matching thumbnail image name
@@ -207,9 +213,13 @@
             }
             
         }
+        
         //If matching full-size image name
-    } else if ([[[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe] isEqualToString:recipePhotoName] && ![EventHelper thumbForPhotoLoading:notification]) {
+    } else if ([[[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe] isEqualToString:recipePhotoName]
+               && ![EventHelper thumbForPhotoLoading:notification]) {
+        
         UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        
         // Fullsize image processing.
         if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
             [self configureImage:image book:self.book thumb:NO];
