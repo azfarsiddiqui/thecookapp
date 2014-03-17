@@ -137,6 +137,7 @@
         // Profile image view.
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:[self profileImageFrameWithBorder:border]];
         profileImageView.backgroundColor = [UIColor blackColor];
+        profileImageView.contentMode = UIViewContentModeCenter;
         [self addSubview:profileImageView];
         self.profileImageView = profileImageView;
         

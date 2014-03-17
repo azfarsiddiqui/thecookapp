@@ -1020,7 +1020,7 @@
                 @autoreleasepool {
                     
                     // Crop the image to the required size.
-                    UIImage *imageToFit = [ImageHelper croppedImage:inTransferImage size:size];
+                    UIImage *imageToFit = [ImageHelper filledImage:inTransferImage size:size];
                     
                     // Keep it in the cache.
                     [self storeImage:imageToFit forKey:cacheKey];
@@ -1068,7 +1068,7 @@
                 
                 @autoreleasepool {
                     // Resize the image.
-                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                    UIImage *imageToFit = [ImageHelper filledImage:image size:size];
                     
                     // Callback on mainqueue.
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1149,7 +1149,7 @@
                 @autoreleasepool {
                     
                     UIImage *image = [UIImage imageWithData:data];
-                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size highQuality:!thumb];
+                    UIImage *imageToFit = [ImageHelper filledImage:image size:size];
                     image = nil;
                     // Keep it in the cache. If thumbnail, store in memory cache
                     [self storeImage:imageToFit forKey:cacheKey];
@@ -1213,7 +1213,7 @@
         [self updateTransferProgress:@(0) cacheKey:cacheKey];
     }
     
-    __weak CKPhotoManager *weakSelf = self;
+    __weak CKPhotoManager *weakSelf = self; 
     
     // Go ahead and download the file with progress updates.
     [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:0

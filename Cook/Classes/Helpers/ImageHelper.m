@@ -96,11 +96,11 @@
 }
 
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size {
-    return [self croppedImage:image size:size highQuality:YES];
+    return [self vendorCropImage:image size:size];
 }
 
-+ (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
-    return [self vendorCroppedImage:image size:size highQuality:highQuality];
++ (UIImage *)filledImage:(UIImage *)image size:(CGSize)size {
+    return [self vendorFillImage:image size:size];
 }
 
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
@@ -112,7 +112,7 @@
 }
 
 + (UIImage *)profileImageForImage:(UIImage *)image {
-    return [self vendorResizedImage:image size:[self profileSize]];
+    return [self vendorFillImage:image size:[self profileSize]];
 }
 
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {
@@ -286,11 +286,6 @@
 }
 
 + (UIImage *)vendorResizedImage:(UIImage *)image size:(CGSize)size {
-    return [self vendorResizedImage:image size:size highQuality:NO];
-}
-
-+ (UIImage *)vendorResizedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
-    
     // MGImageUtilities.
 //    return [image imageCroppedToFitSize:size];
     
@@ -298,7 +293,12 @@
     return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:NO];
 }
 
-+ (UIImage *)vendorCroppedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
++ (UIImage *)vendorFillImage:(UIImage *)image size:(CGSize)size {
+    return [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationDefault cropping:NO];
+    //return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:NO];
+}
+
++ (UIImage *)vendorCropImage:(UIImage *)image size:(CGSize)size {
     return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:YES];
 }
 
