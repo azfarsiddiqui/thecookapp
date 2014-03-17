@@ -1149,7 +1149,7 @@
                 @autoreleasepool {
                     
                     UIImage *image = [UIImage imageWithData:data];
-                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size highQuality:!thumb];
                     image = nil;
                     // Keep it in the cache. If thumbnail, store in memory cache
                     [self storeImage:imageToFit forKey:cacheKey];
@@ -1266,7 +1266,7 @@
 }
 
 - (NSString *)cacheKeyForName:(NSString *)name size:(CGSize)size {
-    return [NSString stringWithFormat:@"%@_%d_%d", name, (NSInteger)size.width, (NSInteger)size.height];
+    return [NSString stringWithFormat:@"%@_%ld_%ld", name, (long)size.width, (long)size.height];
 }
 
 - (BOOL)transferInProgressForCacheKey:(NSString *)cacheKey {

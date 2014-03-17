@@ -27,6 +27,7 @@
 
 // Image scaling.
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size;
++ (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality;
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)thumbImageForImage:(UIImage *)image;
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame;

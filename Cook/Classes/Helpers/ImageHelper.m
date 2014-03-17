@@ -96,7 +96,11 @@
 }
 
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size {
-    return [self vendorResizedImage:image size:size];
+    return [self croppedImage:image size:size highQuality:YES];
+}
+
++ (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
+    return [self vendorResizedImage:image size:size highQuality:highQuality];
 }
 
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
@@ -282,12 +286,16 @@
 }
 
 + (UIImage *)vendorResizedImage:(UIImage *)image size:(CGSize)size {
+    return [self vendorResizedImage:image size:size highQuality:NO];
+}
+
++ (UIImage *)vendorResizedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
     
     // MGImageUtilities.
 //    return [image imageCroppedToFitSize:size];
     
     // https://github.com/coryalder/UIImage_Resize
-    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault];
+    return [image resizedImage:size interpolationQuality:highQuality ? kCGInterpolationHigh : kCGInterpolationLow];
 }
 
 @end
