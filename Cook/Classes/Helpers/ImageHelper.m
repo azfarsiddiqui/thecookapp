@@ -100,7 +100,7 @@
 }
 
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
-    return [self vendorResizedImage:image size:size highQuality:highQuality];
+    return [self vendorCroppedImage:image size:size highQuality:highQuality];
 }
 
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
@@ -295,7 +295,11 @@
 //    return [image imageCroppedToFitSize:size];
     
     // https://github.com/coryalder/UIImage_Resize
-    return [image resizedImage:size interpolationQuality:highQuality ? kCGInterpolationHigh : kCGInterpolationLow];
+    return [image resizedImage:size interpolationQuality:highQuality ? kCGInterpolationHigh : kCGInterpolationLow cropping:NO];
+}
+
++ (UIImage *)vendorCroppedImage:(UIImage *)image size:(CGSize)size highQuality:(BOOL)highQuality {
+    return [image resizedImage:size interpolationQuality:highQuality ? kCGInterpolationHigh : kCGInterpolationLow cropping:YES];
 }
 
 @end

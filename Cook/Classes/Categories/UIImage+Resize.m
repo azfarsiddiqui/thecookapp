@@ -22,7 +22,7 @@
 
 // Returns a rescaled copy of the image, taking into account its orientation
 // The image will be scaled disproportionately if necessary to fit the bounds specified by the parameter
-- (UIImage *)resizedImage:(CGSize)newSize interpolationQuality:(CGInterpolationQuality)quality {
+- (UIImage *)resizedImage:(CGSize)newSize interpolationQuality:(CGInterpolationQuality)quality cropping:(BOOL)cropping {
     BOOL drawTransposed;
     switch ( self.imageOrientation )
     {
@@ -38,13 +38,14 @@
         
     CGAffineTransform transform = [self transformForOrientation:newSize];
     
-    return [self resizedImage:newSize transform:transform drawTransposed:drawTransposed interpolationQuality:quality];
+    return [self resizedImage:newSize transform:transform drawTransposed:drawTransposed interpolationQuality:quality cropping:cropping];
 }
 
 // Resizes the image according to the given content mode, taking into account the image's orientation
 - (UIImage *)resizedImageWithContentMode:(UIViewContentMode)contentMode
                                   bounds:(CGSize)bounds
-                    interpolationQuality:(CGInterpolationQuality)quality {
+                    interpolationQuality:(CGInterpolationQuality)quality
+                                cropping:(BOOL)cropping {
     CGFloat horizontalRatio = bounds.width / self.size.width;
     CGFloat verticalRatio = bounds.height / self.size.height;
     CGFloat ratio;
@@ -64,7 +65,7 @@
     
     CGSize newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);
     
-    return [self resizedImage:newSize interpolationQuality:quality];
+    return [self resizedImage:newSize interpolationQuality:quality cropping:cropping];
 }
 
 #pragma mark -
@@ -76,11 +77,47 @@
 - (UIImage *)resizedImage:(CGSize)newSize
                 transform:(CGAffineTransform)transform
            drawTransposed:(BOOL)transpose
-     interpolationQuality:(CGInterpolationQuality)quality {
+     interpolationQuality:(CGInterpolationQuality)quality
+                 cropping:(BOOL)cropping{
     CGFloat scale = MAX(1.0f, self.scale);
     CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width*scale, newSize.height*scale));
     CGRect transposedRect = CGRectMake(0, 0, newRect.size.height, newRect.size.width);
-    CGImageRef imageRef = self.CGImage;
+    
+    // Calculate aspect ratios
+    float sourceRatio = self.size.width / self.size.height;
+    float targetRatio = newSize.width / newSize.height;
+    // Determine what side of the source image to use for proportional scaling
+    BOOL scaleWidth = (sourceRatio <= targetRatio);
+    // Deal with the case of just scaling proportionally to fit, without cropping
+    scaleWidth = (cropping) ? scaleWidth : !scaleWidth;
+    
+    // Proportionally scale source image
+    float scalingFactor, scaledWidth, scaledHeight;
+    if (scaleWidth) {
+        scalingFactor = 1.0 / sourceRatio;
+        scaledWidth = newSize.width;
+        scaledHeight = round(newSize.width * scalingFactor);
+    } else {
+        scalingFactor = sourceRatio;
+        scaledWidth = round(newSize.height * scalingFactor);
+        scaledHeight = newSize.height;
+    }
+    float scaleFactor = scaledHeight / (self.size.height * scale);
+    
+    // Calculate compositing rectangles
+    CGRect sourceRect;
+    if (cropping) {
+        float destX, destY;
+            // Crop center
+            destX = round((scaledWidth - newSize.width) / 2.0);
+            destY = round((scaledHeight - newSize.height) / 2.0);
+                sourceRect = CGRectMake(destX / scaleFactor, destY / scaleFactor,
+                                newSize.width / scaleFactor, newSize.height / scaleFactor);
+    } else {
+        sourceRect = CGRectMake(0, 0, (self.size.width * scale), (self.size.height * scale));
+    }
+
+    CGImageRef imageRef = cropping ? CGImageCreateWithImageInRect(self.CGImage, sourceRect) : self.CGImage;
     
     // Fix for a colorspace / transparency issue that affects some types of 
     // images. See here: http://vocaro.com/trevor/blog/2009/10/12/resize-a-uiimage-the-right-way/comment-page-2/#comment-39951
