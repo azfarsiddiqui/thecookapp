@@ -295,7 +295,7 @@
 //    return [image imageCroppedToFitSize:size];
     
     // https://github.com/coryalder/UIImage_Resize
-    return [image resizedImage:size interpolationQuality:highQuality ? kCGInterpolationHigh : kCGInterpolationLow];
+    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault];
 }
 
 @end
