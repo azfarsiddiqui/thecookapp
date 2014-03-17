@@ -1066,6 +1066,7 @@
 		76C3BB93173B73F0004F6444 /* cook_edit_timedial_dial.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8E173B73F0004F6444 /* cook_edit_timedial_dial.png */; };
 		76C3BB94173B73F0004F6444 /* cook_edit_timedial_dial@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */; };
 		76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */; };
+		76C5550318D677F000C471D4 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C5550218D677F000C471D4 /* UIImage+Resize.m */; };
 		76C6CDCB164B3EC3006001BD /* cook_customise_textbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */; };
 		76C6CDCC164B3EC3006001BD /* cook_customise_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */; };
 		76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */; };
@@ -2836,6 +2837,8 @@
 		76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_dial@2x.png"; sourceTree = "<group>"; };
 		76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServesAndTimeEditViewController.h; sourceTree = "<group>"; };
 		76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServesAndTimeEditViewController.m; sourceTree = "<group>"; };
+		76C5550118D677F000C471D4 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		76C5550218D677F000C471D4 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox.png; sourceTree = "<group>"; };
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
@@ -4490,6 +4493,8 @@
 				F60C570D17E3CB2600912544 /* UIDevice+Hardware.m */,
 				F60C571317E440ED00912544 /* UIImage+Scale.h */,
 				F60C571417E440ED00912544 /* UIImage+Scale.m */,
+				76C5550118D677F000C471D4 /* UIImage+Resize.h */,
+				76C5550218D677F000C471D4 /* UIImage+Resize.m */,
 			);
 			name = Categories;
 			path = Cook/Classes/Categories;
@@ -8766,6 +8771,7 @@
 				76D625DE17DD513C007E936A /* CardViewHelper.m in Sources */,
 				F6BC0EE2180B5B4000B0F506 /* CKRecipeTag.m in Sources */,
 				89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */,
+				76C5550318D677F000C471D4 /* UIImage+Resize.m in Sources */,
 				7635A2D117A9F390002F30F2 /* IngredientListCell.m in Sources */,
 				F6DD424A180BB4B900AD3803 /* TagListEditViewController.m in Sources */,
 				76E985D517E2B25D00D9CAF3 /* SearchStoreCollectionViewController.m in Sources */,

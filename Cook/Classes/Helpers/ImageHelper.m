@@ -9,6 +9,7 @@
 #import "ImageHelper.h"
 #import "UIImage+ProportionalFill.h"
 #import "UIImage+ImageEffects.h"
+#import "UIImage+Resize.h"
 #import "AppHelper.h"
 
 @implementation ImageHelper
@@ -95,20 +96,19 @@
 }
 
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size {
-    return [image imageCroppedToFitSize:size];
+    return [self vendorResizedImage:image size:size];
 }
 
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
-    return [image imageCroppedToFitSize:size];
+    return [self vendorResizedImage:image size:size];
 }
 
 + (UIImage *)thumbImageForImage:(UIImage *)image {
-    CGSize thumbSize = [self thumbSize];
-    return [image imageCroppedToFitSize:thumbSize];
+    return [self vendorResizedImage:image size:[self thumbSize]];
 }
 
 + (UIImage *)profileImageForImage:(UIImage *)image {
-    return [image imageCroppedToFitSize:[self profileSize]];
+    return [self vendorResizedImage:image size:[self profileSize]];
 }
 
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {
@@ -279,6 +279,15 @@
     
     //add our blurred image to the scrollview
     return [UIImage imageWithCGImage:cgImage];
+}
+
++ (UIImage *)vendorResizedImage:(UIImage *)image size:(CGSize)size {
+    
+    // MGImageUtilities.
+//    return [image imageCroppedToFitSize:size];
+    
+    // https://github.com/coryalder/UIImage_Resize
+    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault];
 }
 
 @end
