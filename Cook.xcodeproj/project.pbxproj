@@ -1427,6 +1427,7 @@
 		F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB717D1C998000DDD95 /* Social.framework */; };
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
 		F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */; };
+		F66C50F618D7CAF000637EFE /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C50F518D7CAF000637EFE /* UIImage+ProportionalFill.m */; };
 		F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
@@ -3284,6 +3285,8 @@
 		F652ECC31813731C00D73AF9 /* CKListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListHeaderView.m; sourceTree = "<group>"; };
 		F668F8D418228AC800F3DC76 /* SocialMediaActionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialMediaActionHeader.h; sourceTree = "<group>"; };
 		F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialMediaActionHeader.m; sourceTree = "<group>"; };
+		F66C50F418D7CAF000637EFE /* UIImage+ProportionalFill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ProportionalFill.h"; sourceTree = "<group>"; };
+		F66C50F518D7CAF000637EFE /* UIImage+ProportionalFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ProportionalFill.m"; sourceTree = "<group>"; };
 		F67CE0EC187FB07500FE7AD0 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
 		F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
 		F684F5E618AB45DF00FCD0E3 /* CKActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKActivityIndicatorView.h; sourceTree = "<group>"; };
@@ -4465,6 +4468,8 @@
 		7652046B161AD11E00EE253C /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				F66C50F418D7CAF000637EFE /* UIImage+ProportionalFill.h */,
+				F66C50F518D7CAF000637EFE /* UIImage+ProportionalFill.m */,
 				7652046C161AD11E00EE253C /* NSString+Utilities.h */,
 				7652046D161AD11E00EE253C /* NSString+Utilities.m */,
 				766BFC201630DE990083EB0E /* UIColor+Expanded.h */,
@@ -8800,6 +8805,7 @@
 				7692830C1848B9F3002D9E8A /* BookTitlePhotoView.m in Sources */,
 				76381CA716685A7500404FB1 /* FeaturedStoreCollectionViewController.m in Sources */,
 				76708FE1181228410065DE51 /* CKRecipePin.m in Sources */,
+				F66C50F618D7CAF000637EFE /* UIImage+ProportionalFill.m in Sources */,
 				761852A91851E664001671BF /* ServesNotchSliderView.m in Sources */,
 				F64E465B17DA0DE600F99A5A /* CKPhotoFilterSliderView.m in Sources */,
 				76D2BF6817B9097A00BA46A1 /* NSData+GIF.m in Sources */,
