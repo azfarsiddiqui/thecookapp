@@ -132,6 +132,13 @@
         [self loadBenchtop];
     }
     
+    // Register left screen edge for shortcut to own book.
+    UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                          action:@selector(screenEdgePanned:)];
+    leftEdgeGesture.delegate = self;
+    leftEdgeGesture.edges = UIRectEdgeLeft;
+    [self.collectionView addGestureRecognizer:leftEdgeGesture];
+    
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
@@ -463,6 +470,13 @@
     }
     
     return YES;
+}
+
+- (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
+    // If detected, then scroll to own book
+    if (edgeGesture.state == UIGestureRecognizerStateBegan) {
+        [self scrollToBookAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    }
 }
 
 #pragma mark - BenchtopBookCoverViewCellDelegate methods
