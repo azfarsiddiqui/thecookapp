@@ -10,6 +10,7 @@
 #import "UIImage+ImageEffects.h"
 #import "UIImage+Resize.h"
 #import "AppHelper.h"
+#import "UIImage+ProportionalFill.h"
 
 @implementation ImageHelper
 
@@ -298,7 +299,8 @@
 }
 
 + (UIImage *)vendorCropImage:(UIImage *)image size:(CGSize)size {
-    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:YES];
+//    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:YES];
+    return [image imageCroppedToFitSize:size];
 }
 
 @end

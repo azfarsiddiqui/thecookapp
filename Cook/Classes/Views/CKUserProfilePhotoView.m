@@ -243,7 +243,7 @@
         
         self.profileImageView.image = nil;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:self.profileImageView.bounds.size completion:^(UIImage *image, NSString *name) {
+            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize] completion:^(UIImage *image, NSString *name) {
                 if ([name isEqualToString:[profileUrl absoluteString]]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         // Cross-fade the image.
@@ -251,7 +251,7 @@
                                           duration:0.2
                                            options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
                                         animations:^{
-                                            self.profileImageView.image = image;
+                                            [self loadProfileImage:image];
                                         } completion:nil];
                     });
                 }
