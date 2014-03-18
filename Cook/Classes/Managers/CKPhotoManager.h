@@ -59,8 +59,7 @@
                     tintColor:(UIColor *)tint
                    thumbImage:(UIImage *)image
                    completion:(void (^)(UIImage *thumbImage, NSString *name))completion;
-- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
-              completion:(void (^)(UIImage *image, NSString *name))completion;
+- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size;
 
 // Setup books, resizing etc.
 - (void)generateImageAssets;

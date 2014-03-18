@@ -242,21 +242,8 @@
         }
         
         self.profileImageView.image = nil;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize] completion:^(UIImage *image, NSString *name) {
-                if ([name isEqualToString:[profileUrl absoluteString]]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        // Cross-fade the image.
-                        [UIView transitionWithView:self.profileImageView
-                                          duration:0.2
-                                           options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
-                                        animations:^{
-                                            [self loadProfileImage:image];
-                                        } completion:nil];
-                    });
-                }
-            }];
-        });
+        
+        [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize]];
     }
 }
 
@@ -370,10 +357,16 @@
 
 - (void)photoLoadingReceived:(NSNotification *)notification {
     NSString *name = [EventHelper nameForPhotoLoading:notification];
+    
     if ([[self.profilePhotoUrl absoluteString] isEqualToString:name]) {
         if ([EventHelper hasImageForPhotoLoading:notification]) {
             UIImage *image = [EventHelper imageForPhotoLoading:notification];
-            [self loadProfileImage:image];
+            [UIView transitionWithView:self.profileImageView
+                              duration:0.2
+                               options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                            animations:^{
+                                [self loadProfileImage:image];
+                            } completion:nil];
         }
     }
 }
