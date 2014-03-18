@@ -23,8 +23,8 @@
 + (CGSize)thumbSize {
     CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
     return (CGSize) {
-        532.0 / screenScale,
-        404.0 / screenScale
+        512.0 / screenScale,
+        384.0 / screenScale
     };
 }
 
@@ -108,7 +108,7 @@
 }
 
 + (UIImage *)thumbImageForImage:(UIImage *)image {
-    return [self vendorResizedImage:image size:[self thumbSize]];
+    return [self vendorCropImage:image size:[self thumbSize]];
 }
 
 + (UIImage *)profileImageForImage:(UIImage *)image {
