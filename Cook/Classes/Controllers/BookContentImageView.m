@@ -190,6 +190,11 @@
         return;
     }
     
+    // Skip if there's no image.
+    if (![EventHelper hasImageForPhotoLoading:notification]) {
+        return;
+    }
+    
     NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
     
     //If matching thumbnail image name
