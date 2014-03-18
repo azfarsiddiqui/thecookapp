@@ -1884,7 +1884,9 @@
 }
 
 - (void)clearUpdatesForBook:(CKBook *)book {
-    [self.followBookUpdates setObject:@0 forKey:book.objectId];
+    if (book) {
+        [self.followBookUpdates setObject:@0 forKey:book.objectId];
+    }
 }
 
 - (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
