@@ -485,6 +485,7 @@
         
         if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
             recipePin = (CKRecipePin *)recipeOrPin;
+            recipe = recipePin.recipe;
         } else {
             recipe = (CKRecipe *)recipeOrPin;
         }
