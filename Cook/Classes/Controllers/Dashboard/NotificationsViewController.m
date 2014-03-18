@@ -147,6 +147,14 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 #pragma mark - UICollectionViewDelegate methods
 
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.notifications && [self.notifications count] > 0) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
