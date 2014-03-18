@@ -77,6 +77,8 @@
 @property (nonatomic, strong) UIView *settingsIntroView;
 @property (nonatomic ,strong) UIView *updateIntroView;
 
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *leftEdgeGesture;
+
 @end
 
 @implementation BenchtopViewController
@@ -133,11 +135,10 @@
     }
     
     // Register left screen edge for shortcut to own book.
-    UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
-                                                                                                          action:@selector(screenEdgePanned:)];
-    leftEdgeGesture.delegate = self;
-    leftEdgeGesture.edges = UIRectEdgeLeft;
-    [self.collectionView addGestureRecognizer:leftEdgeGesture];
+    self.leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(screenEdgePanned:)];
+    self.leftEdgeGesture.delegate = self;
+    self.leftEdgeGesture.edges = UIRectEdgeLeft;
+    [self.collectionView addGestureRecognizer:self.leftEdgeGesture];
     
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
@@ -476,6 +477,15 @@
     // If detected, then scroll to own book
     if (edgeGesture.state == UIGestureRecognizerStateBegan) {
         [self scrollToBookAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if (gestureRecognizer == self.leftEdgeGesture && otherGestureRecognizer == self.collectionView.panGestureRecognizer) {
+        [otherGestureRecognizer requireGestureRecognizerToFail:gestureRecognizer];
+        return YES;
+    } else {
+        return NO;
     }
 }
 
