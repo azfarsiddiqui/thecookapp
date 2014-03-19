@@ -1617,14 +1617,19 @@
 
 - (void)applyRightBookEdgeOutline {
     CGSize contentSize = [[self currentLayout] collectionViewContentSize];
-    self.rightOutlineView.frame = (CGRect){
+    CGRect rightFrame = (CGRect){
         contentSize.width,
         self.collectionView.bounds.origin.y,
         self.rightOutlineView.frame.size.width,
         self.collectionView.bounds.size.height
     };
     if (!self.rightOutlineView.superview) {
+        self.rightOutlineView.frame = rightFrame;
         [self.collectionView addSubview:self.rightOutlineView];
+    } else {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.rightOutlineView.frame = rightFrame;
+        });
     }
 }
 
