@@ -392,7 +392,8 @@
     }
 }
 
-- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size {
+- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
+              completion:(void (^)(UIImage *image, NSString *name))completion {
     NSString *thumbName = [url absoluteString];
     if (url) {
         
@@ -405,7 +406,7 @@
             if (image) {
                 
                 // Return cached image.
-                [EventHelper postPhotoLoadingImage:image name:thumbName thumb:YES];
+                completion(image, thumbName);
                 
             } else {
                 
@@ -417,11 +418,15 @@
                                        //Should already be stored in disk cache, store in memory cache as well
 //                                       NSString *cacheKey = [self cacheKeyForName:thumbName size:size];
 //                                       [[SDImageCache sharedImageCache] storeThumbInMemoryCache:image forKey:cacheKey];
-                                       [EventHelper postPhotoLoadingImage:image name:name thumb:YES];
+                                       completion(image, name);
                                    }];
             }
         }
         
+    } else {
+        
+        // Return no image.
+        completion(nil, thumbName);
     }
 }
 

@@ -72,10 +72,6 @@
     return CGSizeMake(kBorder + size.width + kBorder, kBorder + size.height + kBorder);
 }
 
-- (void)dealloc {
-    [EventHelper unregisterPhotoLoading:self];
-}
-
 - (id)initWithProfileSize:(ProfileViewSize)profileSize {
     return [self initWithUser:nil profileSize:profileSize];
 }
@@ -159,9 +155,6 @@
             self.profileOverlay = profileOverlay;
         }
         
-        // Register photo loading events.
-        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-        
         // Load photo if user was given.
         if (user) {
             [self loadProfilePhotoForUser:user];
@@ -242,8 +235,25 @@
         }
         
         self.profileImageView.image = nil;
-        
-        [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize]];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize] completion:^(UIImage *image, NSString *name) {
+                NSString *compareURL = [profileUrl absoluteString];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(userProfileURL)]) {
+                    compareURL = [self.delegate userProfileURL];
+                }
+                if ([name isEqualToString:compareURL]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        // Cross-fade the image.
+                        [UIView transitionWithView:self.profileImageView
+                                          duration:0.2
+                                           options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                                        animations:^{
+                                            [self loadProfileImage:image];
+                                        } completion:nil];
+                    });
+                }
+            }];
+        });
     }
 }
 
@@ -353,22 +363,6 @@
     };
     [self addSubview:self.editButton];
     self.editButton.alpha = 0.0;
-}
-
-- (void)photoLoadingReceived:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    
-    if ([[self.profilePhotoUrl absoluteString] isEqualToString:name]) {
-        if ([EventHelper hasImageForPhotoLoading:notification]) {
-            UIImage *image = [EventHelper imageForPhotoLoading:notification];
-            [UIView transitionWithView:self.profileImageView
-                              duration:0.2
-                               options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
-                            animations:^{
-                                [self loadProfileImage:image];
-                            } completion:nil];
-        }
-    }
 }
 
 - (void)profileTapped:(UITapGestureRecognizer *)tapGesture {

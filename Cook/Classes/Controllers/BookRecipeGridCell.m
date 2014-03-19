@@ -23,7 +23,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "DateHelper.h"
 
-@interface BookRecipeGridCell ()
+@interface BookRecipeGridCell () <CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, assign) BOOL ownBook;
 
@@ -352,6 +352,12 @@
     return _bottomShadowImageView;
 }
 
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (NSString *)userProfileURL {
+    return [self.recipe.user.profilePhotoUrl absoluteString];
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -425,6 +431,7 @@
     CGRect frame = self.profilePhotoView.frame;
     frame.origin = (CGPoint){ 5.0, 5.0 };
     self.profilePhotoView.frame = frame;
+    self.profilePhotoView.delegate = self;
     [self.contentView addSubview:self.profilePhotoView];
 }
 

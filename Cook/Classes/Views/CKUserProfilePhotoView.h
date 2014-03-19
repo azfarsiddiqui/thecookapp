@@ -22,6 +22,7 @@ typedef enum {
 @protocol CKUserProfilePhotoViewDelegate <NSObject>
 
 @optional
+- (NSString *)userProfileURL;
 - (void)userProfilePhotoViewEditRequested;
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user;
 
