@@ -18,6 +18,7 @@
 #import <MessageUI/MessageUI.h>
 #import "AnalyticsHelper.h"
 #import "UIDevice+Hardware.h"
+#import <Pinterest/Pinterest.h>
 
 @interface RecipeShareViewController () <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate>
 
@@ -29,7 +30,9 @@
 @property (nonatomic, strong) UIButton *twitterShareButton;
 @property (nonatomic, strong) UIButton *mailShareButton;
 @property (nonatomic, strong) UIButton *messageShareButton;
+@property (nonatomic, strong) UIButton *pinterestShareButton;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) Pinterest *pinterest;
 @property (nonatomic, strong, readonly) NSURL *shareURL;
 
 @end
@@ -62,9 +65,9 @@
     
     // Setting up constraints to center share content horizontally and vertically
     {
-        NSDictionary *metrics = @{@"height":@180.0, @"width":@470.0};
+        NSDictionary *metrics = @{@"height":@180.0, @"width":@520.0};
         NSDictionary *views = NSDictionaryOfVariableBindings(middleContentView);
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[middleContentView(width)]-(>=20)-|"
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[middleContentView]-(>=20)-|"
                                                                           options:NSLayoutFormatAlignAllCenterX
                                                                           metrics:metrics
                                                                             views:views]];
@@ -97,6 +100,11 @@
     [self.twitterShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_twitter_onpress"] forState:UIControlStateHighlighted];
     self.twitterShareButton.translatesAutoresizingMaskIntoConstraints = NO;
     [middleContentView addSubview:self.twitterShareButton];
+    self.pinterestShareButton = [[UIButton alloc] init];
+    [self.pinterestShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_pinterest"] forState:UIControlStateNormal];
+    [self.pinterestShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_pinterest_onpress"] forState:UIControlStateHighlighted];
+    self.pinterestShareButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [middleContentView addSubview:self.pinterestShareButton];
     self.mailShareButton = [[UIButton alloc] init];
     [self.mailShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_email"] forState:UIControlStateNormal];
     [self.mailShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_email_onpress"] forState:UIControlStateHighlighted];
@@ -121,10 +129,11 @@
         NSDictionary *metrics = @{@"height":@110.0, @"width":@110.0, @"titleHeight":@38.0, @"spacing":@10.0};
         NSDictionary *views = @{@"facebook" : self.facebookShareButton,
                                 @"twitter" : self.twitterShareButton,
+                                @"pinterest" : self.pinterestShareButton,
                                 @"mail" : self.mailShareButton,
                                 @"message" : self.messageShareButton,
                                 @"title" : shareTitleLabel};
-        NSString *buttonConstraints = @"|[facebook(width)]-spacing-[twitter(facebook)]-spacing-[mail(facebook)]-spacing-[message(facebook)]";
+        NSString *buttonConstraints = @"|-(>=0)-[facebook(width)]-spacing-[twitter(facebook)]-spacing-[pinterest(facebook)]-spacing-[mail(facebook)]-spacing-[message(facebook)]-(>=0)-|";
         [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
         [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title(titleHeight)]-[facebook(height)]" options:0 metrics:metrics views:views]];
         [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
@@ -194,6 +203,7 @@
     // Attach actions to buttons
 	[self.facebookShareButton addTarget:self action:@selector(facebookShareTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.twitterShareButton addTarget:self action:@selector(twitterShareTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.pinterestShareButton addTarget:self action:@selector(pinterestShareTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.mailShareButton addTarget:self action:@selector(mailShareTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.messageShareButton addTarget:self action:@selector(messageShareTapped:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -208,10 +218,7 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"]
-                                     selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_close_dark_onpress.png"]
-                                            target:self
-                                          selector:@selector(closeTapped:)];
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _closeButton.frame = (CGRect){
             kContentInsets.left,
@@ -272,6 +279,10 @@
     {
         [self errorWithType:CKShareTwitter error:nil];
     }
+}
+
+- (void)pinterestShareTapped:(id)sender {
+    [self sharePinterest];
 }
 
 - (void)mailShareTapped:(id)sender {
@@ -359,6 +370,19 @@
     [self presentViewController:twitterComposeController animated:YES completion:nil];
 }
 
+- (void)sharePinterest {
+    
+    // Assume success as we don't deal with callbacks yet.
+    [self successWithType:CKSharePinterest];
+    
+    self.pinterest = [[Pinterest alloc] initWithClientId:@"1436113"];
+    NSURL *imageURL = [NSURL URLWithString:self.recipe.recipeImage.imageFile.url];
+    if (!imageURL) {
+        imageURL = [NSURL URLWithString:@"http://www.worldscookbook.com/images/cook_defaultimage_pinterest@2x.jpg"];
+    };
+    [self.pinterest createPinWithImageURL:imageURL sourceURL:self.shareURL description:self.recipe.name];
+}
+
 - (void)shareEmail
 {
     MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
@@ -429,6 +453,10 @@
             successString = @"Success in posting to Message";
             socialString = @"iMessage";
             break;
+        case CKSharePinterest:
+            successString = @"Success in posting to Pinterest";
+            socialString = @"Pinterest";
+            break;
         default:
             successString = @"Success";
             socialString = @"";
@@ -436,9 +464,12 @@
     }
     
     // Analytics
-    NSDictionary *dimensions = @{@"socialType" : socialString};
-    [AnalyticsHelper trackEventName:@"Social Share" params:dimensions];
-    DLog(@"%@", successString);
+    [AnalyticsHelper trackEventName:kEventRecipeShare params:@{ @"type" : socialString }];
+    
+    // Mark shared.
+    if (![self.recipe isOwner]) {
+        [self.recipe markShared];
+    }
 }
 
 #pragma mark - Mail and Message delegates

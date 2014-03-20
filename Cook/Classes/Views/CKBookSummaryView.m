@@ -219,10 +219,12 @@
 - (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
     [self showPhotoPicker:NO];
     
-    [self.profilePhotoView loadProfileImage:image];
+    UIImage *resizedImage = [ImageHelper scaledImage:image size:[ImageHelper profileSize]];
+    
+    [self.profilePhotoView loadProfileImage:resizedImage];
     
     // Save photo to be uploaded.
-    self.updatedProfileImage = image;
+    self.updatedProfileImage = resizedImage;
 }
 
 - (void)photoPickerViewControllerCloseRequested {
@@ -356,8 +358,9 @@
     NSString *name = [self.book.user.name uppercaseString];
     [self updateName:name];
     
-    // Pages
-    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnit:@"FOLLOWER"];
+    // Downloads
+    NSString *followersDisplay = self.book.featured ? @"DOWNLOAD" : @"FOLLOWER";
+    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnit:followersDisplay];
     [self addSubview:pagesStatView];
     self.followersStatView = pagesStatView;
     
@@ -390,7 +393,7 @@
     }
     
     //Show Sign In label if Guest user
-    if (self.currentUser == nil && self.book.featured && self.book.status != kBookStatusFollowed) {
+    if (self.currentUser == nil && self.storeMode && self.book.featured && self.book.status != kBookStatusFollowed) {
         [self addSubview:self.signInLabel];
     }
 }
@@ -405,6 +408,8 @@
         self.nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         self.nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.nameLabel.numberOfLines = 1;
+        self.nameLabel.minimumScaleFactor = 0.8;
+        self.nameLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:self.nameLabel];
     }
     
@@ -414,6 +419,7 @@
     availableSize.width -= (nameInsets.left + nameInsets.right);
     self.nameLabel.text = [name uppercaseString];
     [self.nameLabel sizeToFit];
+    
     CGFloat requiredWidth = (self.nameLabel.frame.size.width > availableSize.width) ? availableSize.width : self.nameLabel.frame.size.width;
     
     self.nameLabel.frame = (CGRect){
@@ -708,7 +714,8 @@
     __weak typeof(self) weakSelf = self;
     [self.book addFollower:self.currentUser
                    success:^{
-                       [AnalyticsHelper trackEventName:@"Added to Bench" params:nil];
+                       [AnalyticsHelper trackEventName:kEventBookAdd params:nil];
+                       
                        [weakSelf updateButtonText:@"BOOK ON BENCH" activity:NO
                                              icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
                                           enabled:NO target:nil selector:nil];

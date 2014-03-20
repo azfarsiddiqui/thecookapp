@@ -200,6 +200,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    //Should only have 1 edit controller up at a time
+    if (self.editViewController) {
+        return;
+    }
+    
     if (editingView == self.titleTextView) {
 //        CKTextEditViewController *editViewController;
 //        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")) {
@@ -302,6 +307,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             editViewController.clearOnFocus = ![self.recipeDetails hasMethod];
             editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
             editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+        [editViewController includeAccessoryView:YES];
             [editViewController performEditing:YES];
 //        }
         self.editViewController = editViewController;
@@ -569,7 +575,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             defaultInsets.right - 2.0
         } delegate:self white:YES iconImage:[UIImage imageNamed:@"cook_customise_icon_page"]];
         
-        //- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white iconImage:(UIImage *)iconImage
     }
     // Update photo.
     self.profilePhotoView.frame = (CGRect){

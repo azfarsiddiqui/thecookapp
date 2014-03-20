@@ -9,6 +9,7 @@
 #import "CKModel.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "CKRecipeImage.h"
 
 typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPrivate,
@@ -16,7 +17,6 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPublic
 };
 
-@class CKRecipeImage;
 @class CKLocation;
 @class CKRecipePin;
 
@@ -47,6 +47,7 @@ typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 @property (nonatomic, assign, readonly) NSInteger numLikes;
 @property (nonatomic, assign, readonly) NSInteger numComments;
 @property (nonatomic, strong) NSDate *recipeUpdatedDateTime;
+@property (nonatomic, readonly) NSInteger rankScore;
 
 
 // Max serves/prep/cook.
@@ -106,5 +107,8 @@ typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 - (BOOL)hasTags;
 
 - (NSURL *)userPhotoUrl;
+
+// Shares
+- (void)markShared;
 
 @end

@@ -9,6 +9,7 @@
 #import "BookRecipeGridCell.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
+#import "CKRecipePin.h"
 #import "GridRecipeStatsView.h"
 #import "Theme.h"
 #import "NSString+Utilities.h"
@@ -22,7 +23,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "DateHelper.h"
 
-@interface BookRecipeGridCell ()
+@interface BookRecipeGridCell () <CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, assign) BOOL ownBook;
 
@@ -33,7 +34,7 @@
 #define kViewDebug              0
 #define kImageSize              (CGSize){316.0, 260.0}
 #define kBlockUnitHeight        140.0
-#define kContentInsets          (UIEdgeInsets){42.0, 40.0, 51.0, 40.0}
+#define kContentInsets          (UIEdgeInsets){72.0, 40.0, 51.0, 40.0}
 
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0
@@ -58,7 +59,6 @@
     if (self = [super initWithFrame:frame]) {
         [self initBackground];
         [self initImageView];
-//        [self initProfilePhoto];
         [self initTitleLabel];
         [self initIngredientsView];
         [self initStoryLabel];
@@ -66,6 +66,7 @@
         [self initStatsView];
         [self initTimeIntervalLabel];
         [self initPrivacyIcon];
+        [self initProfilePhoto];
         
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
@@ -83,17 +84,26 @@
     [self.activityView stopAnimating];
 }
 
+- (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book {
+    [self configureRecipe:recipePin.recipe book:book];
+}
+
+- (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book own:(BOOL)own {
+    self.recipePin = recipePin;
+    [self configureRecipe:recipePin.recipe book:book own:own];
+}
+
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     [self configureRecipe:recipe book:book own:NO];
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own {
+    
     self.recipe = recipe;
     self.book = book;
     self.ownBook = own;
     
     [self updateImageView];
-//    [self updateProfilePhoto];
     [self updateTitle];
     [self updateTimeInterval];
     [self updateIngredients];
@@ -101,10 +111,11 @@
     [self updateMethod];
     [self updateStats];
     [self updatePrivacyIcon];
+    [self updateProfilePhoto];
     
     CGSize imageSize = [BookRecipeGridCell imageSize];
     if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize];
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe name:nil size:imageSize];
     }
 
 }
@@ -121,14 +132,21 @@
 }
 
 - (void)updateProfilePhoto {
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect frame = self.profilePhotoView.frame;
+    CGSize availableSize = [self availableSize];
+    frame.origin.x = contentInsets.left + floorf((availableSize.width - frame.size.width) / 2.0);
     
-    // Show photo only if book user and recipe user is not the same.
-    if (![self.book.user.objectId isEqualToString:self.recipe.user.objectId]) {
-        self.profilePhotoView.hidden = NO;
-        [self.profilePhotoView loadProfilePhotoForUser:self.recipe.user];
-    } else {
-        self.profilePhotoView.hidden = YES;
+    if (!self.titleLabel.hidden) {
+        frame.origin.y = self.titleLabel.frame.origin.y - frame.size.height - 8.0;
+    } else if (!self.timeIntervalLabel.hidden) {
+        frame.origin.y = self.timeIntervalLabel.frame.origin.y - frame.size.height - 12.0;
     }
+    
+    self.profilePhotoView.frame = CGRectIntegral(frame);
+    self.profilePhotoView.hidden = NO;
+    [self.profilePhotoView clearProfilePhoto];
+    [self.profilePhotoView loadProfilePhotoForUser:self.recipe.user];
 }
 
 - (void)updateTitle {
@@ -183,15 +201,35 @@
 - (void)updateTimeInterval {
     
     NSDate *updatedTime = self.recipe.recipeUpdatedDateTime;
+    
+    // If it was a pinned recipe and not from featured book, then show pinned date.
+    if (!self.book.featured && self.recipePin) {
+        updatedTime = self.recipePin.createdDateTime;
+    }
+    
     self.timeIntervalLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:updatedTime] uppercaseString];
     [self.timeIntervalLabel sizeToFit];
-    self.timeIntervalLabel.frame = (CGRect){
+    
+    CGRect frame = (CGRect){
         floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
         self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleTimeGap,
         self.timeIntervalLabel.frame.size.width,
         self.timeIntervalLabel.frame.size.height
     };
     
+    // No title?
+    if (self.titleLabel.hidden) {
+        UIEdgeInsets contentInsets = [self contentInsets];
+        
+        // No photo?
+        if (self.imageView.hidden) {
+            frame.origin.y = contentInsets.top + 14.0;
+        } else {
+            frame.origin.y = self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top + 4.0;
+        }
+    }
+    
+    self.timeIntervalLabel.frame = frame;
 }
 
 - (void)updatePrivacyIcon {
@@ -275,11 +313,11 @@
 }
 
 - (NSInteger)maxStoryLines {
-    return 7;
+    return 6;
 }
 
 - (NSInteger)maxMethodLines {
-    return 7;
+    return 6;
 }
 
 #pragma mark - UICollectionViewCell methods
@@ -312,6 +350,12 @@
         _bottomShadowImageView = [[UIImageView alloc] initWithImage:bottomShadowImage];
     }
     return _bottomShadowImageView;
+}
+
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (NSString *)userProfileURL {
+    return [self.recipe.user.profilePhotoUrl absoluteString];
 }
 
 #pragma mark - Private methods
@@ -383,10 +427,11 @@
 }
 
 - (void)initProfilePhoto {
-    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeTiny];
+    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMini tappable:NO];
     CGRect frame = self.profilePhotoView.frame;
     frame.origin = (CGPoint){ 5.0, 5.0 };
     self.profilePhotoView.frame = frame;
+    self.profilePhotoView.delegate = self;
     [self.contentView addSubview:self.profilePhotoView];
 }
 
@@ -521,7 +566,6 @@
     NSString *name = [EventHelper nameForPhotoLoading:notification];
     BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
     NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
-    
     if ([recipePhotoName isEqualToString:name] && thumb) {
         if ([EventHelper hasImageForPhotoLoading:notification]) {
             UIImage *image = [EventHelper imageForPhotoLoading:notification];

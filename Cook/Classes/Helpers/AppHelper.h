@@ -19,6 +19,8 @@
 
 // App version
 - (NSString *)appVersion;
+- (NSString *)systemVersion;
+- (BOOL)systemVersionAtLeast:(NSString *)version;
 
 // Provides a landscape frame which can be tricky to obtain in pre-rotation situations.
 - (CGRect)fullScreenFrame;
@@ -32,5 +34,6 @@
 // Local directories/files.
 - (NSString *)documentsDirectoryPath;
 - (NSString *)documentsPathForFileName:(NSString *)name;
+- (NSString *)documentsPathForDirectoryName:(NSString *)name;
 
 @end

@@ -24,13 +24,15 @@
 #import "ImageHelper.h"
 #import "ModalOverlayHelper.h"
 #import "NotificationsViewController.h"
-#import "CKServerManager.h"
+#import "CKError.h"
 #import "CardViewHelper.h"
 #import "CKNavigationController.h"
 #import "CKBookManager.h"
 #import "RootViewController.h"
 #import "FollowReloadButtonView.h"
 #import "NSString+Utilities.h"
+#import "AnalyticsHelper.h"
+#import "Theme.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -75,6 +77,8 @@
 @property (nonatomic, strong) UIView *settingsIntroView;
 @property (nonatomic ,strong) UIView *updateIntroView;
 
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *leftEdgeGesture;
+
 @end
 
 @implementation BenchtopViewController
@@ -87,8 +91,8 @@
 #define kFollowSection      1
 #define kPagingRate         2.0
 #define kBlendPageWidth     1024.0
-#define kHasSeenUpdateIntro @"HasSeen1.3"
-#define kHasSeenDashArrow   @"HasSeenArrows1.3"
+#define kHasSeenUpdateIntro @"HasSeen1.4.17"
+#define kHasSeenDashArrow   @"HasSeenArrows1.4.17"
 #define kContentInsets      (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
@@ -96,7 +100,7 @@
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterThemeChange:self];
-    [EventHelper unregisterBackgroundFetch:self];
+    [EventHelper unregisterDashFetch:self];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
                                                   object:[UIApplication sharedApplication]];
@@ -130,11 +134,17 @@
         [self loadBenchtop];
     }
     
+    // Register left screen edge for shortcut to own book.
+    self.leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(screenEdgePanned:)];
+    self.leftEdgeGesture.delegate = self;
+    self.leftEdgeGesture.edges = UIRectEdgeLeft;
+    [self.collectionView addGestureRecognizer:self.leftEdgeGesture];
+    
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerThemeChange:self selector:@selector(themeChanged:)];
-    [EventHelper registerBackgroundFetch:self selector:@selector(backgroundFetch:)];
+    [EventHelper registerDashFetch:self selector:@selector(dashFetch:)];
     
     // Register for notification that app did enter background
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -232,7 +242,7 @@
     
 }
 
-#pragma mark - PagingBenchtopViewController methods
+#pragma mark - BenchtopViewController methods
 
 - (void)enable:(BOOL)enable {
     [self enable:enable animated:NO];
@@ -252,10 +262,17 @@
 }
 
 - (void)bookWillOpen:(BOOL)open {
+    
+    // Make sure book closes down on the book as indicated by selectedIndexPath.
+    if (!open && self.selectedIndexPath) {
+        [self scrollToBookAtIndexPath:self.selectedIndexPath animated:NO];
+    }
+    
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     cell.bookCoverView.hidden = YES;
     [self showBookCell:cell show:!open];
     self.notificationView.alpha = open ? 0.0 : 1.0;
+    
 }
 
 - (void)bookDidOpen:(BOOL)open {
@@ -263,8 +280,13 @@
     // Restore the bookCover.
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     if (!open) {
+        
+        // Reset selectedIndexPath.
+        self.selectedIndexPath = nil;
+        
         cell.bookCoverView.hidden = NO;
         [cell.bookCoverView enable:YES];
+        [self.delegate benchtopShowOtherViews];
     } else {
         [self clearUpdatesForBook:cell.bookCoverView.book];
         [cell.bookCoverView clearUpdates];
@@ -272,6 +294,7 @@
         // Reenable cells in dashboard to prevent wierd device lock->missing cells issue
         cell.bookCoverView.hidden = NO;
         [self showBookCell:cell show:YES];
+        [self.delegate benchtopHideOtherViews];
     }
     
     // Enable panning based on book opened or not.
@@ -285,6 +308,11 @@
         cell.alpha = show ? 1.0 : 0.0;
     }];
     self.notificationView.alpha = show ? 1.0 : 0.0;
+    if (show) {
+        [self.delegate benchtopShowOtherViews];
+    } else {
+        [self.delegate benchtopHideOtherViews];
+    }
 }
 
 #pragma mark - FollowReloadButtonViewDelegate methods
@@ -390,7 +418,6 @@
     // Only open book if book was in the center.
     if ([self isCenterBookAtIndexPath:indexPath]) {
         
-        self.selectedIndexPath = indexPath;
         [self openBookAtIndexPath:indexPath];
         
     } else {
@@ -444,6 +471,22 @@
     }
     
     return YES;
+}
+
+- (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
+    // If detected, then scroll to own book
+    if (edgeGesture.state == UIGestureRecognizerStateBegan) {
+        [self scrollToBookAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if (gestureRecognizer == self.leftEdgeGesture && otherGestureRecognizer == self.collectionView.panGestureRecognizer) {
+        [otherGestureRecognizer requireGestureRecognizerToFail:gestureRecognizer];
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - BenchtopBookCoverViewCellDelegate methods
@@ -887,7 +930,7 @@
                                          }
                                          
                                      } completion:^(BOOL finished) {
-                                         
+                                         [self showUpdateNotesIfRequired];
                                      }];
                                      
                                  }
@@ -938,6 +981,7 @@
                     if ([self.delegate respondsToSelector:@selector(benchtopFirstTimeLaunched)]) {
                         [self.delegate benchtopFirstTimeLaunched];
                         [self flashIntros];
+                        [self showUpdateNotesIfRequired];
                     }
                     
                 }];
@@ -948,7 +992,7 @@
             
             // Only show no connection card if non-background fetch mode.
             if (!backgroundFetch) {
-                if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                if ([CKError noConnectionError:error]) {
                     [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
                 }
             }
@@ -1047,7 +1091,7 @@
         
         // Only show no connection card if non-background fetch mode.
         if (!backgroundFetch) {
-            if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+            if ([CKError noConnectionError:error]) {
                 [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
             }
         }
@@ -1192,6 +1236,7 @@
     [book removeFollower:currentUser
                  success:^{
                      
+                     [AnalyticsHelper trackEventName:kEventBookDelete];
                      [EventHelper postFollow:NO book:book];
                      
                      // Clear the book updates.
@@ -1217,6 +1262,9 @@
     if (book.guest || book.disabled) {
         return;
     }
+    
+    // Remember selected book's indexPath.
+    self.selectedIndexPath = indexPath;
     
     CGFloat bookScale = 0.98;
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
@@ -1246,13 +1294,17 @@
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {
+    [self scrollToBookAtIndexPath:indexPath animated:YES];
+}
+
+- (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
     CGPoint requiredOffset = CGPointZero;
     CGSize cellSize = [BenchtopBookCoverViewCell cellSize];
     if (indexPath.section == kFollowSection) {
         requiredOffset.x += floorf(kSideMargin + (cellSize.width * 2.0) + (indexPath.item * cellSize.width) - (self.collectionView.bounds.size.width / 2.0) + (cellSize.width / 2.0));
     }
     
-    [self.collectionView setContentOffset:requiredOffset animated:YES];
+    [self.collectionView setContentOffset:requiredOffset animated:animated];
 }
 
 - (void)followUpdated:(NSNotification *)notification {
@@ -1274,10 +1326,21 @@
             [self.collectionView performBatchUpdates:^{
                 
                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kFollowSection]]];
+                
             } completion:^(BOOL finished) {
+                
+                // If the book was opened, bump the index of the selectecIndexPath.
+                if (self.selectedIndexPath) {
+                    self.selectedIndexPath = [NSIndexPath indexPathForItem:self.selectedIndexPath.item + 1
+                                                                 inSection:self.selectedIndexPath.section];
+                    
+                    // Make sure book is centered.
+                    [self scrollToBookAtIndexPath:self.selectedIndexPath animated:NO];
+                }
+                
                 [[self pagingLayout] enableFollowMode:NO];
                 [self.collectionView reloadData];
-            }];
+            }]; 
         }
     }
 }
@@ -1347,8 +1410,9 @@
     [self updatePagingBenchtopView];
 }
 
-- (void)backgroundFetch:(NSNotification *)notification {
-    [self loadBenchtopBackgroundFetch:YES];
+- (void)dashFetch:(NSNotification *)notification {
+    BOOL backgroundMode = [EventHelper isBackgroundForDashFetch:notification];
+    [self loadBenchtopBackgroundFetch:backgroundMode];
 }
 
 - (void)updatePagingBenchtopView {
@@ -1514,6 +1578,7 @@
 }
 
 - (void)showBookCell:(BenchtopBookCoverViewCell *)cell show:(BOOL)show {
+    
     // Get a reference to all the visible cells.
     NSArray *visibleCells = [self.collectionView visibleCells];
     
@@ -1532,6 +1597,7 @@
                          }];
                      }
                      completion:^(BOOL finished) {
+                         
                      }];
 }
 
@@ -1605,7 +1671,13 @@
 
 - (void)snapshotBenchtopCompletion:(void (^)())completion {
     
+    // Skip snapshotting if no book or follow books.
+    if (!self.myBook && [self.followBooks count] == 0) {
+        return;
+    }
+
     if (![self.currentUser isSignedIn] || ([self.currentUser isSignedIn] && ![self hasSeenUpdateIntro])) {
+        
         [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
             self.signupBlurImage = blurredImage;
             if (completion != nil) {
@@ -1682,13 +1754,13 @@
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
-        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_13"]];
+        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_14"]];
         introImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         introImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:introImageView];
         
         // Top-left close button.
-        UIButton *closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(closeIntroTapped)];
+        UIButton *closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeIntroTapped)];
         closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         closeButton.frame = (CGRect){
             kContentInsets.left,
@@ -1699,8 +1771,8 @@
         [self.updateIntroView addSubview:closeButton];
         
         // Bottom Find out More and Continue buttons.
-        UIButton *moreButton = [self updateIntroButtonWithText:@"FIND OUT MORE" textAlpha:0.7 target:self selector:@selector(updateIntroMoreTapped)];
-        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" textAlpha:0.7 target:self selector:@selector(updateIntroContinueTapped)];
+        UIButton *moreButton = [self updateIntroButtonWithText:@"READ MORE" target:self selector:@selector(updateIntroMoreTapped)];
+        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" target:self selector:@selector(updateIntroContinueTapped)];
         CGFloat buttonOffsetFromBottom = 145.0;
         CGFloat buttonOffset = -16.0;
         CGFloat buttonGap = 117.0;
@@ -1720,6 +1792,7 @@
         [self.updateIntroView addSubview:moreButton];
         [self.updateIntroView addSubview:continueButton];
         
+        self.collectionView.userInteractionEnabled = NO;
         [self.view addSubview:self.updateIntroView];
         [UIView animateWithDuration:0.4
                               delay:0.0
@@ -1730,6 +1803,7 @@
                              self.signupBlurImage = nil;
                              [self.delegate panEnabledRequested:NO];
                              [self markHasSeenUpdateIntro];
+                             self.collectionView.userInteractionEnabled = YES;
                          }];
     }
 }
@@ -1820,14 +1894,12 @@
 }
 
 - (void)clearUpdatesForBook:(CKBook *)book {
-    [self.followBookUpdates setObject:@0 forKey:book.objectId];
+    if (book) {
+        [self.followBookUpdates setObject:@0 forKey:book.objectId];
+    }
 }
 
 - (UIButton *)updateIntroButtonWithText:(NSString *)text target:(id)target selector:(SEL)selector {
-    return [self updateIntroButtonWithText:text textAlpha:1.0 target:target selector:selector];
-}
-
-- (UIButton *)updateIntroButtonWithText:(NSString *)text textAlpha:(CGFloat)textAlpha target:(id)target selector:(SEL)selector {
 
     // Soft shadow.
     NSShadow *shadow = [NSShadow new];
@@ -1835,8 +1907,8 @@
     shadow.shadowOffset = CGSizeMake(0.0, 1.0);
     shadow.shadowBlurRadius = 3.0;
     NSDictionary *textAttributes = @{
-                                     NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0],
-                                     NSForegroundColorAttributeName : [UIColor colorWithWhite:255 alpha:textAlpha],
+                                     NSFontAttributeName: [Theme updateNotesFont],
+                                     NSForegroundColorAttributeName : [Theme updateNotesColour],
                                      NSShadowAttributeName : shadow
                                      };
     NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:text attributes:textAttributes];

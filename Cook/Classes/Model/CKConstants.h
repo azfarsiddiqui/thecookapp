@@ -107,8 +107,10 @@ extern NSString *const kRecipeAttrLocale;
 extern NSString *const kRecipeAttrNumViews;
 extern NSString *const kRecipeAttrNumLikes;
 extern NSString *const kRecipeAttrNumComments;
+extern NSString *const kRecipeAttrNumShares;
 extern NSString *const kRecipeAttrUserPhoto;
 extern NSString *const kRecipeAttrUpdatedAt;
+extern NSString *const kRecipeAttrRankScore;
 
 #pragma mark - RecipeImage class
 
@@ -150,6 +152,7 @@ extern NSString *const kRecipeCommentText;
 
 #pragma mark - RecipePin class
 
+extern NSString *const kRecipePinModelName;
 extern NSString *const kRecipePinPage;
 
 #pragma mark - RecipeTag class
@@ -170,11 +173,20 @@ extern NSString *const kActivityNameLikeRecipe;
 #pragma mark - UserNotification class
 
 extern NSString *const kUserNotificationModelName;
-extern NSString *const kUserNotificationAttrRead;               // Whether notification was read.
+extern NSString *const kUserNotificationAttrRead;
 extern NSString *const kUserNotificationAttrFriendRequestAccepted;
+extern NSString *const kUserNotificationAttrComment;
+extern NSString *const kUserNotificationAttrPages;
 extern NSString *const kUserNotificationAttrActionUser;
 extern NSString *const kUserNotificationTypeFriendRequest;
 extern NSString *const kUserNotificationTypeFriendAccept;
 extern NSString *const kUserNotificationTypeComment;
+extern NSString *const kUserNotificationTypeReply;
 extern NSString *const kUserNotificationTypeLike;
 extern NSString *const kUserNotificationTypePin;
+extern NSString *const kUserNotificationTypeFeedPin;
+
+#pragma mark - CK Error Codes
+
+extern NSString *const kCookCloudCodeKey;
+extern NSInteger const kCookCloudPageRenameBlockErrorCode;

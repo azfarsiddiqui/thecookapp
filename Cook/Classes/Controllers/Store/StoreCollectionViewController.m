@@ -15,12 +15,13 @@
 #import "AppHelper.h"
 #import "MRCEnumerable.h"
 #import "CKActivityIndicatorView.h"
-#import "CKServerManager.h"
+#import "CKError.h"
 #import "ViewHelper.h"
 #import "CardViewHelper.h"
 #import "CKPhotoManager.h"
 #import "CKBookCover.h"
 #import "CKUser.h"
+#import "AnalyticsHelper.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookViewControllerDelegate>
 
@@ -40,9 +41,10 @@
     [EventHelper unregisterPhotoLoading:self];
 }
 
-- (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate {
+- (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate sectionName:(NSString *)sectionName {
     if (self = [super initWithCollectionViewLayout:[[StoreFlowLayout alloc] init]]) {
         self.delegate = delegate;
+        self.sectionName = sectionName;
         self.currentUser = [CKUser currentUser];
     }
     return self;
@@ -207,7 +209,7 @@
 }
 
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error {
-    if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+    if ([CKError noConnectionError:error]) {
         [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
     } else {
         [[CardViewHelper sharedInstance] showCardText:@"UNABLE TO FETCH BOOKS" subtitle:@"PLEASE TRY AGAIN LATER"
@@ -390,6 +392,8 @@
     CGPoint pointAtRootView = [self.collectionView convertPoint:cell.center toView:rootView];
     
     [self.delegate storeCollectionViewControllerPanRequested:NO];
+    
+    [AnalyticsHelper trackEventName:kEventLibraryBookSummaryView params:@{ @"tab" : self.sectionName }];
     
     StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book delegate:self];
     [rootView addSubview:storeBookViewController.view];

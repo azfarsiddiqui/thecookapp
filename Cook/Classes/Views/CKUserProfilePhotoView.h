@@ -22,6 +22,7 @@ typedef enum {
 @protocol CKUserProfilePhotoViewDelegate <NSObject>
 
 @optional
+- (NSString *)userProfileURL;
 - (void)userProfilePhotoViewEditRequested;
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user;
 
@@ -36,6 +37,7 @@ typedef enum {
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 
 - (id)initWithProfileSize:(ProfileViewSize)profileSize;
+- (id)initWithProfileSize:(ProfileViewSize)profileSize tappable:(BOOL)tappable;
 - (id)initWithProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize;
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize border:(BOOL)border;
@@ -45,6 +47,7 @@ typedef enum {
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
             border:(BOOL)border overlay:(BOOL)overlay;
 - (void)reloadProfilePhoto;
+- (void)clearProfilePhoto;
 - (void)loadProfilePhotoForUser:(CKUser *)user;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 - (void)loadProfileUrl:(NSURL *)profileUrl;

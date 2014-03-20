@@ -12,14 +12,28 @@
 
 @implementation BookRecipeGridSmallCell
 
-#define kImageTitleGap          30.0
-#define kAfterTimeGap           30.0
+#define kImageTitleGap          60.0
+#define kAfterTimeGap           15.0
 
 - (UIEdgeInsets)contentInsets {
     UIEdgeInsets insets = [super contentInsets];
     insets.top += 10.0;
     return insets;
 }
+
+- (void)updateTimeInterval {
+    [super updateTimeInterval];
+    
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect frame = self.timeIntervalLabel.frame;
+    
+    if ([self hasPhotos] && ![self hasTitle]) {
+        frame.origin.y = self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top - 15.0;
+    }
+    
+    self.timeIntervalLabel.frame = frame;
+}
+
 
 // Title always at the top.
 - (void)updateTitle {
@@ -49,8 +63,9 @@
         self.ingredientsView.hidden = NO;
         
         CGSize blockSize = [self availableBlockSize];
-        blockSize.height += 40.0;   // Have more vertical space.
+        blockSize.height += [self multilineTitle] ? 80: 100.0;   // Have more vertical space.
         self.ingredientsView.maxSize = blockSize;
+        
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book measureType:CKMeasureTypeNone];
         self.ingredientsView.frame = (CGRect){
@@ -75,6 +90,8 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
+        self.storyLabel.numberOfLines = [self multilineTitle] ? 10 : 11;
+        
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
@@ -98,6 +115,8 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
         self.methodLabel.text = method;
+        self.methodLabel.numberOfLines = [self multilineTitle] ? 10 : 11;
+        
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),

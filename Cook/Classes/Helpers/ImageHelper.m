@@ -7,9 +7,10 @@
 //
 
 #import "ImageHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "UIImage+ImageEffects.h"
+#import "UIImage+Resize.h"
 #import "AppHelper.h"
+#import "UIImage+ProportionalFill.h"
 
 @implementation ImageHelper
 
@@ -87,27 +88,31 @@
     if (scaling) {
         CGContextSetInterpolationQuality(context, kCGInterpolationNone);
     }
-    [view.layer renderInContext:context];
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+//    [view.layer renderInContext:context];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
 }
 
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size {
-    return [image imageCroppedToFitSize:size];
+    return [self vendorCropImage:image size:size];
+}
+
++ (UIImage *)filledImage:(UIImage *)image size:(CGSize)size {
+    return [self vendorFillImage:image size:size];
 }
 
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
-    return [image imageCroppedToFitSize:size];
+    return [self vendorResizedImage:image size:size];
 }
 
 + (UIImage *)thumbImageForImage:(UIImage *)image {
-    CGSize thumbSize = [self thumbSize];
-    return [image imageCroppedToFitSize:thumbSize];
+    return [self vendorCropImage:image size:[self thumbSize]];
 }
 
 + (UIImage *)profileImageForImage:(UIImage *)image {
-    return [image imageCroppedToFitSize:[self profileSize]];
+    return [self vendorFillImage:image size:[self profileSize]];
 }
 
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {
@@ -151,7 +156,7 @@
     return newImage;
 }
 
-#pragma mark - Blurring 
+#pragma mark - Blurring
 
 + (UIImage *)blurredImage:(UIImage *)image {
     return [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58]];
@@ -187,7 +192,8 @@
 
 + (UIImage *)blurredImageFromView:(UIView *)view {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    // [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return [self blurredOverlayImage:image];
@@ -195,7 +201,8 @@
 
 + (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -244,6 +251,20 @@
     return [stretchImage resizableImageWithCapInsets:UIEdgeInsetsMake(stretchImage.size.height/2, 0, stretchImage.size.height/2, 0)];
 }
 
+#pragma mark - Image Generation
+
++ (UIImage *)imageWithColour:(UIColor *)colour size:(CGSize)size {
+    CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [colour CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+
 #pragma mark - Private
 
 + (UIImage *)coreImageBlurWithImage:(UIImage *)image {
@@ -262,6 +283,24 @@
     
     //add our blurred image to the scrollview
     return [UIImage imageWithCGImage:cgImage];
+}
+
++ (UIImage *)vendorResizedImage:(UIImage *)image size:(CGSize)size {
+    // MGImageUtilities.
+//    return [image imageCroppedToFitSize:size];
+    
+    // https://github.com/coryalder/UIImage_Resize
+    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:NO];
+}
+
++ (UIImage *)vendorFillImage:(UIImage *)image size:(CGSize)size {
+    return [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationDefault cropping:NO];
+    //return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:NO];
+}
+
++ (UIImage *)vendorCropImage:(UIImage *)image size:(CGSize)size {
+//    return [image resizedImage:size interpolationQuality:kCGInterpolationDefault cropping:YES];
+    return [image imageCroppedToFitSize:size];
 }
 
 @end

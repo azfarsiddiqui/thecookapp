@@ -144,6 +144,10 @@
     }
 }
 
+- (void)prepareForReuse {
+    [self.profileView clearProfilePhoto];
+}
+
 #pragma mark - CKUserProfilePhotoViewDelegate methods
 
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
@@ -272,14 +276,39 @@
     } else if ([notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
         text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]) {
-        text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ commented on %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
+    } else if ([notificationName isEqualToString:kUserNotificationTypeReply]) {
+        text = [NSString stringWithFormat:@"%@ commented on %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
-        text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ liked %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
     } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
-        text = [NSString stringWithFormat:@"%@ added your recipe \"%@\".", [actionUser friendlyName], [notification.recipe.name CK_mixedCase]];
+        text = [NSString stringWithFormat:@"%@ added %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
+    } else if ([notificationName isEqualToString:kUserNotificationTypeFeedPin]) {
+        
+        NSArray *pages = notification.pages;
+        NSString *pagesDisplay = [self pagesDisplayFor:pages];
+        text = [NSString stringWithFormat:@"%@ is now featured in %@ in %@.", [self nameForRecipe:notification.recipe defaultName:@"Your recipe"], pagesDisplay, [actionUser friendlyName]];
     }
     
     return text;
+}
+
+- (NSString *)pagesDisplayFor:(NSArray *)pages {
+    NSString *pagesDisplay = @"";
+    if ([pages count] > 0) {
+        
+        if ([pages count] == 1) {
+            pagesDisplay = pages[0];
+        } else if ([pages count] == 2) {
+            pagesDisplay = [pages componentsJoinedByString:@" and "];
+        } else {
+            NSArray *frontPages = [pages subarrayWithRange:(NSRange){ 0, [pages count] - 1 }];
+            NSString *lastPage = [pages objectAtIndex:[pages count] - 1];
+            pagesDisplay = [NSString stringWithFormat:@"%@ and %@", [frontPages componentsJoinedByString:@", "], lastPage];
+        }
+        
+    }
+    return pagesDisplay;
 }
 
 - (void)acceptFriendTapped:(id)sender {
@@ -292,6 +321,18 @@
 
 - (BOOL)friendRequestNotification:(CKUserNotification *)notification {
     return [notification.name isEqualToString:kUserNotificationTypeFriendRequest];
+}
+
+- (NSString *)nameForRecipe:(CKRecipe *)recipe {
+    return [self nameForRecipe:recipe defaultName:@"your recipe"];
+}
+
+- (NSString *)nameForRecipe:(CKRecipe *)recipe defaultName:(NSString *)defaultName {
+    if ([recipe.name CK_containsText]) {
+        return [NSString stringWithFormat:@"\"%@\"", [recipe.name CK_mixedCase]];
+    } else {
+        return defaultName;
+    }
 }
 
 @end

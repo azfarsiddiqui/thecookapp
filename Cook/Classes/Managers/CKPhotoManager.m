@@ -17,6 +17,7 @@
 #import "CKUser.h"
 #import "CKBookCover.h"
 #import "EventHelper.h"
+#import "AppHelper.h"
 
 @interface CKPhotoManager ()
 
@@ -27,9 +28,10 @@
 
 @implementation CKPhotoManager
 
-#define kImageCompression       0.6
-#define kThumbImageCompression  0.6
-#define kBookTitleImagePrefix   @"titleImageForBook-"
+#define kImageCompression           0.6
+#define kThumbImageCompression      0.6
+#define kBookTitleImagePrefix       @"titleImageForBook-"
+#define kGeneratedAssetDirectory    @"generatedAssets"
 
 + (CKPhotoManager *)sharedInstance {
     static dispatch_once_t pred;
@@ -47,6 +49,8 @@
         
         // 4 downloads at the same time.
         self.imageDownloadQueue.maxConcurrentOperationCount = 4;
+        
+        [SDImageCache sharedImageCache].maxCacheSize = (400 * 1024 * 1024); //Limit cache to 400MB
     }
     return self;
 }
@@ -54,12 +58,16 @@
 #pragma mark - Image retrieval and downloads.
 
 // Fullsize image retrieval for the given recipe at the specified size and name for callback completion comparison.
-- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
+- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)iname
               progress:(void (^)(CGFloat progressRatio, NSString *name))progress
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    NSString *imageName = iname;
+    if (!imageName) {
+        imageName = [self photoNameForRecipe:recipe];
+    }
     __weak CKPhotoManager *weakSelf = self;
-    [self checkInTransferImageForRecipe:recipe size:size name:name
+    [self checkInTransferImageForRecipe:recipe size:size name:imageName
                              completion:^(UIImage *image, NSString *name) {
                                  
                                  // Found in-transfer image, return immediately.
@@ -68,9 +76,9 @@
                              } otherwiseHandler:^{
                                  
                                  // Otherwise try and load the parseFile.
-                                 [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                 [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:imageName
                                                     progress:^(CGFloat progressRatio) {
-                                                        progress(progressRatio, name);
+                                                        progress(progressRatio, imageName);
                                                     } completion:^(UIImage *image, NSString *name) {
                                                         completion(image, name);
                                                     }];
@@ -78,12 +86,15 @@
 }
 
 // Thumbnail image retrieval for the given recipe at the specified size and name for callbacl completion comparison.
-- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
+- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)iname
                    progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                  completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
-    
+    NSString *imageName = iname;
+    if (!imageName) {
+        imageName = [self photoNameForRecipe:recipe];
+    }
     __weak CKPhotoManager *weakSelf = self;
-    [self checkInTransferImageForRecipe:recipe size:size name:name
+    [self checkInTransferImageForRecipe:recipe size:size name:imageName
                              completion:^(UIImage *image, NSString *name) {
                                  
                                  // Found in-transfer image, return immediately.
@@ -93,23 +104,40 @@
                                  
                                  // Check if we have a thumbnail image, otherwise load the big one.
                                  if (recipe.recipeImage.thumbImageFile) {
-                                     [weakSelf imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
+                                     [weakSelf imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:imageName
                                                            thumb:YES
                                                         progress:^(CGFloat progressRatio) {
-                                                            progress(progressRatio, name);
+                                                            progress(progressRatio, imageName);
                                                         } completion:^(UIImage *image, NSString *name) {
                                                             completion(image, name);
                                                         }];
                                  } else {
-                                     [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                     [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:imageName
                                                         progress:^(CGFloat progressRatio) {
-                                                            progress(progressRatio, name);
+                                                            progress(progressRatio, imageName);
                                                         } completion:^(UIImage *image, NSString *name) {
                                                             completion(image, name);
                                                         }];
                                  }
                                  
                              }];
+}
+
+- (void)blurredImageForRecipe:(CKRecipe *)recipe
+                    tintColor:(UIColor *)tint
+                   thumbImage:(UIImage *)image
+                   completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
+    NSString *imageName = [self photoNameForBlurredRecipe:recipe];
+    UIImage *cachedImage = [self cachedImageForName:imageName size:[ImageHelper blurredSize]];
+    if (cachedImage) {
+        // Return cached image.
+        completion(cachedImage, imageName);
+    } else if (image) {
+        [ImageHelper blurredImage:image tintColour:tint radius:10.0 completion:^(UIImage *blurredImage) {
+            [self storeImage:blurredImage forKey:[self cacheKeyForName:imageName size:[ImageHelper blurredSize]] toDisk:YES skipMemory:NO];
+            completion(blurredImage, imageName);
+        }];
+    }
 }
 
 // Image retrieval for the given recipe at the specified size and with logical name for callback completion comparison.
@@ -149,12 +177,72 @@
                                          // Get the fullsize image with progress reporting.
                                          [weakSelf imageForRecipe:recipe size:size name:name
                                                          progress:^(CGFloat progressRatio, NSString *name) {
-                                                             progress(progressRatio, name);
+                                                             if (progress) {
+                                                                 progress(progressRatio, name);
+                                                             }
                                                          }
                                                        completion:^(UIImage *image, NSString *name) {
                                                            completion(image, name);
                                                        }];
                                          
+                                     }
+                                     
+                                 } else {
+                                     completion(nil, name);
+                                 }
+                             }];
+}
+
+- (void)featuredImageForRecipe:(CKRecipe *)recipe
+                          size:(CGSize)size
+                      progress:(void (^)(CGFloat progressRatio, NSString *name))progress
+               thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+                    completion:(void (^)(UIImage *image, NSString *name))completion {
+    
+    __weak CKPhotoManager *weakSelf = self;
+    [self checkInTransferImageForRecipe:recipe size:size name:[self photoNameForRecipe:recipe]
+                             completion:^(UIImage *image, NSString *name) {
+                                 
+                                 // Found in-transfer image, return immediately.
+                                 completion(image, name);
+                                 
+                             } otherwiseHandler:^{
+                                 NSString *name = [self photoNameForRecipe:recipe];
+                                 PFFile *fullsizeFile = recipe.recipeImage.imageFile;
+                                 if (fullsizeFile) {
+                                     
+                                     // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
+                                     UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
+                                     if (cachedFullsizeImage) {
+                                         completion(cachedFullsizeImage, name);
+                                     } else {
+                                         // Get the fullsize image with progress reporting.
+                                         [weakSelf imageForRecipe:recipe size:size name:name
+                                                         progress:^(CGFloat progressRatio, NSString *name) {
+                                                             if (progress) {
+                                                                 progress(progressRatio, name);
+                                                             }
+                                                         }
+                                                       completion:^(UIImage *image, NSString *name) {
+                                                           completion(image, name);
+                                                       }];
+                                     }
+                                     
+                                     // Get thumb file and return either cached or downloaded image
+                                     PFFile *thumbFile = recipe.recipeImage.thumbImageFile;
+                                     if (thumbFile) {
+                                         UIImage *cachedThumbImage = [self cachedImageForParseFile:thumbFile size:size];
+                                         if (cachedThumbImage) {
+                                             thumbCompletion(cachedThumbImage, name);
+                                         } else {
+                                             // Get the thumbnail.
+                                             [weakSelf thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
+                                                                  progress:^(CGFloat progressRatio, NSString *name) {
+                                                                      // No reporting of progress for thumbnail.
+                                                                  } completion:^(UIImage *thumbImage, NSString *name) {
+                                                                      thumbCompletion(thumbImage, name);
+                                                                  }];
+                                         }
                                      }
                                      
                                  } else {
@@ -304,11 +392,51 @@
     }
 }
 
+- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
+              completion:(void (^)(UIImage *image, NSString *name))completion {
+    NSString *thumbName = [url absoluteString];
+    if (url) {
+        
+        __weak CKPhotoManager *weakSelf = self;
+        
+        @autoreleasepool {
+            // Get cached image for the persisted parseFile.
+            
+            UIImage *image = [weakSelf cachedImageForName:thumbName size:size];
+            if (image) {
+                
+                // Return cached image.
+                completion(image, thumbName);
+                
+            } else {
+                
+                // Otherwise download directly via URL.
+                [weakSelf downloadImageForUrl:url size:size name:thumbName
+                                     progress:^(CGFloat progressRatio) {}
+                                isSynchronous:YES
+                                   completion:^(UIImage *image, NSString *name) {
+                                       //Should already be stored in disk cache, store in memory cache as well
+//                                       NSString *cacheKey = [self cacheKeyForName:thumbName size:size];
+//                                       [[SDImageCache sharedImageCache] storeThumbInMemoryCache:image forKey:cacheKey];
+                                       completion(image, name);
+                                   }];
+            }
+        }
+        
+    } else {
+        
+        // Return no image.
+        completion(nil, thumbName);
+    }
+}
+
 #pragma mark - Event-based image loading.
 
-- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
+- (void)thumbImageForRecipe:(CKRecipe *)recipe name:(NSString *)photoName size:(CGSize)size {
     
-    NSString *photoName = [self photoNameForRecipe:recipe];
+    if (!photoName) {
+        photoName = [self photoNameForRecipe:recipe];
+    }
     
     __weak CKPhotoManager *weakSelf = self;
     [self checkInTransferImageForRecipe:recipe size:size name:photoName
@@ -376,6 +504,43 @@
                                                               } completion:^(UIImage *thumbImage, NSString *name) {
                                                                   [EventHelper postPhotoLoadingImage:thumbImage name:name thumb:YES];
                                                               }];
+                                     }
+                                     
+                                 } else {
+                                     [EventHelper postPhotoLoadingImage:nil name:photoName thumb:NO];
+                                 }
+                             }];
+}
+
+- (void)fullImageForRecipe:(CKRecipe *)recipe size:(CGSize)size {
+    NSString *photoName = [self photoNameForRecipe:recipe];
+    
+    __weak CKPhotoManager *weakSelf = self;
+    [self checkInTransferImageForRecipe:recipe size:size
+                                   name:photoName
+                             completion:^(UIImage *image, NSString *name) {
+                                 
+                                 [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+                                 
+                             } otherwiseHandler:^{
+                                 
+                                 PFFile *fullsizeFile = recipe.recipeImage.imageFile;
+                                 if (fullsizeFile) {
+                                     
+                                     // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
+                                     UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
+                                     if (cachedFullsizeImage) {
+                                         [EventHelper postPhotoLoadingImage:cachedFullsizeImage name:photoName thumb:NO];
+                                     } else {
+                                         
+                                         // Get the fullsize image with progress reporting.
+                                         [weakSelf imageForRecipe:recipe size:size name:photoName
+                                                         progress:^(CGFloat progressRatio, NSString *name) {
+                                                             // Ignore progress for event-based loading.
+                                                         }
+                                                       completion:^(UIImage *image, NSString *name) {
+                                                           [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+                                                       }];
                                      }
                                      
                                  } else {
@@ -485,6 +650,7 @@
     [self updateTransferProgress:@(0) cacheKey:recipe.recipeImage.imageUuid];
     
     // Save a copy while transfer is being processed. This is so that the user could still see his/her own images.
+    // Don't skip memory, as it is used straight away by in-transfer cache.
     [self storeImage:image forKey:recipeImage.imageUuid toDisk:YES skipMemory:NO];
     
     // Now upload the thumb sized.
@@ -701,56 +867,59 @@
 
 #pragma mark - Setup books.
 
-- (void)setupBooks {
+- (void)generateImageAssets {
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     dispatch_async(queue, ^{
         
         @autoreleasepool {
             
+            // Do we have generated assets already?
+            NSString *documentsDirectoryPath = [[AppHelper sharedInstance] documentsPathForDirectoryName:kGeneratedAssetDirectory];
+            
+            // Create the generated assets.
+            [[NSFileManager defaultManager] createDirectoryAtPath:documentsDirectoryPath withIntermediateDirectories:NO attributes:nil error:nil];
             NSArray *illustrations = [[CKBookCover illustrations] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+            
+            // Illustrations.
             for (NSString *illustration in illustrations) {
                 
                 UIImage *image = [CKBookCover imageForIllustration:illustration];
+                UIImage *smallImage = [ImageHelper scaledImage:image size:[CKBookCover smallCoverImageSize]];
+                NSString *smallIllustrationPath = [NSString stringWithFormat:@"%@/%@", documentsDirectoryPath,
+                                                   [CKBookCover smallImageNameForIllustration:illustration]];
                 
-                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover smallImageNameForIllustration:illustration]]) {
-                    UIImage *smallImage = [ImageHelper scaledImage:image size:[CKBookCover smallCoverImageSize]];
-                    [[SDImageCache sharedImageCache] storeImage:smallImage forKey:[CKBookCover smallImageNameForIllustration:illustration] png:YES toDisk:YES];
+                if (![[NSFileManager defaultManager] fileExistsAtPath:smallIllustrationPath]) {
+                    [UIImagePNGRepresentation(smallImage) writeToFile:smallIllustrationPath atomically:YES];
                     DLog(@"Scaled small illustration[%@]", illustration);
                 }
-
-                // TODO Not used.
-//                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover mediumImageNameForIllustration:illustration]]) {
-//                    UIImage *mediumImage = [ImageHelper scaledImage:image size:[CKBookCover mediumImageSize]];
-//                    [[SDImageCache sharedImageCache] storeImage:mediumImage forKey:[CKBookCover mediumImageNameForIllustration:illustration] toDisk:YES];
-//                    DLog(@"Scaled medium illustration[%@]", illustration);
-//                }
-                
             }
             
+            // Covers.
             NSArray *covers = [CKBookCover covers];
             for (NSString *cover in covers) {
                 
                 UIImage *image = [CKBookCover imageForCover:cover];
+                UIImage *smallImage = [ImageHelper scaledImage:image size:[CKBookCover smallCoverImageSize]];
+                NSString *coverIllustrationPath = [NSString stringWithFormat:@"%@/%@", documentsDirectoryPath,
+                                                   [CKBookCover smallImageNameForCover:cover]];
                 
-                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover smallImageNameForCover:cover]]) {
-                    UIImage *smallImage = [ImageHelper scaledImage:image size:[CKBookCover smallCoverImageSize]];
-                    [[SDImageCache sharedImageCache] storeImage:smallImage forKey:[CKBookCover smallImageNameForCover:cover] png:YES toDisk:YES];
+                if (![[NSFileManager defaultManager] fileExistsAtPath:coverIllustrationPath]) {
+                    [UIImagePNGRepresentation(smallImage) writeToFile:coverIllustrationPath atomically:YES];
                     DLog(@"Scaled small cover[%@]", cover);
                 }
-                
-                // TODO Not used.
-//                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover mediumImageNameForCover:cover]]) {
-//                    UIImage *mediumImage = [ImageHelper scaledImage:image size:[CKBookCover mediumImageSize]];
-//                    [[SDImageCache sharedImageCache] storeImage:mediumImage forKey:[CKBookCover mediumImageNameForCover:cover] toDisk:YES];
-//                    DLog(@"Scaled medium cover[%@]", cover);
-//                }
                 
             }
         }
         
     });
-
     
+}
+
+- (UIImage *)imageAssetForName:(NSString *)name {
+    NSString *documentsDirectoryPath = [[AppHelper sharedInstance] documentsPathForDirectoryName:kGeneratedAssetDirectory];
+    NSString *imagePath = [NSString stringWithFormat:@"%@/%@", documentsDirectoryPath, name];
+    return [UIImage imageWithContentsOfFile:imagePath];
 }
 
 #pragma mark - Image caching.
@@ -763,6 +932,11 @@
     UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:cacheKey];
     if (!cachedImage) {
         cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
+        // Cache thumbnails and profile pics to memory
+        if ([[cacheKey uppercaseString] rangeOfString:@"THUMBNAIL"].location != NSNotFound ||
+            [[cacheKey uppercaseString] rangeOfString:@"PROFILE"].location != NSNotFound) {
+            [[SDImageCache sharedImageCache] storeThumbInMemoryCache:cachedImage forKey:cacheKey];
+        }
     }
     return cachedImage;
 }
@@ -809,6 +983,10 @@
     return [NSString stringWithFormat:@"book_%@", book.objectId];
 }
 
+- (NSString *)photoNameForBlurredRecipe:(CKRecipe *)recipe {
+    return [NSString stringWithFormat:@"recipe_%@_blurred_thumbnail", recipe.objectId];
+}
+
 #pragma mark - Cached title images for book.
 
 - (UIImage *)cachedTitleImageForBook:(CKBook *)book {
@@ -842,7 +1020,7 @@
                 @autoreleasepool {
                     
                     // Crop the image to the required size.
-                    UIImage *imageToFit = [ImageHelper croppedImage:inTransferImage size:size];
+                    UIImage *imageToFit = [ImageHelper filledImage:inTransferImage size:size];
                     
                     // Keep it in the cache.
                     [self storeImage:imageToFit forKey:cacheKey];
@@ -890,7 +1068,7 @@
                 
                 @autoreleasepool {
                     // Resize the image.
-                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                    UIImage *imageToFit = [ImageHelper filledImage:image size:size];
                     
                     // Callback on mainqueue.
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -971,9 +1149,9 @@
                 @autoreleasepool {
                     
                     UIImage *image = [UIImage imageWithData:data];
-                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
-                    
-                    // Keep it in the cache.
+                    UIImage *imageToFit = [ImageHelper filledImage:image size:size];
+                    image = nil;
+                    // Keep it in the cache. If thumbnail, store in memory cache
                     [self storeImage:imageToFit forKey:cacheKey];
                     
                     // Mark as completed transfer.
@@ -1035,7 +1213,7 @@
         [self updateTransferProgress:@(0) cacheKey:cacheKey];
     }
     
-    __weak CKPhotoManager *weakSelf = self;
+    __weak CKPhotoManager *weakSelf = self; 
     
     // Go ahead and download the file with progress updates.
     [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:0
@@ -1047,24 +1225,22 @@
                                                              
                                                              if (!error) {
                                                                  
-                                                                 @autoreleasepool {
-                                                                     UIImage *image = [UIImage imageWithData:data];
-                                                                     UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
-                                                                     
-                                                                     // Keep it in the cache.
-                                                                     [weakSelf storeImage:imageToFit forKey:cacheKey png:YES];
-                                                                     
-                                                                     if (!isSynchronous)
-                                                                     {
-                                                                         // Mark as completed transfer.
-                                                                         [weakSelf.transferInProgress removeObjectForKey:cacheKey];
-                                                                     }
-                                                                     
-                                                                     // Callback on mainqueue.
-                                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         completion(imageToFit, name);
-                                                                     });
+                                                                 UIImage *image = [UIImage imageWithData:data];
+                                                                 UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                                                                 
+                                                                 // Keep it in the cache.
+                                                                 [weakSelf storeImage:imageToFit forKey:cacheKey png:YES];
+                                                                 
+                                                                 if (!isSynchronous)
+                                                                 {
+                                                                     // Mark as completed transfer.
+                                                                     [weakSelf.transferInProgress removeObjectForKey:cacheKey];
                                                                  }
+                                                                 
+                                                                 // Callback on mainqueue.
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     completion(imageToFit, name);
+                                                                 });
                                                                  
                                                              } else {
                                                                  
@@ -1090,7 +1266,7 @@
 }
 
 - (NSString *)cacheKeyForName:(NSString *)name size:(CGSize)size {
-    return [NSString stringWithFormat:@"%@_%d_%d", name, (NSInteger)size.width, (NSInteger)size.height];
+    return [NSString stringWithFormat:@"%@_%ld_%ld", name, (long)size.width, (long)size.height];
 }
 
 - (BOOL)transferInProgressForCacheKey:(NSString *)cacheKey {

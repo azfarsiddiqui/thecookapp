@@ -108,8 +108,10 @@ NSString *const kRecipeAttrLocale               = @"locale";
 NSString *const kRecipeAttrNumViews             = @"numViews";
 NSString *const kRecipeAttrNumLikes             = @"numLikes";
 NSString *const kRecipeAttrNumComments          = @"numComments";
+NSString *const kRecipeAttrNumShares            = @"numShares";
 NSString *const kRecipeAttrUserPhoto            = @"userPhoto";
 NSString *const kRecipeAttrUpdatedAt            = @"recipeUpdatedAt";
+NSString *const kRecipeAttrRankScore            = @"rankScore";
 
 #pragma mark - RecipeImage class
 
@@ -151,6 +153,7 @@ NSString *const kRecipeCommentText              = @"text";
 
 #pragma mark - RecipePin class
 
+NSString *const kRecipePinModelName             = @"RecipePin";
 NSString *const kRecipePinPage                  = @"page";
 
 #pragma mark - RecipeTag class
@@ -174,8 +177,17 @@ NSString *const kUserNotificationModelName                  = @"UserNotification
 NSString *const kUserNotificationAttrRead                   = @"read";
 NSString *const kUserNotificationAttrFriendRequestAccepted  = @"friendRequestAccepted";
 NSString *const kUserNotificationAttrActionUser             = @"actionUser";
+NSString *const kUserNotificationAttrComment                = @"comment";
+NSString *const kUserNotificationAttrPages                  = @"pages";
 NSString *const kUserNotificationTypeFriendRequest          = @"FriendRequest";
 NSString *const kUserNotificationTypeFriendAccept           = @"FriendAccept";
 NSString *const kUserNotificationTypeComment                = @"Comment";
+NSString *const kUserNotificationTypeReply                  = @"Reply";
 NSString *const kUserNotificationTypeLike                   = @"Like";
 NSString *const kUserNotificationTypePin                    = @"Pin";
+NSString *const kUserNotificationTypeFeedPin                = @"FeedPin";
+
+#pragma mark - CK Error Codes
+
+NSString *const kCookCloudCodeKey                           = @"ckcode";
+NSInteger const kCookCloudPageRenameBlockErrorCode          = 130;

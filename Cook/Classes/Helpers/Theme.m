@@ -17,6 +17,17 @@
     return YES;
 }
 
+#pragma makr - Updates Notes
+
++ (UIFont *)updateNotesFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24.0];
+}
+
++ (UIColor *)updateNotesColour {
+//    return [[UIColor colorWithHexString:@"00b4ff"] colorWithAlphaComponent:0.7];
+    return [UIColor colorWithHexString:@"00b4ff"];
+}
+
 #pragma mark - Common Fonts
 
 +(UIFont *)defaultFontWithSize:(CGFloat)size
@@ -491,7 +502,11 @@
 #pragma mark - Book navigation view.
 
 + (UIFont *)navigationTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
+}
+
++ (UIColor *)navigationTitleColour {
+    return [UIColor colorWithHexString:@"707070"];
 }
 
 + (UIFont *)suggestFacebookFont {

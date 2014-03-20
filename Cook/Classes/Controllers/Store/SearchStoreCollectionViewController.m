@@ -29,7 +29,7 @@
     [self hideMessageCard];
     [self unloadData];
     [self showActivity:YES];
-    [AnalyticsHelper trackEventName:@"Searched" params:nil];
+    
     [CKBook searchBooksByKeyword:keyword
                          success:^(NSArray *results) {
                              [self loadBooks:results];
@@ -38,6 +38,9 @@
                              [self showNoBooksCard];
                              [self showActivity:NO];
                          }];
+    
+    [AnalyticsHelper trackEventName:kEventSearch];
+    
 }
 
 - (void)showNoBooksCard {

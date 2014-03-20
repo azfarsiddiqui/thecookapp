@@ -24,6 +24,7 @@
 #import "DashboardTutorialViewController.h"
 #import "ImageHelper.h"
 #import "ViewHelper.h"
+#import "SDImageCache.h"
 
 @interface RootViewController () <WelcomeViewControllerDelegate, BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate,
@@ -74,6 +75,16 @@
     [EventHelper unregisterUserChange:self];
 }
 
+- (id)init {
+    if (self = [super init]) {
+        
+        // Light status bar.
+        self.lightStatusBar = YES;
+        
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -88,9 +99,6 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
-    
-    // Light status bar.
-    self.lightStatusBar = YES;
     
     // Register login/logout events.
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
@@ -164,6 +172,14 @@
     if (!self.modalOverlayView && !self.bookNavigationViewController) {
         self.panEnabled = enable;
     }
+}
+
+- (void)benchtopHideOtherViews {
+    [self hideSettingsAndStore:YES];
+}
+
+- (void)benchtopShowOtherViews {
+    [self hideSettingsAndStore:NO];
 }
 
 - (void)panToBenchtopForSelf:(UIViewController *)viewController {
@@ -253,6 +269,9 @@
         [self updateStatusBarHidden:NO];
         
     } else {
+        // Clear up memory in preparation for the deluge
+        [[SDImageCache sharedImageCache] clearMemory];
+        
         self.bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
                                                                            titleViewController:self.bookTitleViewController
                                                                                       delegate:self];
@@ -369,6 +388,14 @@
 - (void)bookNavigationWillPeekDash:(BOOL)isPeek
 {
     [self.benchtopViewController showVisibleBooks:!isPeek];
+}
+
+- (BOOL)bookNavigationShouldResumeEnable {
+    if (self.bookModalViewController) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 #pragma mark - DashboardTutorialViewControllerDelegate methods
@@ -1179,6 +1206,11 @@
                                               }];
                                           }];
                      }];
+}
+
+- (void)hideSettingsAndStore:(BOOL)doHide {
+    self.settingsViewController.view.hidden = doHide;
+    self.storeViewController.view.hidden = doHide;
 }
 
 #pragma mark - Rotation methods

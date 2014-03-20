@@ -31,6 +31,9 @@
 #import "BookNavigationView.h"
 #import "CKActivityIndicatorView.h"
 #import "CKContentContainerCell.h"
+#import "SDImageCache.h"
+#import "CKRecipePin.h"
+#import "CKError.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
@@ -150,13 +153,17 @@
 }
 
 - (void)loadMoreRecipes:(NSArray *)recipes {
+    //If callback happens after colletionView has been deactivated and purged, cancel
+    if (self.collectionView && [self.collectionView numberOfItemsInSection:0] == 0) {
+        return;
+    }
     
     // Delete spinner cell.
     NSIndexPath *activityDeleteIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
     
     // Gather the index paths to insert.
     NSInteger startIndex = [self.recipes count];
-    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKModel *recipeOrPin, NSUInteger recipeIndex) {
         return [NSIndexPath indexPathForItem:(startIndex + recipeIndex) inSection:0];
     }]];
     
@@ -281,10 +288,21 @@
     DLog();
     if (self.scrollToRecipe) {
         self.disableInformScrollOffset = YES;
-        if ([self.recipes containsObject:self.scrollToRecipe]) {
-            NSInteger scrollIndex = [self.recipes indexOfObject:self.scrollToRecipe];
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:scrollIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        
+        NSInteger foundIndex = [self.recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+            if ([recipeOrPin isKindOfClass:[CKRecipe class]]) {
+                CKRecipe *recipe = (CKRecipe *)recipeOrPin;
+                return [recipe.objectId isEqualToString:self.scrollToRecipe.objectId];
+                
+            } else {
+                return NO;
+            }
+        }];
+        
+        if (foundIndex != -1) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:foundIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
         }
+        
         self.disableInformScrollOffset = NO;
         self.scrollToRecipe = nil;
     }
@@ -299,7 +317,8 @@
 }
 
 - (BookContentGridType)bookContentGridTypeForItemAtIndex:(NSInteger)itemIndex {
-    CKRecipe *recipe = [self.recipes objectAtIndex:itemIndex];
+    CKModel *recipeOrPin = [self.recipes objectAtIndex:itemIndex];
+    CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
     return [self gridTypeForRecipe:recipe];
 }
 
@@ -364,8 +383,8 @@
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     if ([value length] > 0) {
-        [self updateContentTitleViewWithTitle:value];
-        self.updatedPage = value;
+        [self updateContentTitleViewWithTitle:[value uppercaseString]];
+        self.updatedPage = [value uppercaseString];
         [self.editingHelper updateEditingView:self.contentTitleView];
     }
 }
@@ -408,10 +427,14 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
+        CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+        [self.delegate bookContentViewControllerScrollFinishedOffset:visibleFrame.origin.y page:self.page];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    [self.delegate bookContentViewControllerScrollFinishedOffset:visibleFrame.origin.y page:self.page];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -421,7 +444,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (!self.editMode) {
+    if (!self.editMode && indexPath.item < [self.recipes count]) {
         [self showRecipeAtIndexPath:indexPath];
     }
 }
@@ -452,18 +475,37 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = nil;
+    
+    //Agressively flush cache to preserve memory usage
     if (indexPath.item < [self.recipes count]) {
         
-        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+        CKModel *recipeOrPin = [self.recipes objectAtIndex:indexPath.item];
+        CKRecipePin *recipePin = nil;
+        CKRecipe *recipe = nil;
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            recipePin = (CKRecipePin *)recipeOrPin;
+            recipe = recipePin.recipe;
+        } else {
+            recipe = (CKRecipe *)recipeOrPin;
+        }
+        
         BookContentGridType gridType = [self gridTypeForRecipe:recipe];
         NSString *cellId = [self cellIdentifierForGridType:gridType];
+        DLog(@"cellId: %@", cellId);
         
         BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
                                                                                                               forIndexPath:indexPath];
-        [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
+        
+        if (recipePin) {
+            [recipeCell configureRecipePin:recipePin book:self.book own:self.ownBook];
+        } else {
+            [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
+        }
         
         // Load more?
         if (indexPath.item == ([self.recipes count] - 1)) {
+//            [[SDImageCache sharedImageCache] setValue:nil forKey:@"memCache"];
             [self.delegate bookContentViewControllerLoadMoreForPage:self.page];
         }
         
@@ -594,7 +636,8 @@
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+    CKModel *recipeOrPin = [self.recipes objectAtIndex:indexPath.item];
+    CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
     [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
 }
 
@@ -616,7 +659,7 @@
         if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
             // +Photo -Title -Story -Method -Ingredients
-            gridType = BookContentGridTypeExtraSmall;
+            gridType = BookContentGridTypeSmall;
             
         } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
@@ -677,6 +720,10 @@
             // -Photo +Title -Story -Method +Ingredients
             gridType = BookContentGridTypeSmall;
             
+        } else if (![recipe hasTitle] && [recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo -Title +Story +Method
+            gridType = BookContentGridTypeExtraSmall;
         }
     }
     
@@ -686,7 +733,7 @@
 }
 
 - (NSString *)cellIdentifierForGridType:(BookContentGridType)gridType {
-    return [NSString stringWithFormat:@"GridType%d", gridType];
+    return [NSString stringWithFormat:@"GridType%ld", (unsigned long)gridType];
 }
 
 - (void)deleteTapped:(id)sender {
@@ -774,10 +821,18 @@
                                                                      
                                                                  }
                                                                  failure:^(NSError *error) {
+                                                                     
                                                                      [weakSelf.progressOverlayViewController updateWithTitle:@"Unable to Rename" delay:1.5 completion:^{
                                                                          
-                                                                         [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
+                                                                         // Unable to rename error.
+                                                                         if ([CKError bookPageRenameBlockedError:error]) {
+                                                                             [[[UIAlertView alloc] initWithTitle:nil
+                                                                                                         message:@"Sorry, this page contains too many recipes to rename."
+                                                                                                        delegate:nil cancelButtonTitle:@"OK"
+                                                                                               otherButtonTitles:nil] show];
+                                                                         }
                                                                          
+                                                                         [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
                                                                          [self restorePage];
                                                                      }];
                                                                  }];
@@ -830,7 +885,8 @@
     }
     
     // Look for the recipe index.
-    NSInteger recipeIndex = [self.recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger recipeIndex = [self.recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     if (recipeIndex != -1) {
@@ -845,5 +901,14 @@
     }];
 }
 
+- (CKRecipe *)recipeFromRecipeOrPin:(CKModel *)recipeOrPin {
+    
+    // Cast it to Recipe or Pin.
+    if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+        return ((CKRecipePin*)recipeOrPin).recipe;
+    } else {
+        return (CKRecipe *)recipeOrPin;
+    }
+}
 
 @end

@@ -196,9 +196,9 @@
 - (void)addCellToBottom {
     NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:[self.items count] inSection:0];
     [self createNewCellAtIndexPath:nextIndexPath];
-    if ([self.items count] > 1) {
-        [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
-    }
+//    if ([self.items count] > 1) {
+//        [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
+//    }
 }
 
 - (BOOL)allowedToAdd {

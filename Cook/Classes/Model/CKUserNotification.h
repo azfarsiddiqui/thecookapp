@@ -15,6 +15,8 @@
 
 @property (nonatomic, assign) BOOL read;
 @property (nonatomic, assign) BOOL friendRequestAccepted;
+@property (nonatomic, strong) NSArray *pages;
+@property (nonatomic, strong) NSString *comment;
 
 + (void)hasNotificationsForUser:(CKUser *)user completion:(BoolObjectSuccessBlock)completion
                         failure:(ObjectFailureBlock)failure;

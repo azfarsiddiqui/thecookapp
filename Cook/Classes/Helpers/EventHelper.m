@@ -36,13 +36,16 @@
 #define kThumbPhotoLoading          @"CKThumbPhotoLoading"
 #define kEventPhotoLoadingProgress  @"CKEventPhotoLoadingProgress"
 #define kProgressPhotoLoading       @"CKProgressPhotoLoading"
-#define kEventBackgroundFetch       @"CKEventBackgroundFetch"
+#define kEventDashFetch             @"CKEventDashFetch"
+#define kBoolDashFetchBackground    @"CKBoolDashFetchBackground"
 #define kEventSocialUpdates         @"CKEventSocialUpdates"
 #define kRecipeSocialUpdates        @"CKRecipeSocialUpdates"
 #define kNumLikesSocialUpdates      @"CKNumLikesSocialUpdates"
 #define kNumCommentsSocialUpdates   @"CKNumCommentsSocialUpdates"
 #define kLikedSocialUpdates         @"CKLikedSocialUpdates"
 #define kUserChangeNotification     @"UserChangedNotification"
+#define kEventAppActive             @"CKEventAppActive"
+#define kBoolAppActive              @"CKAppActive"
 
 #pragma mark - Login successful event
 
@@ -249,12 +252,8 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventUserNotifications];
 }
 
-+ (void)postUserNotifications:(NSInteger)notificationsCount {
-    [EventHelper postEvent:kEventUserNotifications withUserInfo:@{ kUserNotificationsCount : @(notificationsCount) }];
-}
-
-+ (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification {
-    return [[[notification userInfo] objectForKey:kUserNotificationsCount] integerValue];
++ (void)postUserNotifications {
+    [EventHelper postEvent:kEventUserNotifications];
 }
 
 + (void)unregisterUserNotifications:(id)observer {
@@ -319,16 +318,20 @@
 
 #pragma mark - Background fetch.
 
-+ (void)registerBackgroundFetch:(id)observer selector:(SEL)selector {
-    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventBackgroundFetch];
++ (void)registerDashFetch:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventDashFetch];
 }
 
-+ (void)postBackgroundFetch {
-    [EventHelper postEvent:kEventBackgroundFetch];
++ (void)postDashFetchBackground:(BOOL)background {
+    [EventHelper postEvent:kEventDashFetch withUserInfo:@{ kBoolDashFetchBackground : @(background) }];
 }
 
-+ (void)unregisterBackgroundFetch:(id)observer {
-    [EventHelper unregisterObserver:observer toEventName:kEventBackgroundFetch];
++ (void)unregisterDashFetch:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventDashFetch];
+}
+
++ (BOOL)isBackgroundForDashFetch:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kBoolDashFetchBackground] boolValue];
 }
 
 #pragma mark - Social stuff.
@@ -386,6 +389,24 @@
     return [[notification userInfo] objectForKey:kRecipeSocialUpdates];
 }
 
+#pragma mark - Lifecycle events.
+
++ (void)registerAppActive:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventAppActive];
+}
+
++ (void)postAppActive:(BOOL)active {
+    [EventHelper postEvent:kEventAppActive withUserInfo:@{ kBoolAppActive : @(active) } ];
+}
+
++ (void)unregisterAppActive:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventAppActive];
+}
+
++ (BOOL)appActiveForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kBoolAppActive] boolValue];
+}
+
 #pragma mark - Private
 
 + (void)registerObserver:(id)observer withSelector:(SEL)selector toEventName:(NSString *)eventName {
@@ -399,6 +420,7 @@
 }
 
 + (void)postEvent:(NSString *)eventName withUserInfo:(NSDictionary *)theUserInfo {
+//    DLog("postEvent[%@] userInfo[%@]", eventName, theUserInfo);
     
     // Post all events on main thread as all involve UI updates.
     dispatch_async(dispatch_get_main_queue(), ^{

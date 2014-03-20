@@ -10,12 +10,14 @@
 #import "CKEditingTextBoxView.h"
 #import "CKEditingViewHelper.h"
 #import "PSPDFTextView.h"
+#import "IngredientsKeyboardAccessoryViewController.h"
 
-@interface CKTextViewEditViewController () <UITextViewDelegate, UIGestureRecognizerDelegate>
+@interface CKTextViewEditViewController () <UITextViewDelegate, UIGestureRecognizerDelegate, IngredientsKeyboardAccessoryViewControllerDelegate>
 
 @property (nonatomic, strong) PSPDFTextView *textView;
 @property (nonatomic, strong) PSPDFTextView *sandboxTextView;
 @property (nonatomic, assign) CGFloat minHeight;
+@property (nonatomic, strong) IngredientsKeyboardAccessoryViewController *accessoryView;
 
 @end
 
@@ -40,6 +42,8 @@
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title
                         characterLimit:characterLimit]) {
         self.numLines = 8;
+        self.accessoryView = [[IngredientsKeyboardAccessoryViewController alloc] init];
+        self.accessoryView.delegate = self;
     }
     return self;
 }
@@ -54,11 +58,25 @@
     // Initial TextView height taking into account containing text.
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textView.text = self.forceUppercase ? [currentText uppercaseString] : currentText;
-    CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
+    CGFloat accessoryViewHeight = 0;
+    if (self.textView.inputAccessoryView) {
+        accessoryViewHeight = self.accessoryView.view.frame.size.height;
+    }
+    CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom - accessoryViewHeight;
+    if ([self.titleLabel.text length] > 0) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.textView.frame.origin.y/2 + 20, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        minHeight += self.titleLabel.frame.size.height;
+    }
+    
+    CGFloat labelHeight = 0;
+    if ([self.titleLabel.text length] > 0) {
+        labelHeight = self.titleLabel.frame.size.height;
+    }
+    
     // TextView positioning.
     self.textView.frame = (CGRect){
         textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
-        MAX(kKeyboardDefaultFrame.origin.y/2 - minHeight/2, contentInsets.top) ,
+        MAX(kKeyboardDefaultFrame.origin.y/2 - minHeight/2, contentInsets.top + labelHeight/2),
         textViewAdjustments.left + width + textViewAdjustments.right,
         ceilf(minHeight)
     };
@@ -85,6 +103,12 @@
     //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
 //    self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [super doSave];
+}
+
+- (void)includeAccessoryView:(BOOL)doInclude {
+    if (doInclude) {
+        self.textView.inputAccessoryView = self.accessoryView.view;
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -147,9 +171,16 @@
 - (void)textViewDidChange:(UITextView *)textView {
     
     // Update character limit.
-    NSUInteger currentLimit = self.characterLimit - [textView.text length];
-    self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
+    NSInteger currentLimit = self.characterLimit - [textView.text length];
+    self.limitLabel.text = [NSString stringWithFormat:@"%i", (int)currentLimit];
     [self.limitLabel sizeToFit];
+}
+
+#pragma mark - IngredientsKeyboardAccessoryViewController delegate method
+
+- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit {
+    [self.textView insertText:value];
+    [self.textView insertText:@" "];
 }
 
 #pragma mark - Properties
@@ -245,8 +276,12 @@
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     if (targetTextBoxView) {
         CGRect targetEditViewFrame = self.textView.frame;
-
-        targetEditViewFrame.origin.y = MAX(kKeyboardDefaultFrame.origin.y/2 - self.textView.frame.size.height/2, [self contentInsets].top);
+        
+        CGFloat labelHeight = 0;
+        if ([self.titleLabel.text length] > 0) {
+            labelHeight = self.titleLabel.frame.size.height;
+        }
+        targetEditViewFrame.origin.y = MAX(kKeyboardDefaultFrame.origin.y/2 - self.textView.frame.size.height/2, [self contentInsets].top) + labelHeight/2;
 
         [UIView animateWithDuration:0.2 animations:^{
             self.textView.frame = targetEditViewFrame;

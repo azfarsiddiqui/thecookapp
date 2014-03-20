@@ -61,6 +61,14 @@
     return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 }
 
+- (NSString *)systemVersion {
+    return [[UIDevice currentDevice] systemVersion];
+}
+
+- (BOOL)systemVersionAtLeast:(NSString *)version {
+    return ([[self systemVersion] compare:version options:NSNumericSearch] != NSOrderedAscending);
+}
+
 - (CGRect)fullScreenFrame {
     return [self rootView].bounds;
 }
@@ -94,6 +102,10 @@
 
 - (NSString *)documentsPathForFileName:(NSString *)name {
     return [[self documentsDirectoryPath] stringByAppendingPathComponent:name];
+}
+
+- (NSString *)documentsPathForDirectoryName:(NSString *)name {
+    return [[self documentsDirectoryPath] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@", name]];
 }
 
 @end

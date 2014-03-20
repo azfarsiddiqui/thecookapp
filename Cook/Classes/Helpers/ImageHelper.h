@@ -27,6 +27,7 @@
 
 // Image scaling.
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size;
++ (UIImage *)filledImage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)thumbImageForImage:(UIImage *)image;
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame;
@@ -51,5 +52,9 @@
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius
           completion:(void (^)(UIImage *blurredImage))completion;
++ (CGSize)blurredSize;
+
+// Image generation.
++ (UIImage *)imageWithColour:(UIColor *)colour size:(CGSize)size;
 
 @end

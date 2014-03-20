@@ -11,14 +11,19 @@
 #import "CKServerManager.h"
 #import "EventHelper.h"
 
+@interface AppDelegate ()
+
+@property (nonatomic, strong) NSDate *lastLaunchedDate;
+
+@end
+
 @implementation AppDelegate
+
+#define kFetchUpdateInterval    3600.0    // 1 hour.
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [[CKServerManager sharedInstance] startWithLaunchOptions:launchOptions];
-    
-    // Hourly fetch.
-    [application setMinimumBackgroundFetchInterval:3600];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [[RootViewController alloc] init];
@@ -27,6 +32,18 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    // Check if the time of last launch exceeded the expiry.
+    NSTimeInterval lastLaunchedElapsedSeconds = ABS([self.lastLaunchedDate timeIntervalSinceNow]);
+    DLog(@"lastLaunchedElapsedSeconds[%f] expiry[%f]", lastLaunchedElapsedSeconds, kFetchUpdateInterval);
+    if (lastLaunchedElapsedSeconds > kFetchUpdateInterval) {
+        DLog(@"trigger resume update");
+        [EventHelper postDashFetchBackground:NO];
+    }
+    
+    // Mark as launched date.
+    self.lastLaunchedDate = [NSDate date];
+    
     [[CKServerManager sharedInstance] handleActive];
 }
 
@@ -52,11 +69,11 @@
     [[CKServerManager sharedInstance] handlePushWithUserInfo:userInfo];
 }
 
-- (void)application:(UIApplication *)application
-    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    DLog();
-    [EventHelper postBackgroundFetch];
-    completionHandler(UIBackgroundFetchResultNewData);
-}
+//- (void)application:(UIApplication *)application
+//    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+//    DLog();
+//    [EventHelper postDashFetchBackground:YES];
+//    completionHandler(UIBackgroundFetchResultNewData);
+//}
 
 @end

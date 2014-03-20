@@ -14,7 +14,6 @@
 #import <mach/mach_host.h>
 
 static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
-static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 
 @interface SDImageCache ()
 
@@ -24,7 +23,6 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 @property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t ioQueue;
 
 @end
-
 
 @implementation SDImageCache
 
@@ -60,7 +58,7 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
         // Init the disk cache
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         _diskCachePath = [paths[0] stringByAppendingPathComponent:fullNamespace];
-
+        
 #if TARGET_OS_IPHONE
         // Subscribe to app events
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -191,6 +189,12 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
     }
 }
 
+- (void)storeThumbInMemoryCache:(UIImage *)image forKey:(NSString *)key {
+    if (image) {
+        [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    }
+}
+
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key
 {
     [self storeImage:image imageData:nil forKey:key toDisk:YES];
@@ -218,25 +222,26 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key
 {
-    return [self imageFromDiskCacheForKey:key skipMemory:NO];
+    return [self imageFromDiskCacheForKey:key skipMemory:YES];
 }
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key skipMemory:(BOOL)skipMemory {
-    
     UIImage *image = nil;
     
     // First check the in-memory cache...
-    if (!skipMemory) {
-        image = [self imageFromMemoryCacheForKey:key];
-        if (image) {
-            return image;
-        }
+    image = [self imageFromMemoryCacheForKey:key];
+    if (image) {
+        return image;
     }
     
     // Second check the disk cache...
     UIImage *diskImage = [self diskImageForKey:key];
     if (diskImage)
     {
+        //Update expiration on access
+        NSString *defaultPath = [NSString stringWithFormat:@"file:///private%@", [self defaultCachePathForKey:key]];
+        [self touchFileAtPath:defaultPath];
+        
         if (!skipMemory) {
             CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
             [self.memCache setObject:diskImage forKey:key cost:cost];
@@ -388,13 +393,7 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
                                                                      options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                 errorHandler:NULL];
         
-        //Check current size of cache
-        NSDate *expirationDate;
-        if ([self getSize] > kMaxDocumentSize) {
-            expirationDate = [NSDate dateWithTimeIntervalSinceNow:-(60*60*24)];
-        } else {
-            expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
-        }
+        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
 
         NSMutableDictionary *cacheFiles = [NSMutableDictionary dictionary];
         unsigned long long currentCacheSize = 0;
@@ -538,6 +537,18 @@ static const NSInteger kMaxDocumentSize = (300 * 1024 * 1024);
             });
         }
     });
+}
+
+- (void)touchFileAtPath:(NSString *)filePath {
+    NSDate *extendedDate =[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge];
+    
+    // Dispatch touching of modificaton.
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSFileManager *fileManager = NSFileManager.new;
+        [fileManager setAttributes:@{ NSURLContentModificationDateKey : extendedDate }
+                                         ofItemAtPath:filePath error:nil];
+    });
+
 }
 
 @end

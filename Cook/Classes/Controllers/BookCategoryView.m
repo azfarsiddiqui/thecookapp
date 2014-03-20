@@ -9,7 +9,6 @@
 #import "BookCategoryView.h"
 #import <Parse/Parse.h>
 #import "Theme.h"
-#import "UIImage+ProportionalFill.h"
 #import "CKRecipe.h"
 #import "CKRecipeImage.h"
 #import "CKMaskedLabel.h"

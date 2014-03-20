@@ -5,7 +5,7 @@
 	<array>
 		<dict>
 			<key>Value</key>
-			<string>1/2</string>
+			<string>1/4</string>
 			<key>Unit</key>
 			<false/>
 		</dict>
@@ -17,7 +17,19 @@
 		</dict>
 		<dict>
 			<key>Value</key>
-			<string>1/4</string>
+			<string>1/2</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>2/3</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>3/4</string>
 			<key>Unit</key>
 			<false/>
 		</dict>
@@ -77,7 +89,15 @@
 	<array>
 		<dict>
 			<key>Value</key>
-			<string>1/2</string>
+			<string>°F</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+	</array>
+	<array>
+		<dict>
+			<key>Value</key>
+			<string>1/4</string>
 			<key>Unit</key>
 			<false/>
 		</dict>
@@ -89,7 +109,19 @@
 		</dict>
 		<dict>
 			<key>Value</key>
-			<string>1/4</string>
+			<string>1/2</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>2/3</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>3/4</string>
 			<key>Unit</key>
 			<false/>
 		</dict>
@@ -109,7 +141,7 @@
 		</dict>
 		<dict>
 			<key>Value</key>
-			<string>L</string>
+			<string>l</string>
 			<key>Unit</key>
 			<true/>
 		</dict>
@@ -142,6 +174,14 @@
 		<dict>
 			<key>Value</key>
 			<string>cup</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+	</array>
+	<array>
+		<dict>
+			<key>Value</key>
+			<string>°C</string>
 			<key>Unit</key>
 			<true/>
 		</dict>

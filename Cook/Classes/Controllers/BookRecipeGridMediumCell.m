@@ -9,6 +9,7 @@
 #import "BookRecipeGridMediumCell.h"
 #import "RecipeIngredientsView.h"
 #import "CKRecipe.h"
+#import "GridRecipeStatsView.h"
 
 @implementation BookRecipeGridMediumCell
 
@@ -18,10 +19,12 @@
 - (void)updateTimeInterval {
     [super updateTimeInterval];
     
+    UIEdgeInsets contentInsets = [self contentInsets];
+    
     if (![self hasTitle]) {
         self.timeIntervalLabel.frame = (CGRect){
             floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
-            self.imageView.frame.origin.y + self.imageView.frame.size.height + kTimeGap,
+            self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top,
             self.timeIntervalLabel.frame.size.width,
             self.timeIntervalLabel.frame.size.height
         };
@@ -29,12 +32,17 @@
 }
 
 - (void)updateIngredients {
+    
     if ([self hasIngredients]) {
         
         // Image + Ingredients.
         self.ingredientsView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height -= 30.0;   // Have more vertical space.
+        self.ingredientsView.maxSize = blockSize;
+        
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book measureType:CKMeasureTypeNone];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
@@ -57,14 +65,16 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
-        self.storyLabel.numberOfLines = 5;
+        self.storyLabel.numberOfLines = 0;
         self.storyLabel.text = story;
-        CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height = self.statsView.frame.origin.y - self.timeIntervalLabel.frame.origin.y - self.timeIntervalLabel.frame.size.height - kAfterTimeGap;
+        CGSize size = [self.storyLabel sizeThatFits:blockSize];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     } else {
@@ -81,25 +91,21 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
-        self.methodLabel.numberOfLines = 5;
+        self.methodLabel.numberOfLines = 4;
         self.methodLabel.text = method;
-        CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height = self.statsView.frame.origin.y - self.timeIntervalLabel.frame.origin.y - self.timeIntervalLabel.frame.size.height - kAfterTimeGap;
+        CGSize size = [self.methodLabel sizeThatFits:blockSize];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
-            size.height
+            (size.height > blockSize.height ? blockSize.height : size.height)
         };
         
     } else {
         self.methodLabel.hidden = YES;
     }
-}
-
-- (CGSize)availableBlockSize {
-    CGSize blockSize = [super availableBlockSize];
-    blockSize.height -= 30.0;
-    return blockSize;
 }
 
 @end

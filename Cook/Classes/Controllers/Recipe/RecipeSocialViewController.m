@@ -165,15 +165,16 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         self.likesCollectionView.alpha = 0.0;
         
         if ([self.cookNavigationController isTopViewController:self]) {
-            self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+            self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
         } else {
-            self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
+            self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(backTapped:)];
         }
     } else {
-        self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+        self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
         [self loadData];
     }
     
+    [AnalyticsHelper trackEventName:kEventRecipeSocialView];
 }
 
 - (NSInteger)currentNumComments {
@@ -397,7 +398,8 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         // Saves the comment in the background.
         self.saving = YES;
         [comment saveInBackground];
-        [AnalyticsHelper trackEventName:@"Commented" params:nil];
+        
+        [AnalyticsHelper trackEventName:kEventRecipeComment];
     }
     
 }
@@ -608,6 +610,15 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
                 [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             } completion:^(BOOL finished) {
+                
+                CGSize contentSize = self.collectionView.contentSize;
+                if (contentSize.height > self.collectionView.bounds.size.height) {
+                    CGPoint bottomOffset = (CGPoint){
+                        self.collectionView.contentOffset.x,
+                        contentSize.height - self.collectionView.bounds.size.height
+                    };
+                    [self.collectionView setContentOffset:bottomOffset animated:YES];
+                }
                 
             }];
             

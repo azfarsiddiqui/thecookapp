@@ -76,6 +76,7 @@
     
     // Disable scrolling on appear.
     self.scrollView.scrollEnabled = !appear;
+    [self.targetEditTextBoxView disableSelectOnEditView];
 }
 
 #pragma mark - Lazy getters

@@ -958,7 +958,7 @@
                          // Shift Title.
                          CGRect signUpTitleFrame = [self titleFrameForSignUp:self.signUpMode];
                          if (enable) {
-                             signUpTitleFrame.origin.y = facebookButtonFrame.origin.y - 120.0;
+                             signUpTitleFrame.origin.y = facebookButtonFrame.origin.y - 98.0;
                          }
                          self.titleLabel.frame = signUpTitleFrame;
                          
@@ -1000,7 +1000,7 @@
         if (textFieldView == self.emailNameView) {
             
             if ([text length] > 0) {
-                [self.emailNameView setValidated:YES message:@"THANKS"];
+                [self.emailNameView setValidated:YES showIcon:YES];
             } else {
                 validated = NO;
             }
@@ -1008,27 +1008,27 @@
         } else if (textFieldView == self.emailAddressView) {
             
             if ([CKTextFieldViewHelper isValidEmailForString:text]) {
-                [self.emailAddressView setValidated:YES message:@"THANKS"];
+                [self.emailAddressView setValidated:YES showIcon:self.signUpMode];
             } else {
-                [self.emailAddressView setValidated:NO message:@"INVALID EMAIL"];
+                [self.emailAddressView setValidated:NO showIcon:YES];
                 validated = NO;
             }
             
         } else if (textFieldView == self.emailPasswordView) {
             
             if ([CKTextFieldViewHelper isValidLengthForString:text min:kPasswordMinLength max:kPasswordMaxLength]) {
-                [self.emailPasswordView setValidated:YES message:@"THANKS"];
+                [self.emailPasswordView setValidated:YES showIcon:self.signUpMode];
             } else {
-                [self.emailPasswordView setValidated:NO message:@"INVALID PASSWORD"];
+                [self.emailPasswordView setValidated:NO showIcon:YES];
                 validated = NO;
             }
             
         } else if (textFieldView == self.forgotEmailView) {
             
             if ([CKTextFieldViewHelper isValidEmailForString:text]) {
-                [self.forgotEmailView setValidated:YES message:@"THANKS"];
+                [self.forgotEmailView setValidated:YES showIcon:YES];
             } else {
-                [self.forgotEmailView setValidated:NO message:@"INVALID EMAIL"];
+                [self.forgotEmailView setValidated:NO showIcon:YES];
                 validated = NO;
             }
             

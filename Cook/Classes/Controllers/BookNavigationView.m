@@ -18,7 +18,6 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
-@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIButton *addButton;
@@ -42,8 +41,6 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self addSubview:self.backgroundImageView];
-        [self addSubview:self.closeButton];
-        [self addSubview:self.homeButton];
         [self addSubview:self.titleLabel];
     }
     return self;
@@ -52,6 +49,8 @@
 - (void)setTitle:(NSString *)title editable:(BOOL)editable book:(CKBook *)book {
     self.editable = editable;
     self.book = book;
+    
+    [self addSubview:self.homeButton];
     [self updateTitle:title];
     
     if (editable) {
@@ -67,8 +66,6 @@
         return;
     }
     self.title = title;
-    
-    self.titleLabel.textColor = [self.delegate bookNavigationColour];
     self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = (CGRect){
@@ -77,20 +74,6 @@
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
-}
-
-- (void)setDark:(BOOL)dark {
-    self.backgroundImageView.image = [self backgroundImageForDark:dark];
-    [ViewHelper updateButton:self.homeButton withImage:[self homeImageForDark:dark] selectedImage:[self homeImageForDarkSelected:dark]];
-    [ViewHelper updateButton:self.closeButton withImage:[self closeImageForDark:dark] selectedImage:[self closeImageForDarkSelected:dark]];
-    
-    // Update button insets.
-    CGRect homeButtonFrame = self.homeButton.frame;
-    CGRect closeButtonFrame = self.closeButton.frame;
-    homeButtonFrame.origin.y = [self contentInsetsForDark:dark].top;
-    closeButtonFrame.origin.y = homeButtonFrame.origin.y;
-    self.homeButton.frame = homeButtonFrame;
-    self.closeButton.frame = closeButtonFrame;
 }
 
 - (void)enableAddAndEdit:(BOOL)enable {
@@ -114,37 +97,20 @@
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.font = [Theme navigationTitleFont];
+        _titleLabel.textColor = [Theme navigationTitleColour];
     }
     return _titleLabel;
 }
 
-- (UIButton *)closeButton {
-    if (!_closeButton) {
-        UIEdgeInsets insets = [self contentInsetsForDark:NO];
-        _closeButton = [ViewHelper buttonWithImage:[self closeImageForDark:NO]
-                                     selectedImage:[self closeImageForDarkSelected:NO]
-                                          target:self
-                                          selector:@selector(closeTapped:)];
-        _closeButton.frame = (CGRect){
-            insets.left,
-            insets.top,
-            _closeButton.frame.size.width,
-            _closeButton.frame.size.height
-        };
-        _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-    }
-    return _closeButton;
-}
-
 - (UIButton *)homeButton {
     if (!_homeButton) {
-        _homeButton = [ViewHelper buttonWithImage:[self homeImageForDark:NO]
-                                    selectedImage:[self homeImageForDarkSelected:NO]
-                                           target:self
-                                         selector:@selector(homeTapped:)];
+        UIEdgeInsets insets = [self contentInsetsForDark:NO];
+        _homeButton = [ViewHelper buttonWithImage:[CKBookCover backImageForCover:self.book.cover selected:NO]
+                                    selectedImage:[CKBookCover backImageForCover:self.book.cover selected:YES]
+                                           target:self selector:@selector(homeTapped:)];
         _homeButton.frame = (CGRect){
-            self.closeButton.frame.origin.x + self.closeButton.frame.size.width + 2.0,
-            self.closeButton.frame.origin.y,
+            insets.left,
+            insets.top,
             _homeButton.frame.size.width,
             _homeButton.frame.size.height
         };
@@ -171,10 +137,9 @@
 
 - (UIButton *)editButton {
     if (!_editButton && self.editable) {
-        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark.png"]
-                       selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark_onpress.png"]
-                                           target:self
-                                         selector:@selector(editTapped:)];
+        _editButton = [ViewHelper buttonWithImage:[CKBookCover editImageForCover:self.book.cover selected:NO]
+                                    selectedImage:[CKBookCover editImageForCover:self.book.cover selected:YES]
+                                           target:self selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _editButton.frame = CGRectMake(self.addButton.frame.origin.x - 11.0 - _editButton.frame.size.width,
                                        kContentInsets.top,
@@ -186,10 +151,6 @@
 
 
 #pragma mark - Private methods
-
-- (void)closeTapped:(id)sender {
-    [self.delegate bookNavigationViewCloseTapped];
-}
 
 - (void)homeTapped:(id)sender {
     [self.delegate bookNavigationViewHomeTapped];
@@ -208,38 +169,6 @@
         return [UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"];
     } else {
         return [UIImage imageNamed:@"cook_book_inner_titlebar.png"];
-    }
-}
-
-- (UIImage *)closeImageForDark:(BOOL)dark {
-    if (dark) {
-        return [UIImage imageNamed:@"cook_book_inner_icon_close_light.png"];
-    } else {
-        return [UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"];
-    }
-}
-
-- (UIImage *)closeImageForDarkSelected:(BOOL)dark {
-    if (dark) {
-        return [UIImage imageNamed:@"cook_book_inner_icon_close_light_onpress.png"];
-    } else {
-        return [UIImage imageNamed:@"cook_book_inner_icon_close_dark_onpress.png"];
-    }
-}
-
-- (UIImage *)homeImageForDark:(BOOL)dark {
-    if (dark) {
-        return [UIImage imageNamed:@"cook_book_inner_icon_home_light.png"];
-    } else {
-        return [UIImage imageNamed:@"cook_book_inner_icon_home_dark.png"];
-    }
-}
-
-- (UIImage *)homeImageForDarkSelected:(BOOL)dark {
-    if (dark) {
-        return [UIImage imageNamed:@"cook_book_inner_icon_home_light_onpress.png"];
-    } else {
-        return [UIImage imageNamed:@"cook_book_inner_icon_home_dark_onpress.png"];
     }
 }
 

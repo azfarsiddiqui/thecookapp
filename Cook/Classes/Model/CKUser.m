@@ -16,6 +16,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "EventHelper.h"
 #import "CKMeasureConverter.h"
+#import "AppHelper.h"
 
 @interface CKUser ()
 
@@ -571,7 +572,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (void)userInfoCompletion:(UserInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"userInfo"
-                       withParameters:@{ @"userId" : self.objectId }
+                       withParameters:@{ @"userId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     NSUInteger friendCount = [[results objectForKey:@"friendCount"] unsignedIntegerValue];
@@ -606,18 +607,16 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (void)numUnreadNotificationsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
-    PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
-    [query whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
-    [query whereKey:kUserNotificationAttrRead equalTo:@NO];
-    [query includeKey:kUserModelForeignKeyName];
-    [query orderByDescending:kModelAttrCreatedAt];
-    [query countObjectsInBackgroundWithBlock:^(int count, NSError *error) {
-        if (!error) {
-            completion(count);
-        } else {
-            failure(error);
-        }
-    }];
+    [PFCloud callFunctionInBackground:@"unreadNotificationsCount"
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    NSInteger unreadCount = [[results objectForKey:@"unread"] integerValue];
+                                    if (!error) {
+                                        completion(unreadCount);
+                                    } else {
+                                        failure(error);
+                                    }
+                                }];
 }
 
 #pragma mark - Properties
@@ -709,7 +708,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:kUserAttrFacebookId];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:self.admin] forKey:kUserAttrAdmin];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [[self.parseUser objectForKey:kUserAttrFacebookFriends] count]]
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%i", [[self.parseUser objectForKey:kUserAttrFacebookFriends] count]]
                              forKey:@"facebookFriends"];
     return descriptionProperties;
 }

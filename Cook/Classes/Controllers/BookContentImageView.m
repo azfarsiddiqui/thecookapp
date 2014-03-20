@@ -17,16 +17,16 @@
 #import "EventHelper.h"
 #import "CKPhotoManager.h"
 #import "NSString+Utilities.h"
+#import "CKPhotoView.h"
 
 @interface BookContentImageView ()
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) CKPhotoView *photoView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
-@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
+@property (nonatomic, assign) BOOL isThumbLoading;
 
 @end
 
@@ -35,9 +35,8 @@
 #define kForceVisibleOffset         1.0
 
 - (void)dealloc {
-    self.imageView.image = nil;
+    self.photoView = nil;
     self.vignetteOverlayView.image = nil;
-    self.blurredImageView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
 }
 
@@ -48,73 +47,98 @@
         // The containerView is merely to serve as an opaque background for smooth scrolling without much of it clear.
         self.containerView = [[UIView alloc] initWithFrame:[self contentBoundsWithoutForceVisibleOffset]];
         self.containerView.backgroundColor = [Theme recipeGridImageBackgroundColour];
-        [self.containerView addSubview:self.imageView];
+        [self.containerView addSubview:self.photoView];
         [self.containerView addSubview:self.vignetteOverlayView];
         
         // Scrolling overlays
-        [self.imageView addSubview:self.blurredImageView];
-        
         [self addSubview:self.containerView];
         
         // Motion effects.
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
-        [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
+        [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
         
-        // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+        
+        self.isThumbLoading = NO;
     }
     return self;
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-    self.imageView.image = nil;
-    self.blurredImageView.image = nil;
+    [self.photoView cleanImageViews];
     self.recipe = nil;
     self.book = nil;
     self.fullImageLoaded = NO;
 }
 
 - (void)applyOffset:(CGFloat)offset {
-    [self applyOffset:offset distance:200.0 view:self.blurredImageView];
+    [self applyOffset:offset distance:200.0 view:self.photoView.blurredImageView];
 }
 
-- (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+- (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book cachedImage:(UIImage *)cachedImage {
     self.recipe = recipe;
     self.book = book;
+    self.fullImageLoaded = NO;
     
-    if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset]];
+    self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+    
+    if (cachedImage) {
+        //If cached thumb image, skip to directly assigning it
+        self.isThumbLoading = NO;
+        [self configureImage:cachedImage book:self.book thumb:YES];
     } else {
-        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book];
+        self.isThumbLoading = YES;
+        [self assignRecipeImage];
     }
+}
 
+- (void)assignRecipeImage {
+    //Set initial image but don't use provided method because we don't want to trigger imageLoaded flag
+    if (!self.photoView.thumbnailView.image || !self.recipe || !self.recipe.recipeImage) {
+        self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+    }
+    if ([self.recipe hasPhotos]) {
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:self.recipe name:[self photoName] size:[self imageSizeWithMotionOffset]];
+    }
+}
+
+- (void)assignFullImage {
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        //Check with BookNavigation to see if we should run a full load
+        if (self.delegate && [self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+            [[CKPhotoManager sharedInstance] fullImageForRecipe:self.recipe size:[self imageSizeWithMotionOffset]];
+        }
+    });
 }
 
 - (CGSize)imageSizeWithMotionOffset {
-    return self.imageView.frame.size;
+    return self.photoView.frame.size;
 }
 
 - (void)reloadWithBook:(CKBook *)book {
-    self.isFullLoad = YES;
-    [self configureImage:self.imageView.image book:book];
+    if (!self.isThumbLoading) {
+        [self assignRecipeImage];
+    }
 }
 
 #pragma mark - Properties
 
-- (UIImageView *)imageView {
-    if (!_imageView) {
+- (CKPhotoView *)photoView {
+    if (!_photoView) {
         UIOffset motionOffset = [ViewHelper standardMotionOffset];
-        _imageView = [[UIImageView alloc] initWithFrame:(CGRect){
+        _photoView = [[CKPhotoView alloc] initWithFrame:(CGRect){
             self.containerView.bounds.origin.x - motionOffset.horizontal,
             self.containerView.bounds.origin.y - motionOffset.vertical,
             self.containerView.bounds.size.width + (motionOffset.horizontal * 2.0),
             self.containerView.bounds.size.height + (motionOffset.vertical * 2.0),
         }];
-        _imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _photoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     }
-    return _imageView;
+    return _photoView;
 }
 
 - (UIImageView *)vignetteOverlayView {
@@ -123,13 +147,6 @@
         _vignetteOverlayView.image = [UIImage imageNamed:@"cook_book_inner_page_overlay.png"];
     }
     return _vignetteOverlayView;
-}
-
-- (UIImageView *)blurredImageView {
-    if (!_blurredImageView) {
-        _blurredImageView = [[UIImageView alloc] initWithFrame:self.imageView.bounds];
-    }
-    return _blurredImageView;
 }
 
 #pragma mark - Private methods
@@ -167,40 +184,110 @@
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
-    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
     
-    if ([recipePhotoName isEqualToString:name]) {
+    // Skip processing if no recipe attached.
+    if (!self.recipe) {
+        return;
+    }
+    
+    // Skip if there's no image.
+    if (![EventHelper hasImageForPhotoLoading:notification]) {
+        return;
+    }
+    
+    NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
+    
+    //If matching thumbnail image name
+    if ([[self photoName] isEqualToString:recipePhotoName]) {
         
-        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
-        if (!self.fullImageLoaded) {
-            if ([EventHelper hasImageForPhotoLoading:notification]) {
-                UIImage *image = [EventHelper imageForPhotoLoading:notification];
-                [self configureImage:image book:self.book];
-                self.fullImageLoaded = !thumb;
+        UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        
+        if ([EventHelper thumbForPhotoLoading:notification]) {
+            
+            // Thumb image processing
+            self.isThumbLoading = NO;
+
+            if (self.delegate && image && [self.delegate respondsToSelector:@selector(retrievedThumb:forRecipe:)]) {
+                [self.delegate retrievedThumb:image forRecipe:self.recipe];
             }
+            [self configureImage:image book:self.book thumb:YES];
+        
+            //When image is loaded, delay for an additional second to allow for user to decide if they like this page
+            if (!self.fullImageLoaded) {
+                [self assignFullImage];
+            }
+            
+        }
+        
+        //If matching full-size image name
+    } else if ([[[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe] isEqualToString:recipePhotoName]
+               && ![EventHelper thumbForPhotoLoading:notification]) {
+        
+        UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        
+        // Fullsize image processing.
+        if ([self.delegate shouldRunFullLoadForIndex:self.pageIndex]) {
+            [self configureImage:image book:self.book thumb:NO];
+            self.fullImageLoaded = YES;
         }
     }
 }
 
-- (void)configureImage:(UIImage *)image book:(CKBook *)book {
+- (NSString *)photoName {
+    return [NSString stringWithFormat:@"background_%@", self.recipe.objectId];
+}
+
+#pragma mark - Public methods
+
+- (void)configureImage:(UIImage *)image book:(CKBook *)book thumb:(BOOL)isThumb {
     if (image) {
-        self.imageView.image = image;
         self.vignetteOverlayView.hidden = NO;
         
-        if (self.isFullLoad) {
-            UIColor *tintColour = [[CKBookCover backdropColourForCover:book.cover] colorWithAlphaComponent:0.58];
-            [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-                self.blurredImageView.image = blurredImage;
-            }];
+        if (isThumb) {
+            [self.photoView setThumbnailImage:image];
+            if (self.delegate && ([self.delegate shouldRunFullLoadForIndex:self.pageIndex] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex - 1] || [self.delegate shouldRunFullLoadForIndex:self.pageIndex + 1])) {
+                UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:book.cover] colorWithAlphaComponent:0.58];
+                
+                __weak BookContentImageView *weakSelf = self;
+                [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.recipe
+                                                             tintColor:tintColour
+                                                            thumbImage:image
+                                                            completion:^(UIImage *thumbImage, NSString *name) {
+                                                                [weakSelf.photoView setBlurredImage:thumbImage];
+                                                                [weakSelf.delegate retrievedBlurredImage:thumbImage forRecipe:weakSelf.recipe];
+                                                             }];
+            }
+        } else {
+            DLog(@"Activate FULL LOAD: %@", self.recipe.name);
+            [self.photoView setFullImage:image];
         }
         
     } else {
-        self.imageView.image = nil;
-        self.blurredImageView.image = nil;
+        [self.photoView cleanImageViews];
+        self.fullImageLoaded = NO;
         self.vignetteOverlayView.hidden = YES;
     }
+}
+
+- (void)configureBlurredImage:(UIImage *)blurredImage {
+    if (blurredImage) {
+        [self.photoView setBlurredImage:blurredImage];
+    }
+}
+
+- (void)deactivateImage {
+    [self.photoView deactivateImage];
+    self.fullImageLoaded = NO;
+}
+
+- (void)cleanImage {
+    [self.photoView cleanImageViews];
+    self.fullImageLoaded = NO;
+    self.photoView.thumbnailView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+}
+
+- (BOOL)hasImage {
+    return self.photoView.thumbnailView.image;
 }
 
 @end

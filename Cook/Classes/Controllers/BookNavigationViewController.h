@@ -23,6 +23,7 @@
 - (void)bookNavigationControllerRefreshedBook:(CKBook *)book;
 - (UIView *)bookNavigationSnapshot;
 - (void)bookNavigationWillPeekDash:(BOOL)isPeek;
+- (BOOL)bookNavigationShouldResumeEnable;
 
 @end
 

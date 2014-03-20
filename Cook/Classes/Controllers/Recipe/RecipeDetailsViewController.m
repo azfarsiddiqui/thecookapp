@@ -26,7 +26,6 @@
 #import "Theme.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
-#import "UIImage+ProportionalFill.h"
 #import "NSString+Utilities.h"
 #import "BookNavigationHelper.h"
 #import "CKLocationManager.h"
@@ -42,6 +41,7 @@
 #import "CKBookManager.h"
 #import "ProfileViewController.h"
 #import "RecipeFooterView.h"
+#import "SDImageCache.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -191,9 +191,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    NSDictionary *dimensions = @{@"isOwner" : [NSString stringWithFormat:@"%i", ([[CKUser currentUser].objectId isEqualToString:self.recipe.user.objectId])]};
-    [AnalyticsHelper trackEventName:@"Viewed recipe" params:dimensions];
+    [AnalyticsHelper trackEventName:kEventRecipeView params:@{ @"owner" : @([self.recipe isOwner]) } timed:YES];
 }
 
 #pragma mark - PinRecipeViewControllerDelegate methods
@@ -207,6 +205,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)pinRecipeViewControllerPinnedWithRecipePin:(CKRecipePin *)recipePin {
     self.recipePin = recipePin;
     [self updatePinnedButton];
+    
+    [AnalyticsHelper trackEventName:kEventRecipePin params:@{ @"pinned" : @(YES) }];
     
     // Cater for pinning a recipe in my book (Likes page).
     if ([self.book isOwner]) {
@@ -276,7 +276,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #pragma mark - RecipeDetailsViewDelegate methods
 
 - (void)recipeDetailsViewEditing:(BOOL)editing {
-    
+    if (editing) {
+        [[SDImageCache sharedImageCache] clearMemory];
+    }
     // Fade cancel/save buttons.
     [UIView animateWithDuration:0.3
                           delay:0.0
@@ -912,7 +914,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGRect photoButtonFrame = self.photoButtonView.frame;
     photoButtonFrame.origin = (CGPoint){
         floorf((imageView.bounds.size.width - photoButtonFrame.size.width) / 2.0),
-        floorf((imageView.bounds.size.height - photoButtonFrame.size.height) / 2.0)
+        floorf((imageView.bounds.size.height - photoButtonFrame.size.height) / 2.0) + 25
     };
     self.photoButtonView.frame = photoButtonFrame;
     self.photoButtonView.alpha = [self currentAlphaForPhotoButtonView];
@@ -1039,17 +1041,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         // Start the spinner.
         [self.activityView startAnimating];
-        
+        __block BOOL isThumbLoaded = NO;
         [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:self.imageView.bounds.size name:@"RecipePhoto"
                                                progress:^(CGFloat progressRatio, NSString *name) {
                                                } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                   
-                                                   [self loadImageViewWithPhoto:thumbImage placeholder:NO];
+                                                   isThumbLoaded = YES;
+                                                   [self loadImageViewWithPhoto:thumbImage placeholder:NO doTopShadow:YES];
                                                    
                                                } completion:^(UIImage *image, NSString *name) {
-
-                                                   [self loadImageViewWithPhoto:image placeholder:NO];
-                                                   
+                                                   if (image) {
+                                                       [self loadImageViewWithPhoto:image placeholder:NO doTopShadow:!isThumbLoaded];
+                                                   }
                                                    // Stop spinner.
                                                    [self.activityView stopAnimating];
                                                }];
@@ -1063,10 +1065,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)loadImageViewWithPhoto:(UIImage *)image {
-    [self loadImageViewWithPhoto:image placeholder:NO];
+    [self loadImageViewWithPhoto:image placeholder:NO doTopShadow:YES];
 }
 
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
+    [self loadImageViewWithPhoto:image placeholder:placeholder doTopShadow:YES];
+}
+
+- (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder doTopShadow:(BOOL)doShadow {
     self.imageView.image = image;
     self.imageView.placeholder = placeholder;
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:placeholder];
@@ -1074,7 +1080,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.topShadowView.alpha = 1.0;
+                         if (doShadow) {
+                             self.topShadowView.alpha = 1.0;
+                         }
                          self.imageView.alpha = 1.0;
                          self.placeholderHeaderView.alpha = 0.0;
                      }
@@ -1738,6 +1746,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.imageScrollView.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
+                         [AnalyticsHelper endTrackEventName:kEventRecipeView];
                          [self.modalDelegate closeRequestedForBookModalViewController:self];
                      }];
 }
@@ -1966,6 +1975,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Deletes in the background.
         [self.recipePin deleteInBackground:^{
             
+            [AnalyticsHelper trackEventName:kEventRecipePin params:@{ @"pinned" : @(NO) }];
+            
             [self.saveOverlayViewController updateProgress:0.9];
             
             if ([self.book isOwner]) {
@@ -2036,9 +2047,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                                                        }];
                                                                                    }];
                         //Analytics
-                        NSDictionary *dimensions = @{@"isImage" : [NSString stringWithFormat:@"%@", self.recipeDetails.image ? @YES : @NO],
-                                                     @"privacy" : [NSString stringWithFormat:@"%i", self.recipeDetails.privacy]};
-                        [AnalyticsHelper trackEventName:@"Recipe Saved" params:dimensions];
+                        [AnalyticsHelper trackEventName:kEventRecipeSave params:@{
+                                                                                  @"image"   : self.recipeDetails.image ? @YES : @NO,
+                                                                                  @"privacy" : @(self.recipeDetails.privacy),
+                                                                                  @"new"     : @(self.addMode)
+                                                                                  }];
+
                     } failure:^(NSError *error) {
                            
                            // Run failure.
@@ -2307,7 +2321,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGFloat headerHeight = 320.0;
     
     if (self.editMode && ![self.recipeDetails hasStory]) {
-        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 24.0);
+        headerHeight = MAX(headerHeight, self.recipeDetailsView.storyLabel.frame.origin.y + self.recipeDetailsView.storyLabel.frame.size.height + 69.0); //Push it down to 'Type up a recipe' box
+    }
+    
+    //Add mode moves to no story, edit mode position
+    if (self.addMode) {
+        headerHeight = 365;
     }
     
     return headerHeight;

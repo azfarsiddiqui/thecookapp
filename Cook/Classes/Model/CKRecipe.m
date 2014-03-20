@@ -15,13 +15,13 @@
 #import "NSArray+Enumerable.h"
 #import "CKActivity.h"
 #import "NSString+Utilities.h"
-#import "CKRecipeImage.h"
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"
 #import "CKPhotoManager.h"
 #import "CKRecipeTag.h"
 #import "CKLocation.h"
 #import "CKMeasureConverter.h"
+#import "AppHelper.h"
 
 @interface CKRecipe ()
 
@@ -189,7 +189,7 @@
 - (void)infoAndViewedWithCompletion:(RecipeInfoSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"recipeInfo"
-                       withParameters:@{ @"recipeId" : self.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -312,7 +312,7 @@
              failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"recipeIsPinnedToBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -336,7 +336,7 @@
           failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"pinRecipeToBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page }
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -358,7 +358,7 @@
 - (void)unpinnedFromBook:(CKBook *)book completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"unpinRecipeFromBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         DLog(@"Unpinned recipe[%@] from book[%@]", self.objectId, book.objectId);
@@ -418,7 +418,7 @@
 
 - (void)commentsLikesWithCompletion:(RecipeCommentsLikesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"recipeCommentsLikes"
-                       withParameters:@{ @"recipeId" : self.objectId }
+                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -542,7 +542,7 @@
 }
 
 - (void)setPage:(NSString *)page {
-    [self.parseObject setObject:page forKey:kRecipeAttrPage];
+    [self.parseObject setObject:[page uppercaseString] forKey:kRecipeAttrPage];
 }
 
 - (NSString *)story {
@@ -739,6 +739,10 @@
     return [[self.parseObject objectForKey:kRecipeAttrNumComments] integerValue];
 }
 
+- (NSInteger)rankScore {
+    return [[self.parseObject objectForKey:kRecipeAttrRankScore] integerValue];
+}
+
 - (void)setRecipeUpdatedDateTime:(NSDate *)recipeUpdatedDateTime {
     if (recipeUpdatedDateTime) {
         [self.parseObject setObject:recipeUpdatedDateTime forKey:kRecipeAttrUpdatedAt];
@@ -802,6 +806,18 @@
     }
     
     return pictureUrl;
+}
+
+- (void)markShared {
+    [PFCloud callFunctionInBackground:@"markRecipeShared"
+                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Recipe[%@] marked shared.", self.objectId);
+                                    } else {
+                                        DLog(@"Error marking recipe[%@] shared.", self.objectId);
+                                    }
+                                }];
 }
 
 #pragma mark - Private Methods

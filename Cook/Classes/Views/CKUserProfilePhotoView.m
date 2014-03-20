@@ -72,12 +72,14 @@
     return CGSizeMake(kBorder + size.width + kBorder, kBorder + size.height + kBorder);
 }
 
-- (void)dealloc {
-    [EventHelper unregisterPhotoLoading:self];
-}
-
 - (id)initWithProfileSize:(ProfileViewSize)profileSize {
     return [self initWithUser:nil profileSize:profileSize];
+}
+
+- (id)initWithProfileSize:(ProfileViewSize)profileSize tappable:(BOOL)tappable {
+    
+    return [self initWithUser:nil placeholder:[UIImage imageNamed:@"cook_default_profile.png"] profileSize:profileSize
+                       border:NO overlay:NO tappable:tappable];
 }
 
 - (id)initWithProfileSize:(ProfileViewSize)profileSize border:(BOOL)border {
@@ -107,7 +109,15 @@
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
             border:(BOOL)border overlay:(BOOL)overlay {
     
+    return [self initWithUser:user placeholder:placeholderImage profileSize:profileSize border:border overlay:overlay
+                     tappable:YES];
+}
+
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
+            border:(BOOL)border overlay:(BOOL)overlay tappable:(BOOL)tappable {
+    
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize border:border]]) {
+        
         self.placeholderImage = placeholderImage;
         self.profileSize = profileSize;
         self.highlightOnTap = YES;
@@ -121,8 +131,8 @@
         }
         
         // Profile image view.
-        UIImageView *profileImageView = [[UIImageView alloc] initWithImage:placeholderImage];
-        profileImageView.frame = [self profileImageFrameWithBorder:border];
+        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:[self profileImageFrameWithBorder:border]];
+        profileImageView.backgroundColor = [UIColor blackColor];
         [self addSubview:profileImageView];
         self.profileImageView = profileImageView;
         
@@ -145,19 +155,23 @@
             self.profileOverlay = profileOverlay;
         }
         
-        // Add edit.
-        [self initEditButton];
-        
-        // Register taps.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileTapped:)];
-        [self addGestureRecognizer:tapGesture];
-        
-        // Register photo loading events.
-        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-        
         // Load photo if user was given.
         if (user) {
             [self loadProfilePhotoForUser:user];
+        } else {
+            self.profileImageView.image = placeholderImage;
+        }
+        
+        // Add tappable related controls.
+        self.userInteractionEnabled = tappable;
+        if (tappable) {
+            
+            // Add edit.
+            [self initEditButton];
+            
+            // Register taps.
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileTapped:)];
+            [self addGestureRecognizer:tapGesture];
         }
         
     }
@@ -175,6 +189,10 @@
     }
     
     [self loadProfilePhotoForUser:self.user];
+}
+
+- (void)clearProfilePhoto {
+    self.profileImageView.image = nil;
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
@@ -207,17 +225,35 @@
 
 - (void)loadProfileUrl:(NSURL *)profileUrl {
     self.profilePhotoUrl = profileUrl;
+    
     if (profileUrl) {
-        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl
-                                                size:[ImageHelper profileSize]
-                                                name:[profileUrl absoluteString]
-                                            progress:^(CGFloat progress){}
-                                       isSynchronous:YES
-                                          completion:^(UIImage *image, NSString *name) {
-                                              if ([name isEqualToString:[profileUrl absoluteString]]) {
-                                                  self.profileImageView.image = image;
-                                              }
-                                          }];
+        
+        // If blank profile, just load from app bundle
+        if ([[profileUrl absoluteString] isEqualToString:[[CKUser defaultBlankProfileUrl] absoluteString]]) {
+            self.profileImageView.image = [UIImage imageNamed:@"cook_default_profile.png"];
+            return;
+        }
+        
+        self.profileImageView.image = nil;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize] completion:^(UIImage *image, NSString *name) {
+                NSString *compareURL = [profileUrl absoluteString];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(userProfileURL)]) {
+                    compareURL = [self.delegate userProfileURL];
+                }
+                if ([name isEqualToString:compareURL]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        // Cross-fade the image.
+                        [UIView transitionWithView:self.profileImageView
+                                          duration:0.2
+                                           options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
+                                        animations:^{
+                                            [self loadProfileImage:image];
+                                        } completion:nil];
+                    });
+                }
+            }];
+        });
     }
 }
 
@@ -327,16 +363,6 @@
     };
     [self addSubview:self.editButton];
     self.editButton.alpha = 0.0;
-}
-
-- (void)photoLoadingReceived:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    if ([[self.profilePhotoUrl absoluteString] isEqualToString:name]) {
-        if ([EventHelper hasImageForPhotoLoading:notification]) {
-            UIImage *image = [EventHelper imageForPhotoLoading:notification];
-            [self loadProfileImage:image];
-        }
-    }
 }
 
 - (void)profileTapped:(UITapGestureRecognizer *)tapGesture {

@@ -43,15 +43,28 @@
            progress:(void (^)(CGFloat progressRatio))progress
       isSynchronous:(BOOL)isSynchronous
          completion:(void (^)(UIImage *image, NSString *name))completion;
+- (void)featuredImageForRecipe:(CKRecipe *)recipe
+                          size:(CGSize)size
+                      progress:(void (^)(CGFloat progressRatio, NSString *name))progress
+               thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+                    completion:(void (^)(UIImage *image, NSString *name))completion;
 
 // Event-based photo loading.
-- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
+- (void)thumbImageForRecipe:(CKRecipe *)recipe name:(NSString *)name size:(CGSize)size;
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
+- (void)fullImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
 - (void)imageForBook:(CKBook *)book size:(CGSize)size;
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size;
+- (void)blurredImageForRecipe:(CKRecipe *)recipe
+                    tintColor:(UIColor *)tint
+                   thumbImage:(UIImage *)image
+                   completion:(void (^)(UIImage *thumbImage, NSString *name))completion;
+- (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
+              completion:(void (^)(UIImage *image, NSString *name))completion;
 
 // Setup books, resizing etc.
-- (void)setupBooks;
+- (void)generateImageAssets;
+- (UIImage *)imageAssetForName:(NSString *)name;
 
 // Image caching.
 - (BOOL)imageCachedForKey:(NSString *)cacheKey;

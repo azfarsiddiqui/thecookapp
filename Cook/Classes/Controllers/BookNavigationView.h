@@ -16,7 +16,6 @@
 - (void)bookNavigationViewHomeTapped;
 - (void)bookNavigationViewAddTapped;
 - (void)bookNavigationViewEditTapped;
-- (UIColor *)bookNavigationColour;
 
 @end
 
@@ -29,7 +28,6 @@
 
 - (void)setTitle:(NSString *)title editable:(BOOL)editable book:(CKBook *)book;
 - (void)updateTitle:(NSString *)title;
-- (void)setDark:(BOOL)dark;
 - (void)enableAddAndEdit:(BOOL)enable;
 
 @end

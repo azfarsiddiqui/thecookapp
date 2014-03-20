@@ -86,6 +86,14 @@
     return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_add" cover:cover selected:selected]];
 }
 
++ (UIImage *)editImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_edit" cover:cover selected:selected]];
+}
+
++ (UIImage *)backImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_back" cover:cover selected:selected]];
+}
+
 + (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected {
     return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_new" cover:cover selected:selected]];
 }
@@ -118,6 +126,10 @@
         hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.BackdropHex", [CKBookCover defaultColourName]]];
     }
     return [UIColor colorWithHexString:hexValue];
+}
+
++ (UIColor *)bookContentTintColourForCover:(NSString *)cover {
+    return [UIColor colorWithHexString:@"3D5766"];
 }
 
 + (UIColor *)themeBackdropColourForCover:(NSString *)cover {
@@ -201,30 +213,6 @@
 
 + (NSString *)smallImageNameForIllustration:(NSString *)illustration {
     return [[NSString stringWithFormat:@"illustration_%@_small", illustration] lowercaseString];
-}
-
-+ (NSString *)mediumImageNameForCover:(NSString *)cover {
-    return [[NSString stringWithFormat:@"cover_%@_medium", cover] lowercaseString];
-}
-
-+ (NSString *)mediumImageNameForIllustration:(NSString *)illustration {
-    return [[NSString stringWithFormat:@"illustration_%@_medium", illustration] lowercaseString];
-}
-
-+ (UIImage *)smallImageForCover:(NSString *)cover {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self smallImageNameForCover:cover]];
-}
-
-+ (UIImage *)smallImageForIllustration:(NSString *)illustration {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self smallImageNameForIllustration:illustration]];
-}
-
-+ (UIImage *)mediumImageForCover:(NSString *)cover {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self mediumImageNameForCover:cover]];
-}
-
-+ (UIImage *)mediumImageForIllustration:(NSString *)illustration {
-    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self mediumImageNameForIllustration:illustration]];
 }
 
 + (NSArray *)covers {
@@ -342,10 +330,11 @@
 
 + (NSString *)imageNameForBaseName:(NSString *)baseName cover:(NSString *)cover selected:(BOOL)selected {
     NSMutableString *imageName = [NSMutableString stringWithString:baseName];
+    [imageName appendFormat:@"_%@", [cover lowercaseString]];
     if (selected) {
         [imageName appendString:@"_onpress"];
     }
-    [imageName appendFormat:@"_%@.png", [cover lowercaseString]];
+    [imageName appendString:@".png"];
     return imageName;
 }
 

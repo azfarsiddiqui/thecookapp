@@ -434,10 +434,6 @@
         // Update the start textbox frame.
         self.startTextBoxSourceFrame = originalTextBoxView.frame;
         
-        // Get the originalTextBoxView's frame relative to the fullscreen view.
-        CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
-        self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
-        
         // Now re-attach to the fullscreen view.
         [originalTextBoxView removeFromSuperview];
         originalTextBoxView.frame = targetTextBoxView.frame;
@@ -608,7 +604,8 @@
                                                   
                                                   // Resize the original textbox back to its original frame.
                                                   originalTextBoxView.frame = self.startTextBoxFullScreenFrame;
-                                                  
+                                                  DLog(@"After frame: %f, %f, %f, %f", self.startTextBoxFullScreenFrame.origin.x, self.startTextBoxFullScreenFrame.origin.y,
+                                                       self.startTextBoxFullScreenFrame.size.width, self.startTextBoxFullScreenFrame.size.height);
                                                   // Fade in the save icon.
                                                   if ([self showSaveIcon]) {
                                                       [originalTextBoxView showSaveIcon:NO animated:NO];

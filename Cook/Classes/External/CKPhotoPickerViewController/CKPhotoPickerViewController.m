@@ -7,7 +7,6 @@
 //
 
 #import "CKPhotoPickerViewController.h"
-#import "UIImage+ProportionalFill.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreImage/CoreImage.h>
@@ -17,7 +16,6 @@
 #import "UIImage+Scale.h"
 #import "UIDevice+Hardware.h"
 #import "ViewHelper.h"
-#import "SDImageCache.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate, UIAlertViewDelegate>
@@ -104,10 +102,6 @@
     self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
     self.activityView.center = [self parentView].center;
     [[self parentView] addSubview:self.activityView];
-    
-    //Free up as much memory as possible
-    [[SDImageCache sharedImageCache] clearMemory];
-    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     // Square?
     if (self.type == CKPhotoPickerImageTypeSquare) {
@@ -196,14 +190,10 @@
 }
 
 - (void)processChosenImage:(UIImage *)chosenImage {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateImagePreview];
-            [self updateButtons];
-            [self.activityView stopAnimating];
-        });
-    });
+    self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
+    [self updateImagePreview];
+    [self updateButtons];
+    [self.activityView stopAnimating];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -693,7 +683,6 @@
         {
             //Choose Auto filter for new pictures, None for editing existing
             [self.filterPickerView selectNotch:self.isEditing ? 0 : 1];
-            [self.filterPickerView stopFilterLoading];
         }
     }
     if (self.squareOverlayView) [[self parentView] bringSubviewToFront:self.squareOverlayView];
@@ -732,7 +721,6 @@
 
 - (UIImageOrientation)adjustedOrientationofImage:(UIImage *)image
 {
-    DLog(@"Image orientation is: %i", image.imageOrientation);
     UIInterfaceOrientation appOrientation = [UIApplication sharedApplication].statusBarOrientation;
     if (appOrientation == UIInterfaceOrientationLandscapeLeft) {
         if (self.currentOrientation == UIDeviceOrientationPortrait) {

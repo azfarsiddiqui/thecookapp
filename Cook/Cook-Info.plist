@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>${PRODUCT_NAME}${BUNDLE_DISPLAY_NAME_SUFFIX}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIcons</key>
@@ -22,7 +22,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.thecookapp.cook</string>
+	<string>com.thecookapp.cook${BUNDLE_ID_SUFFIX}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -40,14 +40,14 @@
 			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb289425251158959</string>
+				<string>fb${COOK_FACEBOOK_APP_ID}</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.4.2</string>
+	<string>1.4.30</string>
 	<key>FacebookAppID</key>
-	<string>289425251158959</string>
+	<string>${COOK_FACEBOOK_APP_ID}</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -64,10 +64,6 @@
 		<string>Brandon_reg.otf</string>
 		<string>Brandon_thin_it.otf</string>
 		<string>Brandon_thin.otf</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
 	</array>
 	<key>UILaunchImages~ipad</key>
 	<array>

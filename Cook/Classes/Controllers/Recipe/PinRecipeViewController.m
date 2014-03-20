@@ -51,7 +51,7 @@
     
     self.collectionView.alpha = 0.0;
     [self.view addSubview:self.collectionView];
-    self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+    self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

@@ -30,6 +30,9 @@
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
 #import "CKProgressView.h"
+#import "CKPhotoView.h"
+#import "CKError.h"
+#import "CardViewHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate, BooKTitlePhotoViewDelegate>
@@ -40,9 +43,9 @@
 @property (nonatomic, assign) BOOL didScrollBack;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 
-@property (nonatomic, strong) UIImageView *imageView;
+//@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) CKPhotoView *photoView;
 @property (nonatomic, strong) UIImageView *topShadowView;
-@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) BookTitlePhotoView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
@@ -76,9 +79,8 @@
 #define kHeaderCellGap          135.0
 
 - (void)dealloc {
-    self.imageView.image = nil;
+    [self.photoView cleanImageViews]; self.photoView = nil;
     self.topShadowView.image = nil;
-    self.blurredImageView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
     [EventHelper unregisterPhotoLoadingProgress:self];
 }
@@ -104,16 +106,26 @@
     // Attempt to load a cached title image.
     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
     if (cachedTitleImage) {
-        self.imageView.image = cachedTitleImage;
+        [self.photoView setThumbnailImage:cachedTitleImage];
+        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        
+        __weak BookTitleViewController *weakSelf = self;
+        [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
+                                                     tintColor:tintColour
+                                                    thumbImage:cachedTitleImage
+                                                    completion:^(UIImage *thumbImage, NSString *name) {
+                                                        [weakSelf.photoView setBlurredImage:thumbImage];
+                                                    }];
+        
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
         self.cachedImageLoaded = YES;
+    } else {
+        [self.photoView setThumbnailImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]];
     }
     
     [self addCloseButtonLight:YES];
     
-    // Register photo loading events.
-    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-    [EventHelper registerPhotoLoadingProgress:self selector:@selector(photoLoadingProgress:)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnFromBackground) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)configureLoading:(BOOL)loading {
@@ -158,6 +170,16 @@
                              [self.activityView removeFromSuperview];
                          }];
     }
+}
+
+- (void)configureError:(NSError *)error {
+    [self configureLoading:NO];
+    
+    // No connection?
+    if ([CKError noConnectionError:error]) {
+        [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:(CGPoint) { self.view.center.x, 100.0 }];
+    }
+    
 }
 
 - (void)configurePages:(NSArray *)pages {
@@ -210,6 +232,15 @@
                                  // Open ze gates.
                                  [self openGates];
                                  
+                                 if (self.cachedImageLoaded) {
+                                     //Tile backgroundImage, which will get rid of heavy imageView
+                                     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
+                                     __weak BookTitleViewController *weakSelf = self;
+                                     [self.photoView setFullImage:cachedTitleImage completion:^{
+                                         weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
+                                     }];
+                                 }
+                                 
                              }];
         }];
     }
@@ -222,19 +253,40 @@
     // Make sure view is available when this is invoked.
     self.view.hidden = NO;
     
-    if ([recipe hasPhotos]) {
+    if ([recipe hasPhotos] && !self.cachedImageLoaded) {
+        
+        CGFloat progressOffset = [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? 60.0 : 20.0;
         
         // Add progress.
         self.progressView.frame = (CGRect){
             floorf((self.view.bounds.size.width - self.progressView.frame.size.width) / 2.0),
-            20.0,
+            progressOffset,
             self.progressView.frame.size.width,
             self.progressView.frame.size.height
         };
         [self.view addSubview:self.progressView];
         [self.progressView setProgress:0.1 animated:YES];
         
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size];
+        __weak BookTitleViewController *weakSelf = self;
+        [[CKPhotoManager sharedInstance] featuredImageForRecipe:recipe
+                                                           size:self.view.frame.size
+                                                       progress:^(CGFloat progressRatio, NSString *name) {
+                                                           NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
+                                                           if ([recipePhotoName isEqualToString:name]) {
+                                                               [weakSelf.progressView setProgress:progressRatio animated:YES];
+                                                           }
+                                                       }
+                                                thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
+                                                    if ([recipePhotoName isEqualToString:name]) {
+                                                        [weakSelf configureHeroRecipeImage:thumbImage thumb:YES];
+                                                    }
+                                                }
+                                                     completion:^(UIImage *image, NSString *name) {
+                                                         weakSelf.fullImageLoaded = YES;
+                                                         [weakSelf configureHeroRecipeImage:image thumb:NO];
+                                                         weakSelf.progressView.hidden = YES;
+                                                     }];
     }
 }
 
@@ -320,7 +372,7 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self applyOffset:scrollView.contentOffset.y distance:200.0 view:self.blurredImageView];
+    [self applyOffset:scrollView.contentOffset.y distance:200.0 view:self.photoView.blurredImageView];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -513,7 +565,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value {
     
-    NSString *text = value;
+    NSString *text = [value uppercaseString];
     if ([text CK_containsText]) {
         [self addPageWithName:text];
     } else {
@@ -611,28 +663,19 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     imageContainerView.clipsToBounds = YES;
     [self.view addSubview:imageContainerView];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_edit_bg_blank" type:@"png"]];
-    imageView.frame = (CGRect) {
+    self.photoView = [[CKPhotoView alloc] initWithFrame:(CGRect) {
         imageContainerView.bounds.origin.x - motionOffset.horizontal,
         imageContainerView.bounds.origin.y - motionOffset.vertical,
         imageContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
         imageContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
-    };
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
-    [imageContainerView addSubview:imageView];
-    self.imageView = imageView;
-    
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:imageView.bounds];
-    self.blurredImageView.alpha = 0.0;
-    [self.imageView addSubview:self.blurredImageView];
+    }];
+    [imageContainerView addSubview:self.photoView];
     
     // Apply top shadow.
-    [self.view insertSubview:self.topShadowView aboveSubview:self.imageView];
+    [self.view insertSubview:self.topShadowView aboveSubview:self.photoView];
     
     // Motion effects.
-    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
+    [ViewHelper applyDraggyMotionEffectsToView:self.photoView];
     
     // Borders.
     [self initBorders];
@@ -672,30 +715,27 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.bookPageDelegate bookPageViewControllerPanEnable:!addMode];
 }
 
-- (void)configureHeroRecipeImage:(UIImage *)image {
+- (void)configureHeroRecipeImage:(UIImage *)image thumb:(BOOL)isThumb {
     self.progressView.hidden = self.fullImageLoaded;
     
-    if (self.cachedImageLoaded) {
-        [UIView transitionWithView:self.imageView
-                          duration:0.4
-                           options:UIViewAnimationOptionTransitionCrossDissolve
-                        animations:^{
-                            self.imageView.image = image;
-                        }
-                        completion:^(BOOL success) {
-                        }];
-    } else {
-        self.imageView.image = image;
+    if (isThumb) {
+        [self.photoView setThumbnailImage:image];
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-    }
-    
-    UIColor *tintColour = [[CKBookCover backdropColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
-    [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-        self.blurredImageView.image = blurredImage;
-    }];
-    
-    if (self.fullImageLoaded) {
+        
+        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        
+        __weak BookTitleViewController *weakSelf = self;
+        [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
+                                                     tintColor:tintColour
+                                                    thumbImage:image
+                                                    completion:^(UIImage *thumbImage, NSString *name) {
+            [weakSelf.photoView setBlurredImage:thumbImage];
+        }];
+        
+    } else {
+        [self.photoView setFullImage:image];
         [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
+        self.fullImageLoaded = YES;
     }
 }
 
@@ -734,38 +774,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
-}
-
-- (void)photoLoadingReceived:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
-    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
-    
-    if ([recipePhotoName isEqualToString:name]) {
-        
-        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
-        if (!self.fullImageLoaded) {
-            
-            if ([EventHelper hasImageForPhotoLoading:notification]) {
-                UIImage *image = [EventHelper imageForPhotoLoading:notification];
-                self.fullImageLoaded = !thumb;
-                [self configureHeroRecipeImage:image];
-            } else {
-                self.progressView.hidden = YES;
-            }
-        }
-        
-    }
-}
-
-- (void)photoLoadingProgress:(NSNotification *)notification {
-    NSString *name = [EventHelper nameForPhotoLoading:notification];
-    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
-    
-    if ([recipePhotoName isEqualToString:name]) {
-        CGFloat progress = [EventHelper progressForPhotoLoading:notification];
-        [self.progressView setProgress:progress animated:YES];
-    }
 }
 
 - (void)addPageWithName:(NSString *)page {
@@ -857,6 +865,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (BOOL)hasPages {
     return [self.collectionView numberOfItemsInSection:0];
+}
+
+- (void)returnFromBackground {
+    self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
 }
 
 @end

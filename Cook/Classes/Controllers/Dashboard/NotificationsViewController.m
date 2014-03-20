@@ -19,6 +19,7 @@
 #import "CKUser.h"
 #import "RecipeSocialViewController.h"
 #import "ProfileViewController.h"
+#import "AnalyticsHelper.h"
 
 @interface NotificationsViewController () <NotificationCellDelegate, UICollectionViewDataSource,
     UICollectionViewDelegateFlowLayout, RecipeSocialViewControllerDelegate>
@@ -57,6 +58,8 @@
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     [self loadData];
+    
+    [AnalyticsHelper trackEventName:kEventNotificationsView];
 }
 
 #pragma mark - NotificationCellDelegate methods
@@ -144,13 +147,23 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 #pragma mark - UICollectionViewDelegate methods
 
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.notifications && [self.notifications count] > 0) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
     NSString *notificationName = notification.name;
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
-        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
+        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]
+        || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
+        ) {
 
         CKUser *user = notification.actionUser;
         if (user) {
@@ -158,8 +171,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
+               || [notificationName isEqualToString:kUserNotificationTypeReply]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
-               || [notificationName isEqualToString:kUserNotificationTypePin]) {
+               || [notificationName isEqualToString:kUserNotificationTypePin]
+               ) {
         
         CKRecipe *recipe = notification.recipe;
         if (recipe) {
@@ -214,7 +229,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             
         } else {
             
-            // No comments.
+            // No notifications.
             [self.overlayActivityView stopAnimating];
             [self.overlayActivityView removeFromSuperview];
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
@@ -256,7 +271,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(closeTapped:)];
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _closeButton.frame = (CGRect){
             kContentInsets.left,
@@ -340,7 +355,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSArray *)acceptedNotificationNames {
     return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment,
-             kUserNotificationTypeLike, kUserNotificationTypePin];
+             kUserNotificationTypeLike, kUserNotificationTypePin, kUserNotificationTypeFeedPin, kUserNotificationTypeReply];
 }
 
 - (BOOL)notificationActionInProgressForNotification:(CKUserNotification *)notification {

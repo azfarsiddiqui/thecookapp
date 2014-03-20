@@ -15,9 +15,10 @@
 @class CKRecipe;
 
 typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                       NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSArray *likedRecipes,
+                                       NSDictionary *pageRecipeCount, NSDictionary *pageRankings,
                                        NSDate *bookLastAccessedDate);
 typedef void(^PageRecipesSuccessBlock)(CKBook *book, NSString *page, NSInteger batchindex, NSArray *recipes);
+typedef void(^LikedRecipesSuccessBlock)(CKBook *book, NSInteger batchindex, NSArray *recipes);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
 typedef void(^DashboardBooksSuccessBlock)(CKBook *myBook, NSArray *followBooks, NSDictionary *followBookUpdates);
 typedef void(^FriendsAndSuggestedBooksSuccessBlock)(NSArray *friendsBooks, NSArray *suggestedBooks);
@@ -70,6 +71,8 @@ typedef enum {
 - (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)recipesForPage:(NSString *)page batchIndex:(NSInteger)batchIndex success:(PageRecipesSuccessBlock)success
                failure:(ObjectFailureBlock)failure;
+- (void)likedRecipesForBatchIndex:(NSInteger)batchIndex success:(LikedRecipesSuccessBlock)success
+                          failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 - (BOOL)hasRemoteImage;

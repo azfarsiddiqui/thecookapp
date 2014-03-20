@@ -67,8 +67,7 @@
 + (void)unregisterStatusBarChange:(id)observer;
 
 + (void)registerUserNotifications:(id)observer selector:(SEL)selector;
-+ (void)postUserNotifications:(NSInteger)notificationsCount;
-+ (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification;
++ (void)postUserNotifications;
 + (void)unregisterUserNotifications:(id)observer;
 
 // Image loading events.
@@ -85,9 +84,10 @@
 + (void)unregisterPhotoLoadingProgress:(id)observer;
 
 // Background fetch.
-+ (void)registerBackgroundFetch:(id)observer selector:(SEL)selector;
-+ (void)postBackgroundFetch;
-+ (void)unregisterBackgroundFetch:(id)observer;
++ (void)registerDashFetch:(id)observer selector:(SEL)selector;
++ (void)postDashFetchBackground:(BOOL)background;
++ (void)unregisterDashFetch:(id)observer;
++ (BOOL)isBackgroundForDashFetch:(NSNotification *)notification;
 
 // Social stuff.
 + (void)registerSocialUpdates:(id)observer selector:(SEL)selector;
@@ -100,5 +100,12 @@
 + (NSInteger)numLikesForNotification:(NSNotification *)notification;
 + (NSInteger)numCommentsForNotification:(NSNotification *)notification;
 + (CKRecipe *)socialUpdatesRecipeForNotification:(NSNotification *)notification;
+
+// Lifecycle events.
++ (void)registerAppActive:(id)observer selector:(SEL)selector;
++ (void)postAppActive:(BOOL)active;
++ (void)unregisterAppActive:(id)observer;
++ (BOOL)appActiveForNotification:(NSNotification *)notification;
+
 
 @end

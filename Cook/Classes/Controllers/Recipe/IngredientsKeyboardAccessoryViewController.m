@@ -23,8 +23,7 @@
 
 #define kHeight 56.0
 #define kCellId @"CellId"
-#define kSavedIndexItemKey @"IngredientsKeyboardIndexItem"
-#define kSavedIndexSectionKey @"IngredientsKeyboardIndexSection"
+
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
@@ -66,11 +65,9 @@
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [self.collectionView registerClass:[IngredientsKeyboardAccessoryCell class] forCellWithReuseIdentifier:kCellId];
-    
-    NSInteger savedIndexItem = [[[NSUserDefaults standardUserDefaults] objectForKey:kSavedIndexItemKey] integerValue];
-    NSInteger savedIndexSection = [[[NSUserDefaults standardUserDefaults] objectForKey:kSavedIndexSectionKey] integerValue];
-    NSIndexPath *savedIndex = [NSIndexPath indexPathForItem:savedIndexItem inSection:savedIndexSection];
-    [self.collectionView scrollToItemAtIndexPath:savedIndex atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+
+//    [self.collectionView scrollToItemAtIndexPath:[self indexOfElementForCurrentLocale] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+    [self.collectionView setContentOffset:CGPointMake([self posOfElementForCurrentLocale], 0) animated:YES];
 }
 
 - (NSArray *)allUnitOfMeasureOptions {
@@ -87,6 +84,18 @@
             && ([self isUnitForMeasure:measure] == [self isUnitForMeasure:anotherMeasure]));
 }
 
+//Auto scroll to guessed locale. This will eventually default to current measure type once Conversions are implemented
+- (CGFloat)posOfElementForCurrentLocale {
+    NSInteger metricCellPos = 1024 * 2;
+    
+    NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
+    if ([countryCode isEqualToString:@"US"]) {
+        return 0;
+    } else {
+        return metricCellPos;
+    }
+}
+
 #pragma mark - UICollectionViewDelegateFlowLayout methods
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -95,9 +104,9 @@
     UIEdgeInsets insets = (UIEdgeInsets) { 10.0, 10.0, 6.0, 10.0 };
     NSInteger numSections = [self.collectionView numberOfSections];
     if (section == 0) {
-        insets.left = 23.0;
+        insets.left = 10.0;
     } else if (section == numSections - 1) {
-        insets.right = 23.0;
+        insets.right = 6.0;
     }
     return insets;
 }
@@ -151,17 +160,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     [cell configureText:[ingredient valueForKey:@"Value"]];
     
     return cell;
-}
-
-#pragma mark - UIScrollViewDelegate methods
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    NSArray *visibleIndexes = [self.collectionView indexPathsForVisibleItems];
-    NSIndexPath *firstIndexPath = [visibleIndexes objectAtIndex:0];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:firstIndexPath.item] forKey:kSavedIndexItemKey];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:firstIndexPath.section] forKey:kSavedIndexSectionKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

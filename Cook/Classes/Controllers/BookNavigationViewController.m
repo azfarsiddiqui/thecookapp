@@ -25,6 +25,7 @@
 #import "BookContentImageView.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
+#import "AnalyticsHelper.h"
 #import "BookContentCell.h"
 #import "CKPhotoManager.h"
 #import "CardViewHelper.h"
@@ -35,7 +36,7 @@
 
 @interface BookNavigationViewController () <BookNavigationLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
-    UIGestureRecognizerDelegate>
+    UIGestureRecognizerDelegate, BookContentImageViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *user;
@@ -45,24 +46,28 @@
 @property (nonatomic, strong) NSString *saveOrUpdatedPage;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
-@property (nonatomic, strong) NSMutableArray *likedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipeCount;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageBatches;
-@property (nonatomic, strong) NSDictionary *pageRankings;
+@property (nonatomic, strong) NSMutableDictionary *pageRankings;
 @property (nonatomic, strong) NSMutableDictionary *pageCurrentBatches;
 @property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
 @property (nonatomic, strong) NSMutableDictionary *contentControllerOffsets;
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
+@property (nonatomic, strong) NSMutableDictionary *thumbnailImageCache;
+@property (nonatomic, strong) NSMutableDictionary *blurredImageCache;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, assign) BOOL navBarAnimating;
+@property (nonatomic, assign) BOOL isLoadMore;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
+@property (nonatomic, assign) NSUInteger numRetries;
+@property (nonatomic, strong) NSString *currentNavigationPageName;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -85,12 +90,14 @@
 @property (nonatomic, strong) BookPageViewController *currentEditViewController;
 
 // Likes
-@property (nonatomic, strong) CKRecipe *featuredLikedRecipe;
 @property (nonatomic, assign) BOOL enableLikes;
 @property (nonatomic, strong) NSString *likesPageName;
 
 // Update execution block.
 @property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
+
+// Analytics
+@property (nonatomic, strong) NSMutableDictionary *pagesViewed;
 
 @end
 
@@ -112,6 +119,9 @@
 #define kEditButtonInsets           (UIEdgeInsets){ 20.0, 5.0, 0.0, 5.0 }
 #define kIndexSectionTag            950
 #define kProfileSectionTag          951
+#define MAX_NUM_RETRIES             5
+#define MAX_CACHED_THUMBNAILS       10
+#define MAX_CACHED_BLURRED          10
 
 - (id)initWithBook:(CKBook *)book titleViewController:(BookTitleViewController *)titleViewController
           delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -123,6 +133,7 @@
         self.currentUser = [CKUser currentUser];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
+        self.pagesViewed = [NSMutableDictionary dictionary];
         
         // Init the titleVC, which could be shared between RootVC and BookNavigationVC.
         if (!titleViewController) {
@@ -133,7 +144,11 @@
         self.titleViewController.delegate = self;
         self.titleViewController.bookPageDelegate = self;
         self.enableLikes = YES;
+        self.isLoadMore = NO;
         self.destinationIndexes = @[@([self contentStartSection])]; //Start with first page
+        
+        self.thumbnailImageCache = [NSMutableDictionary new];
+        self.blurredImageCache = [NSMutableDictionary new];
         
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
@@ -168,6 +183,14 @@
     leftEdgeGesture.delegate = self;
     leftEdgeGesture.edges = UIRectEdgeLeft;
     [self.collectionView addGestureRecognizer:leftEdgeGesture];
+    
+    // View book.
+    [AnalyticsHelper trackEventName:kEventBookView params:[self analyticsDataForBookOpen] timed:YES];
+    
+    // Safegaurd against long backgrounding making the book disabled bug
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnFromBackground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    
+    [EventHelper registerPhotoLoading:self selector:@selector(thumbLoadingReceived:)];
 }
 
 - (void)setActive:(BOOL)active {
@@ -211,10 +234,13 @@
     
     NSString *page = recipe.page;
     
-    NSMutableArray *recipes = [self.pageRecipes objectForKey:page];;
+    NSMutableArray *recipes = [NSMutableArray arrayWithArray:[self.pageRecipes objectForKey:page]];
+    [self.pageRecipes setObject:recipes forKey:page];
     
     // Check if this was a new/updated recipe.
-    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -238,7 +264,9 @@
         NSMutableArray *recipes = [self.pageRecipes objectForKey:currentPage];
         
         // Look for the recipe to remove from the old page.
-        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        NSInteger foundIndex = [recipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+            
+            CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
             return [existingRecipe.objectId isEqualToString:recipe.objectId];
         }];
         
@@ -271,7 +299,13 @@
     // Remove the recipe.
     NSString *page = recipe.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    [recipes removeObject:recipe];
+    
+    NSMutableArray *updatedRecipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }]];
+    
+    [self.pageRecipes setObject:updatedRecipes forKey:page];
     
     // Decrement the recipe.
     [self decrementCountForPage:page];
@@ -292,8 +326,14 @@
     // Remove references to the pinned recipe.
     NSString *page = recipePin.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKRecipe *recipe) {
-        return [recipePin.recipe.objectId isEqualToString:recipe.objectId];
+    recipes = [NSMutableArray arrayWithArray:[recipes reject:^BOOL(CKModel *recipeOrPin) {
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            return [recipePin.objectId isEqualToString:recipeOrPin.objectId];
+        } else {
+            return NO;
+        }
+        
     }]];
     [self.pageRecipes setObject:recipes forKey:page];
     
@@ -316,7 +356,7 @@
     // Add pinned recipe to the page in the book.
     NSString *page = recipePin.page;
     NSMutableArray *recipes = [self.pageRecipes objectForKey:page];
-    [recipes addObject:recipePin.recipe];
+    [recipes addObject:recipePin];
     
     // Re-sort the recipes.
     [self sortRecipes:recipes];
@@ -339,7 +379,8 @@
     NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
     
     // Look for the liked recipe if it was there from before.
-    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -375,7 +416,8 @@
     NSMutableArray *likedRecipes = [self.pageRecipes objectForKey:self.likesPageName];
     
     // Look for the liked recipe if it was there from before.
-    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+    NSInteger foundIndex = [likedRecipes findIndexWithBlock:^BOOL(CKModel *recipeOrPin) {
+        CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
     
@@ -428,12 +470,22 @@
     
     // Renaming the recipes locally, as server-side has already occured.
     DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
-    [recipesToRename each:^(CKRecipe *recipe) {
-        recipe.page = page;
+    [recipesToRename each:^(CKModel *recipeOrPin) {
+        
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            CKRecipePin *existingPin = (CKRecipePin *)recipeOrPin;
+            existingPin.page = page;
+        } else {
+            CKRecipe *existingRecipe = (CKRecipe *)recipeOrPin;
+            existingRecipe.page = page;
+        }
+
     }];
     
     // Rename the data.
-    [self.pageRecipes setObject:recipesToRename forKey:page];
+    if (recipesToRename && [recipesToRename count] > 0) {
+        [self.pageRecipes setObject:recipesToRename forKey:page];
+    }
     [self.pageRecipes removeObjectForKey:fromPage];
     [self.pageBatches setObject:[self.pageBatches objectForKey:fromPage] forKey:page];
     [self.pageBatches removeObjectForKey:fromPage];
@@ -497,7 +549,7 @@
             }
             CGFloat distance = ABS(visibleFrame.origin.x - currentPageOffset);
             CGFloat overlayAlpha = 1.0 - (distance / visibleFrame.size.width);
-            DLog(@"currentPage [%@] nextPage[%@] distance[%f] overlay [%f]", currentPage, nextPage, distance, overlayAlpha);
+//            DLog(@"currentPage [%@] nextPage[%@] distance[%f] overlay [%f]", currentPage, nextPage, distance, overlayAlpha);
             
             // Get the next page and apply the appropriate paging effects.
             BookContentViewController *pageViewController = [self.contentControllers objectForKey:nextPage];
@@ -549,6 +601,9 @@
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editModeRequested:(BOOL)editMode {
     self.currentEditViewController = bookPageViewController;
     [self enableEditMode:editMode];
+    if (!editMode) {
+        self.collectionView.userInteractionEnabled = YES;
+    }
 }
 
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editing:(BOOL)editing {
@@ -566,7 +621,14 @@
 }
 
 - (void)bookNavigationViewHomeTapped {
-    [self scrollToHome];
+    // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
+    double delayInSeconds = 0.1;
+    
+    __weak BookNavigationViewController *weakSelf = self;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [weakSelf scrollToHome];
+    });
 }
 
 - (void)bookNavigationViewAddTapped {
@@ -587,10 +649,6 @@
         self.currentEditViewController = categoryController;
         
     }
-}
-
-- (UIColor *)bookNavigationColour {
-    return [CKBookCover textColourForCover:self.book.cover];
 }
 
 #pragma mark - BookContentViewControllerDelegate methods
@@ -618,12 +676,19 @@
     // [self showOrHideNavigationViewWithOffset:offset page:page];
 }
 
+- (void)bookContentViewControllerScrollFinishedOffset:(CGFloat)offset page:(NSString *)page {
+    
+    // Remember its current offset so we can restore later.
+    [self.contentControllerOffsets setObject:[NSValue valueWithCGPoint:(CGPoint){ 0.0, offset }] forKey:page];
+    
+}
+
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page {
     return (![page isEqualToString:self.likesPageName]);
 }
 
 - (void)bookContentViewControllerShowNavigationView:(BOOL)show {
-    [self showNavigationView:show slide:YES];
+//    [self showNavigationView:show slide:YES];
 }
 
 - (NSInteger)bookContentViewControllerNumBatchesForPage:(NSString *)page {
@@ -649,26 +714,41 @@
     NSInteger requestedBatchIndex = currentBatchIndex + 1;
     
     // Load if the requested batch index is within the number of batches.
-    if (requestedBatchIndex < numBatches) {
+    if (requestedBatchIndex < numBatches && !self.isLoadMore) {
         
-        DLog(@"Loading more for page[%@]", page);
-        [self.book recipesForPage:page batchIndex:requestedBatchIndex
-                          success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
-                              
-                              // Append to the list of recipes.
-                              NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
-                              [pageRecipes addObjectsFromArray:recipes];
-                              
-                              // Update the batch index.
-                              [self.pageCurrentBatches setObject:@(requestedBatchIndex) forKey:page];
-                              
-                              // Update the BookContentVC
-                              BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
-                              [contentViewController loadMoreRecipes:recipes];
-
-                          }
-                          failure:^(NSError *error) {
-                          }];
+        self.isLoadMore = YES;
+        //Cehck why its crashing here when doing airplane mode during load more
+        DLog(@"Loading more for page[%@], requestedIndex: %i, %i", page, requestedBatchIndex, numBatches);
+        
+        if ([self onLikesPage]) {
+            
+            // Load more for likes page.
+            [self.book likedRecipesForBatchIndex:requestedBatchIndex
+                                         success:^(CKBook *book, NSInteger batchIndex, NSArray *recipes) {
+                                             
+                                              [self processLoadMoreForBook:book page:self.likesPageName
+                                                                batchIndex:batchIndex recipes:recipes];
+                                             
+                                              self.isLoadMore = NO;
+                                         }
+                                         failure:^(NSError *error) {
+                                             self.isLoadMore = NO;
+                                         }];
+            
+        } else {
+            
+            // Load more for page.
+            [self.book recipesForPage:page batchIndex:requestedBatchIndex
+                              success:^(CKBook *book, NSString *page, NSInteger batchIndex, NSArray *recipes) {
+                                  
+                                  [self processLoadMoreForBook:book page:page batchIndex:batchIndex recipes:recipes];
+                                  self.isLoadMore = NO;
+                              }
+                              failure:^(NSError *error) {
+                                  self.isLoadMore = NO;
+                              }];
+        }
+        
     }
     
 }
@@ -687,9 +767,11 @@
     self.collectionView.userInteractionEnabled = NO;
     // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
     double delayInSeconds = 0.1;
+    
+    __weak BookNavigationViewController *weakSelf = self;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self scrollToPage:page animated:YES];
+        [weakSelf scrollToPage:page animated:YES];
     });
 }
 
@@ -783,10 +865,6 @@
         
         // Start on page 1.
         [self peekTheBook];
-        
-        //analytics
-        NSDictionary *dimensions = @{@"isOwnBook" : [NSString stringWithFormat:@"%i",([CKUser currentUser].objectId == self.user.objectId)]};
-        [AnalyticsHelper trackEventName:@"Book opened" params:dimensions];
     }
     
     // Left/right edges.
@@ -806,15 +884,46 @@
     return self.bookNavigationView ? self.bookNavigationView.alpha : 1.0;
 }
 
+#pragma mark - BookContentImageViewDelegate methods 
+
+- (BOOL)shouldRunFullLoadForIndex:(NSInteger)pageIndex {
+    if (pageIndex == [self currentPageIndex] - [self contentStartSection]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (void)retrievedThumb:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    
+    // Limit size of thumbnail cache
+    if ([self.thumbnailImageCache count] > MAX_CACHED_THUMBNAILS) {
+        [self.thumbnailImageCache removeAllObjects];
+    }
+    
+    if (savedImage && recipe) {
+        [self.thumbnailImageCache setObject:savedImage forKey:recipe.objectId];
+    }
+}
+
+- (void)retrievedBlurredImage:(UIImage *)savedImage forRecipe:(CKRecipe *)recipe {
+    
+    // Limit size of blurred cache
+    if ([self.blurredImageCache count] > MAX_CACHED_BLURRED) {
+        [self.blurredImageCache removeAllObjects];
+    }
+    
+    if (savedImage && recipe) {
+        [self.blurredImageCache setObject:savedImage forKey:recipe.objectId];
+    }
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self capEdgeScrollPoints];
     [self updateStatusBarBetweenPages];
     [self updatePagingContent];
-    
-    // Restore navbar on any side-scroll.
-    [self showNavigationView:YES slide:NO];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -828,22 +937,34 @@
             [destinationArray addObject:[NSNumber numberWithInt:i]];
         }
         self.destinationIndexes = destinationArray;
-        
-//
-//  TODO G - Do we need this?
-//        [self activatePageContent];
-//
     }
+    
+    //Disable full-size image on all page except the current one
+    __weak BookNavigationViewController *weakSelf = self;
+    [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (![key isEqualToString:[weakSelf currentPage]]) {
+                [(BookContentImageView *)obj deactivateImage];
+            }
+        });
+    }];
+    
+    //Pre-load thumbnails on the next 2 and previous 2 pages
+    [self preloadThumbnails];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self updateNavigationButtons];
+        [self updateNavigationTitle];
+        [self trackPageView];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavigationButtons];
+    [self updateNavigationTitle];
+    [self trackPageView];
     
     //Tell headers images to load content now
     if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
@@ -856,11 +977,14 @@
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    
-    // Re-activate the content for the resulting content page after a scrolling animation there.
+    [self pageContentDidShow];
+}
+
+- (void)pageContentDidShow {
     [self activatePageContent];
     
     [self updateNavigationButtons];
+    [self trackPageView];
     
     self.collectionView.userInteractionEnabled = YES;
     self.fastForward = NO;
@@ -874,14 +998,29 @@
         
         NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:currentPageIndex];
         BookContentCell *contentCell = (BookContentCell *)[self.collectionView cellForItemAtIndexPath:activeIndex];
-        if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:currentPageIndex]]) {
+        if ([self.destinationIndexes containsObject:[NSNumber numberWithInteger:currentPageIndex]]) {
             [contentCell.contentViewController loadPageContent];
             
             NSString *page = [self.pages objectAtIndex:currentPageIndex - [self contentStartSection]];
-            BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
-            [headerView reloadWithBook:self.book];
+            //Only load current page
+            if ([page isEqualToString:[self currentPage]]) {
+                BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
+                DLog(@"ACTIVATING PAGE");
+                [headerView reloadWithBook:self.book];
+            }
+            //Deactivate all other headerViews
+            [self.pageHeaderViews enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                if (![key isEqualToString:page]) {
+                    [(BookContentImageView *)obj deactivateImage];
+                }
+            }];
         }
     }
+    
+    //Reset fast forward flag
+    [self.contentControllers enumerateKeysAndObjectsUsingBlock:^(id key, BookContentViewController *obj, BOOL *stop) {
+        obj.isFastForward = NO;
+    }];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -907,7 +1046,7 @@
     
 }
 
-- (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
                                  atIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionReusableView *headerView = nil;
@@ -916,14 +1055,13 @@
         
         if (indexPath.section == kProfileSection) {
             headerView = [self profileHeaderViewAtIndexPath:indexPath];
-        } else if (indexPath.section >= [self contentStartSection]) {
+        }
+        else if (indexPath.section >= [self contentStartSection]) {
             headerView = [self contentHeaderViewAtIndexPath:indexPath];
         }
         
     } else if ([kind isEqualToString:[BookNavigationLayout bookNavigationLayoutElementKind]]) {
-        
         headerView = [self navigationHeaderViewAtIndexPath:indexPath];
-        
     }
     
     return headerView;
@@ -947,23 +1085,6 @@
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
-      forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.section >= [self contentStartSection]) {
-        
-        // Remove a reference to the content image view.
-        if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-            NSInteger pageIndex = indexPath.section - [self contentStartSection];
-            if (pageIndex < [self.pages count]) {
-                NSString *page = [self.pages objectAtIndex:pageIndex];
-                [self.pageHeaderViews removeObjectForKey:page];
-            }
-        }
-    }
-    
-}
-
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
     forItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -984,11 +1105,11 @@
                 [self.contentControllers removeObjectForKey:page];
                 contentViewController = nil;
             }
-            
         }
     }
-    
 }
+
+
 
 #pragma mark - Properties
 
@@ -1079,6 +1200,14 @@
     return _saveButton;
 }
 
+#pragma mark - Return from Background notification
+
+- (void)returnFromBackground {
+    if ([self.delegate bookNavigationShouldResumeEnable]) {
+        self.collectionView.userInteractionEnabled = YES;
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)initBookOutlineView {
@@ -1136,19 +1265,24 @@
 }
 
 - (void)loadData {
+    [self loadDataIsRetry:NO];
+}
+
+- (void)loadDataIsRetry:(BOOL)retry {
+    
+    // Book load start.
+    [AnalyticsHelper trackEventName:kEventBookLoad params:[self analyticsDataForBookOpen] timed:YES];
     
     // Spin the title page.
     [self.titleViewController configureLoading:YES];
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSArray *likedRecipes,
-                                    NSDate *lastAccessedDate) {
+                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSDate *lastAccessedDate) {
         
-        if (parseBook) {
+        if (parseBook && self.book) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
             self.book = refreshedBook;
-            
             // Refresh the book on the dash as it could be stale, e.g. pages.
             [self.delegate bookNavigationControllerRefreshedBook:refreshedBook];
             
@@ -1158,37 +1292,87 @@
         }
         self.bookLastAccessedDate = lastAccessedDate;
         
-        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings
-                likedRecipes:likedRecipes];
+        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings];
+        
+        // Book load completed.
+        [AnalyticsHelper endTrackEventName:kEventBookLoad params:@{ @"success" : @(YES),
+                                                                    @"retries" : @(self.numRetries),
+                                                                    }];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
         
         // Attempt to reload data.
-        [self performSelector:@selector(loadData) withObject:nil afterDelay:1.0];
+        if (self.numRetries < MAX_NUM_RETRIES) {
+            self.numRetries += 1;
+            
+            __weak BookNavigationViewController *weakSelf = self;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [weakSelf loadDataIsRetry:YES];
+            });
+            
+        } else {
+            
+            // Book load error.
+            [AnalyticsHelper endTrackEventName:kEventBookLoad params:@{ @"success" : @(NO),
+                                                                        @"retries" : @(self.numRetries),
+                                                                        }];
+            
+            [self.titleViewController configureError:error];
+        }
     }];
 }
 
 - (void)processRecipes:(NSDictionary *)pageRecipes pageBatches:(NSDictionary *)pageBatches
-            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings
-          likedRecipes:(NSArray *)likedRecipes {
-    
+            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings {
+
     // Loop through to initialise each recipe.
     self.pageRecipes = [NSMutableDictionary new];
     self.pageBatches = [NSMutableDictionary dictionaryWithDictionary:pageBatches];
     self.pageRecipeCount = [NSMutableDictionary dictionaryWithDictionary:pageCounts];
-    self.pageRankings = pageRankings;
+    self.pageRankings = [NSMutableDictionary dictionaryWithDictionary:pageRankings];
     self.pageCurrentBatches = [NSMutableDictionary new];
     
     for (NSString *page in pageRecipes) {
         NSMutableArray *recipes = [NSMutableArray arrayWithArray:[pageRecipes objectForKey:page]];
         [self.pageRecipes setObject:recipes forKey:page];
-        //Initialise pageCurrentBatches
         [self.pageCurrentBatches setObject:@0 forKey:page];
     }
     
-    self.pageRecipes = [NSMutableDictionary dictionaryWithDictionary:pageRecipes];
-    self.likedRecipes = [NSMutableArray arrayWithArray:likedRecipes];
+    // Do we have likes?
+    if (self.enableLikes && [self.book isOwner]) {
+        
+        // Resolve a Likes page name.
+        self.likesPageName = [self resolveLikesPageName];
+        
+        NSString *serverLikesKey = @"CKLIKES14";
+        
+        // Move the likes data to local book's likes page name.
+        if (![self.likesPageName isEqualToString:serverLikesKey]) {
+            
+            NSArray *likedRecipes = [self.pageRecipes objectForKey:serverLikesKey];
+            [self.pageRecipes setObject:((likedRecipes == nil) ? @[] : likedRecipes) forKey:self.likesPageName];
+            [self.pageRecipes removeObjectForKey:serverLikesKey];
+            
+            NSInteger likesBatches = [[self.pageBatches objectForKey:serverLikesKey] integerValue];
+            [self.pageBatches setObject:@(likesBatches) forKey:self.likesPageName];
+            [self.pageBatches removeObjectForKey:serverLikesKey];
+            
+            NSInteger likesCount = [[self.pageRecipeCount objectForKey:serverLikesKey] integerValue];
+            [self.pageRecipeCount setObject:@(likesCount) forKey:self.likesPageName];
+            [self.pageRecipeCount removeObjectForKey:serverLikesKey];
+
+            NSString *likesRankName = [self.pageRankings objectForKey:serverLikesKey];
+            [self.pageRankings setObject:((likesRankName == nil) ? @"latest" : likesRankName) forKey:self.likesPageName];
+            [self.pageRankings removeObjectForKey:serverLikesKey];
+            
+            NSInteger likesCurrentBatch = [[self.pageCurrentBatches objectForKey:serverLikesKey] integerValue];
+            [self.pageCurrentBatches setObject:@(likesCurrentBatch) forKey:self.likesPageName];
+            [self.pageCurrentBatches setObject:@(likesCount) forKey:serverLikesKey];
+        }
+        
+    }
+    
     [self loadRecipes];
 }
 
@@ -1202,18 +1386,31 @@
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
     
+    if (self.enableLikes && [self.book isOwner]) {
+        [self.pages addObject:self.likesPageName];
+    }
+    
     // If not my book, reject empty pages.
     if (![self.book isOwner]) {
         self.pages = [NSMutableArray arrayWithArray:[self.pages reject:^BOOL(NSString *page) {
-            return ([[self.pageRecipes objectForKey:page] count] == 0);
+            
+            return ([[self.pageRecipeCount objectForKey:page] integerValue] == 0);
+            
         }]];
     }
+    NSMutableArray *uppercaseArray = [NSMutableArray new];
+    [self.pages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [uppercaseArray addObject:[obj uppercaseString]];
+    }];
+    self.pages = uppercaseArray;
     
     // Loop through to initialise each recipe.
     for (NSString *page in self.pageRecipes) {
         
         NSArray *recipes = [self.pageRecipes objectForKey:page];
-        for (CKRecipe *recipe in recipes) {
+        for (CKModel *recipeOrPin in recipes) {
+            
+            CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
             
             // Update social cache.
             [[CKSocialManager sharedInstance] configureRecipe:recipe];
@@ -1227,9 +1424,6 @@
             }
         }
     }
-    
-    // Add likes if we have at least one page.
-    [self processLikes];
     
     // Process rankings.
     [self processRanks];
@@ -1332,41 +1526,13 @@
     [self updateNavigationTitleWithPage:page offset:scrollOffset.y];
 }
 
-- (void)clearFastForwardContentForPage:(NSString *)page cell:(BookContentCell *)cell {
-    cell.contentViewController = nil;
-}
-
-- (NSString *)currentPage {
-    NSString *page = nil;
-    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    BookNavigationLayout *layout = [self currentLayout];
-    
-    NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
-    if ([visibleIndexPaths count] > 0) {
-        
-        // This only returns cells not supplementary/decoration views.
-        for (NSIndexPath *indexPath in visibleIndexPaths) {
-            if (indexPath.section >= [self contentStartSection]) {
-                
-                NSInteger pageIndex = indexPath.section - [self contentStartSection];
-                
-                // Look for an indexPath that equals the visibleFrame, i.e. current category page in view.
-                CGFloat pageOffset = [layout pageOffsetForIndexPath:indexPath];
-                if (pageOffset == visibleFrame.origin.x) {
-                    if (pageIndex < [self.pages count]) {
-                        page = [self.pages objectAtIndex:pageIndex];
-                    }
-                }
-            }
-        }
-        
-    }
-    return page;
-}
-
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
-    return [recipes select:^BOOL(CKRecipe *recipe) {
-        return [recipe hasPhotos];
+    return [recipes select:^BOOL(CKModel *recipeOrPin) {
+        if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+            return [((CKRecipePin*)recipeOrPin).recipe hasPhotos];
+        } else {
+            return [((CKRecipe *)recipeOrPin) hasPhotos];
+        }
     }];
 }
 
@@ -1379,9 +1545,6 @@
 }
 
 - (void)showRecipe:(CKRecipe *)recipe {
-    
-    // Always show status bar when viewing recipe.
-    [self showNavigationView:YES slide:NO];
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
@@ -1413,17 +1576,13 @@
     
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+    UIImage *cachedImage = [self.thumbnailImageCache objectForKey:coverRecipe.objectId];
+    UIImage *cachedBlurredImage = [self.blurredImageCache objectForKey:coverRecipe.objectId];
+    [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book cachedImage:cachedImage];
+    [categoryHeaderView configureBlurredImage:cachedBlurredImage];
     
-    //Only do a full load if the panel is the final destination
-    if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.section]])
-    {
-        categoryHeaderView.isFullLoad = YES;
-    }
-    else
-    {
-        categoryHeaderView.isFullLoad = NO;
-    }
-    [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
+    categoryHeaderView.delegate = self;
+    categoryHeaderView.pageIndex = pageIndex;
     
     // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
@@ -1439,7 +1598,6 @@
         self.bookNavigationView = [[BookNavigationView alloc] initWithFrame:containerView.bounds];
         self.bookNavigationView.delegate = self;
         [self.bookNavigationView setTitle:[self bookNavigationAuthorName] editable:[self.book isOwner] book:self.book];
-        [self.bookNavigationView setDark:NO];
     }
     [containerView configureContentView:self.bookNavigationView];
     return headerView;
@@ -1459,14 +1617,19 @@
 
 - (void)applyRightBookEdgeOutline {
     CGSize contentSize = [[self currentLayout] collectionViewContentSize];
-    self.rightOutlineView.frame = (CGRect){
+    CGRect rightFrame = (CGRect){
         contentSize.width,
         self.collectionView.bounds.origin.y,
         self.rightOutlineView.frame.size.width,
         self.collectionView.bounds.size.height
     };
     if (!self.rightOutlineView.superview) {
+        self.rightOutlineView.frame = rightFrame;
         [self.collectionView addSubview:self.rightOutlineView];
+    } else {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.rightOutlineView.frame = rightFrame;
+        });
     }
 }
 
@@ -1588,6 +1751,11 @@
 }
 
 - (void)closeBookWithPinch:(BOOL)pinch {
+    
+    [AnalyticsHelper endTrackEventName:kEventBookView params:nil];
+    [self.thumbnailImageCache removeAllObjects];
+    [self.blurredImageCache removeAllObjects];
+    self.book = nil;
     if (pinch) {
         [self.delegate bookNavigationControllerCloseRequested];
     } else {
@@ -1599,7 +1767,7 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self contentStartSection];
     
-    [self fastForwardToPageIndex:pageIndex];
+    [self fastForwardToPageIndex:pageIndex animated:animated];
 }
 
 - (void)scrollToHome {
@@ -1607,12 +1775,23 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
-    self.destinationIndexes = @[@(pageIndex)];
+    [self fastForwardToPageIndex:pageIndex animated:YES];
+}
 
+- (void)fastForwardToPageIndex:(NSUInteger)pageIndex animated:(BOOL)animated {
+
+    self.collectionView.userInteractionEnabled = NO;
+    self.destinationIndexes = @[@(pageIndex)];
+    
     [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
+    
+    // Set all content controllers to be fast forwarded
+    [self.contentControllers enumerateKeysAndObjectsUsingBlock:^(id key, BookContentViewController *obj, BOOL *stop) {
+        obj.isFastForward = YES;
+    }];
     
     // Clear offset at target page.
     if (pageIndex >= [self contentStartSection]) {
@@ -1621,27 +1800,46 @@
         [contentHeaderView applyOffset:0.0];
     }
     
-    // Fast forward to the intended page.
-    if (self.fastForward && pageIndex > currentPageIndex) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - [self contentStartSection]]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:NO];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:YES];
+    if (animated) {
         
-    } else if (self.fastForward && pageIndex < currentPageIndex) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + [self contentStartSection]]
+        // Fast forward to the intended page.
+        if (self.fastForward && pageIndex > currentPageIndex) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - [self contentStartSection]]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:NO];
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+            
+        } else if (self.fastForward && pageIndex < currentPageIndex) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + [self contentStartSection]]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:NO];
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+        } else if (pageIndex == currentPageIndex) {
+            
+            // Same page, scroll nothing but activate page.
+            [self pageContentDidShow];
+            
+        } else {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+        }
+        
+    } else {
+        
+        // Scroll there without animation.
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:NO];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:YES];
-    } else {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
-                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                            animated:YES];
+        
+        // Same page, scroll nothing but activate page.
+        [self pageContentDidShow];
     }
+    
 }
 
 - (void)scrollToHomeAnimated:(BOOL)animated {
@@ -1657,6 +1855,9 @@
     CGRect bounds = self.collectionView.bounds;
     bounds.origin.x = kIndexSection * self.collectionView.bounds.size.width;
     self.collectionView.bounds = bounds;
+    
+    // Track start page view.
+    [self trackPageView];
 }
 
 - (void)cancelTapped:(id)sender {
@@ -1723,15 +1924,6 @@
                              [self.saveButton removeFromSuperview];
                          }
                      }];
-}
-
-- (void)processLikes {
-    if (self.enableLikes && [self.book isOwner]) {
-        self.likesPageName = [self resolveLikesPageName];
-        [self.pages addObject:self.likesPageName];
-        [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
-        [self.pageRecipeCount setObject:@([self.likedRecipes count]) forKey:self.likesPageName];
-    }
 }
 
 - (void)processRanks {
@@ -1827,7 +2019,9 @@
     
     __block CKRecipe *highestRankedRecipe = nil;
     
-    for (CKRecipe *recipe in recipesWithPhotos) {
+    for (CKModel *recipeOrPin in recipesWithPhotos) {
+        
+        CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
         
         // Bypass non-owners if specified.
         if (excludeOthers && ![recipe isOwner:self.user]) {
@@ -1868,6 +2062,22 @@
     return pageIndex;
 }
 
+- (NSString *)currentPage {
+    
+    NSString *page = nil;
+    NSInteger pageIndex = [self currentPageIndex];
+    
+    // Assume at content section
+    NSInteger contentPageIndex = pageIndex - 2;
+    if (contentPageIndex >= 0 && contentPageIndex < [self.pages count]) {
+        
+        // Get page name
+        page = [self.pages objectAtIndex:contentPageIndex];
+    }
+    
+    return page;
+}
+
 - (NSString *)resolveLikesPageName {
     NSString *resolvedLikePageName = nil;
     
@@ -1903,6 +2113,42 @@
     [self.bookNavigationView enableAddAndEdit:![self onLikesPage]];
 }
 
+- (void)trackPageView {
+    NSInteger pageIndex = [self currentPageIndex];
+    
+    // Have we tracked this page?
+    if ([self.pagesViewed objectForKey:@(pageIndex)]) {
+        return;
+    }
+    
+    NSString *page = nil;
+    
+    if (pageIndex == 0) {
+        page = @"Profile";
+    } else if (pageIndex == 1) {
+        page = @"Title";
+    } else {
+        
+        // Assume at content section
+        NSInteger contentPageIndex = pageIndex - 2;
+        if (contentPageIndex >= 0 && contentPageIndex < [self.pages count]) {
+            
+            // Get page name
+            page = [self.pages objectAtIndex:contentPageIndex];
+        }
+    }
+    
+    // Mark as tracked.
+    [self.pagesViewed setObject:@(YES) forKey:@(pageIndex)];
+    
+    // Capture page details.
+    NSMutableDictionary *pageParams = [NSMutableDictionary dictionaryWithObject:@(pageIndex) forKey:kEventParamsBookPageIndex];
+    if (page) {
+        [pageParams setObject:page forKey:kEventParamsBookPageName];
+    }
+    [AnalyticsHelper trackEventName:kEventPageView params:pageParams];
+}
+
 - (void)addPage:(NSString *)page {
     
     if ([self.pages containsObject:self.likesPageName]) {
@@ -1925,6 +2171,17 @@
     
     // Save the book in the background.
     [self.book saveInBackground];
+    
+    // Manually populate other dictionaries
+    NSMutableDictionary *pageNewRecipes = [NSMutableDictionary dictionaryWithDictionary:self.pageRecipes];
+    NSMutableDictionary *pageNewRankings = [NSMutableDictionary dictionaryWithDictionary:self.pageRankings];
+    [pageNewRecipes setObject:@[] forKey:page];
+    self.pageRecipes = pageNewRecipes;
+    [self.pageBatches setObject:@0 forKey:page];
+    [self.pageRecipeCount setObject:@0 forKey:page];
+    [pageNewRankings setObject:@"popular" forKey:page];
+    self.pageRankings = pageNewRankings;
+    [self.pageCurrentBatches setObject:@0 forKey:page];
 }
 
 - (CGFloat)alphaForBookNavigationViewWithOffset:(CGFloat)offset {
@@ -2023,7 +2280,11 @@
 }
 
 - (void)sortRecipes:(NSMutableArray *)recipes {
-    [recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
+    [recipes sortUsingComparator:^NSComparisonResult(CKModel *recipeOrPin, CKModel *recipeOrPin2) {
+        
+        CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        CKRecipe *recipe2 = [self recipeFromRecipeOrPin:recipeOrPin2];
+        
         return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
     }];
 }
@@ -2033,15 +2294,29 @@
 }
 
 - (void)updateNavigationTitle {
-    [self updateNavigationTitleWithPage:[self currentPage]];
+    NSString *currentPage = [self currentPage];
+    CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:currentPage] CGPointValue];
+    CGFloat offset = scrollOffset.y;
+    [self updateNavigationTitleWithPage:currentPage offset:offset];
 }
 
 - (void)updateNavigationTitleWithPage:(NSString *)pageName {
-    NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
-    if ([pageName length] > 0) {
-        [navigationTitle appendFormat:@" - %@", pageName];
+    if (self.book) {
+        
+        NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
+        if ([pageName length] > 0) {
+            [navigationTitle appendFormat:@" - %@", pageName];
+        }
+        
+        // Only update if it has changed.
+        if ([self.currentNavigationPageName isEqualToString:pageName]) {
+            return;
+        }
+        
+        // Remember the current page name.
+        self.currentNavigationPageName = pageName;
+        [self.bookNavigationView updateTitle:navigationTitle];
     }
-    [self.bookNavigationView updateTitle:navigationTitle];
 }
 
 - (NSString *)bookNavigationAuthorName {
@@ -2054,6 +2329,79 @@
     } else {
         [self updateDefaultNavigationTitle];
     }
+}
+
+- (CKRecipe *)recipeFromRecipeOrPin:(CKModel *)recipeOrPin {
+    
+    // Cast it to Recipe or Pin.
+    if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+        return ((CKRecipePin*)recipeOrPin).recipe;
+    } else {
+        return (CKRecipe *)recipeOrPin;
+    }
+}
+
+- (NSDictionary *)analyticsDataForBookOpen {
+    return @{
+             @"owner"       : @([self.book isOwner]),
+             @"featured"    : @(self.book.featured),
+             @"guest"       : @(self.currentUser == nil)
+             };
+}
+
+- (void)processLoadMoreForBook:(CKBook *)book page:(NSString *)page batchIndex:(NSInteger)batchIndex
+                       recipes:(NSArray *)recipes {
+    
+    if (self.book) {
+        
+        // Append to the list of recipes.
+        NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
+        [pageRecipes addObjectsFromArray:recipes];
+        
+        // Update the batch index.
+        [self.pageCurrentBatches setObject:@(batchIndex) forKey:page];
+        
+        // Update the BookContentVC
+        BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
+        [contentViewController loadMoreRecipes:recipes];
+
+    }
+}
+
+- (void)preloadThumbnails {
+    
+    for (int i = -1; i <= 2; i++) {
+        
+        NSInteger pageIndex = [self currentPageIndex] - [self contentStartSection] + i;
+        if (pageIndex < 0 || pageIndex >= [self.pages count]) continue;
+        NSString *page = [self.pages objectAtIndex:pageIndex];
+        
+        // Load featured recipe image.
+        CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+        
+        if ([coverRecipe hasPhotos]) {
+            
+            if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) continue;
+            [[CKPhotoManager sharedInstance] thumbImageForRecipe:coverRecipe name:[self photoNameForRecipe:coverRecipe] size:CGSizeMake(1064, 808)];
+        }
+    }
+}
+
+- (void)thumbLoadingReceived:(NSNotification *)notification {
+    NSString *recipePhotoName = [EventHelper nameForPhotoLoading:notification];
+    [self.pages enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+        CKRecipe *coverRecipe = [self coverRecipeForPage:obj];
+        if ([coverRecipe.name isEqualToString:recipePhotoName] && [EventHelper thumbForPhotoLoading:notification]) {
+            UIImage *thumbImage = [EventHelper imageForPhotoLoading:notification];
+            if ([self.thumbnailImageCache objectForKey:coverRecipe.objectId]) return;
+            DLog(@"Precached: %@", coverRecipe.name);
+            [self retrievedThumb:thumbImage forRecipe:coverRecipe];
+        }
+    }];
+}
+
+- (NSString *)photoNameForRecipe:(CKRecipe *)recipe {
+    return [NSString stringWithFormat:@"background_%@", recipe.objectId];
 }
 
 @end

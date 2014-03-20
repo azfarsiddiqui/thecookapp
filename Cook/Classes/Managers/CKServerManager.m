@@ -15,6 +15,7 @@
 #import "AppHelper.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
+#import "Flurry.h"
 
 @interface CKServerManager ()
 
@@ -66,25 +67,43 @@
     // Crashlytics.
     [Crashlytics startWithAPIKey:@"78b5ee31da5ef077dd802aa93ca267444ea27b07"];
     
-    // Start up setup.
-    [[CKPhotoManager sharedInstance] setupBooks];
+    // Flurry.
+    [Flurry setCrashReportingEnabled:NO];
+    [Flurry startSession:@"WDJK6ZN6RJH9MV54CVY8"];
     
-    DLog(@"Started ServerManager");
+    // Start up setup.
+    [[CKPhotoManager sharedInstance] generateImageAssets];
+    
+    DLog(@"Started ServerManager iOS[%@]", [[AppHelper sharedInstance] systemVersion]);
 }
 
 - (void)handleActive {
     
+    BOOL saveInstallation = NO;
+    
     // Resets the badge.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    
+    // Set the owner for this installation by associating with the currently logged on user if not set.
+    if ([CKUser isLoggedIn] && ![currentInstallation objectForKey:kUserModelForeignKeyName]) {
+        [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+        saveInstallation = YES;
+    }
+    
+    // Update badge if non-zero.
     if (currentInstallation.badge != 0) {
         
-        // Inform received notification.
-        [EventHelper postUserNotifications:currentInstallation.badge];
-        
         currentInstallation.badge = 0;
+        saveInstallation = YES;
+    }
+    
+    // Save if required.
+    if (saveInstallation) {
         [currentInstallation saveEventually];
     }
     
+    // Post app active
+    [EventHelper postAppActive:YES];
 }
 
 - (void)stop {
@@ -110,7 +129,7 @@
     }
     
     [currentInstallation setDeviceTokenFromData:deviceToken];
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
 }
 
 - (void)handleDeviceTokenError:(NSError *)error {
@@ -122,13 +141,7 @@
 }
 
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
-}
-
-#pragma mark - Parse no connection error.
-
-- (BOOL)noConnectionError:(NSError *)error {
-    return ([error.domain isEqualToString:@"Parse"] && error.code == 100);
+    [EventHelper postUserNotifications];
 }
 
 #pragma mark - Private methods
@@ -137,6 +150,13 @@
     BOOL isSuccess = [EventHelper loginSuccessfulForNotification:notification];
     
     if (isSuccess) {
+        
+        // Set owner owner from the current installation.
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        if ([CKUser isLoggedIn]) {
+            [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+        }
+        [currentInstallation saveEventually];
         
         // Register for push.
         [self registerForPush];
@@ -151,7 +171,7 @@
     // Remove owner from the current installation.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation removeObjectForKey:kUserModelForeignKeyName];
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
     
     // Remove crash identification.
     [Crashlytics setUserIdentifier:nil];
