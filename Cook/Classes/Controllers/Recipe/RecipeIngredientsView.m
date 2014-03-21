@@ -146,7 +146,7 @@
                                                                                             toLocale:[CKUser currentUser].measurementType
                                                                                       highlightColor:[CKBookCover textColourForCover:self.book.cover]];
         NSAttributedString *convertedIngredient = [ingredientConvert convert];
-        DLog(@"converted ingredient: %@", convertedIngredient.string);
+        DLog(@"converted ingredient: %@ from %i to %i", convertedIngredient.string, self.convertFromType, [CKUser currentUser].measurementType);
         return convertedIngredient;
     } else {
         NSString *measurement = ingredient.measurement;
