@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSUInteger, CKMeasurementType) {
-    CKMeasureTypeMetric = 0,
-    CKMeasureTypeUKMetric = 1,
-    CKMeasureTypeAUMetric = 2,
-    CKMeasureTypeImperial = 3,
-    CKMeasureTypeNone = 4,
+    CKMeasureTypeMetric = 1,
+    CKMeasureTypeUKMetric = 2,
+    CKMeasureTypeAUMetric = 3,
+    CKMeasureTypeImperial = 4,
+    CKMeasureTypeNone = 5
 };
 
 typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
