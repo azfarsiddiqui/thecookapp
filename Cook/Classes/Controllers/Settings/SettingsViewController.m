@@ -93,6 +93,7 @@
 #pragma mark - MeasurePickerViewControllerDelegate methods
 
 - (void)measurePickerControllerCloseRequested {
+    [self resetMeasureButton];
     [ModalOverlayHelper hideModalOverlayForViewController:self.measurePickerController completion:^{}];
 }
 
@@ -185,13 +186,17 @@
 - (UIButton *)measureButton {
     if (!_measureButton) {
         _measureButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [_measureButton setTitle:@"MEASURE" forState:UIControlStateNormal];
+//        [_measureButton setTitle:@"MEASURE" forState:UIControlStateNormal];
         _measureButton.frame = (CGRect){
+            50.0,
             70.0,
-            70.0,
-            100, //_measureButton.frame.size.width,
-            44 //_measureButton.frame.size.height
+            150, //_measureButton.frame.size.width,
+            34 //_measureButton.frame.size.height
         };
+        _measureButton.titleLabel.font = [Theme settingsThemeFont];
+        [_measureButton setTitleColor:[UIColor colorWithWhite:1.000 alpha:0.700] forState:UIControlStateNormal];
+        [_measureButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_dash_settings_btn"] forState:UIControlStateNormal];
+        [_measureButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_dash_settings_btn_onpress"] forState:UIControlStateHighlighted];
     }
     return _measureButton;
 }
@@ -362,6 +367,7 @@
                                                                              metrics:metrics
                                                                                views:views]];
     }
+    [self resetMeasureButton];
 }
 
 - (void)createLoginLogoutButton {
@@ -376,7 +382,7 @@
             [self.measureButton setTitle:@"METRIC" forState:UIControlStateNormal];
             break;
         case CKMeasureTypeAUMetric:
-            [self.measureButton setTitle:@"AUS METRIC" forState:UIControlStateNormal];
+            [self.measureButton setTitle:@"AU METRIC" forState:UIControlStateNormal];
             break;
         case CKMeasureTypeUKMetric:
             [self.measureButton setTitle:@"UK METRIC" forState:UIControlStateNormal];

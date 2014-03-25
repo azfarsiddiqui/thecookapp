@@ -81,22 +81,22 @@
     //Styling and placing buttons
     self.imperialButton = [[UIButton alloc] init];
     [self.imperialButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_usimperial"] forState:UIControlStateNormal];
-    [self.imperialButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_usimperial_onpress"] forState:UIControlStateSelected];
+    [self.imperialButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_usimperial_onpress"] forState:UIControlStateHighlighted];
     self.imperialButton.translatesAutoresizingMaskIntoConstraints = NO;
     [middleContentView addSubview:self.imperialButton];
     self.metricButton = [[UIButton alloc] init];
     [self.metricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_metric"] forState:UIControlStateNormal];
-    [self.metricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_metric_onpress"] forState:UIControlStateSelected];
+    [self.metricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_metric_onpress"] forState:UIControlStateHighlighted];
     self.metricButton.translatesAutoresizingMaskIntoConstraints = NO;
     [middleContentView addSubview:self.metricButton];
     self.auMetricButton = [[UIButton alloc] init];
     [self.auMetricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_aumetric"] forState:UIControlStateNormal];
-    [self.auMetricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_aumetric_onpress"] forState:UIControlStateSelected];
+    [self.auMetricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_aumetric_onpress"] forState:UIControlStateHighlighted];
     self.auMetricButton.translatesAutoresizingMaskIntoConstraints = NO;
     [middleContentView addSubview:self.auMetricButton];
     self.ukMetricButton = [[UIButton alloc] init];
     [self.ukMetricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_ukmetric"] forState:UIControlStateNormal];
-    [self.ukMetricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_ukmetric_onpress"] forState:UIControlStateSelected];
+    [self.ukMetricButton setBackgroundImage:[UIImage imageNamed:@"cook_book_measurement_icon_ukmetric_onpress"] forState:UIControlStateHighlighted];
     self.ukMetricButton.translatesAutoresizingMaskIntoConstraints = NO;
     [middleContentView addSubview:self.ukMetricButton];
     
@@ -192,27 +192,6 @@
     [self.metricButton addTarget:self action:@selector(metricButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.auMetricButton addTarget:self action:@selector(auMetricButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.ukMetricButton addTarget:self action:@selector(ukMetricButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self resetMeasureButtons];
-}
-
-- (void)resetMeasureButtons {
-    switch ([CKUser currentUser].measurementType) {
-        case CKMeasureTypeMetric:
-            [self metricButtonPressed:nil];
-            break;
-        case CKMeasureTypeAUMetric:
-            [self auMetricButtonPressed:nil];
-            break;
-        case CKMeasureTypeUKMetric:
-            [self ukMetricButtonPressed:nil];
-            break;
-        case CKMeasureTypeImperial:
-            [self imperialPressed:nil];
-            break;
-        default:
-            break;
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -240,15 +219,6 @@
 #pragma mark - Action handlers
 
 - (void)closeTapped:(id)sender {
-    if (self.imperialButton.selected) {
-        [CKUser currentUser].measurementType = CKMeasureTypeImperial;
-    } else if (self.metricButton.selected) {
-        [CKUser currentUser].measurementType = CKMeasureTypeMetric;
-    } else if (self.auMetricButton.selected) {
-        [CKUser currentUser].measurementType = CKMeasureTypeAUMetric;
-    } else if (self.ukMetricButton.selected) {
-        [CKUser currentUser].measurementType = CKMeasureTypeUKMetric;
-    }
     if (self.delegate) {
         [self.delegate measurePickerControllerCloseRequested];
     }
@@ -258,24 +228,40 @@
     [self resetButtonStates];
     self.imperialButton.selected = YES;
     self.imperialLabel.alpha = 0.5;
+    [CKUser currentUser].measurementType = CKMeasureTypeImperial;
+    if (self.delegate) {
+        [self.delegate measurePickerControllerCloseRequested];
+    }
 }
 
 - (void)metricButtonPressed:(id)sender {
     [self resetButtonStates];
     self.metricButton.selected = YES;
     self.metricLabel.alpha = 0.5;
+    [CKUser currentUser].measurementType = CKMeasureTypeMetric;
+    if (self.delegate) {
+        [self.delegate measurePickerControllerCloseRequested];
+    }
 }
 
 - (void)auMetricButtonPressed:(id)sender {
     [self resetButtonStates];
     self.auMetricButton.selected = YES;
     self.auMetricLabel.alpha = 0.5;
+    [CKUser currentUser].measurementType = CKMeasureTypeAUMetric;
+    if (self.delegate) {
+        [self.delegate measurePickerControllerCloseRequested];
+    }
 }
 
 - (void)ukMetricButtonPressed:(id)sender {
     [self resetButtonStates];
     self.ukMetricButton.selected = YES;
     self.ukMetricLabel.alpha = 0.5;
+    [CKUser currentUser].measurementType = CKMeasureTypeUKMetric;
+    if (self.delegate) {
+        [self.delegate measurePickerControllerCloseRequested];
+    }
 }
 
 - (void)resetButtonStates {

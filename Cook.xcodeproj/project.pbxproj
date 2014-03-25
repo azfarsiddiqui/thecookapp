@@ -1410,6 +1410,14 @@
 		F613C67117DF4F7E00A5962A /* cook_customise_photo_filter_icon_warm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C64F17DF4F7E00A5962A /* cook_customise_photo_filter_icon_warm@2x.png */; };
 		F613C67217DF4F7E00A5962A /* cook_customise_photo_filter_picker.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C65017DF4F7E00A5962A /* cook_customise_photo_filter_picker.png */; };
 		F613C67317DF4F7E00A5962A /* cook_customise_photo_filter_picker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C65117DF4F7E00A5962A /* cook_customise_photo_filter_picker@2x.png */; };
+		F61A85FF18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FB18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png */; };
+		F61A860018E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FC18E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png */; };
+		F61A860118E001CC00ED5D0E /* cook_dash_settings_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FD18E001CC00ED5D0E /* cook_dash_settings_btn.png */; };
+		F61A860218E001CC00ED5D0E /* cook_dash_settings_btn_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FE18E001CC00ED5D0E /* cook_dash_settings_btn_onpress.png */; };
+		F61A863F18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A863B18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress.png */; };
+		F61A864018E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A863C18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress@2x.png */; };
+		F61A864118E0F9E300ED5D0E /* cook_book_recipe_btn_convert.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A863D18E0F9E300ED5D0E /* cook_book_recipe_btn_convert.png */; };
+		F61A864218E0F9E300ED5D0E /* cook_book_recipe_btn_convert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A863E18E0F9E300ED5D0E /* cook_book_recipe_btn_convert@2x.png */; };
 		F61BC47018A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F61BC46C18A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress.png */; };
 		F61BC47118A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61BC46D18A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress@2x.png */; };
 		F61BC47218A45EAD006B4D4D /* cook_book_share_icon_pinterest.png in Resources */ = {isa = PBXBuildFile; fileRef = F61BC46E18A45EAD006B4D4D /* cook_book_share_icon_pinterest.png */; };
@@ -3282,6 +3290,14 @@
 		F613C64F17DF4F7E00A5962A /* cook_customise_photo_filter_icon_warm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_filter_icon_warm@2x.png"; sourceTree = "<group>"; };
 		F613C65017DF4F7E00A5962A /* cook_customise_photo_filter_picker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_photo_filter_picker.png; sourceTree = "<group>"; };
 		F613C65117DF4F7E00A5962A /* cook_customise_photo_filter_picker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_filter_picker@2x.png"; sourceTree = "<group>"; };
+		F61A85FB18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_btn@2x.png"; sourceTree = "<group>"; };
+		F61A85FC18E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_btn_onpress@2x.png"; sourceTree = "<group>"; };
+		F61A85FD18E001CC00ED5D0E /* cook_dash_settings_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_btn.png; sourceTree = "<group>"; };
+		F61A85FE18E001CC00ED5D0E /* cook_dash_settings_btn_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_btn_onpress.png; sourceTree = "<group>"; };
+		F61A863B18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_recipe_btn_convert_onpress.png; sourceTree = "<group>"; };
+		F61A863C18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_btn_convert_onpress@2x.png"; sourceTree = "<group>"; };
+		F61A863D18E0F9E300ED5D0E /* cook_book_recipe_btn_convert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_recipe_btn_convert.png; sourceTree = "<group>"; };
+		F61A863E18E0F9E300ED5D0E /* cook_book_recipe_btn_convert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_btn_convert@2x.png"; sourceTree = "<group>"; };
 		F61BC46C18A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_pinterest_onpress.png; sourceTree = "<group>"; };
 		F61BC46D18A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_pinterest_onpress@2x.png"; sourceTree = "<group>"; };
 		F61BC46E18A45EAD006B4D4D /* cook_book_share_icon_pinterest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_pinterest.png; sourceTree = "<group>"; };
@@ -5628,6 +5644,10 @@
 		76CED54816704E750026E794 /* settings */ = {
 			isa = PBXGroup;
 			children = (
+				F61A85FB18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png */,
+				F61A85FC18E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png */,
+				F61A85FD18E001CC00ED5D0E /* cook_dash_settings_btn.png */,
+				F61A85FE18E001CC00ED5D0E /* cook_dash_settings_btn_onpress.png */,
 				F645B22618DBFA8A00B1CBA0 /* cook_book_measurement_icon_aumetric_onpress.png */,
 				F645B22718DBFA8A00B1CBA0 /* cook_book_measurement_icon_aumetric_onpress@2x.png */,
 				F645B22818DBFA8A00B1CBA0 /* cook_book_measurement_icon_aumetric.png */,
@@ -6222,6 +6242,10 @@
 			children = (
 				F63C9569183A54F9000361EA /* tags */,
 				89B0916B16DDBEAC00D47725 /* servesSlider */,
+				F61A863B18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress.png */,
+				F61A863C18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress@2x.png */,
+				F61A863D18E0F9E300ED5D0E /* cook_book_recipe_btn_convert.png */,
+				F61A863E18E0F9E300ED5D0E /* cook_book_recipe_btn_convert@2x.png */,
 				89E2CA92165F438300CDE0D4 /* cook_editrecipe_textbox.png */,
 				89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */,
 				89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */,
@@ -7522,6 +7546,7 @@
 				76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */,
 				76EAAEDF1787B25E00158211 /* cook_book_graphic_coffee@2x.png in Resources */,
 				766E43B317DEDC0D006B2495 /* cook_book_inner_category_add_orange.png in Resources */,
+				F61A860118E001CC00ED5D0E /* cook_dash_settings_btn.png in Resources */,
 				766E433417DEC8FA006B2495 /* cook_book_edge_neutral_left@2x.png in Resources */,
 				76C6CDCE164B3EC3006001BD /* cook_dash_icons_customise@2x.png in Resources */,
 				76462D371782FC0E002EA7D0 /* cook_library_tab_selected@2x.png in Resources */,
@@ -7736,6 +7761,7 @@
 				7635D33A18234AB000D96C0A /* cook_title_arrow_right_fr8.png in Resources */,
 				F6F5932E1817F32400998795 /* cook_book_inner_icon_secret_dark_onpress@2x.png in Resources */,
 				89E2CA88165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png in Resources */,
+				F61A864018E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress@2x.png in Resources */,
 				89E2CA8C165F024800CDE0D4 /* cook_editrecipe_categorybg.png in Resources */,
 				F6DD42521810B29200AD3803 /* cook_customise_icon_page.png in Resources */,
 				7689A19F17BBDADF0093C56F /* cook_customise_photo_btn_cameraroll_onpress.png in Resources */,
@@ -7924,6 +7950,7 @@
 				F68E0EF917D2AE6600B56E7A /* cook_book_share_icon_imessage@2x.png in Resources */,
 				761951D61793B8FD008AB495 /* cook_book_inner_icon_share_dark@2x.png in Resources */,
 				7689A1A017BBDADF0093C56F /* cook_customise_photo_btn_cameraroll_onpress@2x.png in Resources */,
+				F61A863F18E0F9E300ED5D0E /* cook_book_recipe_btn_convert_onpress.png in Resources */,
 				76E9861D17E2B91E00D9CAF3 /* cook_library_icons_featured_off.png in Resources */,
 				76BD4AC318C02EE0007684F4 /* cook_book_inner_icon_edit_yellow_onpress@2x.png in Resources */,
 				76BD4B0F18C02F01007684F4 /* cook_book_inner_icon_back_blue.png in Resources */,
@@ -8138,6 +8165,7 @@
 				76751598170CFF52008B675D /* cook_book_graphic_featured_sanfrancisco.png in Resources */,
 				76980914183635A400521EEA /* cook_book_graphic_featured_thailand@2x.png in Resources */,
 				762D0AAB1785918000E5947B /* cook_book_graphic_cream@2x.png in Resources */,
+				F61A864118E0F9E300ED5D0E /* cook_book_recipe_btn_convert.png in Resources */,
 				764A75E3183354110003594E /* cook_book_graphic_featured_spain@2x.png in Resources */,
 				76A9177F17BCE0F300CB8E9A /* cook_btns_photo_cancel.png in Resources */,
 				76751599170CFF52008B675D /* cook_book_graphic_featured_sanfrancisco@2x.png in Resources */,
@@ -8231,6 +8259,7 @@
 				761CA5F617D4B0A700DF7E29 /* cook_book_inner_icon_comment_dark_on.png in Resources */,
 				7647856517A74F7600387A7B /* cook_edit_bg_purple@2x.png in Resources */,
 				F6F593231817F32400998795 /* cook_book_inner_icon_like_dark_onpress.png in Resources */,
+				F61A860018E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png in Resources */,
 				76CB48811716772800E20E6E /* cook_recipe_details_divider.png in Resources */,
 				F60C56F517E3309E00912544 /* cook_dash_settings_firstscreen_bg@2x.png in Resources */,
 				F60C570417E3309E00912544 /* cook_dash_settings_icon_twitter.png in Resources */,
@@ -8365,6 +8394,7 @@
 				764A75E2183354110003594E /* cook_book_graphic_featured_spain.png in Resources */,
 				766E43FC17DEE98F006B2495 /* cook_book_inner_icon_add_yellow@2x.png in Resources */,
 				76C3BB93173B73F0004F6444 /* cook_edit_timedial_dial.png in Resources */,
+				F61A864218E0F9E300ED5D0E /* cook_book_recipe_btn_convert@2x.png in Resources */,
 				761852A51851DDEE001671BF /* cook_book_inner_icon_small_location.png in Resources */,
 				76A10AC217CB02680051751F /* cook_login_btn_signup_white.png in Resources */,
 				7635D31A18234AA100D96C0A /* cook_title_arrow_left_fr4.png in Resources */,
@@ -8595,6 +8625,7 @@
 				F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */,
 				7664801917E149ED00A690D6 /* cook_book_inner_icon_small_likes_on_green@2x.png in Resources */,
 				76980915183635A400521EEA /* cook_book_graphic_featured_uk.png in Resources */,
+				F61A85FF18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png in Resources */,
 				767EEA2717BDBF62001E7D0B /* cook_login_btn_bottom_full@2x.png in Resources */,
 				765769EC18349E3F00267861 /* cook_book_graphic_featured_thanksgiving2.png in Resources */,
 				761852BB1855697D001671BF /* cook_dash_icons_refresh.png in Resources */,
@@ -8627,6 +8658,7 @@
 				76B3AEB6174B2BAA001B4661 /* cook_customise_colour_picker_orange@2x.png in Resources */,
 				7698090E183635A400521EEA /* cook_book_graphic_featured_mexico@2x.png in Resources */,
 				767EEA4F17BDE57C001E7D0B /* cook_login_divider@2x.png in Resources */,
+				F61A860218E001CC00ED5D0E /* cook_dash_settings_btn_onpress.png in Resources */,
 				F6F593051817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png in Resources */,
 				76FC078617C5F25600ABF96F /* cook_dash_icons_notifications_on_onpress.png in Resources */,
 				76BD4ACC18C02EE0007684F4 /* cook_book_inner_icon_edit_gray.png in Resources */,

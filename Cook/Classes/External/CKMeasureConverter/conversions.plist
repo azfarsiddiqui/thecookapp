@@ -4,9 +4,48 @@
 <dict>
 	<key>Metric</key>
 	<dict>
+        <key>°C</key>
+		<dict>
+			<key>Metric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>AUMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>UKMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>Imperial</key>
+			<dict>
+				<key>name</key>
+				<string>°F</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+		</dict>
 		<key>MM</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>mm</string>
@@ -45,7 +84,7 @@
 		</dict>
 		<key>ML</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>ml</string>
@@ -84,7 +123,7 @@
 		</dict>
 		<key>L</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>L</string>
@@ -123,7 +162,7 @@
 		</dict>
 		<key>G</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>g</string>
@@ -162,7 +201,7 @@
 		</dict>
 		<key>KG</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>kg</string>
@@ -201,7 +240,7 @@
 		</dict>
 		<key>TSP</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>tsp</string>
@@ -240,7 +279,7 @@
 		</dict>
 		<key>TBSP</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>tbsp</string>
@@ -279,7 +318,7 @@
 		</dict>
 		<key>CUP</key>
 		<dict>
-            <key>Metric</key>
+			<key>Metric</key>
 			<dict>
 				<key>name</key>
 				<string>cup</string>
@@ -319,6 +358,45 @@
 	</dict>
 	<key>UKMetric</key>
 	<dict>
+        <key>°C</key>
+		<dict>
+			<key>Metric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>AUMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>UKMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>Imperial</key>
+			<dict>
+				<key>name</key>
+				<string>°F</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+		</dict>
 		<key>MM</key>
 		<dict>
 			<key>AUMetric</key>
@@ -330,7 +408,7 @@
 				<key>fraction</key>
 				<integer>1</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>mm</string>
@@ -369,7 +447,7 @@
 				<key>fraction</key>
 				<integer>1</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>ml</string>
@@ -408,7 +486,7 @@
 				<key>fraction</key>
 				<integer>10</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>L</string>
@@ -447,7 +525,7 @@
 				<key>fraction</key>
 				<integer>2</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>g</string>
@@ -486,7 +564,7 @@
 				<key>fraction</key>
 				<integer>10</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>kg</string>
@@ -525,7 +603,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>tsp</string>
@@ -564,7 +642,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>tbsp</string>
@@ -603,7 +681,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>UKMetric</key>
+			<key>UKMetric</key>
 			<dict>
 				<key>name</key>
 				<string>cup</string>
@@ -634,6 +712,45 @@
 	</dict>
 	<key>AUMetric</key>
 	<dict>
+        <key>°C</key>
+		<dict>
+			<key>Metric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>AUMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>UKMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>Imperial</key>
+			<dict>
+				<key>name</key>
+				<string>°F</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+		</dict>
 		<key>MM</key>
 		<dict>
 			<key>Metric</key>
@@ -645,7 +762,7 @@
 				<key>fraction</key>
 				<integer>2</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>mm</string>
@@ -684,7 +801,7 @@
 				<key>fraction</key>
 				<integer>1</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>ml</string>
@@ -723,7 +840,7 @@
 				<key>fraction</key>
 				<integer>10</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>L</string>
@@ -762,7 +879,7 @@
 				<key>fraction</key>
 				<integer>2</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>g</string>
@@ -801,7 +918,7 @@
 				<key>fraction</key>
 				<integer>10</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>kg</string>
@@ -840,7 +957,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>tsp</string>
@@ -879,7 +996,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>tbsp</string>
@@ -918,7 +1035,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>AUMetric</key>
+			<key>AUMetric</key>
 			<dict>
 				<key>name</key>
 				<string>cup</string>
@@ -949,6 +1066,45 @@
 	</dict>
 	<key>Imperial</key>
 	<dict>
+        <key>°F</key>
+		<dict>
+			<key>Metric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>AUMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>UKMetric</key>
+			<dict>
+				<key>name</key>
+				<string>°C</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+			<key>Imperial</key>
+			<dict>
+				<key>name</key>
+				<string>°F</string>
+				<key>conversion</key>
+				<integer>1</integer>
+				<key>fraction</key>
+				<integer>10</integer>
+			</dict>
+		</dict>
 		<key>IN</key>
 		<dict>
 			<key>AUMetric</key>
@@ -978,7 +1134,7 @@
 				<key>fraction</key>
 				<integer>2</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>in</string>
@@ -1017,7 +1173,7 @@
 				<key>fraction</key>
 				<integer>1</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>fl oz</string>
@@ -1056,7 +1212,7 @@
 				<key>fraction</key>
 				<integer>10</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>pt</string>
@@ -1095,7 +1251,7 @@
 				<key>fraction</key>
 				<integer>2</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>oz</string>
@@ -1134,7 +1290,7 @@
 				<key>fraction</key>
 				<integer>10</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>lb</string>
@@ -1173,7 +1329,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>tsp</string>
@@ -1212,7 +1368,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>tbsp</string>
@@ -1251,7 +1407,7 @@
 				<key>fraction</key>
 				<integer>8</integer>
 			</dict>
-            <key>Imperial</key>
+			<key>Imperial</key>
 			<dict>
 				<key>name</key>
 				<string>cup</string>

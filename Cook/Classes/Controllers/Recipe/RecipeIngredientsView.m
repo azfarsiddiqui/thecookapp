@@ -21,6 +21,7 @@
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
 @property (nonatomic, assign) CKMeasurementType convertFromType;
+@property (nonatomic, assign) CKMeasurementType convertToType;
 @property (nonatomic, assign) BOOL compact;
 
 @end
@@ -139,6 +140,12 @@
     NSString *ingredientString = [self ingredientAsString:ingredient];
     NSMutableAttributedString *ingredientDisplay = [[NSMutableAttributedString alloc] initWithString:ingredientString
                                                                                           attributes:self.paragraphAttributes];
+    NSString *measurement = ingredient.measurement;
+    if ([measurement length] > 0) {
+        [ingredientDisplay addAttribute:NSForegroundColorAttributeName
+                                  value:[CKBookCover textColourForCover:self.book.cover]
+                                  range:NSMakeRange(0, [measurement length])];
+    }
     //Convert
     if (self.convertFromType && self.convertFromType != CKMeasureTypeNone) {
         CKMeasureConverter *ingredientConvert = [[CKMeasureConverter alloc] initWithAttributedString:ingredientDisplay
@@ -146,15 +153,9 @@
                                                                                             toLocale:[CKUser currentUser].measurementType
                                                                                       highlightColor:[CKBookCover textColourForCover:self.book.cover]];
         NSAttributedString *convertedIngredient = [ingredientConvert convert];
-        DLog(@"converted ingredient: %@ from %i to %i", convertedIngredient.string, self.convertFromType, [CKUser currentUser].measurementType);
+//        DLog(@"converted ingredient: %@ from %i to %i", convertedIngredient.string, self.convertFromType, [CKUser currentUser].measurementType);
         return convertedIngredient;
     } else {
-        NSString *measurement = ingredient.measurement;
-        if ([measurement length] > 0) {
-            [ingredientDisplay addAttribute:NSForegroundColorAttributeName
-                                      value:[CKBookCover textColourForCover:self.book.cover]
-                                      range:NSMakeRange(0, [measurement length])];
-        }
         return ingredientDisplay;
     }
 }

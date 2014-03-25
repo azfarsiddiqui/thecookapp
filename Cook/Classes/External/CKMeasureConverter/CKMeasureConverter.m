@@ -7,12 +7,13 @@
 //
 
 #import "CKMeasureConverter.h"
+#import "Theme.h"
 
 #pragma mark - CKReplaceConvert helper
 @interface CKReplaceConvert : NSObject
 
 @property (nonatomic, assign) NSRange range;
-@property (nonatomic, assign) NSAttributedString *string;
+@property (nonatomic, copy) NSAttributedString *string;
 
 @end
 
@@ -67,7 +68,7 @@
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
         if (parsedString.length > 0) {
-            DLog(@"Scanned result is: %f %@. Start pos: %i end pos: %i", currentNum, parsedString, startPos, endPos);
+//            DLog(@"Scanned result is: %f %@. Start pos: %i end pos: %i", currentNum, parsedString, startPos, endPos);
             CKReplaceConvert *replaceObj = [[CKReplaceConvert alloc] init];
             replaceObj.string = [self convertFromNumber:currentNum unit:parsedString];
             replaceObj.range = NSMakeRange(startPos, endPos - startPos);
@@ -84,9 +85,24 @@
     NSDictionary *convertDict = [convertToDict objectForKey:[self typeToString:self.toLocale]];
     NSString *convertedString = [convertDict objectForKey:@"name"];
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
-    NSString *convertedNumString = [self roundFrom:(fromNumber * convertNum) withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
+    CGFloat convertedNum = (fromNumber * convertNum);
+    
+    //Special case temperature since it isn't a simple multiplication
+    if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
+        convertedNum = (fromNumber * 1.8) + 32;
+    } else if ([unitString isEqualToString:@"°F"] && [convertedString isEqualToString:@"°C"]) {
+        convertedNum = (fromNumber - 32)/1.8;
+    }
+    
+    NSString *convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+//    paragraphStyle.lineSpacing = 5.0;
+    paragraphStyle.alignment = NSTextAlignmentLeft;
     NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString]
-                                                                       attributes:@{NSForegroundColorAttributeName: self.highlightColor}];
+                                                                       attributes:@{NSForegroundColorAttributeName: self.highlightColor,
+                                                                                    NSFontAttributeName: [Theme ingredientsListFont],
+                                                                                    NSParagraphStyleAttributeName: paragraphStyle}];
     return returnString;
 }
 
@@ -112,7 +128,9 @@
     [self.scanner setCharactersToBeSkipped:unitCharacterIgnoreSet];
     
     NSString *measureString;
-    [self.scanner scanCharactersFromSet:[NSCharacterSet letterCharacterSet] intoString:&measureString];
+    NSMutableCharacterSet *unitCharacterSet = [NSMutableCharacterSet letterCharacterSet];
+    [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"°"]];
+    [self.scanner scanCharactersFromSet:unitCharacterSet intoString:&measureString];
     
     //Need to special case 'fl oz' since it has a space in it
     if ([[measureString uppercaseString] isEqualToString:@"FL"]) {
@@ -131,7 +149,7 @@
 
 //Scans for a number that might have fractions and returns converted number
 - (CGFloat)scanNumber {
-    CGFloat firstNumber = 0, wholeNumber = 0, numerator = 0, denominator = 0;
+    float firstNumber = 0, wholeNumber = 0, numerator = 0, denominator = 0;
     [self.scanner setCharactersToBeSkipped:nil];
     BOOL found = [self.scanner scanFloat:&firstNumber];
     //Didn't find a number, can't convert, return invalid
