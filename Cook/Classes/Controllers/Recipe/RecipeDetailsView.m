@@ -1049,6 +1049,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert_onpress"] forState:UIControlStateHighlighted];
         [self addSubview:self.viewOriginalButton];
     }
+    self.viewOriginalButton.hidden = NO;
     if (self.isOriginalMeasure) {
         switch ([CKUser currentUser].measurementType) {
             case CKMeasureTypeMetric:
@@ -1090,7 +1091,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateViewOriginalButtonFrame {
-    if (self.editMode) {
+    if (self.editMode || self.recipeDetails.measureType == CKMeasureTypeNone) {
         self.viewOriginalButton.hidden = YES;
     } else {
         self.viewOriginalButton.hidden = NO;
