@@ -121,6 +121,36 @@
     }];
 }
 
+#pragma mark - Search
+
++ (void)searchWithTerm:(NSString *)searchTerm success:(RecipeSearchSuccessBlock)success
+               failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"searchRecipes"
+                       withParameters:@{ @"keyword" : searchTerm, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        
+                                        NSArray *parseRecipes = [results objectForKey:@"recipes"];
+                                        NSUInteger recipeCount = [[results objectForKey:@"count"] unsignedIntegerValue];
+                                        
+                                        // Map to our model.
+                                        NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
+                                            
+                                            PFUser *parseUser = [parseRecipe objectForKey:kUserModelForeignKeyName];
+                                            CKUser *user = [CKUser userWithParseUser:parseUser];
+                                            return [CKRecipe recipeForParseRecipe:parseRecipe user:user];
+                                        }];
+                                        
+                                        success(recipes, recipeCount);
+                                        
+                                    } else {
+                                        DLog(@"Error searching recipes: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
 #pragma mark - Save
 
 - (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
