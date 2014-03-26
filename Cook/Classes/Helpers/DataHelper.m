@@ -19,10 +19,10 @@
     NSMutableString *display = [NSMutableString string];
     
     if (count < 1000) {
-        [display appendFormat:@"%d", count];
+        [display appendFormat:@"%ld", (unsigned long)count];
     } else if (count < 1000000) {
         if ((count % 1000) == 0) {
-            [display appendFormat:@"%dK", (count / 1000)];
+            [display appendFormat:@"%ldK", ((unsigned long)count / 1000)];
         } else if (showFractional) {
             [display appendFormat:@"%.1fK", (count / 1000.0)];
         } else {
@@ -30,7 +30,7 @@
         }
     } else {
         if ((count % 1000000) == 0) {
-            [display appendFormat:@"%dM", (count / 1000000)];
+            [display appendFormat:@"%ldM", ((unsigned long)count / 1000000)];
         } else if (showFractional) {
             [display appendFormat:@"%.1fM", (count / 1000000.0)];
         } else {
