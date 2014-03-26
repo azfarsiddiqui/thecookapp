@@ -138,8 +138,9 @@
                                         NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
                                             
                                             PFUser *parseUser = [parseRecipe objectForKey:kUserModelForeignKeyName];
+                                            CKBook *book = [CKBook bookWithParseObject:[parseRecipe objectForKey:kBookModelForeignKeyName]];
                                             CKUser *user = [CKUser userWithParseUser:parseUser];
-                                            return [CKRecipe recipeForParseRecipe:parseRecipe user:user];
+                                            return [CKRecipe recipeForParseRecipe:parseRecipe user:user book:book];
                                         }];
                                         
                                         success(recipes, recipeCount);

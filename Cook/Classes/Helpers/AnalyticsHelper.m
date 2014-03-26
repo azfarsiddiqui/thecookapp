@@ -29,6 +29,7 @@ NSString *const kEventRecipeLike                    = @"Recipe Like";
 NSString *const kEventRecipePin                     = @"Recipe Pin";
 NSString *const kEventRecipeSocialView              = @"Recipe Social View";
 NSString *const kEventNotificationsView             = @"Notifications View";
+NSString *const kEventSearchView                    = @"Search View";
 
 #pragma mark - Properties
 

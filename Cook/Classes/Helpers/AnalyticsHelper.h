@@ -32,6 +32,7 @@ extern NSString *const kEventRecipePin;
 extern NSString *const kEventRecipeSocialView;
 
 extern NSString *const kEventNotificationsView;
+extern NSString *const kEventSearchView;
 
 #pragma mark - Properties
 

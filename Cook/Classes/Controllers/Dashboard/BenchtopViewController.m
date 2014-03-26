@@ -753,8 +753,8 @@
 }
 
 - (void)initSearchView {
-    UIButton *searchButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_notifications_off.png"]
-                                           selectedImage:[UIImage imageNamed:@"cook_dash_icons_notifications_off_onpress.png"]
+    UIButton *searchButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_search.png"]
+                                           selectedImage:[UIImage imageNamed:@"cook_dash_icons_search_onpress.png"]
                                                   target:self selector:@selector(searchTapped:)];
     searchButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
     searchButton.frame = (CGRect){
