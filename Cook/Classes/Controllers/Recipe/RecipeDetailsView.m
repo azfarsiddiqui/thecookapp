@@ -31,6 +31,7 @@
 #import "CKBookCover.h"
 #import "UIColor+Expanded.h"
 #import "UIDevice+Hardware.h"
+#import "ImageHelper.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -54,6 +55,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) UIView *ingredientsDividerView;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) TTTAttributedLabel *methodLabel;
+@property (nonatomic, strong) UIButton *viewOriginalButton;
+@property (nonatomic, assign) BOOL isOriginalMeasure;
 
 // Layout
 @property (nonatomic, assign) CGPoint layoutOffset;
@@ -94,6 +97,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.backgroundColor = [UIColor clearColor];
+        self.isOriginalMeasure = NO;
         
         // Pre-layout updates.
         [self updateFrame];
@@ -536,6 +540,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self updateServesCook];
     [self updateIngredients];
     [self updateMethod];
+    [self updateViewOriginalButton];
 }
 
 - (void)updateProfilePhoto {
@@ -971,9 +976,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
+        CKMeasurementType measureType = self.recipeDetails.measureType;
+        if (self.editMode) {
+            measureType = CKMeasureTypeNone;
+        }
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
                                                                              book:self.recipeDetails.book
-                                                                         maxWidth:kMaxLeftWidth];
+                                                                         maxWidth:kMaxLeftWidth
+                                                                    measureLocale:measureType];
         self.ingredientsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
@@ -1011,7 +1021,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Update ingredients.
-    [self.ingredientsView updateIngredients:ingredients];
+    CKMeasurementType measureType = self.recipeDetails.measureType;
+    if (self.editMode) {
+        measureType = CKMeasureTypeNone;
+    }
+    [self.ingredientsView updateIngredients:ingredients measureType:measureType];
     CGFloat beforeIngredientsGap = self.ingredientsDividerView ? 23.0 : 0.0;
     self.ingredientsView.frame = (CGRect){
         kContentInsets.left + leftOffset,
@@ -1022,6 +1036,71 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Divider visible only if ingredients is.
     self.ingredientsDividerView.hidden = (self.ingredientsView.alpha == 0.0);
+}
+
+- (void)updateViewOriginalButton {
+    if (!self.viewOriginalButton) {
+        self.viewOriginalButton = [[UIButton alloc] init];
+        self.viewOriginalButton.titleLabel.font = [Theme viewOriginalFont];
+        [self.viewOriginalButton setTitleColor:[Theme servesColor] forState:UIControlStateNormal];
+        [self.viewOriginalButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+        [self.viewOriginalButton addTarget:self action:@selector(viewOriginalPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert"] forState:UIControlStateNormal];
+        [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert_onpress"] forState:UIControlStateHighlighted];
+        [self addSubview:self.viewOriginalButton];
+    }
+    self.viewOriginalButton.hidden = NO;
+    if (self.isOriginalMeasure) {
+        switch ([CKUser currentUser].measurementType) {
+            case CKMeasureTypeMetric:
+                [self.viewOriginalButton setTitle:@"VIEW METRIC" forState:UIControlStateNormal];
+                break;
+            case CKMeasureTypeAUMetric:
+                [self.viewOriginalButton setTitle:@"VIEW AU METRIC" forState:UIControlStateNormal];
+                break;
+            case CKMeasureTypeUKMetric:
+                [self.viewOriginalButton setTitle:@"VIEW UK METRIC" forState:UIControlStateNormal];
+                break;
+            case CKMeasureTypeImperial:
+                [self.viewOriginalButton setTitle:@"VIEW US IMPERIAL" forState:UIControlStateNormal];
+                break;
+            default:
+                break;
+        }
+    } else {
+        //display recipe original measure type
+        switch (self.recipeDetails.measureType) {
+            case CKMeasureTypeMetric:
+                [self.viewOriginalButton setTitle:@"VIEW METRIC" forState:UIControlStateNormal];
+                break;
+            case CKMeasureTypeAUMetric:
+                [self.viewOriginalButton setTitle:@"VIEW AU METRIC" forState:UIControlStateNormal];
+                break;
+            case CKMeasureTypeUKMetric:
+                [self.viewOriginalButton setTitle:@"VIEW UK METRIC" forState:UIControlStateNormal];
+                break;
+            case CKMeasureTypeImperial:
+                [self.viewOriginalButton setTitle:@"VIEW US IMPERIAL" forState:UIControlStateNormal];
+                break;
+            default:
+                break;
+        }
+    }
+    [self updateViewOriginalButtonFrame];
+}
+
+- (void)updateViewOriginalButtonFrame {
+    if (self.editMode || self.recipeDetails.measureType == CKMeasureTypeNone) {
+        self.viewOriginalButton.hidden = YES;
+    } else {
+        self.viewOriginalButton.hidden = NO;
+    }
+    self.viewOriginalButton.frame = (CGRect){
+        kContentInsets.left,
+        self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + 20,
+        kMaxLeftWidth,
+        50
+    };
 }
 
 - (void)updateMethod {
@@ -1090,8 +1169,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
 }
 
-
 - (void)updateFrame {
+    [self updateFrame:YES];
+}
+
+- (void)updateFrame:(BOOL)doSnap {
     CGRect frame = (CGRect){ kContentInsets.top, 0.0, kWidth, 0.0 };
     for (UIView *subview in self.subviews) {
         
@@ -1106,7 +1188,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     self.frame = frame;
     
-    [self.delegate recipeDetailsViewUpdated];
+    [self.delegate recipeDetailsViewUpdated:doSnap];
 }
 
 - (CGSize)availableSize {
@@ -1471,6 +1553,20 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      completion:^(BOOL finished) {
                          [self.addDetailsCardView removeFromSuperview];
                      }];
+}
+
+- (void)viewOriginalPressed:(id)sender {
+    //Toggle conversion
+    CKMeasurementType measureType;
+    self.isOriginalMeasure = !self.isOriginalMeasure;
+    if (self.isOriginalMeasure) {
+        measureType = CKMeasureTypeNone;
+    } else {
+        measureType = self.recipeDetails.measureType;
+    }
+    [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:measureType];
+    [self updateViewOriginalButton];
+    [self updateFrame:NO];
 }
 
 @end

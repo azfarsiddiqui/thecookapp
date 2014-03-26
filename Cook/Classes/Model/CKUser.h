@@ -37,6 +37,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic, assign) DashTheme theme;
 @property (nonatomic, readonly) NSArray *facebookFriends;
+@property (nonatomic, assign) NSInteger measurementType;
 
 // Cover photos.
 @property (nonatomic, strong) PFFile *profilePhoto;
