@@ -1169,8 +1169,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
 }
 
-
 - (void)updateFrame {
+    [self updateFrame:YES];
+}
+
+- (void)updateFrame:(BOOL)doSnap {
     CGRect frame = (CGRect){ kContentInsets.top, 0.0, kWidth, 0.0 };
     for (UIView *subview in self.subviews) {
         
@@ -1185,7 +1188,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     self.frame = frame;
     
-    [self.delegate recipeDetailsViewUpdated];
+    [self.delegate recipeDetailsViewUpdated:doSnap];
 }
 
 - (CGSize)availableSize {
@@ -1562,8 +1565,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         measureType = self.recipeDetails.measureType;
     }
     [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:measureType];
-    DLog(@"Converting to measure type: %i", measureType);
     [self updateViewOriginalButton];
+    [self updateFrame:NO];
 }
 
 @end

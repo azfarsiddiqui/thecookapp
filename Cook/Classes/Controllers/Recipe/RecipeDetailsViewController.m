@@ -293,8 +293,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                      }];
 }
 
-- (void)recipeDetailsViewUpdated {
-    [self updateRecipeDetailsView];
+- (void)recipeDetailsViewUpdated:(BOOL)doSnap {
+    [self updateRecipeDetailsView:doSnap];
     
     if (self.editMode && ![self.recipeDetails hasStory] && self.currentViewport == SnapViewportBottom) {
         [self snapToViewport:SnapViewportBottom animated:YES];
@@ -2076,7 +2076,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];
     
     // Update the scrollView with the recipe details view.
-    [self updateRecipeDetailsView];
+    [self updateRecipeDetailsView:YES];
 }
 
 - (void)enableEditMode {
@@ -2159,11 +2159,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self showProgressOverlayView:unpin title:@"REMOVING" completion:completion];
 }
 
-- (void)updateRecipeDetailsView {
+- (void)updateRecipeDetailsView:(BOOL)doScroll {
     
     if (self.scrollView.contentOffset.y > 0) {
         
-        if (!self.editMode) {
+        if (!self.editMode && doScroll) {
             [self.scrollView setContentOffset:CGPointZero animated:YES];
         }
         dispatch_async(dispatch_get_main_queue(), ^{

@@ -15,7 +15,7 @@
 @protocol RecipeDetailsViewDelegate <NSObject>
 
 - (void)recipeDetailsViewEditing:(BOOL)editing;
-- (void)recipeDetailsViewUpdated;
+- (void)recipeDetailsViewUpdated:(BOOL)doSnap;
 - (BOOL)recipeDetailsViewAddMode;
 - (void)recipeDetailsViewProfileRequested;
 @optional
