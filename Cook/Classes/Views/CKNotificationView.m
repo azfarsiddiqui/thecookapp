@@ -28,9 +28,8 @@
 
 @implementation CKNotificationView
 
-#define kFont       [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0]
-#define kMidFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:18.0]
-#define kMinFont    [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0]
+#define kFont               [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0]
+#define kLabelInsets        (UIEdgeInsets) { 9.0, 14.0, 0.0, 12.0 }
 
 - (void)dealloc {
     [EventHelper unregisterAppActive:self];
@@ -69,6 +68,7 @@
         _offButtonIcon = [ViewHelper buttonWithImage:[self imageForHasNotifications:NO selected:NO]
                                        selectedImage:[self imageForHasNotifications:NO selected:YES]
                                               target:self selector:@selector(tapped:)];
+        _offButtonIcon.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     }
     return _offButtonIcon;
 }
@@ -78,6 +78,7 @@
         _onButtonIcon = [ViewHelper buttonWithImage:[self imageForHasNotifications:YES selected:NO]
                                       selectedImage:[self imageForHasNotifications:YES selected:YES]
                                              target:self selector:@selector(tapped:)];
+        _onButtonIcon.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
         _onButtonIcon.hidden = YES;   // Hidden to start off with.
     }
     return _onButtonIcon;
@@ -87,6 +88,7 @@
     if (!_badgeLabel) {
         _badgeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _badgeLabel.backgroundColor = [UIColor clearColor];
+//        _badgeLabel.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
         _badgeLabel.font = kFont;
         _badgeLabel.textColor = [UIColor colorWithHexString:@"8e8e8e"];
         _badgeLabel.textAlignment = NSTextAlignmentCenter;
@@ -103,11 +105,13 @@
 }
 
 - (UIImage *)imageForHasNotifications:(BOOL)hasNotifications selected:(BOOL)selected {
+    UIImage *image = nil;
     if (hasNotifications) {
-        return selected ? [UIImage imageNamed:@"cook_dash_icons_notifications_on_onpress.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_on.png"];
+        image = selected ? [UIImage imageNamed:@"cook_dash_icons_notifications_on_onpress.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_on.png"];
     } else {
-        return selected ? [UIImage imageNamed:@"cook_dash_icons_notifications_off_onpress.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_off.png"];
+        image = selected ? [UIImage imageNamed:@"cook_dash_icons_notifications_off_onpress.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_off.png"];
     }
+    return [image resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 25.0, 0.0, 24.0 }];
 }
 
 - (void)loggedIn:(NSNotification *)notification {
@@ -134,13 +138,23 @@
     if (hasNotifications) {
         
         // Update the label.
-        self.badgeLabel.text = [DataHelper friendlyDisplayForCount:self.badgeCount showFractional:NO];  // No fractions.
+//        self.badgeLabel.text = [DataHelper friendlyDisplayForCount:self.badgeCount showFractional:NO];  // No fractions.
+        self.badgeLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.badgeCount];
         self.badgeLabel.font = [self fontForBadgeCount];
         [self.badgeLabel sizeToFit];
+        
+        CGFloat requiredWidth = self.bounds.size.width - kLabelInsets.left - kLabelInsets.right;
+        if (self.badgeLabel.frame.size.width > requiredWidth) {
+            CGRect frame = self.frame;
+            frame.size.width = self.badgeLabel.frame.size.width + kLabelInsets.left + kLabelInsets.right;
+            self.frame = frame;
+        }
+        
+        // Adjust frame accordingly.
         self.badgeLabel.frame = (CGRect){
-            floorf((self.bounds.size.width - self.badgeLabel.frame.size.width) / 2.0),
-            floorf((self.bounds.size.height - self.badgeLabel.frame.size.height) / 2.0),
-            self.badgeLabel.frame.size.width,
+            kLabelInsets.left,
+            kLabelInsets.top,
+            self.bounds.size.width - kLabelInsets.left - kLabelInsets.right,
             self.badgeLabel.frame.size.height
         };
         
@@ -168,6 +182,11 @@
         
     } else {
         
+        // Restore frame.
+        CGRect frame = self.frame;
+        frame.size.width = self.offButtonIcon.frame.size.width;
+        self.frame = frame;
+        
         if (self.on) {
             
             // Swap the off image in.
@@ -194,14 +213,7 @@
 }
 
 - (UIFont *)fontForBadgeCount {
-    UIFont *font = kFont;
-    NSString *badgeText = self.badgeLabel.text;
-    if ([badgeText length] > 3) {
-        font = kMinFont;
-    } else if ([badgeText length] > 2) {
-        font = kMidFont;
-    }
-    return font;
+    return kFont;
 }
 
 - (void)loadData {
