@@ -282,7 +282,7 @@
     
 }
 
-#pragma mark - BookContentGridLayoutDelegate methods
+#pragma mark - RecipeGridLayoutDelegate methods
 
 - (void)recipeGridLayoutDidFinish {
     DLog();
@@ -495,7 +495,7 @@
         }
         
         RecipeGridType gridType = [RecipeGridLayout gridTypeForRecipe:recipe];
-        NSString *cellId = [self cellIdentifierForGridType:gridType];
+        NSString *cellId = [RecipeGridLayout cellIdentifierForGridType:gridType];
         DLog(@"cellId: %@", cellId);
         
         BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
@@ -619,13 +619,13 @@
     self.collectionView = collectionView;
     
     [self.collectionView registerClass:[BookRecipeGridLargeCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeLarge]];
+            forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeLarge]];
     [self.collectionView registerClass:[BookRecipeGridMediumCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeMedium]];
+            forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeMedium]];
     [self.collectionView registerClass:[BookRecipeGridSmallCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeSmall]];
+            forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeSmall]];
     [self.collectionView registerClass:[BookRecipeGridExtraSmallCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeExtraSmall]];
+            forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeExtraSmall]];
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
     [self.collectionView registerClass:[CKContentContainerCell class] forCellWithReuseIdentifier:kLoadMoreCellId];
 }
@@ -651,10 +651,6 @@
         [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page
                                              distanceTravelled:(self.collectionView.contentOffset.y - self.startContentOffset.y)];
     }
-}
-
-- (NSString *)cellIdentifierForGridType:(RecipeGridType)gridType {
-    return [NSString stringWithFormat:@"GridType%ld", (unsigned long)gridType];
 }
 
 - (void)deleteTapped:(id)sender {

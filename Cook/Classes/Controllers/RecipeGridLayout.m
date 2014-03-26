@@ -144,6 +144,10 @@
     return gridType;
 }
 
++ (NSString *)cellIdentifierForGridType:(RecipeGridType)gridType {
+    return [NSString stringWithFormat:@"GridType%ld", (unsigned long)gridType];
+}
+
 #pragma mark - Instance methods
 
 - (id)initWithDelegate:(id<RecipeGridLayoutDelegate>)delegate {

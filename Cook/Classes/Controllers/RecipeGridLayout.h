@@ -34,6 +34,7 @@ typedef NS_ENUM(NSUInteger, RecipeGridType) {
 
 + (CGSize)sizeForBookContentGridType:(RecipeGridType)gridType;
 + (RecipeGridType)gridTypeForRecipe:(CKRecipe *)recipe;
++ (NSString *)cellIdentifierForGridType:(RecipeGridType)gridType;
 - (id)initWithDelegate:(id<RecipeGridLayoutDelegate>)delegate;
 - (void)setNeedsRelayout:(BOOL)relayout;
 
