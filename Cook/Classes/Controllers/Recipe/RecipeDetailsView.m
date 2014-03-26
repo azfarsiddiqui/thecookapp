@@ -1041,7 +1041,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateViewOriginalButton {
     if (!self.viewOriginalButton) {
         self.viewOriginalButton = [[UIButton alloc] init];
-        self.viewOriginalButton.titleLabel.font = [Theme servesFont];
+        self.viewOriginalButton.titleLabel.font = [Theme viewOriginalFont];
         [self.viewOriginalButton setTitleColor:[Theme servesColor] forState:UIControlStateNormal];
         [self.viewOriginalButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
         [self.viewOriginalButton addTarget:self action:@selector(viewOriginalPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -1085,7 +1085,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             default:
                 break;
         }
-
     }
     [self updateViewOriginalButtonFrame];
 }

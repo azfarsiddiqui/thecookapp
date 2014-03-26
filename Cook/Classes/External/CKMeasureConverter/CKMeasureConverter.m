@@ -97,7 +97,7 @@
     NSString *convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-//    paragraphStyle.lineSpacing = 5.0;
+    paragraphStyle.lineSpacing = 4.0;
     paragraphStyle.alignment = NSTextAlignmentLeft;
     NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString]
                                                                        attributes:@{NSForegroundColorAttributeName: self.highlightColor,
@@ -221,17 +221,17 @@
 }
 
 - (NSString *)convertEights:(CGFloat)input {
-    NSArray *array = @[@"",@"\u215B",@"\u00BC",@"\u2153",@"\u00BD",@"\u2154",@"\u00BE",@"\u215E",@""];
+    NSArray *array = @[@"",@"1/8",@"1/4",@"3/8",@"1/2",@"5/8",@"3/4",@"7/8",@""];
     return [self convertToFraction:input keyArray:array];
 }
 
 - (NSString *)convertFourths:(CGFloat)input {
-    NSArray *array = @[@"", @"\u00BC", @"\u00BD", @"\u00BE", @""];
+    NSArray *array = @[@"", @"1/4", @"1/2", @"3/4", @""];
     return [self convertToFraction:input keyArray:array];
 }
 
 - (NSString *)convertHalf:(CGFloat)input {
-    NSArray *array = @[@"", @"\u00BD", @""];
+    NSArray *array = @[@"", @"1/2", @""];
     return [self convertToFraction:input keyArray:array];
 }
 

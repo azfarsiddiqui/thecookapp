@@ -187,6 +187,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                                              selector:@selector(didBecomeInactive)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:[UIApplication sharedApplication]];
+    self.scrollView.delaysContentTouches = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -2095,6 +2096,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self enableEditModeWithoutInformingRecipeDetailsView:enable];
         [self.recipeDetailsView enableEditMode:enable];
         [self snapToViewport:SnapViewportBottom];
+    }
+    if (enable) {
+        self.scrollView.delaysContentTouches = YES;
+    } else {
+        self.scrollView.delaysContentTouches = NO;
     }
 }
 

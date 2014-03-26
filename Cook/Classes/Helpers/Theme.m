@@ -330,6 +330,10 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:40];
 }
 
++ (UIFont *)viewOriginalFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0f];
+}
+
 #pragma mark - Recipe Editing
 
 + (UIColor *)bookCoverInsideBackgroundColour {
