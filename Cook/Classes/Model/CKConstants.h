@@ -33,6 +33,7 @@ extern NSString *const kUserAttrCoverPhoto;
 extern NSString *const kUserAttrEmail;
 extern NSString *const kUserAttrPassword;
 extern NSString *const kUserAttrTheme;
+extern NSString *const kUserAttrMeasureType;
 
 #pragma mark - UserFriend class
 
@@ -100,6 +101,8 @@ extern NSString *const kRecipeAttrPrepTimeInMinutes;
 extern NSString *const kRecipeAttrRecipeViewImageContentOffset;
 extern NSString *const kRecipeAttrPrivacy;
 extern NSString *const kRecipeAttrLocation;
+extern NSString *const kRecipeAttrMeasureType;
+extern NSString *const kRecipeAttrCountryCode;
 extern NSString *const kRecipeAttrLocale;
 extern NSString *const kRecipeAttrNumViews;
 extern NSString *const kRecipeAttrNumLikes;

@@ -20,6 +20,7 @@
 #import "CKPhotoManager.h"
 #import "CKRecipeTag.h"
 #import "CKLocation.h"
+#import "CKMeasureConverter.h"
 #import "AppHelper.h"
 
 @interface CKRecipe ()
@@ -61,6 +62,7 @@
     recipe.user = book.user;
     recipe.page = page;
     recipe.privacy = CKPrivacyPublic;
+    recipe.measureType = [CKUser currentUser].measurementType;
     return recipe;
 }
 
@@ -695,6 +697,40 @@
         _geoLocation = (parseLocationObject != nil) ? [[CKLocation alloc] initWithParseObject:parseLocationObject] :  nil;
     }
     return _geoLocation;
+}
+
+- (void)setMeasureType:(NSInteger)measureType {
+    [self.parseObject setObject:@(measureType) forKey:kRecipeAttrMeasureType];
+}
+
+- (NSInteger)measureType {
+    NSNumber *num = [self.parseObject objectForKey:kRecipeAttrMeasureType];
+    if (num) {
+        return [num integerValue];
+    } else if ([self.parseObject objectForKey:kRecipeAttrCountryCode]){ //Try to guess measureType from country code
+        return [self measureTypeFromCountryCode:[self.parseObject objectForKey:kRecipeAttrCountryCode]];
+    } else if ([self.parseObject objectForKey:kRecipeAttrLocale]) { //Try to guess measureType from locale
+        NSString *localeString = [self.parseObject objectForKey:kRecipeAttrLocale];
+        NSInteger startIndex = [localeString rangeOfString:@"_"].location + 1;
+        NSString *countryString = [[self.parseObject objectForKey:kRecipeAttrLocale] substringFromIndex:startIndex];
+        return [self measureTypeFromCountryCode:countryString];
+    } else { //Can't guess, give up
+        return CKMeasureTypeNone;
+    }
+}
+
+- (CKMeasurementType)measureTypeFromCountryCode:(NSString *)code {
+    CKMeasurementType type;
+    if ([code isEqualToString:@"AU"]) {
+        type = CKMeasureTypeAUMetric;
+    } else if ([code isEqualToString:@"UK"]) {
+        type = CKMeasureTypeUKMetric;
+    } else if ([code isEqualToString:@"US"]) {
+        type = CKMeasureTypeImperial;
+    } else {
+        type = CKMeasureTypeMetric;
+    }
+    return type;
 }
 
 - (void)setIngredients:(NSArray *)ingredients {

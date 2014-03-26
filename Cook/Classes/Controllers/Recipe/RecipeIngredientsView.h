@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKMeasureConverter.h"
 
 @class CKBook;
 
@@ -14,13 +15,13 @@
 
 @property (nonatomic, assign) CGSize maxSize;
 
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth;
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize;
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType;
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize measureLocale:(CKMeasurementType)measureType;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
-            textAlignment:(NSTextAlignment)textAlignment;
+            textAlignment:(NSTextAlignment)textAlignment measureLocale:(CKMeasurementType)measureType;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
-            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact;
-- (void)updateIngredients:(NSArray *)ingredients;
-- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book;
+            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact measureLocale:(CKMeasurementType)measureType;
+- (void)updateIngredients:(NSArray *)ingredients measureType:(CKMeasurementType)measureType;
+- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book measureType:(CKMeasurementType)measureType;
 
 @end

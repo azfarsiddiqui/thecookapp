@@ -19,6 +19,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKLocation *location;
+@property (nonatomic, assign) NSInteger measureType;
 @property (nonatomic, copy) NSString *page;
 @property (nonatomic, strong) NSArray *availablePages;
 @property (nonatomic, copy) NSString *name;

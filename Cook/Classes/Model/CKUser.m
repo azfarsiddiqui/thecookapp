@@ -15,6 +15,7 @@
 #import "CKServerManager.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "EventHelper.h"
+#import "CKMeasureConverter.h"
 #import "AppHelper.h"
 
 @interface CKUser ()
@@ -654,6 +655,33 @@ static ObjectFailureBlock loginFailureBlock = nil;
         return [themeNumber integerValue];
     } else {
         return DashThemeReflect;
+    }
+}
+
+- (void)setMeasurementType:(NSInteger)measurementType {
+    [self.parseObject setObject:@(measurementType) forKey:kUserAttrMeasureType];
+    [self.parseObject saveEventually];
+}
+
+- (NSInteger)measurementType {
+    NSNumber *measureNumber = [self.parseObject objectForKey:kUserAttrMeasureType];
+    if (measureNumber) {
+        return [measureNumber integerValue];
+    } else {
+        //If not set yet, try to guess preferrred measurement type based on locale
+        NSInteger measureType = CKMeasureTypeNone;
+        NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
+        if ([countryCode isEqualToString:@"US"]) {
+            measureType = CKMeasureTypeImperial;
+        } else if ([countryCode isEqualToString:@"AU"]) {
+            measureType = CKMeasureTypeAUMetric;
+        } else if ([countryCode isEqualToString:@"GB"]) {
+            measureType = CKMeasureTypeUKMetric;
+        } else {
+            measureType = CKMeasureTypeMetric;
+        }
+        [self setMeasurementType:measureType];
+        return measureType;
     }
 }
 
