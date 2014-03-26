@@ -6,14 +6,15 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookContentGridLayout.h"
+#import "RecipeGridLayout.h"
 #import "ViewHelper.h"
 #import "NSString+Utilities.h"
 #import "BookNavigationView.h"
+#import "CKRecipe.h"
 
-@interface BookContentGridLayout ()
+@interface RecipeGridLayout ()
 
-@property (nonatomic, weak) id<BookContentGridLayoutDelegate> delegate;
+@property (nonatomic, weak) id<RecipeGridLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
@@ -28,30 +29,30 @@
 
 @end
 
-@implementation BookContentGridLayout
+@implementation RecipeGridLayout
 
 #define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 0.0, 20.0 }
 #define kUnitWidth          320.0
 #define kRowGap             12.0
 #define kColumnGap          12.0
-#define kCellsStartOffset   700.0
 #define kHeaderCellsGap     200.0
 #define kHeaderCellsMinGap  40.0
+#define kNumColumns         3
 #define kFooterInsets       (UIEdgeInsets){ 5.0, 0.0, 10.0, 0.0 }
 
-+ (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
++ (CGSize)sizeForBookContentGridType:(RecipeGridType)gridType {
     CGSize size = CGSizeZero;
     switch (gridType) {
-        case BookContentGridTypeExtraSmall:
+        case RecipeGridTypeExtraSmall:
             size = (CGSize){ kUnitWidth, 370.0 };
             break;
-        case BookContentGridTypeSmall:
+        case RecipeGridTypeSmall:
             size = (CGSize){ kUnitWidth, 510.0 };
             break;
-        case BookContentGridTypeMedium:
+        case RecipeGridTypeMedium:
             size = (CGSize){ kUnitWidth, 570.0 };
             break;
-        case BookContentGridTypeLarge:
+        case RecipeGridTypeLarge:
             size = (CGSize){ kUnitWidth, 650.0 };
             break;
         default:
@@ -60,7 +61,92 @@
     return size;
 }
 
-- (id)initWithDelegate:(id<BookContentGridLayoutDelegate>)delegate {
++ (RecipeGridType)gridTypeForRecipe:(CKRecipe *)recipe {
+    
+    // Defaults to large, which makes computing combinations easier.
+    RecipeGridType gridType = RecipeGridTypeLarge;
+    
+    if ([recipe hasPhotos]) {
+        
+        if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // +Photo -Title -Story -Method -Ingredients
+            gridType = RecipeGridTypeSmall;
+            
+        } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // +Photo +Title -Story -Method -Ingredients
+            gridType = RecipeGridTypeSmall;
+            
+        } else if (![recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // +Photo -Title +Story -Method -Ingredients
+            gridType = RecipeGridTypeMedium;
+            
+        } else if (![recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // +Photo -Title -Story +Method -Ingredients
+            gridType = RecipeGridTypeMedium;
+            
+        } else if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
+            
+            // +Photo -Title -Story -Method +Ingredients
+            gridType = RecipeGridTypeMedium;
+            
+        }
+        
+    } else {
+        
+        if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo +Title -Story -Method -Ingredients
+            gridType = RecipeGridTypeExtraSmall;
+            
+        } else if (![recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo -Title +Story -Method -Ingredients
+            gridType = RecipeGridTypeExtraSmall;
+            
+        } else if (![recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo -Title -Story +Method -Ingredients
+            gridType = RecipeGridTypeExtraSmall;
+            
+        } else if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
+            
+            // -Photo -Title -Story -Method +Ingredients
+            gridType = RecipeGridTypeExtraSmall;
+            
+        } else if ([recipe hasTitle] && [recipe hasStory] && ![recipe hasIngredients]) {
+            
+            // -Photo +Title +Story (+/-)Method -Ingredients
+            gridType = RecipeGridTypeSmall;
+            
+        } else if ([recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo +Title -Story +Method -Ingredients
+            gridType = RecipeGridTypeSmall;
+            
+        } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
+            
+            // -Photo +Title -Story -Method +Ingredients
+            gridType = RecipeGridTypeSmall;
+            
+        } else if (![recipe hasTitle] && [recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
+            
+            // -Photo -Title +Story +Method
+            gridType = RecipeGridTypeExtraSmall;
+        }
+    }
+    
+    //    DLog(@"recipe[%@] gridType[%d]", recipe.name, gridType);
+    
+    return gridType;
+}
+
+#pragma mark - Instance methods
+
+- (id)initWithDelegate:(id<RecipeGridLayoutDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
     }
@@ -83,28 +169,28 @@
     
     CGSize contentSize = (CGSize){ self.collectionView.bounds.size.width, 0.0 };
     contentSize.height += kContentInsets.top;
-    UIOffset offset = (UIOffset){ kContentInsets.left, kCellsStartOffset };
+    UIOffset offset = (UIOffset){ kContentInsets.left, [self.delegate recipeGridCellsOffset] };
     
     // Remember cell start offset.
     self.cellStartOffset = offset.vertical;
     
     // Set up the column offsets.
-    NSInteger numColumns = [self.delegate bookContentGridLayoutNumColumns];
+    NSInteger numColumns = kNumColumns;
     self.columnOffsets = [NSMutableArray arrayWithCapacity:numColumns];
     for (NSInteger columnIndex = 0; columnIndex < numColumns; columnIndex++) {
         [self.columnOffsets addObject:@(offset.vertical)];
     }
     
     // Now go ahead and figure it out.
-    offset.vertical = kCellsStartOffset;
-    NSInteger numItems = [self.delegate bookContentGridLayoutNumItems];
+    offset.vertical = [self.delegate recipeGridCellsOffset];
+    NSInteger numItems = [self.delegate recipeGridLayoutNumItems];
     
     CGFloat maxHeight = 0.0;
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
         
         // Get the gridType and size.
-        BookContentGridType gridType = [self.delegate bookContentGridTypeForItemAtIndex:itemIndex];
-        CGSize size = [BookContentGridLayout sizeForBookContentGridType:gridType];
+        RecipeGridType gridType = [self.delegate recipeGridTypeForItemAtIndex:itemIndex];
+        CGSize size = [RecipeGridLayout sizeForBookContentGridType:gridType];
         
         // Choose the column for this go to.
         NSInteger shortestColumnIndex = [self nextShortestColumn];
@@ -128,9 +214,9 @@
     contentSize.height += maxHeight;
     
     // Load more?
-    if ([self.delegate bookContentGridLayoutLoadMoreEnabled]) {
+    if ([self.delegate recipeGridLayoutLoadMoreEnabled]) {
         contentSize.height += kFooterInsets.top;
-        contentSize.height += [self.delegate bookContentGridLayoutFooterSize].height;
+        contentSize.height += [self.delegate recipeGridLayoutFooterSize].height;
         contentSize.height += kFooterInsets.bottom;
     }
     
@@ -157,15 +243,21 @@
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
     self.insertedIndexPaths = [NSMutableArray array];
     
-    [self buildHeaderLayout];
+    if ([self.delegate recipeGridLayoutHeaderEnabled]) {
+        [self buildHeaderLayout];
+    }
+    
     [self buildGridLayout];
-    [self buildFooterLayout];
+    
+    if ([self.delegate recipeGridLayoutLoadMoreEnabled] && ![self.delegate recipeGridLayoutDisabled]) {
+        [self buildFooterLayout];
+    }
     
     // Mark layout as generated.
     self.layoutCompleted = YES;
     
     // Inform end of layout prep.
-    [self.delegate bookContentGridLayoutDidFinish];
+    [self.delegate recipeGridLayoutDidFinish];
 }
 
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
@@ -253,9 +345,9 @@
 }
 
 - (UICollectionViewLayoutAttributes *)headerLayoutAttributesForIndexPath:(NSIndexPath *)headerIndexPath {
-    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
+    CGSize headerSize = [self.delegate recipeGridLayoutHeaderSize];
     CGFloat navigationHeight = [BookNavigationView navigationHeight];
-    CGFloat availableHeaderHeight = kCellsStartOffset - navigationHeight;
+    CGFloat availableHeaderHeight = [self.delegate recipeGridCellsOffset] - navigationHeight;
     
     UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
     headerAttributes.frame = (CGRect){
@@ -269,11 +361,9 @@
 }
 
 - (void)buildFooterLayout {
-    NSInteger numItems = [self.delegate bookContentGridLayoutNumItems];
+    NSInteger numItems = [self.delegate recipeGridLayoutNumItems];
     
-    if (numItems > 0 && [self.delegate bookContentGridLayoutLoadMoreEnabled]
-        && ![self.delegate bookContentGridLayoutFastForwardEnabled]) {
-        
+    if (numItems > 0) {
         NSIndexPath *footerIndexPath = [NSIndexPath indexPathForItem:numItems inSection:0];
         UICollectionViewLayoutAttributes *footerAttributes = [self footerLayoutAttributesForIndexPath:footerIndexPath];
         [self.itemsLayoutAttributes addObject:footerAttributes];
@@ -282,7 +372,7 @@
 }
 
 - (UICollectionViewLayoutAttributes *)footerLayoutAttributesForIndexPath:(NSIndexPath *)footerIndexPath {
-    CGSize footerSize = [self.delegate bookContentGridLayoutFooterSize];
+    CGSize footerSize = [self.delegate recipeGridLayoutFooterSize];
     
     CGFloat maxColumnHeight = [self maxHeightForColumns];
     UICollectionViewLayoutAttributes *footerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:footerIndexPath];
@@ -298,22 +388,22 @@
 - (void)buildGridLayout {
     
     // Set up the column offsets.
-    UIOffset offset = (UIOffset){ kContentInsets.left, kCellsStartOffset };
+    UIOffset offset = (UIOffset){ kContentInsets.left, [self.delegate recipeGridCellsOffset] };
     
-    NSInteger numColumns = [self.delegate bookContentGridLayoutNumColumns];
+    NSInteger numColumns = kNumColumns;
     self.columnOffsets = [NSMutableArray arrayWithCapacity:numColumns];
     for (NSInteger columnIndex = 0; columnIndex < numColumns; columnIndex++) {
         [self.columnOffsets addObject:@(offset.vertical)];
     }
     
     // Now go ahead and figure it out.
-    NSInteger numItems = [self.delegate bookContentGridLayoutNumItems];
+    NSInteger numItems = [self.delegate recipeGridLayoutNumItems];
     
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
         
         // Get the gridType and size.
-        BookContentGridType gridType = [self.delegate bookContentGridTypeForItemAtIndex:itemIndex];
-        CGSize size = [BookContentGridLayout sizeForBookContentGridType:gridType];
+        RecipeGridType gridType = [self.delegate recipeGridTypeForItemAtIndex:itemIndex];
+        CGSize size = [RecipeGridLayout sizeForBookContentGridType:gridType];
         
         // Choose the column for this go to.
         NSInteger shortestColumnIndex = [self nextShortestColumn];
@@ -347,16 +437,16 @@
 
 - (void)applyHeaderPagingEffects:(UICollectionViewLayoutAttributes *)attributes {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
+    CGSize headerSize = [self.delegate recipeGridLayoutHeaderSize];
     
     if (visibleFrame.origin.y > 0.0) {
         
         CGFloat navigationHeight = [BookNavigationView navigationHeight];
-        CGFloat availableHeaderHeight = kCellsStartOffset - visibleFrame.origin.y - navigationHeight;
+        CGFloat availableHeaderHeight = [self.delegate recipeGridCellsOffset] - visibleFrame.origin.y - navigationHeight;
 
         CGRect frame = attributes.frame;
         frame.origin.y = visibleFrame.origin.y + navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
-        frame.origin.y = MIN(frame.origin.y, kCellsStartOffset - kHeaderCellsMinGap - headerSize.height);
+        frame.origin.y = MIN(frame.origin.y, [self.delegate recipeGridCellsOffset] - kHeaderCellsMinGap - headerSize.height);
         attributes.frame = frame;
     }
     

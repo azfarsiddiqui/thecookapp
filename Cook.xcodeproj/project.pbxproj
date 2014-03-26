@@ -151,7 +151,7 @@
 		762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 762F62D417012BF1006769E5 /* CKMaskedLabel.m */; };
 		7632F25117AF4CFA00E80952 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7632F25017AF4CFA00E80952 /* Crashlytics.framework */; };
 		76332A6217F12B520081F88F /* RecipeCommentBoxFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */; };
-		7634612E17B9C3C000876AE9 /* BookContentGridLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7634612D17B9C3C000876AE9 /* BookContentGridLayout.m */; };
+		7634612E17B9C3C000876AE9 /* RecipeGridLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7634612D17B9C3C000876AE9 /* RecipeGridLayout.m */; };
 		763546B017941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A217941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png */; };
 		763546B117941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A317941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png */; };
 		763546B217941988007A9DF6 /* cook_book_inner_icon_comment_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A417941988007A9DF6 /* cook_book_inner_icon_comment_dark.png */; };
@@ -934,6 +934,7 @@
 		76B78A5918110A7C0074068A /* cook_dash_icons_customise_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A4918110A7C0074068A /* cook_dash_icons_customise_blue@2x.png */; };
 		76B78A5A18110A7C0074068A /* cook_dash_icons_customise_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A4A18110A7C0074068A /* cook_dash_icons_customise_gray.png */; };
 		76B78A5B18110A7C0074068A /* cook_dash_icons_customise_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A4B18110A7C0074068A /* cook_dash_icons_customise_gray@2x.png */; };
+		76B855F918E2532B007C4A37 /* RecipeSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B855F818E2532B007C4A37 /* RecipeSearchViewController.m */; };
 		76BBF555184605BB004B3F70 /* cook_login_library.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BBF553184605BB004B3F70 /* cook_login_library.png */; };
 		76BBF556184605BB004B3F70 /* cook_login_library@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BBF554184605BB004B3F70 /* cook_login_library@2x.png */; };
 		76BD4A9418C015CC007684F4 /* CKError.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BD4A9318C015CC007684F4 /* CKError.m */; };
@@ -1785,8 +1786,8 @@
 		7632F25017AF4CFA00E80952 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		76332A6017F12B520081F88F /* RecipeCommentBoxFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeCommentBoxFooterView.h; sourceTree = "<group>"; };
 		76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeCommentBoxFooterView.m; sourceTree = "<group>"; };
-		7634612C17B9C3C000876AE9 /* BookContentGridLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookContentGridLayout.h; sourceTree = "<group>"; };
-		7634612D17B9C3C000876AE9 /* BookContentGridLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookContentGridLayout.m; sourceTree = "<group>"; };
+		7634612C17B9C3C000876AE9 /* RecipeGridLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeGridLayout.h; sourceTree = "<group>"; };
+		7634612D17B9C3C000876AE9 /* RecipeGridLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeGridLayout.m; sourceTree = "<group>"; };
 		763546A217941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_darkenphoto_strip.png; sourceTree = "<group>"; };
 		763546A317941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_darkenphoto_strip@2x.png"; sourceTree = "<group>"; };
 		763546A417941988007A9DF6 /* cook_book_inner_icon_comment_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_comment_dark.png; sourceTree = "<group>"; };
@@ -2685,6 +2686,8 @@
 		76B78A4918110A7C0074068A /* cook_dash_icons_customise_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_customise_blue@2x.png"; sourceTree = "<group>"; };
 		76B78A4A18110A7C0074068A /* cook_dash_icons_customise_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise_gray.png; sourceTree = "<group>"; };
 		76B78A4B18110A7C0074068A /* cook_dash_icons_customise_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_customise_gray@2x.png"; sourceTree = "<group>"; };
+		76B855F718E2532B007C4A37 /* RecipeSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSearchViewController.h; sourceTree = "<group>"; };
+		76B855F818E2532B007C4A37 /* RecipeSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSearchViewController.m; sourceTree = "<group>"; };
 		76BBF553184605BB004B3F70 /* cook_login_library.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_login_library.png; sourceTree = "<group>"; };
 		76BBF554184605BB004B3F70 /* cook_login_library@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_library@2x.png"; sourceTree = "<group>"; };
 		76BD4A9218C015CC007684F4 /* CKError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKError.h; sourceTree = "<group>"; };
@@ -5270,6 +5273,15 @@
 			path = books;
 			sourceTree = "<group>";
 		};
+		76B855F618E25293007C4A37 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				76B855F718E2532B007C4A37 /* RecipeSearchViewController.h */,
+				76B855F818E2532B007C4A37 /* RecipeSearchViewController.m */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		76BE37281717A8E9000C0755 /* CKEditViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -5870,6 +5882,7 @@
 				76520459161A80CB00EE253C /* Dashboard */,
 				7614D6B117DAE1ED001CF052 /* General */,
 				76A3956017FE9F6A00DF249A /* Profile */,
+				76B855F618E25293007C4A37 /* Search */,
 				76C99D70163A12BD00788679 /* Settings */,
 				76CB7EEA165CF466007BECA0 /* Store */,
 				767EEA5417BE5E44001E7D0B /* Tutorial */,
@@ -6066,8 +6079,8 @@
 				76735C9917BA61B50027CA3B /* BookRecipeGridExtraSmallCell.m */,
 				76E0B95E1791205D00AD70E3 /* BookCategoryLayout.h */,
 				76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */,
-				7634612C17B9C3C000876AE9 /* BookContentGridLayout.h */,
-				7634612D17B9C3C000876AE9 /* BookContentGridLayout.m */,
+				7634612C17B9C3C000876AE9 /* RecipeGridLayout.h */,
+				7634612D17B9C3C000876AE9 /* RecipeGridLayout.m */,
 				761951B01793B86A008AB495 /* BookNavigationView.h */,
 				761951B11793B86A008AB495 /* BookNavigationView.m */,
 				76C8FAF417966FDC00488A80 /* BookSocialLayout.h */,
@@ -8731,7 +8744,8 @@
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
 				764113D7182C9D9F00366512 /* FacebookSuggestButtonView.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
-				7634612E17B9C3C000876AE9 /* BookContentGridLayout.m in Sources */,
+				76B855F918E2532B007C4A37 /* RecipeSearchViewController.m in Sources */,
+				7634612E17B9C3C000876AE9 /* RecipeGridLayout.m in Sources */,
 				7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */,
 				7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */,
 				7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */,

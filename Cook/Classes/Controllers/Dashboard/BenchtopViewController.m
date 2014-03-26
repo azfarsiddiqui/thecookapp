@@ -33,18 +33,20 @@
 #import "NSString+Utilities.h"
 #import "AnalyticsHelper.h"
 #import "Theme.h"
+#import "RecipeSearchViewController.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate,
-    CKNavigationControllerDelegate, FollowReloadButtonViewDelegate>
+    CKNavigationControllerDelegate, FollowReloadButtonViewDelegate, RecipeSearchViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIScrollView *backdropScrollView;
 @property (nonatomic, strong) CKNotificationView *notificationView;
+@property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIImageView *vignetteView;
 @property (nonatomic, strong) UIButton *deleteButton;
@@ -55,6 +57,7 @@
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, strong) SignupViewController *signUpViewController;
 @property (nonatomic, strong) NotificationsViewController *notificationsViewController;
+@property (nonatomic, strong) RecipeSearchViewController *searchViewController;
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
 @property (nonatomic, strong) CKBook *myBook;
@@ -129,6 +132,7 @@
     [self initBackground];
     [self initCollectionView];
     [self initNotificationView];
+    [self initSearchView];
     
     if ([CKUser isLoggedIn]) {
         [self loadBenchtop];
@@ -271,8 +275,7 @@
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     cell.bookCoverView.hidden = YES;
     [self showBookCell:cell show:!open];
-    self.notificationView.alpha = open ? 0.0 : 1.0;
-    
+    [self fadeBenchtopIcons:open];
 }
 
 - (void)bookDidOpen:(BOOL)open {
@@ -307,7 +310,9 @@
     [visibleCells each:^(UICollectionViewCell *cell) {
         cell.alpha = show ? 1.0 : 0.0;
     }];
-    self.notificationView.alpha = show ? 1.0 : 0.0;
+    
+    [self fadeBenchtopIcons:!show];
+    
     if (show) {
         [self.delegate benchtopShowOtherViews];
     } else {
@@ -434,6 +439,8 @@
 - (void)cookNavigationControllerCloseRequested {
     if (self.notificationsViewController) {
         [self showNotificationsOverlay:NO];
+    } else if (self.searchViewController) {
+        [self showSearchOverlay:NO];
     }
 }
 
@@ -624,6 +631,12 @@
     }
 }
 
+#pragma mark - RecipeSearchViewControllerDelegate methods
+
+- (void)recipeSearchViewControllerDismissRequested {
+    [self hideOverlayForViewControllerCompletion:nil];
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)vignetteView {
@@ -739,6 +752,22 @@
     self.notificationView.hidden = ![self.currentUser isSignedIn];
 }
 
+- (void)initSearchView {
+    UIButton *searchButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_notifications_off.png"]
+                                           selectedImage:[UIImage imageNamed:@"cook_dash_icons_notifications_off_onpress.png"]
+                                                  target:self selector:@selector(searchTapped:)];
+    searchButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
+    searchButton.frame = (CGRect){
+        self.view.bounds.size.width - searchButton.frame.size.width - 18.0,
+        33.0,
+        searchButton.frame.size.width,
+        searchButton.frame.size.height
+    };
+    [self.view addSubview:searchButton];
+    self.searchButton.hidden = ![self.currentUser isSignedIn];
+    self.searchButton = searchButton;
+}
+
 - (PagingCollectionViewLayout *)pagingLayout {
     return (PagingCollectionViewLayout *)self.collectionView.collectionViewLayout;
 }
@@ -838,9 +867,7 @@
                          self.deleteButton.alpha = enable ? 1.0 : 0.0;
                          
                          // Fade the icons away.
-                         self.notificationView.alpha = enable ? 0.0 : 1.0;
-                         self.libraryIntroView.alpha = enable ? 0.0 : 1.0;
-                         self.settingsIntroView.alpha = enable ? 0.0 : 1.0;
+                         [self fadeBenchtopIcons:enable];
                          
                      }
                      completion:^(BOOL finished) {
@@ -1172,11 +1199,7 @@
                          [self.delegate editBookRequested:enable];
                          
                          // Hide the icons.
-                         self.notificationView.alpha = enable ? 0.0 : 1.0;
-                         
-                         // Hide the intro views.
-                         self.libraryIntroView.alpha = enable ? 0.0 : 1.0;
-                         self.settingsIntroView.alpha = enable ? 0.0 : 1.0;
+                         [self fadeBenchtopIcons:enable];
                          
                          // Slide down the cover picker.
                          self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
@@ -1372,8 +1395,9 @@
             
         }];
         
-        // Show notification view.
+        // Show notification/search.
         self.notificationView.hidden = NO;
+        self.searchButton.hidden = NO;
         
         // Reset the current user.
         self.currentUser = [CKUser currentUser];
@@ -1389,6 +1413,7 @@
     
     // Hide notification view.
     self.notificationView.hidden = YES;
+    self.searchButton.hidden = YES;
     
     // Reload benchtop.
     [self clearDashCompletion:^{
@@ -1586,9 +1611,7 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.notificationView.alpha = show ? 1.0 : 0.0;
-                         self.libraryIntroView.alpha = show ? 1.0 : 0.0;
-                         self.settingsIntroView.alpha = show ? 1.0 : 0.0;
+                         [self fadeBenchtopIcons:!show];
                          cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
                          
                          // Fade in/out cells.
@@ -1625,28 +1648,14 @@
 }
 
 - (void)showNotificationsOverlay:(BOOL)show {
-    [self.delegate panEnabledRequested:!show];
     if (show) {
-        self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
-        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.notificationsViewController
-                                                                                          delegate:self];
-        [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController show:YES
-                                                    animation:^{
-                                                        self.notificationView.alpha = 0.0;
-                                                        self.libraryIntroView.alpha = 0.0;
-                                                        self.settingsIntroView.alpha = 0.0;
-                                                    } completion:nil];
+        NotificationsViewController *notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
+        [self showOverlayForViewController:notificationsViewController completion:nil];
+        self.notificationsViewController = notificationsViewController;
     } else {
-        
-        [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
-                                                    animation:^{
-                                                        self.notificationView.alpha = 1.0;
-                                                        self.libraryIntroView.alpha = 1.0;
-                                                        self.settingsIntroView.alpha = 1.0;
-                                                    } completion:^{
-                                                        self.notificationsViewController = nil;
-                                                        self.cookNavigationController = nil;
-                                                    }];
+        [self hideOverlayForViewControllerCompletion:^{
+            self.notificationsViewController = nil;
+        }];
     }
 }
 
@@ -2079,6 +2088,56 @@
         [self reloadBookAtIndexPath:indexPath];
     }];
     
+}
+
+- (void)searchTapped:(id)sender {
+    [self showSearchOverlay:YES];
+}
+
+- (void)showSearchOverlay:(BOOL)show {
+    if (show) {
+        RecipeSearchViewController *searchViewController = [[RecipeSearchViewController alloc] initWithDelegate:self];
+        [self showOverlayForViewController:searchViewController completion:nil];
+        self.searchViewController = searchViewController;
+    } else {
+        [self hideOverlayForViewControllerCompletion:^{
+            self.searchViewController = nil;
+        }];
+    }
+}
+
+- (void)showOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion {
+    [self.delegate panEnabledRequested:NO];
+    self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:viewController delegate:self];
+    [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController show:YES
+                                                animation:^{
+                                                    [self fadeBenchtopIcons:YES];
+                                                } completion:^{
+                                                    if (completion != nil) {
+                                                        completion();
+                                                    }
+                                                }];
+}
+
+- (void)hideOverlayForViewControllerCompletion:(void (^)())completion {
+    [self.delegate panEnabledRequested:YES];
+    [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
+                                                animation:^{
+                                                    [self fadeBenchtopIcons:NO];
+                                                } completion:^{
+                                                    self.cookNavigationController = nil;
+                                                    if (completion != nil) {
+                                                        completion();
+                                                    }
+                                                }];
+}
+
+- (void)fadeBenchtopIcons:(BOOL)fade {
+    CGFloat fadeAlpha = fade ? 0.0 : 1.0;
+    self.notificationView.alpha = fadeAlpha;
+    self.libraryIntroView.alpha = fadeAlpha;
+    self.searchButton.alpha = fadeAlpha;
+    self.settingsIntroView.alpha = fadeAlpha;
 }
 
 @end

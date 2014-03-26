@@ -13,7 +13,7 @@
 #import "MRCEnumerable.h"
 #import "BookContentTitleView.h"
 #import "ViewHelper.h"
-#import "BookContentGridLayout.h"
+#import "RecipeGridLayout.h"
 #import "BookRecipeGridLargeCell.h"
 #import "BookRecipeGridMediumCell.h"
 #import "BookRecipeGridSmallCell.h"
@@ -36,7 +36,7 @@
 #import "CKError.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
+    RecipeGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
     UIGestureRecognizerDelegate> {
         
     BOOL _isFastForward;
@@ -111,7 +111,7 @@
 }
 
 - (void)loadData {
-    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+    [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
     self.recipes = [NSArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
     [self showIntroCard];
@@ -123,7 +123,7 @@
     
     if ([self.collectionView numberOfItemsInSection:0] < [self.recipes count])
     {
-        [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+        [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
         [self.collectionView reloadData];
     }
 }
@@ -177,7 +177,7 @@
     }
     
     // UI updates after invalidating layout.
-    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+    [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:@[activityDeleteIndexPath]];
         [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
@@ -284,7 +284,7 @@
 
 #pragma mark - BookContentGridLayoutDelegate methods
 
-- (void)bookContentGridLayoutDidFinish {
+- (void)recipeGridLayoutDidFinish {
     DLog();
     if (self.scrollToRecipe) {
         self.disableInformScrollOffset = YES;
@@ -308,36 +308,40 @@
     }
 }
 
-- (NSInteger)bookContentGridLayoutNumItems {
+- (NSInteger)recipeGridLayoutNumItems {
     return self.isFastForward ? 0 : [self.recipes count];
 }
 
-- (NSInteger)bookContentGridLayoutNumColumns {
-    return 3;
-}
-
-- (BookContentGridType)bookContentGridTypeForItemAtIndex:(NSInteger)itemIndex {
+- (RecipeGridType)recipeGridTypeForItemAtIndex:(NSInteger)itemIndex {
     CKModel *recipeOrPin = [self.recipes objectAtIndex:itemIndex];
     CKRecipe *recipe = [self recipeFromRecipeOrPin:recipeOrPin];
-    return [self gridTypeForRecipe:recipe];
+    return [RecipeGridLayout gridTypeForRecipe:recipe];
 }
 
-- (CGSize)bookContentGridLayoutHeaderSize {
+- (CGSize)recipeGridLayoutHeaderSize {
     return (CGSize){
         self.collectionView.bounds.size.width,
         self.contentTitleView.frame.size.height
     };
 }
 
-- (CGSize)bookContentGridLayoutFooterSize {
+- (CGSize)recipeGridLayoutFooterSize {
     return self.activityView.frame.size;
 }
 
-- (BOOL)bookContentGridLayoutLoadMoreEnabled {
+- (CGFloat)recipeGridCellsOffset {
+    return 700.0;
+}
+
+- (BOOL)recipeGridLayoutHeaderEnabled {
+    return YES;
+}
+
+- (BOOL)recipeGridLayoutLoadMoreEnabled {
     return [self.delegate bookContentViewControllerLoadMoreEnabledForPage:self.page];
 }
 
-- (BOOL)bookContentGridLayoutFastForwardEnabled {
+- (BOOL)recipeGridLayoutDisabled {
     return self.isFastForward;
 }
 
@@ -490,7 +494,7 @@
             recipe = (CKRecipe *)recipeOrPin;
         }
         
-        BookContentGridType gridType = [self gridTypeForRecipe:recipe];
+        RecipeGridType gridType = [RecipeGridLayout gridTypeForRecipe:recipe];
         NSString *cellId = [self cellIdentifierForGridType:gridType];
         DLog(@"cellId: %@", cellId);
         
@@ -604,7 +608,7 @@
 
 - (void)initCollectionView {
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
-                                                          collectionViewLayout:[[BookContentGridLayout alloc] initWithDelegate:self]];
+                                                          collectionViewLayout:[[RecipeGridLayout alloc] initWithDelegate:self]];
     collectionView.delegate = self;
     collectionView.dataSource = self;
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -615,13 +619,13 @@
     self.collectionView = collectionView;
     
     [self.collectionView registerClass:[BookRecipeGridLargeCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeLarge]];
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeLarge]];
     [self.collectionView registerClass:[BookRecipeGridMediumCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeMedium]];
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeMedium]];
     [self.collectionView registerClass:[BookRecipeGridSmallCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeSmall]];
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeSmall]];
     [self.collectionView registerClass:[BookRecipeGridExtraSmallCell class]
-            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeExtraSmall]];
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:RecipeGridTypeExtraSmall]];
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
     [self.collectionView registerClass:[CKContentContainerCell class] forCellWithReuseIdentifier:kLoadMoreCellId];
 }
@@ -649,90 +653,7 @@
     }
 }
 
-- (BookContentGridType)gridTypeForRecipe:(CKRecipe *)recipe {
-    
-    // Defaults to large, which makes computing combinations easier.
-    BookContentGridType gridType = BookContentGridTypeLarge;
-    
-    if ([recipe hasPhotos]) {
-        
-        if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // +Photo -Title -Story -Method -Ingredients
-            gridType = BookContentGridTypeSmall;
-            
-        } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // +Photo +Title -Story -Method -Ingredients
-            gridType = BookContentGridTypeSmall;
-            
-        } else if (![recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // +Photo -Title +Story -Method -Ingredients
-            gridType = BookContentGridTypeMedium;
-            
-        } else if (![recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // +Photo -Title -Story +Method -Ingredients
-            gridType = BookContentGridTypeMedium;
-            
-        } else if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
-            
-            // +Photo -Title -Story -Method +Ingredients
-            gridType = BookContentGridTypeMedium;
-            
-        }
-        
-    } else {
-        
-        if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // -Photo +Title -Story -Method -Ingredients
-            gridType = BookContentGridTypeExtraSmall;
-            
-        } else if (![recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // -Photo -Title +Story -Method -Ingredients
-            gridType = BookContentGridTypeExtraSmall;
-            
-        } else if (![recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // -Photo -Title -Story +Method -Ingredients
-            gridType = BookContentGridTypeExtraSmall;
-            
-        } else if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
-            
-            // -Photo -Title -Story -Method +Ingredients
-            gridType = BookContentGridTypeExtraSmall;
-            
-        } else if ([recipe hasTitle] && [recipe hasStory] && ![recipe hasIngredients]) {
-            
-            // -Photo +Title +Story (+/-)Method -Ingredients
-            gridType = BookContentGridTypeSmall;
-            
-        } else if ([recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // -Photo +Title -Story +Method -Ingredients
-            gridType = BookContentGridTypeSmall;
-            
-        } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
-            
-            // -Photo +Title -Story -Method +Ingredients
-            gridType = BookContentGridTypeSmall;
-            
-        } else if (![recipe hasTitle] && [recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
-            
-            // -Photo -Title +Story +Method
-            gridType = BookContentGridTypeExtraSmall;
-        }
-    }
-    
-//    DLog(@"recipe[%@] gridType[%d]", recipe.name, gridType);
-
-    return gridType;
-}
-
-- (NSString *)cellIdentifierForGridType:(BookContentGridType)gridType {
+- (NSString *)cellIdentifierForGridType:(RecipeGridType)gridType {
     return [NSString stringWithFormat:@"GridType%ld", (unsigned long)gridType];
 }
 
