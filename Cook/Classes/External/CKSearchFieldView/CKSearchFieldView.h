@@ -14,6 +14,7 @@
 - (void)searchFieldViewSearchIconTapped;
 - (void)searchFieldViewSearchByText:(NSString *)text;
 - (void)searchFieldViewClearRequested;
+- (NSString *)searchFieldViewPlaceholderText;
 
 @end
 

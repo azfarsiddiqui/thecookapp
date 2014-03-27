@@ -73,7 +73,7 @@
 - (void)focus:(BOOL)focus {
     if (focus) {
         [self.searchButton setBackgroundImage:[self imageForSearchSelected:NO] forState:UIControlStateNormal];
-        self.textField.placeholder = @"SEARCH BY NAME";
+        self.textField.placeholder = [self.delegate searchFieldViewPlaceholderText];
         self.textField.text = self.currentSearch;
         [self.textField becomeFirstResponder];
     } else {

@@ -190,6 +190,10 @@
     [self.searchViewController reloadBooks];
 }
 
+- (NSString *)searchFieldViewPlaceholderText {
+    return @"SEARCH BY NAME";
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
