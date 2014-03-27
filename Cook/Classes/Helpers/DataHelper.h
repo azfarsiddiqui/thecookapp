@@ -12,5 +12,6 @@
 
 + (NSString *)friendlyDisplayForCount:(NSUInteger)count;
 + (NSString *)friendlyDisplayForCount:(NSUInteger)count showFractional:(BOOL)showFractional;
++ (NSString *)formattedDisplayForInteger:(NSInteger)integer;
 
 @end

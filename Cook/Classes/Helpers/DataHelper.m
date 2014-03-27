@@ -41,4 +41,20 @@
     return [display stringByReplacingOccurrencesOfString:@".0" withString:@""];
 }
 
++ (NSString *)formattedDisplayForInteger:(NSInteger)integer {
+    return [[self numberFormatter] stringFromNumber:@(integer)];
+}
+
+#pragma mark - Private methods
+
++ (NSNumberFormatter *)numberFormatter {
+    static dispatch_once_t pred;
+    static NSNumberFormatter *formatter = nil;
+    dispatch_once(&pred, ^{
+        formatter = [NSNumberFormatter new];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    });
+    return formatter;
+}
+
 @end

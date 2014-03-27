@@ -138,23 +138,21 @@
     if (hasNotifications) {
         
         // Update the label.
-//        self.badgeLabel.text = [DataHelper friendlyDisplayForCount:self.badgeCount showFractional:NO];  // No fractions.
-        self.badgeLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.badgeCount];
+        self.badgeLabel.text = [DataHelper formattedDisplayForInteger:self.badgeCount];
         self.badgeLabel.font = [self fontForBadgeCount];
         [self.badgeLabel sizeToFit];
         
+        CGRect frame = self.frame;
         CGFloat requiredWidth = self.bounds.size.width - kLabelInsets.left - kLabelInsets.right;
         if (self.badgeLabel.frame.size.width > requiredWidth) {
-            CGRect frame = self.frame;
             frame.size.width = self.badgeLabel.frame.size.width + kLabelInsets.left + kLabelInsets.right;
-            self.frame = frame;
         }
         
         // Adjust frame accordingly.
         self.badgeLabel.frame = (CGRect){
             kLabelInsets.left,
             kLabelInsets.top,
-            self.bounds.size.width - kLabelInsets.left - kLabelInsets.right,
+            frame.size.width - kLabelInsets.left - kLabelInsets.right,
             self.badgeLabel.frame.size.height
         };
         
@@ -165,16 +163,17 @@
             self.onButtonIcon.hidden = NO;
             self.badgeLabel.alpha = 0.0;
             self.badgeLabel.hidden = NO;
-            [UIView animateWithDuration:0.3
+            [UIView animateWithDuration:0.25
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
+                                 self.frame = frame;
                                  self.offButtonIcon.alpha = 0.0;
                                  self.onButtonIcon.alpha = 1.0;
-                                 self.badgeLabel.alpha = 1.0;
                              }
                              completion:^(BOOL finished) {
                                  self.offButtonIcon.hidden = YES;
+                                 self.badgeLabel.alpha = 1.0;
                              }];
         }
         
@@ -184,10 +183,12 @@
         
         // Restore frame.
         CGRect frame = self.frame;
-        frame.size.width = self.offButtonIcon.frame.size.width;
-        self.frame = frame;
+        frame.size.width = [self imageForHasNotifications:NO selected:NO].size.width;
         
         if (self.on) {
+            
+            // Hide the badge label first.
+            self.badgeLabel.hidden = YES;
             
             // Swap the off image in.
             self.offButtonIcon.alpha = 0.0;
@@ -196,19 +197,17 @@
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
+                                 self.frame = frame;
                                  self.offButtonIcon.alpha = 1.0;
                                  self.onButtonIcon.alpha = 0.0;
-                                 self.badgeLabel.alpha = 0.0;
                              }
                              completion:^(BOOL finished) {
                                  self.onButtonIcon.hidden = YES;
-                                 self.badgeLabel.hidden = YES;
                              }];
         }
         
         self.on = NO;
     }
-    
     
 }
 
@@ -217,8 +216,6 @@
 }
 
 - (void)loadData {
-    DLog();
-    
     if (self.loading) {
         return;
     }
