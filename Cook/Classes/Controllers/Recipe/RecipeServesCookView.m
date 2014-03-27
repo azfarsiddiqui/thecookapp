@@ -12,6 +12,7 @@
 #import "NSString+Utilities.h"
 #import "CKRecipe.h"
 #import "DateHelper.h"
+#import "CKMeasureConverter.h"
 
 @interface RecipeServesCookView ()
 
@@ -21,6 +22,7 @@
 @property (nonatomic, strong) UILabel *servesLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
+@property (nonatomic, strong) UILabel *measureLabel;
 
 @end
 
@@ -62,12 +64,13 @@
     self.layoutOffset = 0.0;
     [self updateServes];
     [self updatePrepCook];
+    [self updateMeasure];
     [self updateFrame];
 }
 
 - (void)updateServes {
     if (self.editMode || self.recipeDetails.numServes) {
-        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
+        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.editMode ? @"cook_book_recipe_icon_serves_edit.png" : @"cook_book_recipe_icon_serves"]];
         UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
         CGRect servesFrame = servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
@@ -101,7 +104,7 @@
     
     if (self.editMode ||self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
         
-        UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
+        UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.editMode ? @"cook_book_recipe_icon_time_edit.png" : @"cook_book_recipe_icon_time"]];
         CGRect imageFrame = prepCookImageView.frame;
         
         if (self.editMode ||self.recipeDetails.prepTimeInMinutes) {
@@ -173,6 +176,51 @@
         [self addSubview:containerView];
         
         self.layoutOffset += kStatRowGap + containerView.frame.size.height;
+    }
+}
+
+- (void)updateMeasure {
+    // Add recipe's current measure type if in edit mode
+    if (self.editMode && self.recipeDetails.measureType != CKMeasureTypeNone) {
+        UIImageView *measureImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
+        self.measureLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.measureLabel.font = [Theme measureTypeFont];
+        self.measureLabel.textColor = [Theme measureTypeColor];
+        switch (self.recipeDetails.measureType) {
+            case CKMeasureTypeMetric:
+                self.measureLabel.text = @"METRIC";
+                break;
+            case CKMeasureTypeAUMetric:
+                self.measureLabel.text = @"AU METRIC";
+                break;
+            case CKMeasureTypeUKMetric:
+                self.measureLabel.text = @"UK METRIC";
+                break;
+            case CKMeasureTypeImperial:
+                self.measureLabel.text = @"US IMPERIAL";
+                break;
+            default:
+                break;
+        }
+        [self.measureLabel sizeToFit];
+        CGRect measureFrame = self.measureLabel.frame;
+        CGRect imageFrame = measureImageView.frame;
+        measureFrame.origin.x = measureImageView.frame.origin.x + measureImageView.frame.size.width + kIconStatGap;
+        self.measureLabel.frame = measureFrame;
+        CGRect combinedFrame = CGRectUnion(imageFrame, measureFrame);
+        combinedFrame.origin.y = self.layoutOffset;
+        
+        UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
+        containerView.backgroundColor = [UIColor clearColor];
+        imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
+        measureImageView.frame = imageFrame;
+        measureFrame.origin.y = floorf((combinedFrame.size.height - measureFrame.size.height) / 2.0);
+        self.measureLabel.frame = measureFrame;
+        
+        [containerView addSubview:self.measureLabel];
+        [containerView addSubview:measureImageView];
+        [self addSubview:containerView];
+        self.layoutOffset += containerView.frame.size.height;
     }
 }
 

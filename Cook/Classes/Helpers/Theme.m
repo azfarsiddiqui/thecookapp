@@ -302,6 +302,14 @@
     return [UIColor colorWithHexString:@"4e4e4e"];
 }
 
++ (UIFont *)measureTypeFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
+}
+
++ (UIColor *)measureTypeColor {
+    return [UIColor colorWithHexString:@"505050"];
+}
+
 + (UIColor *)recipeViewBackgroundColour {
     return [UIColor colorWithHexString:@"F8F8F8"];
 }
