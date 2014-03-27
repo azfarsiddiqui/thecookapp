@@ -345,6 +345,10 @@
     return self.isFastForward;
 }
 
+- (CGFloat)recipeGridInitialOffset {
+    return 10.0;
+}
+
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {

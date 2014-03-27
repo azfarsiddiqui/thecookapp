@@ -332,7 +332,31 @@
         
         // Configure attributes ...
         attributes.alpha = 0.0;
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, 10.0, 0.0);
+        
+        if ([self.delegate respondsToSelector:@selector(recipeGridInitialOffset)]) {
+            attributes.transform3D = CATransform3DMakeTranslation(0.0, [self.delegate recipeGridInitialOffset], 0.0);
+        }
+    }
+    
+    return attributes;
+}
+
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    
+    // Must call super
+    UICollectionViewLayoutAttributes *attributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
+    
+    if ([self.delegate respondsToSelector:@selector(recipeGridFinalOffset)]) {
+        
+        // only change attributes on inserted cells
+        if (!attributes) {
+            attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+        }
+        
+        // Configure attributes ...
+        attributes.alpha = 0.0;
+        
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, [self.delegate recipeGridFinalOffset], 0.0);
     }
     
     return attributes;

@@ -9,7 +9,7 @@
 #import "RecipeSearchViewController.h"
 #import "AnalyticsHelper.h"
 #import "ViewHelper.h"
-#import "CKSearchFieldView.h"
+#import "CKRecipeSearchFieldView.h"
 #import "RecipeGridLayout.h"
 #import "BookRecipeGridExtraSmallCell.h"
 #import "BookRecipeGridSmallCell.h"
@@ -20,12 +20,11 @@
 #import "MRCEnumerable.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    RecipeGridLayoutDelegate, CKSearchFieldViewDelegate>
+    RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
 
 @property (nonatomic, weak) id<RecipeSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
-@property (nonatomic, strong) CKSearchFieldView *searchFieldView;
-@property (nonatomic, strong) UILabel *helpLabel;
+@property (nonatomic, strong) CKRecipeSearchFieldView *searchFieldView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, assign) BOOL resultsMode;
 @property (nonatomic, strong) NSMutableArray *recipes;
@@ -38,9 +37,6 @@
 #define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
 #define kSearchTopOffset        41.0
 #define kSearchMidOffset        220.0
-#define kHelpTopOffset          100.0
-#define kHelpMidOffset          300.0
-#define kSearchHelpGap          40.0
 #define kHelpFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 
 - (void)dealloc {
@@ -64,9 +60,6 @@
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:NO];
     [self.view addSubview:self.searchFieldView];
-    
-    self.helpLabel.frame = [self frameForHelpLabelResultsMode:NO];
-    [self.view addSubview:self.helpLabel];
     
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -155,30 +148,32 @@
     return NO;
 }
 
-#pragma mark - CKSearchFieldViewDelegate methods
-
-- (UIFont *)searchFieldTextFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26];
+- (CGFloat)recipeGridInitialOffset {
+    return 50.0;
 }
 
-- (BOOL)searchFieldShouldFocus {
+- (CGFloat)recipeGridFinalOffset {
+    return 270.0;
+}
+
+#pragma mark - CKRecipeSearchFieldViewDelegate methods
+
+- (BOOL)recipeSearchFieldShouldFocus {
     if (self.resultsMode) {
         [self clearResults];
     }
+    
     return YES;
 }
 
-- (BOOL)searchFieldViewSearchIconTappable {
-    return NO;
+- (NSString *)recipeSearchFieldViewPlaceholderText {
+    return @"NAME, INGREDIENT OR TAG";
 }
 
-- (void)searchFieldViewSearchIconTapped {
-    DLog();
-}
-
-- (void)searchFieldViewSearchByText:(NSString *)text {
+- (void)recipeSearchFieldViewSearchByText:(NSString *)text {
     
     [self enableResultsMode:YES completion:^{
+        
         [CKRecipe searchWithTerm:text
                          success:^(NSArray *recipes, NSUInteger count) {
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
@@ -203,12 +198,8 @@
     }];
 }
 
-- (void)searchFieldViewClearRequested {
+- (void)recipeSearchFieldViewClearRequested {
     [self clearResults];
-}
-
-- (NSString *)searchFieldViewPlaceholderText {
-    return @"SEARCH";
 }
 
 #pragma mark - Keyboard events
@@ -260,25 +251,12 @@
     return _collectionView;
 }
 
-- (CKSearchFieldView *)searchFieldView {
+- (CKRecipeSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
-        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:410.0 delegate:self];
+        _searchFieldView = [[CKRecipeSearchFieldView alloc] initWithDelegate:self];
         _searchFieldView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     }
     return _searchFieldView;
-}
-
-- (UILabel *)helpLabel {
-    if (!_helpLabel) {
-        _helpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _helpLabel.backgroundColor = [UIColor clearColor];
-        _helpLabel.font = kHelpFont;
-        _helpLabel.textColor = [UIColor whiteColor];
-        _helpLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _helpLabel.text = @"TYPE UP A RECIPE NAME, TAG AND INGREDIENT";
-        [_helpLabel sizeToFit];
-    }
-    return _helpLabel;
 }
 
 #pragma mark - Private methods
@@ -292,23 +270,21 @@
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
+    UIOffset offset = [self offsetForSearchFieldViewResultsMode:resultsMode];
     return (CGRect) {
-        floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
-        resultsMode ? kSearchTopOffset : kSearchMidOffset,
+        offset.horizontal,
+        offset.vertical,
         self.searchFieldView.frame.size.width,
         self.searchFieldView.frame.size.height
     };
 }
 
-- (CGRect)frameForHelpLabelResultsMode:(BOOL)resultsMode {
-    CGRect helpFrame = (CGRect) {
-        floorf((self.view.bounds.size.width - self.helpLabel.frame.size.width) / 2.0),
-        resultsMode ? kHelpTopOffset : kHelpMidOffset,
-        self.helpLabel.frame.size.width,
-        self.helpLabel.frame.size.height
+- (UIOffset)offsetForSearchFieldViewResultsMode:(BOOL)resultsMode {
+    CGSize searchFieldSize = [self.searchFieldView sizeForExpanded:!resultsMode];
+    return (UIOffset) {
+        floorf((self.view.bounds.size.width - searchFieldSize.width) / 2.0),
+        resultsMode ? kSearchTopOffset : kSearchMidOffset
     };
-    DLog(@"HELP FRAME %@", NSStringFromCGRect(helpFrame));
-    return helpFrame;
 }
 
 - (void)enableResultsMode:(BOOL)resultsMode {
@@ -316,13 +292,16 @@
 }
 
 - (void)enableResultsMode:(BOOL)resultsMode completion:(void (^)())completion {
+    CGSize searchFieldSize = [self.searchFieldView sizeForExpanded:!resultsMode];
+    UIOffset offset = [self offsetForSearchFieldViewResultsMode:resultsMode];
+    CGRect frame = (CGRect){ offset.horizontal, offset.vertical, searchFieldSize.width, searchFieldSize.height };
+
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationCurveEaseInOut
                      animations:^{
-                         self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:resultsMode];
-                         self.helpLabel.frame = [self frameForHelpLabelResultsMode:resultsMode];
-                         self.helpLabel.alpha = resultsMode ? 0.0 : 1.0;
+                         [self.searchFieldView expand:!resultsMode animated:NO];
+                         self.searchFieldView.frame = frame;
                      }
                      completion:^(BOOL finished) {
                          self.resultsMode = YES;
@@ -339,7 +318,6 @@
     [UIView setAnimationBeginsFromCurrentState:YES];
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:show];
-    self.helpLabel.frame = [self frameForHelpLabelResultsMode:show];
     
     [UIView commitAnimations];
 }

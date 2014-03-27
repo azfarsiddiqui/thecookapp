@@ -28,6 +28,10 @@ typedef NS_ENUM(NSUInteger, RecipeGridType) {
 - (BOOL)recipeGridLayoutLoadMoreEnabled;
 - (BOOL)recipeGridLayoutDisabled;
 
+@optional
+- (CGFloat)recipeGridInitialOffset;
+- (CGFloat)recipeGridFinalOffset;
+
 @end
 
 @interface RecipeGridLayout : UICollectionViewLayout
