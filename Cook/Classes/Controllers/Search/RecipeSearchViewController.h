@@ -17,5 +17,6 @@
 @interface RecipeSearchViewController : OverlayViewController
 
 - (id)initWithDelegate:(id<RecipeSearchViewControllerDelegate>)delegate;
+- (void)focusSearchField:(BOOL)focus;
 
 @end

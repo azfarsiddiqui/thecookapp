@@ -1648,13 +1648,15 @@
 }
 
 - (void)showNotificationsOverlay:(BOOL)show {
+    
+    __weak typeof(self) weakSelf = self;
     if (show) {
         NotificationsViewController *notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
         [self showOverlayForViewController:notificationsViewController completion:nil];
         self.notificationsViewController = notificationsViewController;
     } else {
         [self hideOverlayForViewControllerCompletion:^{
-            self.notificationsViewController = nil;
+            weakSelf.notificationsViewController = nil;
         }];
     }
 }
@@ -2095,13 +2097,19 @@
 }
 
 - (void)showSearchOverlay:(BOOL)show {
+    
+    __weak typeof(self) weakSelf = self;
     if (show) {
         RecipeSearchViewController *searchViewController = [[RecipeSearchViewController alloc] initWithDelegate:self];
-        [self showOverlayForViewController:searchViewController completion:nil];
+        [self showOverlayForViewController:searchViewController completion:^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [searchViewController focusSearchField:YES];
+            });
+        }];
         self.searchViewController = searchViewController;
     } else {
         [self hideOverlayForViewControllerCompletion:^{
-            self.searchViewController = nil;
+            weakSelf.searchViewController = nil;
         }];
     }
 }

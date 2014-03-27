@@ -33,6 +33,12 @@
 @implementation RecipeSearchViewController
 
 #define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+#define kSearchTopOffset        41.0
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
 
 - (id)initWithDelegate:(id<RecipeSearchViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -40,6 +46,7 @@
     }
     return self;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -49,7 +56,18 @@
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:NO];
     [self.view addSubview:self.searchFieldView];
+    
+    // Register for keyboard events.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
+    
     [AnalyticsHelper trackEventName:kEventSearchView];
+}
+
+- (void)focusSearchField:(BOOL)focus {
+    
+    // Focus the search field to kick off the keyboard event that triggers everything else.
+    [self.searchFieldView focus:focus];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -144,6 +162,20 @@
     DLog();
 }
 
+- (NSString *)searchFieldViewPlaceholderText {
+    return @"SEARCH";
+}
+
+#pragma mark - Keyboard events
+
+- (void)keyboardDidShow:(NSNotification *)notification {
+    [self handleKeyboardShow:YES notification:notification];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    [self handleKeyboardShow:NO notification:notification];
+}
+
 #pragma mark - Properties
 
 - (UIButton *)closeButton {
@@ -204,10 +236,22 @@
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
     return (CGRect) {
         floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
-        resultsMode ? 50.0 : floorf((self.view.bounds.size.height - self.searchFieldView.frame.size.height) / 2.0),
+        resultsMode ? kSearchTopOffset : floorf((self.view.bounds.size.height - self.searchFieldView.frame.size.height) / 2.0),
         self.searchFieldView.frame.size.width,
         self.searchFieldView.frame.size.height
     };
+}
+
+- (void)handleKeyboardShow:(BOOL)show notification:(NSNotification *)notification {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
+    [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue]];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    
+    self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:show];
+    
+    [UIView commitAnimations];
 }
 
 @end
