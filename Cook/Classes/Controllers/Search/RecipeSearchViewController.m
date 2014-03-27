@@ -17,6 +17,7 @@
 #import "BookRecipeGridLargeCell.h"
 #import "CKRecipe.h"
 #import "CKBook.h"
+#import "MRCEnumerable.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKSearchFieldViewDelegate>
@@ -24,9 +25,11 @@
 @property (nonatomic, weak) id<RecipeSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKSearchFieldView *searchFieldView;
+@property (nonatomic, strong) UILabel *helpLabel;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, assign) BOOL resultsMode;
 @property (nonatomic, strong) NSMutableArray *recipes;
+@property (nonatomic, assign) NSUInteger count;
 
 @end
 
@@ -34,6 +37,11 @@
 
 #define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
 #define kSearchTopOffset        41.0
+#define kSearchMidOffset        220.0
+#define kHelpTopOffset          100.0
+#define kHelpMidOffset          300.0
+#define kSearchHelpGap          40.0
+#define kHelpFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -56,6 +64,9 @@
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:NO];
     [self.view addSubview:self.searchFieldView];
+    
+    self.helpLabel.frame = [self frameForHelpLabelResultsMode:NO];
+    [self.view addSubview:self.helpLabel];
     
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -129,7 +140,7 @@
 }
 
 - (CGFloat)recipeGridCellsOffset {
-    return 200.0;
+    return kSearchTopOffset + self.searchFieldView.frame.size.height + 20.0;
 }
 
 - (BOOL)recipeGridLayoutHeaderEnabled {
@@ -146,8 +157,19 @@
 
 #pragma mark - CKSearchFieldViewDelegate methods
 
+- (UIFont *)searchFieldTextFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26];
+}
+
 - (BOOL)searchFieldShouldFocus {
+    if (self.resultsMode) {
+        [self clearResults];
+    }
     return YES;
+}
+
+- (BOOL)searchFieldViewSearchIconTappable {
+    return NO;
 }
 
 - (void)searchFieldViewSearchIconTapped {
@@ -155,11 +177,34 @@
 }
 
 - (void)searchFieldViewSearchByText:(NSString *)text {
-    DLog();
+    
+    [self enableResultsMode:YES completion:^{
+        [CKRecipe searchWithTerm:text
+                         success:^(NSArray *recipes, NSUInteger count) {
+                             self.recipes = [NSMutableArray arrayWithArray:recipes];
+                             self.count = count;
+                             
+                             // Gather indexPaths to insert.
+                             NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+                                 return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
+                             }]];
+                             
+                             // UI updates after invalidating layout.
+                             [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+                             [self.collectionView performBatchUpdates:^{
+                                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                             } completion:^(BOOL finished) {
+                             }];
+                             
+                         }
+                         failure:^(NSError *error) {
+                             DLog(@"Error");
+                         }];
+    }];
 }
 
 - (void)searchFieldViewClearRequested {
-    DLog();
+    [self clearResults];
 }
 
 - (NSString *)searchFieldViewPlaceholderText {
@@ -169,11 +214,11 @@
 #pragma mark - Keyboard events
 
 - (void)keyboardDidShow:(NSNotification *)notification {
-    [self handleKeyboardShow:YES notification:notification];
+//    [self handleKeyboardShow:YES notification:notification];
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification {
-    [self handleKeyboardShow:NO notification:notification];
+//    [self handleKeyboardShow:NO notification:notification];
 }
 
 #pragma mark - Properties
@@ -195,7 +240,7 @@
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
-                                             collectionViewLayout:[[RecipeGridLayout alloc] init]];
+                                             collectionViewLayout:[[RecipeGridLayout alloc] initWithDelegate:self]];
         _collectionView.bounces = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.showsVerticalScrollIndicator = YES;
@@ -218,9 +263,22 @@
 - (CKSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
         _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:410.0 delegate:self];
-        _searchFieldView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _searchFieldView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     }
     return _searchFieldView;
+}
+
+- (UILabel *)helpLabel {
+    if (!_helpLabel) {
+        _helpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _helpLabel.backgroundColor = [UIColor clearColor];
+        _helpLabel.font = kHelpFont;
+        _helpLabel.textColor = [UIColor whiteColor];
+        _helpLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _helpLabel.text = @"TYPE UP A RECIPE NAME, TAG AND INGREDIENT";
+        [_helpLabel sizeToFit];
+    }
+    return _helpLabel;
 }
 
 #pragma mark - Private methods
@@ -236,12 +294,43 @@
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
     return (CGRect) {
         floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
-        resultsMode ? kSearchTopOffset : floorf((self.view.bounds.size.height - self.searchFieldView.frame.size.height) / 2.0),
+        resultsMode ? kSearchTopOffset : kSearchMidOffset,
         self.searchFieldView.frame.size.width,
         self.searchFieldView.frame.size.height
     };
 }
 
+- (CGRect)frameForHelpLabelResultsMode:(BOOL)resultsMode {
+    CGRect helpFrame = (CGRect) {
+        floorf((self.view.bounds.size.width - self.helpLabel.frame.size.width) / 2.0),
+        resultsMode ? kHelpTopOffset : kHelpMidOffset,
+        self.helpLabel.frame.size.width,
+        self.helpLabel.frame.size.height
+    };
+    DLog(@"HELP FRAME %@", NSStringFromCGRect(helpFrame));
+    return helpFrame;
+}
+
+- (void)enableResultsMode:(BOOL)resultsMode {
+    [self enableResultsMode:resultsMode completion:nil];
+}
+
+- (void)enableResultsMode:(BOOL)resultsMode completion:(void (^)())completion {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseInOut
+                     animations:^{
+                         self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:resultsMode];
+                         self.helpLabel.frame = [self frameForHelpLabelResultsMode:resultsMode];
+                         self.helpLabel.alpha = resultsMode ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                         self.resultsMode = YES;
+                         if (completion != nil) {
+                             completion();
+                         }
+                     }];
+}
 - (void)handleKeyboardShow:(BOOL)show notification:(NSNotification *)notification {
     
     [UIView beginAnimations:nil context:NULL];
@@ -250,8 +339,32 @@
     [UIView setAnimationBeginsFromCurrentState:YES];
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:show];
+    self.helpLabel.frame = [self frameForHelpLabelResultsMode:show];
     
     [UIView commitAnimations];
+}
+
+- (void)clearResults {
+    
+    [self enableResultsMode:NO];
+    
+    // Gather indexPaths to insert.
+    NSMutableArray *indexPathsToDelete = [NSMutableArray arrayWithArray:[self.recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+        return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
+    }]];
+    [self.recipes removeAllObjects];
+    
+    if ([indexPathsToDelete count] > 0) {
+        
+        // UI updates after invalidating layout.
+        [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+        } completion:^(BOOL finished) {
+        }];
+        
+    }
+    
 }
 
 @end

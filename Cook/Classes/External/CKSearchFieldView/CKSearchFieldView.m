@@ -25,7 +25,6 @@
 
 @implementation CKSearchFieldView
 
-#define kTextFont       [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define kContentInsets  (UIEdgeInsets){ 10.0, 24.0, 10.0, 20.0 }
 
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKSearchFieldViewDelegate>)delegate {
@@ -60,7 +59,7 @@
         self.textField.keyboardType = UIKeyboardTypeAlphabet;
         self.textField.returnKeyType = UIReturnKeySearch;
         self.textField.delegate = self;
-        self.textField.font = kTextFont;
+        self.textField.font = [self.delegate searchFieldTextFont];
         self.textField.leftViewMode = UITextFieldViewModeAlways;
         self.textField.leftView = self.searchButton;
         self.textField.rightViewMode = UITextFieldViewModeWhileEditing;
@@ -163,6 +162,9 @@
         _searchButton = [self buttonWithImage:[self imageForSearchSelected:YES]
                                 selectedImage:[self imageForSearchSelected:YES]
                                        target:self selector:@selector(searchTapped)];
+        if (![self.delegate searchFieldViewSearchIconTappable]) {
+            _searchButton.userInteractionEnabled = NO;
+        }
     }
     return _searchButton;
 }

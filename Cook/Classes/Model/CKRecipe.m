@@ -140,8 +140,8 @@
                                         NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
                                             
                                             PFUser *parseUser = [parseRecipe objectForKey:kUserModelForeignKeyName];
-                                            CKBook *book = [CKBook bookWithParseObject:[parseRecipe objectForKey:kBookModelForeignKeyName]];
                                             CKUser *user = [CKUser userWithParseUser:parseUser];
+                                            CKBook *book = [[CKBook alloc] initWithParseBook:[parseRecipe objectForKey:kBookModelForeignKeyName] user:user];
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:user book:book];
                                         }];
                                         

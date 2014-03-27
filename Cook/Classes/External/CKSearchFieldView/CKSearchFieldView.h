@@ -10,7 +10,9 @@
 
 @protocol CKSearchFieldViewDelegate <NSObject>
 
+- (UIFont *)searchFieldTextFont;
 - (BOOL)searchFieldShouldFocus;
+- (BOOL)searchFieldViewSearchIconTappable;
 - (void)searchFieldViewSearchIconTapped;
 - (void)searchFieldViewSearchByText:(NSString *)text;
 - (void)searchFieldViewClearRequested;

@@ -173,8 +173,16 @@
 
 #pragma mark - CKSearchFieldViewDelegate methods
 
+- (UIFont *)searchFieldTextFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20];
+}
+
 - (BOOL)searchFieldShouldFocus {
     return self.searchMode;
+}
+
+- (BOOL)searchFieldViewSearchIconTappable {
+    return YES;
 }
 
 - (void)searchFieldViewSearchIconTapped {
