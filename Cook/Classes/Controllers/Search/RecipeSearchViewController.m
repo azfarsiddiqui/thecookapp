@@ -20,6 +20,8 @@
 #import "MRCEnumerable.h"
 #import "ModalOverlayHelper.h"
 #import "ImageHelper.h"
+#import "AppHelper.h"
+#import "RootViewController.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
@@ -283,7 +285,8 @@
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe];
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
