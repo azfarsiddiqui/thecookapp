@@ -18,11 +18,15 @@
 #import "CKRecipe.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
+#import "ModalOverlayHelper.h"
+#import "ImageHelper.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
 
 @property (nonatomic, weak) id<RecipeSearchViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKRecipeSearchFieldView *searchFieldView;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -34,10 +38,12 @@
 
 @implementation RecipeSearchViewController
 
-#define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
-#define kSearchTopOffset        41.0
-#define kSearchMidOffset        220.0
-#define kHelpFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
+#define kContentInsets              (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+#define kTopMaskOffset              112.0
+#define kSearchTopOffset            41.0
+#define kSearchMidOffset            220.0
+#define kSearchCollectionViewGap    20.0
+#define kHelpFont                   [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -54,7 +60,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:self.blurredImageView];
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     
@@ -133,7 +139,7 @@
 }
 
 - (CGFloat)recipeGridCellsOffset {
-    return kSearchTopOffset + self.searchFieldView.frame.size.height + 20.0;
+    return kSearchTopOffset + self.searchFieldView.frame.size.height + kSearchCollectionViewGap;
 }
 
 - (BOOL)recipeGridLayoutHeaderEnabled {
@@ -162,6 +168,8 @@
     if (self.resultsMode) {
         [self clearResults];
     }
+    
+    [self applyTopMaskViewIfRequired];
     
     return YES;
 }
@@ -234,11 +242,11 @@
                                              collectionViewLayout:[[RecipeGridLayout alloc] initWithDelegate:self]];
         _collectionView.bounces = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
-        _collectionView.showsVerticalScrollIndicator = YES;
+        _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin;
         [self.collectionView registerClass:[BookRecipeGridLargeCell class]
                 forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeLarge]];
         [self.collectionView registerClass:[BookRecipeGridMediumCell class]
@@ -257,6 +265,15 @@
         _searchFieldView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     }
     return _searchFieldView;
+}
+
+- (UIImageView *)blurredImageView {
+    if (!_blurredImageView) {
+        _blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        _blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _blurredImageView.image = [self.delegate recipeSearchBlurredImageForDash];
+    }
+    return _blurredImageView;
 }
 
 #pragma mark - Private methods
@@ -295,7 +312,7 @@
     CGSize searchFieldSize = [self.searchFieldView sizeForExpanded:!resultsMode];
     UIOffset offset = [self offsetForSearchFieldViewResultsMode:resultsMode];
     CGRect frame = (CGRect){ offset.horizontal, offset.vertical, searchFieldSize.width, searchFieldSize.height };
-
+    
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationCurveEaseInOut
@@ -343,6 +360,70 @@
         
     }
     
+}
+
+- (void)loadSnapshotImage:(UIImage *)snapshotImage {
+    
+    // Blurred imageView to be hidden to start off with.
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.blurredImageView];
+    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
+    self.blurredImageView.image = snapshotImage;
+    
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.blurredImageView.alpha = 1.0;
+                     } completion:^(BOOL finished) {
+                     }];
+    
+}
+
+- (void)applyTopMaskViewIfRequired {
+    if (self.topMaskView) {
+        return;
+    }
+    
+    CGRect maskFrame = [self maskFrame];
+    self.topMaskView = [self.blurredImageView resizableSnapshotViewFromRect:maskFrame afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
+    self.topMaskView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    self.topMaskView.frame = maskFrame;
+    
+    // Alpha gradient.
+    CAGradientLayer *alphaGradientLayer = [CAGradientLayer layer];
+    NSArray *colours = [NSArray arrayWithObjects:
+                       (id)[[UIColor colorWithWhite:0 alpha:0] CGColor],
+                       (id)[[UIColor colorWithWhite:0 alpha:1] CGColor],
+                       nil];
+    alphaGradientLayer.colors = colours;
+    alphaGradientLayer.frame = self.topMaskView.bounds;
+    
+    // Start the gradient at the bottom and go almost half way up.
+    [alphaGradientLayer setStartPoint:CGPointMake(0.0, 1.0)];
+    [alphaGradientLayer setEndPoint:CGPointMake(0.0, 0.25)];
+    
+    // Apply the mask to the topMaskView.
+    self.topMaskView.layer.mask = alphaGradientLayer;
+    [self.view insertSubview:self.topMaskView aboveSubview:self.collectionView];
+}
+
+- (UIImage *)topBackgroundImage {
+    UIGraphicsBeginImageContextWithOptions(self.blurredImageView.bounds.size, YES, 0.0);
+    [self.blurredImageView resizableSnapshotViewFromRect:[self maskFrame] afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+- (CGRect)maskFrame {
+    return (CGRect){
+        self.view.bounds.origin.x,
+        self.view.bounds.origin.y,
+        self.view.bounds.size.width,
+        kSearchTopOffset + self.searchFieldView.frame.size.height
+    };
 }
 
 @end
