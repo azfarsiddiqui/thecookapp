@@ -146,7 +146,7 @@
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe {
-    [self viewRecipe:recipe];
+    [self viewRecipe:recipe book:recipe.book statusBarUpdate:NO];
 }
 
 #pragma mark - WelcomeViewControllerDelegate methods
@@ -868,7 +868,12 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+    [self viewRecipe:recipe book:book statusBarUpdate:YES];
+}
+
+- (void)viewRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate {
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
+    recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
     [self showModalViewController:recipeViewController];
 }
 
