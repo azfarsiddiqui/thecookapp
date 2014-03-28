@@ -184,8 +184,13 @@
     
     [self enableResultsMode:YES completion:^{
         
+        [self.searchFieldView setSearching:YES];
+        
         [CKRecipe searchWithTerm:text
                          success:^(NSArray *recipes, NSUInteger count) {
+                             
+                             [self.searchFieldView setSearching:NO];
+                             
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
                              self.count = count;
                              
@@ -203,6 +208,9 @@
                              
                          }
                          failure:^(NSError *error) {
+                             
+                             [self.searchFieldView setSearching:NO];
+                             
                              DLog(@"Error");
                          }];
     }];
@@ -281,7 +289,9 @@
 #pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
-    [self.delegate recipeSearchViewControllerDismissRequested];
+    [self clearResultsCompletion:^{
+        [self.delegate recipeSearchViewControllerDismissRequested];
+    }];
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
@@ -343,6 +353,10 @@
 }
 
 - (void)clearResults {
+    [self clearResultsCompletion:nil];
+}
+
+- (void)clearResultsCompletion:(void (^)())completion  {
     
     [self enableResultsMode:NO];
     
@@ -359,6 +373,9 @@
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
         } completion:^(BOOL finished) {
+            if (completion != nil) {
+                completion();
+            }
         }];
         
     }

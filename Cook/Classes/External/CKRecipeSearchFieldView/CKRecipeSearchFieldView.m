@@ -8,6 +8,7 @@
 
 #import "CKRecipeSearchFieldView.h"
 #import "CKRecipeSearchTextField.h"
+#import "CKActivityIndicatorView.h"
 
 @interface CKRecipeSearchFieldView () <UITextFieldDelegate>
 
@@ -17,6 +18,7 @@
 @property (nonatomic, strong) UIView *leftSearchView;
 @property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @property (nonatomic, assign) BOOL forceUppercase;
 @property (nonatomic, assign) NSInteger characterLimit;
@@ -120,6 +122,15 @@
     self.textField.text = nil;
 }
 
+- (void)setSearching:(BOOL)searching {
+    if (searching) {
+        [self.activityView startAnimating];
+    } else {
+        [self.activityView stopAnimating];
+    }
+    self.searchButton.hidden = searching;
+}
+
 - (BOOL)becomeFirstResponder {
     return [self.textField becomeFirstResponder];
 }
@@ -220,6 +231,7 @@
         frame.size.width += 10.0;
         
         _leftSearchView = [[UIView alloc] initWithFrame:frame];
+        [_leftSearchView addSubview:self.activityView];
         [_leftSearchView addSubview:self.searchButton];
     }
     return _leftSearchView;
@@ -242,6 +254,19 @@
                                       target:self selector:@selector(clearTapped)];
     }
     return _closeButton;
+}
+
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTiny];
+        _activityView.frame = (CGRect){
+            floorf((self.searchButton.frame.size.width - _activityView.frame.size.width) / 2.0),
+            floorf((self.searchButton.frame.size.height - _activityView.frame.size.height) / 2.0),
+            _activityView.frame.size.width,
+            _activityView.frame.size.height
+        };
+    }
+    return _activityView;
 }
 
 #pragma mark - Private methods
