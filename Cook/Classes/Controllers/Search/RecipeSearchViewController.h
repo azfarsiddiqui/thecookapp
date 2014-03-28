@@ -11,6 +11,7 @@
 @protocol RecipeSearchViewControllerDelegate <NSObject>
 
 - (void)recipeSearchViewControllerDismissRequested;
+- (UIImage *)recipeSearchBlurredImageForDash;
 
 @end
 

@@ -529,11 +529,7 @@
 #pragma mark - SignupViewControllerDelegate methods
 
 - (UIImage *)signupViewControllerSnapshotImageRequested {
-    if (self.signupBlurImage) {
-        return self.signupBlurImage;
-    } else {
-        return [ImageHelper blurredImageFromView:self.view];
-    }
+    return [self dashBlurredImage];
 }
 
 - (UIView *)signupViewControllerSnapshotRequested {
@@ -624,17 +620,24 @@
 }
 
 - (UIImage *)notificationsViewControllerSnapshotImageRequested {
-    if (self.signupBlurImage) {
-        return self.signupBlurImage;
-    } else {
-        return [ImageHelper blurredImageFromView:self.view];
-    }
+    return [self dashBlurredImage];
 }
 
 #pragma mark - RecipeSearchViewControllerDelegate methods
 
+- (UIImage *)recipeSearchBlurredImageForDash {
+    return [self dashBlurredImageForce:YES];
+}
+
 - (void)recipeSearchViewControllerDismissRequested {
-    [self hideOverlayForViewControllerCompletion:nil];
+    if (self.searchViewController) {
+        __weak typeof(self) weakSelf = self;
+        [self hideOverlayForViewController:self.searchViewController completion:^{
+            weakSelf.searchViewController = nil;
+        }];
+    } else {
+        [self hideOverlayForViewControllerCompletion:nil];
+    }
 }
 
 #pragma mark - Properties
@@ -764,6 +767,7 @@
         searchButton.frame.size.height
     };
     [self.view addSubview:searchButton];
+    self.searchButton = searchButton;
     self.searchButton.hidden = ![self.currentUser isSignedIn];
     self.searchButton = searchButton;
 }
@@ -2101,7 +2105,7 @@
     __weak typeof(self) weakSelf = self;
     if (show) {
         RecipeSearchViewController *searchViewController = [[RecipeSearchViewController alloc] initWithDelegate:self];
-        [self showOverlayForViewController:searchViewController completion:^{
+        [self showOverlayForViewController:searchViewController withNavController:NO completion:^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [searchViewController focusSearchField:YES];
             });
@@ -2115,9 +2119,19 @@
 }
 
 - (void)showOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion {
+    [self showOverlayForViewController:viewController withNavController:YES completion:completion];
+}
+
+- (void)showOverlayForViewController:(UIViewController *)viewController withNavController:(BOOL)withNavController
+                          completion:(void (^)())completion {
     [self.delegate panEnabledRequested:NO];
-    self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:viewController delegate:self];
-    [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController show:YES
+    
+    if (withNavController) {
+        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:viewController delegate:self];
+    }
+    
+    [ModalOverlayHelper showModalOverlayForViewController:withNavController ? self.cookNavigationController : viewController
+                                                     show:YES
                                                 animation:^{
                                                     [self fadeBenchtopIcons:YES];
                                                 } completion:^{
@@ -2128,8 +2142,12 @@
 }
 
 - (void)hideOverlayForViewControllerCompletion:(void (^)())completion {
+    [self hideOverlayForViewController:self.cookNavigationController completion:completion];
+}
+
+- (void)hideOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion {
     [self.delegate panEnabledRequested:YES];
-    [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
+    [ModalOverlayHelper hideModalOverlayForViewController:viewController
                                                 animation:^{
                                                     [self fadeBenchtopIcons:NO];
                                                 } completion:^{
@@ -2146,6 +2164,18 @@
     self.libraryIntroView.alpha = fadeAlpha;
     self.searchButton.alpha = fadeAlpha;
     self.settingsIntroView.alpha = fadeAlpha;
+}
+
+- (UIImage *)dashBlurredImage {
+    return [self dashBlurredImageForce:NO];
+}
+
+- (UIImage *)dashBlurredImageForce:(BOOL)force {
+    if (!force && self.signupBlurImage) {
+        return self.signupBlurImage;
+    } else {
+        return [ImageHelper blurredImageFromView:self.view];
+    }
 }
 
 @end
