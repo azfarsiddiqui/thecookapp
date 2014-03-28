@@ -394,7 +394,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                        updated:[self.recipeDetails storyUpdated]];
     [self updateEditModeOnView:self.servesCookView
                toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
-//                  padDirection:EditPadDirectionRight
+                  padDirection:EditPadDirectionRight
                        updated:[self.recipeDetails servesPrepUpdated]];
     [self updateEditModeOnView:self.ingredientsView
                toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }

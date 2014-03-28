@@ -140,7 +140,8 @@
 - (BOOL)servesPrepUpdated {
     BOOL servesPrepUpdated = (([self.numServes integerValue] != [self.originalRecipe.numServes integerValue])
                               || ([self.prepTimeInMinutes integerValue] != [self.originalRecipe.prepTimeInMinutes integerValue])
-                              || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue]));
+                              || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue])
+                              || (self.measureType != self.originalRecipe.measureType));
     DLog(@"servesPrepUpdated[%@]", [NSString CK_stringForBoolean:servesPrepUpdated]);
     return servesPrepUpdated;
 }
