@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class RootViewController;
+
 @interface AppHelper : NSObject
 
 + (AppHelper *)sharedInstance;
@@ -16,6 +18,7 @@
 - (void)maskAsNewUpdate:(BOOL)update;
 
 - (UIView *)rootView;
+- (RootViewController *)rootViewController;
 
 // App version
 - (NSString *)appVersion;

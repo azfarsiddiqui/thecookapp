@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "BookModalViewControllerDelegate.h"
 
+@class CKRecipe;
+
 @interface RootViewController : UIViewController <BookModalViewControllerDelegate>
+
+- (void)showModalWithRecipe:(CKRecipe *)recipe;
 
 @end

@@ -145,6 +145,10 @@
     return self.hideStatusBar;
 }
 
+- (void)showModalWithRecipe:(CKRecipe *)recipe {
+    [self viewRecipe:recipe];
+}
+
 #pragma mark - WelcomeViewControllerDelegate methods
 
 - (void)welcomeViewControllerGetStartedReached {
@@ -356,7 +360,7 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
-    [self viewRecipe:recipe];
+    [self viewRecipe:recipe book:self.selectedBook];
 }
 
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page {
@@ -860,7 +864,11 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+    [self viewRecipe:recipe book:recipe.book];
+}
+
+- (void)viewRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
     [self showModalViewController:recipeViewController];
 }
 

@@ -8,6 +8,7 @@
 
 #import "AppHelper.h"
 #import "AppDelegate.h"
+#import "RootViewController.h"
 
 @interface AppHelper ()
 
@@ -54,7 +55,11 @@
 }
 
 - (UIView *)rootView {
-    return [UIApplication sharedApplication].keyWindow.rootViewController.view;
+    return [self rootViewController].view;
+}
+
+- (RootViewController *)rootViewController {
+    return (RootViewController *)[UIApplication sharedApplication].keyWindow.rootViewController;
 }
 
 - (NSString *)appVersion {
