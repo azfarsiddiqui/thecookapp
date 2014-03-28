@@ -12,7 +12,6 @@
 #import "NSString+Utilities.h"
 #import "CKBook.h"
 #import "CKBookCover.h"
-#import "CKMeasureConverter.h"
 
 @interface RecipeIngredientsView ()
 

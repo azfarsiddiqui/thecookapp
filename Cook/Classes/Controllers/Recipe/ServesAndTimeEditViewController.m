@@ -11,9 +11,9 @@
 #import "ServesNotchSliderView.h"
 #import "Theme.h"
 #import "RecipeDetails.h"
-#import "UIColor+Expanded.h"
 #import "CKRecipe.h"
 #import "DateHelper.h"
+#import "CKMeasureConverter.h"
 
 @interface ServesAndTimeEditViewController () <CKDialerControlDelegate, CKNotchSliderViewDelegate>
 
@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UILabel *cookTitleLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
 @property (nonatomic, strong) CKDialerControl *cookDialer;
+@property (nonatomic, strong) UISegmentedControl *measureTypeControl;
 
 @end
 
@@ -56,6 +57,7 @@
 - (UIView *)createTargetEditView {
     [self initServes];
     [self initDialers];
+    [self initMeasurePicker];
     return self.containerView;
 }
 
@@ -72,11 +74,14 @@
         [self.servesSlider selectNotch:[self servesIndex] animated:YES];
         [self.prepDialer selectOptionAtIndex:[self prepIndex] animated:YES];
         [self.cookDialer selectOptionAtIndex:[self cookIndex] animated:YES];
+        self.measureTypeControl.selectedSegmentIndex = [self indexForMeasureType];
     }
     
     // Disable scrolling on appear.
     self.scrollView.scrollEnabled = !appear;
     [self.targetEditTextBoxView disableSelectOnEditView];
+    
+    [self.measureTypeControl addTarget:self action:@selector(measureTypeChanged:) forControlEvents:UIControlEventValueChanged];
 }
 
 #pragma mark - Lazy getters
@@ -183,6 +188,13 @@
         _cookDialer = [[CKDialerControl alloc] initWithUnitDegrees:9 delegate:self];
     }
     return _cookDialer;
+}
+
+- (UISegmentedControl *)measureTypeControl {
+    if (!_measureTypeControl) {
+        _measureTypeControl = [[UISegmentedControl alloc] initWithItems:@[@"US IMPERIAL", @"METRIC", @"AU METRIC", @"UK METRIC"]];
+    }
+    return _measureTypeControl;
 }
 
 #pragma mark - CKNotchSliderViewDelegate methods
@@ -361,6 +373,16 @@
     [self.containerView addSubview:self.cookDialer];
 }
 
+- (void)initMeasurePicker {
+    CGFloat requiredWidth = self.measureTypeControl.frame.size.width + kTitleLabelGap;
+    CGSize availableSize = [self availableSize];
+    self.measureTypeControl.frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - requiredWidth) / 2.0),
+                                               0,
+                                               self.measureTypeControl.frame.size.width,
+                                               self.measureTypeControl.frame.size.height);
+    [self.containerView addSubview:self.measureTypeControl];
+}
+
 - (CGSize)availableSize {
     return CGSizeMake(self.containerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                       self.containerView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
@@ -448,6 +470,51 @@
 
 - (NSInteger)maxIndexForDialer:(CKDialerControl *)dialer {
     return (360 / dialer.unitDegrees - 2);
+}
+
+- (NSInteger)indexForMeasureType {
+    //@"US IMPERIAL", @"METRIC", @"AU METRIC", @"UK METRIC"
+    switch (self.recipeDetails.measureType) {
+        case CKMeasureTypeImperial:
+            return 0;
+            break;
+        case CKMeasureTypeMetric:
+            return 1;
+            break;
+        case CKMeasureTypeAUMetric:
+            return 2;
+            break;
+        case CKMeasureTypeUKMetric:
+            return 3;
+            break;
+        default:
+            return 0;
+            break;
+    }
+}
+
+- (CKMeasurementType)selectedMeasureType {
+    switch (self.measureTypeControl.selectedSegmentIndex) {
+        case 0:
+            return CKMeasureTypeImperial;
+            break;
+        case 1:
+            return CKMeasureTypeMetric;
+            break;
+        case 2:
+            return CKMeasureTypeAUMetric;
+            break;
+        case 3:
+            return CKMeasureTypeUKMetric;
+            break;
+        default:
+            return CKMeasureTypeNone;
+            break;
+    }
+}
+
+- (void)measureTypeChanged:(id)sender {
+    self.recipeDetails.measureType = [self selectedMeasureType];
 }
 
 @end

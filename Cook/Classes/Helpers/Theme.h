@@ -95,6 +95,8 @@
 + (UIColor *) cookingTimeColor;
 + (UIFont *) servesFont;
 + (UIColor *) servesColor;
++ (UIFont *)measureTypeFont;
++ (UIColor *)measureTypeColor;
 + (UIColor *) userNameColor;
 + (UIFont *) userNameFont;
 + (UIColor *)recipeViewBackgroundColour;

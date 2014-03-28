@@ -10,7 +10,6 @@
 #import "IngredientListCell.h"
 #import "Ingredient.h"
 #import "NSString+Utilities.h"
-#import "IngredientsKeyboardAccessoryViewController.h"
 
 @interface IngredientListEditViewController ()
 

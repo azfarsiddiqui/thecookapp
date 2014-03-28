@@ -16,21 +16,13 @@
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
 #import "CKTextViewEditViewController.h"
-#import "CKGrowingTextViewEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "PageListEditViewController.h"
 #import "TagListEditViewController.h"
-#import "CKEditingTextBoxView.h"
 #import "Ingredient.h"
-#import "CKBook.h"
-#import "DataHelper.h"
-#import "CKRecipeTag.h"
-#import "NSArray+Enumerable.h"
 #import "EventHelper.h"
 #import "CKBookCover.h"
-#import "UIColor+Expanded.h"
-#import "UIDevice+Hardware.h"
 #import "ImageHelper.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
@@ -938,7 +930,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self updateServesCookFrame];
         
     } else {
-        
         // Remove any edit wrapping.
         [self.editingHelper unwrapEditingView:self.servesCookView animated:YES];
         
@@ -1353,18 +1344,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
     
     // Serves.
-    [self enableEditModeOnView:self.servesCookView editMode:editMode
+    [self enableEditModeOnView:self.servesCookView editMode:editMode editIcon:NO
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 7.0,
                      defaultEditInsets.left - 19.0,
                      defaultEditInsets.bottom + 5.0,
                      defaultEditInsets.right
                  }
-               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 30.0, 0.0 }
                   padDirection:EditPadDirectionRight];
     
     // Ingredients.
-    [self enableEditModeOnView:self.ingredientsView editMode:editMode
+    [self enableEditModeOnView:self.ingredientsView editMode:editMode editIcon:editMode
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 10.0,
                      defaultEditInsets.left - 4.0,
@@ -1375,7 +1366,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                   padDirection:EditPadDirectionRight];
     
     // Method.
-    [self enableEditModeOnView:self.methodLabel editMode:editMode
+    [self enableEditModeOnView:self.methodLabel editMode:editMode editIcon:editMode
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 12.0,
                      defaultEditInsets.left,
@@ -1421,20 +1412,20 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode minimumInsets:(UIEdgeInsets)minimumInsets
              toDisplayAsSize:(CGSize)size {
     
-    [self enableEditModeOnView:view editMode:editMode minimumInsets:minimumInsets toDisplayAsSize:size
+    [self enableEditModeOnView:view editMode:editMode editIcon:editMode minimumInsets:minimumInsets toDisplayAsSize:size
                   padDirection:EditPadDirectionLeftRight];
 }
 
-- (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode minimumInsets:(UIEdgeInsets)minimumInsets
+- (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode editIcon:(BOOL)isEditIcon minimumInsets:(UIEdgeInsets)minimumInsets
              toDisplayAsSize:(CGSize)size padDirection:(EditPadDirection)padDirection {
     
     if (editMode) {
         
         if (!UIEdgeInsetsEqualToEdgeInsets(minimumInsets, UIEdgeInsetsZero)) {
             [self.editingHelper wrapEditingView:view contentInsets:minimumInsets delegate:self white:YES
-                                       editMode:editMode animated:YES];
+                                       editMode:isEditIcon animated:YES];
         } else {
-            [self.editingHelper wrapEditingView:view delegate:self white:YES editMode:editMode animated:YES];
+            [self.editingHelper wrapEditingView:view delegate:self white:YES editMode:isEditIcon animated:YES];
         }
         
         // Pad it to the given minimum size.

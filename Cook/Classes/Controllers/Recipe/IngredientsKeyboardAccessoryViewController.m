@@ -9,7 +9,6 @@
 #import "IngredientsKeyboardAccessoryViewController.h"
 #import "IngredientsKeyboardAccessoryCell.h"
 #import "AppHelper.h"
-#import "MRCEnumerable.h"
 
 @interface IngredientsKeyboardAccessoryViewController ()
 

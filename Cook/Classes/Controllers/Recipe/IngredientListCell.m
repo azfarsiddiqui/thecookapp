@@ -9,10 +9,8 @@
 #import "IngredientListCell.h"
 #import "Ingredient.h"
 #import "NSString+Utilities.h"
-#import "CKEditingViewHelper.h"
 #import "Theme.h"
 #import "ViewHelper.h"
-#import "MRCEnumerable.h"
 
 @interface IngredientListCell () <UITextFieldDelegate, IngredientsKeyboardAccessoryViewControllerDelegate>
 
