@@ -6,11 +6,6 @@
 //  Copyright (c) 2014 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "MeasureListEditViewController.h"
-#import "PageListCell.h"
-#import "CKUser.h"
-#import "CKMeasureConverter.h"
-
 @interface MeasureListEditViewController ()
 
 @end

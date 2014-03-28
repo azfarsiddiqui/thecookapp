@@ -11,7 +11,6 @@
 #import "ServesNotchSliderView.h"
 #import "Theme.h"
 #import "RecipeDetails.h"
-#import "UIColor+Expanded.h"
 #import "CKRecipe.h"
 #import "DateHelper.h"
 #import "CKMeasureConverter.h"

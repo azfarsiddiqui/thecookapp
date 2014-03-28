@@ -13,7 +13,6 @@
 #import "ModalOverlayHeaderView.h"
 #import "AddRecipePageCell.h"
 #import "ViewHelper.h"
-#import "MRCEnumerable.h"
 
 @interface PinRecipeViewController () <UICollectionViewDataSource, UICollectionViewDelegate, AddRecipeLayoutDelegate>
 

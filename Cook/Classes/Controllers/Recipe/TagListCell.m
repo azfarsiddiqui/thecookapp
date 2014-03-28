@@ -7,9 +7,7 @@
 //
 
 #import "TagListCell.h"
-#import "CKEditingTextBoxView.h"
 #import "CKRecipeTag.h"
-#import "CKActivityIndicatorView.h"
 #import "Theme.h"
 
 @interface TagListCell()

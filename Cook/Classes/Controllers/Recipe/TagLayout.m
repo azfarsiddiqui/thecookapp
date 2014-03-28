@@ -7,7 +7,6 @@
 //
 
 #import "TagLayout.h"
-#import "ViewHelper.h"
 
 @interface TagLayout ()
 

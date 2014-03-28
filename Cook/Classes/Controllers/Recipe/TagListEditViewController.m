@@ -11,7 +11,6 @@
 #import "CKRecipeTag.h"
 #import "Theme.h"
 #import "TagLayout.h"
-#import "NSArray+Enumerable.h"
 #import "CKBookManager.h"
 
 @interface TagListEditViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>

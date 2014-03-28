@@ -11,7 +11,6 @@
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
 #import "CKRecipeComment.h"
-#import "DateHelper.h"
 
 @interface RecipeCommentCell () <CKUserProfilePhotoViewDelegate>
 

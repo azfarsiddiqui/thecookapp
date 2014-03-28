@@ -9,7 +9,6 @@
 #import "RecipeFooterView.h"
 #import "RecipeDetails.h"
 #import "CKLocation.h"
-#import "CKUser.h"
 #import "UIColor+Expanded.h"
 #import "DateHelper.h"
 

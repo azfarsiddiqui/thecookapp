@@ -11,7 +11,6 @@
 #import "RecipeCommentBoxFooterView.h"
 #import "RecipeCommentCell.h"
 #import "ViewHelper.h"
-#import "CKUserProfilePhotoView.h"
 
 @interface RecipeSocialLayout ()
 

@@ -9,15 +9,12 @@
 #import "RecipeShareViewController.h"
 #import "ViewHelper.h"
 #import "CKRecipe.h"
-#import "CKUser.h"
 #import "AppHelper.h"
-#import "NSString+Utilities.h"
 #import "NSString+Utilities.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
 #import "AnalyticsHelper.h"
-#import "UIDevice+Hardware.h"
 #import <Pinterest/Pinterest.h>
 
 @interface RecipeShareViewController () <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate>

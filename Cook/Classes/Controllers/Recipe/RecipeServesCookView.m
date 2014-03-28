@@ -10,7 +10,6 @@
 #import "RecipeDetails.h"
 #import "Theme.h"
 #import "NSString+Utilities.h"
-#import "CKRecipe.h"
 #import "DateHelper.h"
 #import "CKMeasureConverter.h"
 
