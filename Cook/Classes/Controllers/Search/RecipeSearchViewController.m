@@ -378,6 +378,11 @@
             }
         }];
         
+    } else {
+        
+        if (completion != nil) {
+            completion();
+        }
     }
     
 }
