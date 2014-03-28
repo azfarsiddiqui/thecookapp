@@ -286,7 +286,7 @@
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
     CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe];
+    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerView:self.collectionView];
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {

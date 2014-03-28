@@ -38,6 +38,7 @@
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) BookTitleViewController *bookTitleViewController;
 @property (nonatomic, strong) DashboardTutorialViewController *tutorialViewController;
+@property (nonatomic, strong) NSArray *modalCallerViews;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL lightStatusBar;
@@ -146,7 +147,23 @@
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe {
-    [self viewRecipe:recipe book:recipe.book statusBarUpdate:NO];
+    [self showModalWithRecipe:recipe callerViews:@[]];
+}
+
+- (void)showModalWithRecipe:(CKRecipe *)recipe callerView:(UIView *)callerView {
+    [self showModalWithRecipe:recipe callerViews:@[callerView]];
+}
+
+- (void)showModalWithRecipe:(CKRecipe *)recipe callerViews:(NSArray *)callerViews {
+    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViews:callerViews];
+}
+
+- (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate
+                callerViews:(NSArray *)callerViews {
+    
+    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
+    recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
+    [self showModalViewController:recipeViewController callerViews:callerViews];
 }
 
 #pragma mark - WelcomeViewControllerDelegate methods
@@ -360,7 +377,8 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
-    [self viewRecipe:recipe book:self.selectedBook];
+    [self showModalWithRecipe:recipe book:self.selectedBook statusBarUpdate:YES
+                  callerViews:@[self.bookNavigationViewController.view, self.bookCoverViewController.view]];
 }
 
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page {
@@ -863,30 +881,17 @@
     return _settingsViewController;
 }
 
-- (void)viewRecipe:(CKRecipe *)recipe {
-    [self viewRecipe:recipe book:recipe.book];
-}
-
-- (void)viewRecipe:(CKRecipe *)recipe book:(CKBook *)book {
-    [self viewRecipe:recipe book:book statusBarUpdate:YES];
-}
-
-- (void)viewRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate {
-    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
-    recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
-    [self showModalViewController:recipeViewController];
-}
-
 - (void)addRecipeForBook:(CKBook *)book page:(NSString *)page {
+    
     //Only allow adding of recipe to book if book is own book
     if ([book.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
         RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:book page:page];
-        [self showModalViewController:recipeViewController];
+        [self showModalViewController:recipeViewController
+                          callerViews:@[self.bookCoverViewController.view, self.bookNavigationViewController.view]];
     }
 }
 
-- (void)showModalViewController:(UIViewController *)modalViewController {
-    
+- (void)showModalViewController:(UIViewController *)modalViewController callerViews:(NSArray *)callerViews {
     [self.benchtopViewController showVisibleBooks:NO];
     
     // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
@@ -921,16 +926,17 @@
     
     // Book scale/translate transform.
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
-    CGAffineTransform bookTransform = scaleTransform;
+    CGAffineTransform modalTransform = scaleTransform;
     
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          
-                         // Scale the book back.
-                         self.bookNavigationViewController.view.transform = bookTransform;
-                         self.bookCoverViewController.view.transform = bookTransform;
+                         // Apply transition transform to callerViews.
+                         for (UIView *view in callerViews) {
+                             view.transform = modalTransform;
+                         }
                      
                          // Fade in overlay.
                          self.modalOverlayView.alpha = 1.0;
@@ -939,6 +945,9 @@
                          modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
+                     
+                     // Remember the caller views.
+                     self.modalCallerViews = callerViews;
                      
                      [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
                                                withObject:[NSNumber numberWithBool:YES]];
@@ -957,8 +966,11 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          self.modalOverlayView.alpha = 0.0;
-                         self.bookNavigationViewController.view.transform = CGAffineTransformIdentity;
-                         self.bookCoverViewController.view.transform = CGAffineTransformIdentity;
+                         
+                         // Apply transition transform to callerViews.
+                         for (UIView *view in self.modalCallerViews) {
+                             view.transform = CGAffineTransformIdentity;
+                         }
                          modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
                      }
                      completion:^(BOOL finished)  {
@@ -972,6 +984,7 @@
                          // Get rid of modalVC and reference to it.
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
+                         self.modalCallerViews = nil;
                          
                          [self.benchtopViewController showVisibleBooks:YES];
                          
@@ -1080,7 +1093,7 @@
     // yVyEcZFboc - Prod Chicken adobo
     [CKRecipe recipeForObjectId:@"qC9Dhevs7E"
                         success:^(CKRecipe *recipe){
-                            [self viewRecipe:recipe];
+                            [self showModalWithRecipe:recipe];
                         }
                         failure:^(NSError *error) {
                             DLog(@"error %@", [error localizedDescription]);
