@@ -603,7 +603,7 @@
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
-                                                  self.storeViewController.view.frame = [self storeFrameForLevel:benchtopLevel];;
+                                                  self.storeViewController.view.frame = [self storeFrameForLevel:benchtopLevel];
                                                   self.benchtopViewController.view.frame = [self benchtopFrameForLevel:benchtopLevel];
                                                   self.settingsViewController.view.frame = [self settingsFrameForLevel:benchtopLevel];
                                               }

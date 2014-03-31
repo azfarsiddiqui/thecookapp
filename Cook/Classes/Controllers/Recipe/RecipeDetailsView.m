@@ -1081,7 +1081,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateViewOriginalButtonFrame {
-    if (self.editMode || self.recipeDetails.measureType == CKMeasureTypeNone) {
+    if (self.editMode || self.recipeDetails.measureType == CKMeasureTypeNone || self.recipeDetails.measureType == [CKUser currentUser].measurementType) {
         self.viewOriginalButton.hidden = YES;
     } else {
         self.viewOriginalButton.hidden = NO;

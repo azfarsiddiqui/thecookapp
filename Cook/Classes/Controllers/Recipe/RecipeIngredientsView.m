@@ -20,7 +20,6 @@
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
 @property (nonatomic, assign) CKMeasurementType convertFromType;
-@property (nonatomic, assign) CKMeasurementType convertToType;
 @property (nonatomic, assign) BOOL compact;
 
 @end
@@ -146,7 +145,7 @@
                                   range:NSMakeRange(0, [measurement length])];
     }
     //Convert
-    if (self.convertFromType && self.convertFromType != CKMeasureTypeNone) {
+    if (self.convertFromType && self.convertFromType != CKMeasureTypeNone && self.convertFromType != [CKUser currentUser].measurementType) {
         CKMeasureConverter *ingredientConvert = [[CKMeasureConverter alloc] initWithAttributedString:ingredientDisplay
                                                                                           fromLocale:self.convertFromType
                                                                                             toLocale:[CKUser currentUser].measurementType
