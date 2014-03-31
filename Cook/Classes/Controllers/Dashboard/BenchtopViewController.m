@@ -50,7 +50,6 @@
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIImageView *vignetteView;
 @property (nonatomic, strong) UIButton *deleteButton;
-@property (nonatomic, strong) UIImage *signupBlurImage;
 @property (nonatomic, strong) FollowReloadButtonView *followReloadView;
 
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
@@ -626,7 +625,7 @@
 #pragma mark - RecipeSearchViewControllerDelegate methods
 
 - (UIImage *)recipeSearchBlurredImageForDash {
-    return [self dashBlurredImageForce:YES];
+    return [self darkDashBlurredImage];
 }
 
 - (void)recipeSearchViewControllerDismissRequested {
@@ -1378,9 +1377,6 @@
     
     if (success) {
         
-        // Clear blur image.
-        self.signupBlurImage = nil;
-        
         // Delete current book then reload.
         [self deleteMyBookCompletion:^{
             
@@ -1694,7 +1690,6 @@
     if (![self.currentUser isSignedIn] || ([self.currentUser isSignedIn] && ![self hasSeenUpdateIntro])) {
         
         [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
-            self.signupBlurImage = blurredImage;
             if (completion != nil) {
                 completion();
             }
@@ -1765,7 +1760,7 @@
         // Blurred imageView to be hidden to start off with.
         UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        blurredImageView.image = self.signupBlurImage;
+        blurredImageView.image = [self dashBlurredImage];
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
@@ -1815,7 +1810,6 @@
                          animations:^{
                              self.updateIntroView.alpha = 1.0;
                          } completion:^(BOOL finished) {
-                             self.signupBlurImage = nil;
                              [self.delegate panEnabledRequested:NO];
                              [self markHasSeenUpdateIntro];
                              self.collectionView.userInteractionEnabled = YES;
@@ -2167,15 +2161,11 @@
 }
 
 - (UIImage *)dashBlurredImage {
-    return [self dashBlurredImageForce:NO];
+    return [ImageHelper blurredOverlayImageFromView:self.view alpha:0.38];
 }
 
-- (UIImage *)dashBlurredImageForce:(BOOL)force {
-    if (!force && self.signupBlurImage) {
-        return self.signupBlurImage;
-    } else {
-        return [ImageHelper blurredImageFromView:self.view];
-    }
+- (UIImage *)darkDashBlurredImage {
+    return [ImageHelper blurredOverlayImageFromView:self.view alpha:0.8];
 }
 
 @end
