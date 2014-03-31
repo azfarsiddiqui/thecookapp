@@ -135,6 +135,7 @@
                                         
                                         NSArray *parseRecipes = [results objectForKey:@"recipes"];
                                         NSUInteger recipeCount = [[results objectForKey:@"count"] unsignedIntegerValue];
+                                        NSString *keyword = [results objectForKey:@"keyword"];
                                         
                                         // Map to our model.
                                         NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
@@ -145,7 +146,7 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:user book:book];
                                         }];
                                         
-                                        success(recipes, recipeCount);
+                                        success(keyword, recipes, recipeCount);
                                         
                                     } else {
                                         DLog(@"Error searching recipes: %@", [error localizedDescription]);

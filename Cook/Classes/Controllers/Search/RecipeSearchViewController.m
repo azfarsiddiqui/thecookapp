@@ -39,6 +39,7 @@
 @property (nonatomic, assign) BOOL resultsMode;
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, assign) NSUInteger count;
+@property (nonatomic, strong) NSString *keyword;
 
 @end
 
@@ -203,12 +204,20 @@
 
 - (void)recipeSearchFieldViewSearchByText:(NSString *)text {
     
+    // Remember keyword.
+    self.keyword = text;
+    
     [self enableResultsMode:YES completion:^{
         
         [self.searchFieldView setSearching:YES];
         
         [CKRecipe searchWithTerm:text
-                         success:^(NSArray *recipes, NSUInteger count) {
+                         success:^(NSString *keyword, NSArray *recipes, NSUInteger count) {
+                             
+                             // Ignore if keyword doesn't match this request.
+                             if (![self.keyword isEqualToString:keyword]) {
+                                 return;
+                             }
                              
                              [self.searchFieldView setSearching:NO];
                              [self.searchFieldView showNumResults:count];
@@ -332,9 +341,7 @@
 #pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
-    [self clearResultsCompletion:^{
-        [self.delegate recipeSearchViewControllerDismissRequested];
-    }];
+    [self.delegate recipeSearchViewControllerDismissRequested];
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
