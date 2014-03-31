@@ -11,6 +11,7 @@
 #import "ViewHelper.h"
 #import "CKRecipeSearchFieldView.h"
 #import "RecipeGridLayout.h"
+#import "SearchRecipeGridLayout.h"
 #import "BookRecipeGridExtraSmallCell.h"
 #import "BookRecipeGridSmallCell.h"
 #import "BookRecipeGridMediumCell.h"
@@ -22,12 +23,15 @@
 #import "ImageHelper.h"
 #import "AppHelper.h"
 #import "RootViewController.h"
+#import "CKContentContainerCell.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
 
 @property (nonatomic, weak) id<RecipeSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKRecipeSearchFieldView *searchFieldView;
@@ -41,11 +45,13 @@
 @implementation RecipeSearchViewController
 
 #define kContentInsets              (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+#define kHeaderHeight               110.0
 #define kTopMaskOffset              112.0
 #define kSearchTopOffset            41.0
 #define kSearchMidOffset            220.0
 #define kSearchCollectionViewGap    20.0
 #define kHelpFont                   [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
+#define kHeaderCellId               @"DividerHeaderId"
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -63,11 +69,12 @@
     [super viewDidLoad];
     
     [self.view addSubview:self.blurredImageView];
-    [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.closeButton];
+    [self.view addSubview:self.containerView];
+    [self.containerView addSubview:self.collectionView];
+    [self.containerView addSubview:self.closeButton];
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:NO];
-    [self.view addSubview:self.searchFieldView];
+    [self.containerView addSubview:self.searchFieldView];
     
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -117,6 +124,22 @@
     return recipeCell;
 }
 
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionReusableView *reusableView = nil;
+    
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
+        reusableView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                               withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
+        reusableView.backgroundColor = [UIColor whiteColor];
+    }
+    
+    return reusableView;
+}
+
+
 #pragma mark - RecipeGridLayoutDelegate methods
 
 - (void)recipeGridLayoutDidFinish {
@@ -141,11 +164,11 @@
 }
 
 - (CGFloat)recipeGridCellsOffset {
-    return kSearchTopOffset + self.searchFieldView.frame.size.height + kSearchCollectionViewGap;
+    return 20.0;
 }
 
 - (BOOL)recipeGridLayoutHeaderEnabled {
-    return NO;
+    return YES;
 }
 
 - (BOOL)recipeGridLayoutLoadMoreEnabled {
@@ -170,8 +193,6 @@
     if (self.resultsMode) {
         [self clearResults];
     }
-    
-    [self applyTopMaskViewIfRequired];
     
     return YES;
 }
@@ -232,13 +253,29 @@
 
 #pragma mark - Properties
 
+- (UIView *)containerView {
+    if (!_containerView) {
+        _containerView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    }
+    return _containerView;
+}
+
+- (UIView *)dividerView {
+    if (!_dividerView) {
+        _dividerView.backgroundColor = [UIColor whiteColor];
+        _dividerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    }
+    return _dividerView;
+}
+
 - (UIButton *)closeButton {
     if (!_closeButton) {
         _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _closeButton.frame = (CGRect){
             kContentInsets.left,
-            kContentInsets.top,
+            floorf((kHeaderHeight - _closeButton.frame.size.height) / 2.0) + 5.0,
             _closeButton.frame.size.width,
             _closeButton.frame.size.height
         };
@@ -248,8 +285,12 @@
 
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
-        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
-                                             collectionViewLayout:[[RecipeGridLayout alloc] initWithDelegate:self]];
+        _collectionView = [[UICollectionView alloc] initWithFrame:(CGRect){
+            self.view.bounds.origin.x,
+            kHeaderHeight,
+            self.view.bounds.size.width,
+            self.view.bounds.size.height - kHeaderHeight
+        } collectionViewLayout:[[SearchRecipeGridLayout alloc] initWithDelegate:self]];
         _collectionView.bounces = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.showsVerticalScrollIndicator = NO;
@@ -265,6 +306,7 @@
                 forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeSmall]];
         [self.collectionView registerClass:[BookRecipeGridExtraSmallCell class]
                 forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeExtraSmall]];
+        [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
     }
     return _collectionView;
 }
@@ -296,7 +338,7 @@
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
     CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerView:self.collectionView];
+    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerView:self.containerView];
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
@@ -313,7 +355,7 @@
     CGSize searchFieldSize = [self.searchFieldView sizeForExpanded:!resultsMode];
     return (UIOffset) {
         floorf((self.view.bounds.size.width - searchFieldSize.width) / 2.0),
-        resultsMode ? kSearchTopOffset : kSearchMidOffset
+        resultsMode ? floorf((kHeaderHeight - searchFieldSize.height) / 2.0) + 10.0 : kSearchMidOffset
     };
 }
 

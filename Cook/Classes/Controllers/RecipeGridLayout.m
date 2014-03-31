@@ -14,12 +14,7 @@
 
 @interface RecipeGridLayout ()
 
-@property (nonatomic, weak) id<RecipeGridLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
-@property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
-@property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
-@property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
-@property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
 @property (nonatomic, strong) NSMutableArray *columnOffsets;
 @property (nonatomic, assign) CGSize contentSize;
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
@@ -160,6 +155,47 @@
 - (void)setNeedsRelayout:(BOOL)relayout {
     self.layoutCompleted = !relayout;
     self.contentSize = CGSizeZero;
+}
+
+- (UICollectionViewLayoutAttributes *)headerLayoutAttributesForIndexPath:(NSIndexPath *)headerIndexPath {
+    CGSize headerSize = [self.delegate recipeGridLayoutHeaderSize];
+    CGFloat navigationHeight = [BookNavigationView navigationHeight];
+    CGFloat availableHeaderHeight = [self.delegate recipeGridCellsOffset] - navigationHeight;
+    
+    UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
+    headerAttributes.frame = (CGRect){
+        floorf((self.collectionView.bounds.size.width - headerSize.width) / 2.0),
+        navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
+        headerSize.width,
+        headerSize.height
+    };
+    self.headerStartOffset = headerAttributes.frame.origin.y;
+    return headerAttributes;
+}
+
+- (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            [self applyHeaderPagingEffects:attributes];
+        }
+    }
+}
+
+- (void)applyHeaderPagingEffects:(UICollectionViewLayoutAttributes *)attributes {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGSize headerSize = [self.delegate recipeGridLayoutHeaderSize];
+    
+    if (visibleFrame.origin.y > 0.0) {
+        
+        CGFloat navigationHeight = [BookNavigationView navigationHeight];
+        CGFloat availableHeaderHeight = [self.delegate recipeGridCellsOffset] - visibleFrame.origin.y - navigationHeight;
+        
+        CGRect frame = attributes.frame;
+        frame.origin.y = visibleFrame.origin.y + navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
+        frame.origin.y = MIN(frame.origin.y, [self.delegate recipeGridCellsOffset] - kHeaderCellsMinGap - headerSize.height);
+        attributes.frame = frame;
+    }
+    
 }
 
 #pragma mark - UICollectionViewLayout methods
@@ -372,22 +408,6 @@
     [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
 }
 
-- (UICollectionViewLayoutAttributes *)headerLayoutAttributesForIndexPath:(NSIndexPath *)headerIndexPath {
-    CGSize headerSize = [self.delegate recipeGridLayoutHeaderSize];
-    CGFloat navigationHeight = [BookNavigationView navigationHeight];
-    CGFloat availableHeaderHeight = [self.delegate recipeGridCellsOffset] - navigationHeight;
-    
-    UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
-    headerAttributes.frame = (CGRect){
-        floorf((self.collectionView.bounds.size.width - headerSize.width) / 2.0),
-        navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
-        headerSize.width,
-        headerSize.height
-    };
-    self.headerStartOffset = headerAttributes.frame.origin.y;
-    return headerAttributes;
-}
-
 - (void)buildFooterLayout {
     NSInteger numItems = [self.delegate recipeGridLayoutNumItems];
     
@@ -451,31 +471,6 @@
         
         // Update the offset for the column.
         [self.columnOffsets replaceObjectAtIndex:shortestColumnIndex withObject:@(columnOffset + size.height + kRowGap)];
-    }
-    
-}
-
-- (void)applyPagingEffects:(NSArray *)layoutAttributes {
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-            [self applyHeaderPagingEffects:attributes];
-        }
-    }
-}
-
-- (void)applyHeaderPagingEffects:(UICollectionViewLayoutAttributes *)attributes {
-    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    CGSize headerSize = [self.delegate recipeGridLayoutHeaderSize];
-    
-    if (visibleFrame.origin.y > 0.0) {
-        
-        CGFloat navigationHeight = [BookNavigationView navigationHeight];
-        CGFloat availableHeaderHeight = [self.delegate recipeGridCellsOffset] - visibleFrame.origin.y - navigationHeight;
-
-        CGRect frame = attributes.frame;
-        frame.origin.y = visibleFrame.origin.y + navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
-        frame.origin.y = MIN(frame.origin.y, [self.delegate recipeGridCellsOffset] - kHeaderCellsMinGap - headerSize.height);
-        attributes.frame = frame;
     }
     
 }
