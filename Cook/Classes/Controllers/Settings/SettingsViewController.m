@@ -94,6 +94,7 @@
 
 - (void)measurePickerControllerCloseRequested {
     [self resetMeasureButton];
+    [self.delegate settingsViewControllerModalOpened:NO];
     [ModalOverlayHelper hideModalOverlayForViewController:self.measurePickerController completion:^{}];
 }
 
@@ -400,6 +401,7 @@
 - (void)measurePressed:(id)sender {
     self.measurePickerController = [[MeasurePickerViewController alloc] init];
     self.measurePickerController.delegate = self;
+    [self.delegate settingsViewControllerModalOpened:YES];
     [ModalOverlayHelper showModalOverlayForViewController:self.measurePickerController show:YES completion:^{
     }];
 }

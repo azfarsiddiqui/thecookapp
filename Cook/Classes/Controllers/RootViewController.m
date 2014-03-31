@@ -428,6 +428,14 @@
     }];
 }
 
+- (void)settingsViewControllerModalOpened:(BOOL)isOpen {
+    if (isOpen) {
+        self.panEnabled = NO;
+    } else {
+        self.panEnabled = YES;
+    }
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

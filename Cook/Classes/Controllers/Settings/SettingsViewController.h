@@ -11,6 +11,7 @@
 @protocol SettingsViewControllerDelegate <NSObject>
 
 - (void)settingsViewControllerSignInRequested;
+- (void)settingsViewControllerModalOpened:(BOOL)isOpen;
 
 @end
 
