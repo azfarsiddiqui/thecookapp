@@ -254,6 +254,7 @@
 - (void)enable:(BOOL)enable animated:(BOOL)animated {
     self.collectionView.userInteractionEnabled = enable;
     self.notificationView.userInteractionEnabled = enable;
+    self.searchButton.userInteractionEnabled = enable;
     [self hideIntroViewsAsRequired];
 }
 
