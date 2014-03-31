@@ -211,6 +211,7 @@
                          success:^(NSArray *recipes, NSUInteger count) {
                              
                              [self.searchFieldView setSearching:NO];
+                             [self.searchFieldView showNumResults:count];
                              
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
                              self.count = count;

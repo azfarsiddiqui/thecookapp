@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UIView *leftSearchView;
 @property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UILabel *resultsLabel;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @property (nonatomic, assign) BOOL forceUppercase;
@@ -30,11 +31,12 @@
 @implementation CKRecipeSearchFieldView
 
 #define kExpandedSize       (CGSize){ 610.0, 90.0 }
-#define kMiniSize           (CGSize){ 410.0, 75.0 }
+#define kMiniSize           (CGSize){ 510.0, 75.0 }
 #define kContentInsets      (UIEdgeInsets){ 10.0, 24.0, 10.0, 20.0 }
 #define kTextColour         [UIColor whiteColor]
 #define kPlaceholderColour  [UIColor lightTextColor]
 #define kFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30]
+#define kResultsFont        [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26]
 
 - (id)initWithDelegate:(id<CKRecipeSearchFieldViewDelegate>)delegate {
     if (self = [super initWithFrame:(CGRect){ 0.0, 0.0, kExpandedSize.width, kExpandedSize.height} ]) {
@@ -60,17 +62,15 @@
             self.bounds.size.height - kContentInsets.top - kContentInsets.bottom
         }];
         self.textField.keyboardType = UIKeyboardTypeAlphabet;
-//        self.textField.backgroundColor = [UIColor greenColor];
         self.textField.returnKeyType = UIReturnKeySearch;
         self.textField.delegate = self;
         self.textField.font = kFont;
         self.textField.textColor = kTextColour;
         self.textField.leftViewMode = UITextFieldViewModeAlways;
         self.textField.leftView = self.leftSearchView;
-        self.textField.rightViewMode = UITextFieldViewModeWhileEditing;
-        self.textField.rightView = self.closeButton;
+        self.textField.rightViewMode = UITextFieldViewModeAlways;
+        self.textField.rightView = nil;     // Lifecycle methods handle this.
         self.textField.placeholder = self.placeholderText;
-//        self.textField.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
         self.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholderText
                                                                                attributes:@{ NSForegroundColorAttributeName: kPlaceholderColour }];
         [self addSubview:self.textField];
@@ -131,6 +131,23 @@
     self.searchButton.hidden = searching;
 }
 
+- (void)showNumResults:(NSUInteger)numResults {
+    if (numResults > 0) {
+        self.resultsLabel.hidden = NO;
+        self.resultsLabel.text = [NSString stringWithFormat:@"%ld RESULTS", (unsigned long)numResults];
+        [self.resultsLabel sizeToFit];
+        
+        // Add left gap.
+        CGRect frame = self.resultsLabel.frame;
+        frame.size.width += 10.0;
+        self.resultsLabel.frame = frame;
+        
+        self.textField.rightView = self.resultsLabel;
+    } else {
+        self.resultsLabel.hidden = YES;
+    }
+}
+
 - (BOOL)becomeFirstResponder {
     return [self.textField becomeFirstResponder];
 }
@@ -164,6 +181,9 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    
+    // Clear close button.
+    self.textField.rightView = nil;
     
     return YES;
 }
@@ -256,6 +276,16 @@
     return _closeButton;
 }
 
+- (UILabel *)resultsLabel {
+    if (!_resultsLabel) {
+        _resultsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _resultsLabel.font = kResultsFont;
+        _resultsLabel.textAlignment = NSTextAlignmentRight;
+        _resultsLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.6];
+    }
+    return _resultsLabel;
+}
+
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTiny];
@@ -319,8 +349,10 @@
     
     // Check empty text and clear button.
     if ([self.textField.text length] > 0) {
+        self.textField.rightView = self.closeButton;
         [self.closeButton setBackgroundImage:[self imageForCloseOffState:NO] forState:UIControlStateNormal];
     } else {
+        self.textField.rightView = nil;
         [self.closeButton setBackgroundImage:[self imageForCloseOffState:YES] forState:UIControlStateNormal];
     }
 }
