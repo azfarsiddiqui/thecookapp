@@ -8,6 +8,8 @@
 
 #import "OverlayViewController.h"
 
+@class CKRecipe;
+
 @protocol RecipeSearchViewControllerDelegate <NSObject>
 
 - (void)recipeSearchViewControllerDismissRequested;

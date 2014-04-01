@@ -23,7 +23,7 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes);
 typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
 typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
-typedef void(^RecipeSearchSuccessBlock)(NSArray *recipes, NSUInteger recipeCount);
+typedef void(^RecipeSearchSuccessBlock)(NSString *keyword, NSArray *recipes, NSUInteger recipeCount);
 
 @interface CKRecipe : CKModel
 

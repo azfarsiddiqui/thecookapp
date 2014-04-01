@@ -27,5 +27,7 @@
 - (void)expand:(BOOL)expand animated:(BOOL)animated;
 - (void)focus:(BOOL)focus;
 - (void)clearSearch;
+- (void)setSearching:(BOOL)searching;
+- (void)showNumResults:(NSUInteger)numResults;
 
 @end

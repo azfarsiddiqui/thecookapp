@@ -163,7 +163,12 @@
 }
 
 + (UIImage *)blurredOverlayImage:(UIImage *)image {
+    return [self blurredOverlayImage:image alpha:0.38];
     return [self blurredImage:image tintColour:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.38]];
+}
+
++ (UIImage *)blurredOverlayImage:(UIImage *)image alpha:(CGFloat)alpha {
+    return [self blurredImage:image tintColour:[UIColor colorWithRed:0 green:0 blue:0 alpha:alpha]];
 }
 
 + (void)blurredOverlayImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {
@@ -190,9 +195,16 @@
                                   maskImage:nil];
 }
 
++ (UIImage *)blurredOverlayImageFromView:(UIView *)view alpha:(CGFloat)alpha {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [self blurredOverlayImage:image alpha:alpha];
+}
+
 + (UIImage *)blurredImageFromView:(UIView *)view {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-    // [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

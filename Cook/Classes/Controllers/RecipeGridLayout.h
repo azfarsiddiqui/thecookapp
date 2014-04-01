@@ -36,10 +36,19 @@ typedef NS_ENUM(NSUInteger, RecipeGridType) {
 
 @interface RecipeGridLayout : UICollectionViewLayout
 
+@property (nonatomic, weak) id<RecipeGridLayoutDelegate> delegate;
+@property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
+@property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
+
 + (CGSize)sizeForBookContentGridType:(RecipeGridType)gridType;
 + (RecipeGridType)gridTypeForRecipe:(CKRecipe *)recipe;
 + (NSString *)cellIdentifierForGridType:(RecipeGridType)gridType;
 - (id)initWithDelegate:(id<RecipeGridLayoutDelegate>)delegate;
 - (void)setNeedsRelayout:(BOOL)relayout;
+- (UICollectionViewLayoutAttributes *)headerLayoutAttributesForIndexPath:(NSIndexPath *)headerIndexPath;
+- (void)applyPagingEffects:(NSArray *)layoutAttributes;
+- (void)applyHeaderPagingEffects:(UICollectionViewLayoutAttributes *)attributes;
 
 @end
