@@ -190,7 +190,7 @@
 //        [_measureButton setTitle:@"MEASURE" forState:UIControlStateNormal];
         _measureButton.frame = (CGRect){
             50.0,
-            70.0,
+            74.0,
             150, //_measureButton.frame.size.width,
             34 //_measureButton.frame.size.height
         };
