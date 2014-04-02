@@ -80,22 +80,6 @@
     [self.containerView addSubview:smallServesImageView];
     [self.containerView addSubview:largeServesImageView];
     
-    //Prep time icons
-//    UIImageView *smallPrepTimeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"]];
-//    UIImageView *largePrepTimeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"]];
-//    smallPrepTimeImageView.translatesAutoresizingMaskIntoConstraints = NO;
-//    largePrepTimeImageView.translatesAutoresizingMaskIntoConstraints = NO;
-//    [self.containerView addSubview:smallPrepTimeImageView];
-//    [self.containerView addSubview:largePrepTimeImageView];
-    
-    //Cook time icons
-//    UIImageView *smallCookTimeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"]];
-//    UIImageView *largeCookTimeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"]];
-//    smallCookTimeImageView.translatesAutoresizingMaskIntoConstraints = NO;
-//    largeCookTimeImageView.translatesAutoresizingMaskIntoConstraints = NO;
-//    [self.containerView addSubview:smallCookTimeImageView];
-//    [self.containerView addSubview:largeCookTimeImageView];
-    
     //Setup layout
     {
         NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@700, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
@@ -106,8 +90,6 @@
                                 @"cookTitle":self.cookTitleLabel, @"cookLabel":self.cookLabel,
                                 @"cookSlider":self.cookSlider,
                                 @"smallServesIcon":smallServesImageView, @"largeServesIcon":largeServesImageView};
-//                                @"smallPrepIcon":smallPrepTimeImageView, @"largePrepIcon":largePrepTimeImageView,
-//                                @"smallCookIcon":smallCookTimeImageView, @"largeCookIcon":largeCookTimeImageView};
 
         self.measureTypeControl.translatesAutoresizingMaskIntoConstraints = NO;
         self.servesTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -120,7 +102,7 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(20)-[measurePicker(controlHeight)]-15-[measureLine(1)]-15-[servesTitle]-5-[servesSlider(controlHeight)]-15-[servesLine(1)]-20-[prepTitle]-5-[prepSlider(controlHeight)]-20-[cookTitle]-5-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(30)-[measurePicker(controlHeight)]-(30)-[measureLine(1)]-(15)-[servesTitle]-(20)-[servesSlider(controlHeight)]-(30)-[servesLine(1)]-(40)-[prepTitle]-(5)-[prepSlider(controlHeight)]-(30)-[cookTitle]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[measureLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesTitle]-[servesLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-[servesSlider(sliderWidth)]-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
