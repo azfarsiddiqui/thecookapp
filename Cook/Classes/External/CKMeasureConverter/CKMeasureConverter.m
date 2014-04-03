@@ -30,12 +30,13 @@
 @property (nonatomic, assign) CKMeasurementType toLocale;
 @property (nonatomic, strong) UIColor *highlightColor;
 @property (nonatomic, strong) NSMutableArray *replaceArray; //array of replaceConverts
+@property (nonatomic, assign) BOOL isTokenOnly;
 
 @end
 
 @implementation CKMeasureConverter
 
-- (id)initWithAttributedString:(NSAttributedString *)inputString fromLocale:(CKMeasurementType)fromLocale toLocale:(CKMeasurementType)toLocale highlightColor:(UIColor *)highlightColor {
+- (id)initWithAttributedString:(NSAttributedString *)inputString fromLocale:(CKMeasurementType)fromLocale toLocale:(CKMeasurementType)toLocale highlightColor:(UIColor *)highlightColor tokenOnly:(BOOL)isTokenOnly {
     if (self = [super init]) {
         self.scanner = [NSScanner scannerWithString:[inputString.string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
         self.inputString = inputString;
@@ -43,6 +44,7 @@
         self.toLocale = toLocale;
         self.highlightColor = highlightColor;
         self.replaceArray = [NSMutableArray array];
+        self.isTokenOnly = isTokenOnly;
     }
     return self;
 }
@@ -74,6 +76,8 @@
             replaceObj.range = NSMakeRange(startPos, endPos - startPos);
             [self.replaceArray addObject:replaceObj];
             return [self convert];
+        } else {
+            return [self convert];
         }
     }
     return [self replaceWithFound];
@@ -86,12 +90,14 @@
     NSString *convertedString = [convertDict objectForKey:@"name"];
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
     CGFloat convertedNum = (fromNumber * convertNum);
-    
+    BOOL isTempConvert = NO;
     //Special case temperature since it isn't a simple multiplication
     if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
         convertedNum = (fromNumber * 1.8) + 32;
+        isTempConvert = YES;
     } else if ([unitString isEqualToString:@"°F"] && [convertedString isEqualToString:@"°C"]) {
         convertedNum = (fromNumber - 32)/1.8;
+        isTempConvert = YES;
     }
     
     NSString *convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
@@ -99,7 +105,9 @@
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = 4.0;
     paragraphStyle.alignment = NSTextAlignmentLeft;
-    NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString]
+    NSString *convertString = isTempConvert ? [NSString stringWithFormat:@"%.2f %@(%@ %@)", fromNumber, unitString, convertedNumString, convertedString] :
+    [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+    NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:convertString
                                                                        attributes:@{NSForegroundColorAttributeName: self.highlightColor,
                                                                                     NSFontAttributeName: [Theme ingredientsListFont],
                                                                                     NSParagraphStyleAttributeName: paragraphStyle}];
@@ -121,28 +129,46 @@
 
 //Finds a string that matches a unit from the plist
 - (NSString *)scanString {
+    //NOTES TO SELF: NSScanner is somehow still ignoring the hairline space used to detect token. Figure out why and how to stop it
+    
     //Trying to ignore all whitespaces and weird characters I can think of
     NSMutableCharacterSet *unitCharacterIgnoreSet = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
     [unitCharacterIgnoreSet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
     [unitCharacterIgnoreSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+    [unitCharacterIgnoreSet removeCharactersInString:@"\u200a"];
     [self.scanner setCharactersToBeSkipped:unitCharacterIgnoreSet];
     
     NSString *measureString;
     NSMutableCharacterSet *unitCharacterSet = [NSMutableCharacterSet letterCharacterSet];
-    [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"°"]];
+    [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"°\u200a"]];
+//    [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@""]];
     [self.scanner scanCharactersFromSet:unitCharacterSet intoString:&measureString];
+    
+    NSString *checkMeasureString = [[measureString copy] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    if (![self.scanner isAtEnd]) {
+//        NSString *remainderString = [[self.scanner string] substringWithRange:(NSRange){[self.scanner scanLocation], 1}];
+//        if ([remainderString isEqualToString:@"\u200a"]) {
+//            measureString = [NSString stringWithFormat:@"%@\u200a", measureString];
+//        }
+//    }
     
     //Need to special case 'fl oz' since it has a space in it
     if ([[measureString uppercaseString] isEqualToString:@"FL"]) {
         NSString *finishMeasureString;
         [self.scanner scanCharactersFromSet:[NSCharacterSet letterCharacterSet] intoString:&finishMeasureString];
         if ([[finishMeasureString uppercaseString] isEqualToString:@"OZ"]) {
-            measureString = @"fl oz";
+            measureString = @"fl oz\u200a";
         }
     }
     
-    if (measureString && [[[self unitTypes] allKeys] containsObject:[measureString uppercaseString]]) {
-        return measureString;
+    //Checking for token and invalidating if class option has been set
+    
+    
+    if (measureString && [[[self unitTypes] allKeys] containsObject:[checkMeasureString uppercaseString]]) {
+        if (self.isTokenOnly && [measureString rangeOfString:@"\u200a"].location == NSNotFound) {
+            return nil;
+        }
+        return checkMeasureString;
     } else
         return nil;
 }

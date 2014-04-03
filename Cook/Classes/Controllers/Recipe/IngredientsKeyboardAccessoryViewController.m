@@ -134,7 +134,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *ingredientsInfo = [self.keyboardIngredientsInfo objectAtIndex:indexPath.section];
     NSDictionary *ingredient = [ingredientsInfo objectAtIndex:indexPath.item];
-    NSString *text = [ingredient valueForKey:@"Value"];
+    NSString *text = [NSString stringWithFormat:@"%@\u200a",[ingredient valueForKey:@"Value"]];
     BOOL unit = [[ingredient valueForKey:@"Unit"] boolValue];
 
     [self.delegate ingredientsKeyboardAccessorySelectedValue:text unit:unit];

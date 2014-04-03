@@ -660,7 +660,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (void)setMeasurementType:(NSInteger)measurementType {
     [self.parseObject setObject:@(measurementType) forKey:kUserAttrMeasureType];
-    [self.parseObject saveEventually];
+    [self.parseObject saveInBackground];
 }
 
 - (NSInteger)measurementType {

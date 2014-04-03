@@ -28,7 +28,11 @@ typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
 
 @property (nonatomic, strong) NSScanner *scanner;
 
-- (id)initWithAttributedString:(NSAttributedString *)inputString fromLocale:(CKMeasurementType)fromLocale toLocale:(CKMeasurementType)toLocale highlightColor:(UIColor *)highlightColor;
+- (id)initWithAttributedString:(NSAttributedString *)inputString
+                    fromLocale:(CKMeasurementType)fromLocale
+                      toLocale:(CKMeasurementType)toLocale
+                highlightColor:(UIColor *)highlightColor
+                     tokenOnly:(BOOL)isTokenOnly;
 - (NSAttributedString *)convert;
 
 @end

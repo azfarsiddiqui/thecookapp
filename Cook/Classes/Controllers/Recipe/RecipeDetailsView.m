@@ -24,6 +24,7 @@
 #import "EventHelper.h"
 #import "CKBookCover.h"
 #import "ImageHelper.h"
+#import "CKMeasureConverter.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -1140,7 +1141,20 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
-    self.methodLabel.text = methodDisplay;
+    CKMeasurementType measureType = self.recipeDetails.measureType;
+    
+    if (!self.isOriginalMeasure && measureType != CKMeasureTypeNone && measureType != [CKUser currentUser].measurementType) {
+        CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
+                                                                                      fromLocale:measureType
+                                                                                        toLocale:[CKUser currentUser].measurementType
+                                                                                  highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
+                                                                                       tokenOnly:YES];
+        NSAttributedString *convertedMethod = [methodConvert convert];
+        self.methodLabel.attributedText = convertedMethod;
+    } else {
+        self.methodLabel.attributedText = methodDisplay;
+    }
+    
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
     //Center story if no ingredients or serves
     if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {
@@ -1558,6 +1572,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:measureType];
     [self updateViewOriginalButton];
     [self updateFrame:NO];
+    [self updateMethodFrame];
 }
 
 @end
