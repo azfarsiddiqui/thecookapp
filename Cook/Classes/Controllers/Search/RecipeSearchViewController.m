@@ -24,16 +24,20 @@
 #import "AppHelper.h"
 #import "RootViewController.h"
 #import "CKContentContainerCell.h"
+#import "CKActivityIndicatorView.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
 
 @property (nonatomic, weak) id<RecipeSearchViewControllerDelegate> delegate;
+@property (nonatomic, assign) NSUInteger batchIndex;
+@property (nonatomic, assign) NSUInteger numBatches;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CKRecipeSearchFieldView *searchFieldView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, assign) BOOL resultsMode;
@@ -53,6 +57,7 @@
 #define kSearchCollectionViewGap    20.0
 #define kHelpFont                   [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define kHeaderCellId               @"DividerHeaderId"
+#define LOAD_MORE_CELL_ID           @"LoadMoreCellId"
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -108,21 +113,52 @@
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = [self.recipes count];
+    
+    // Load more if there are more batches to load.
+    if (numItems > 0 && self.batchIndex < self.numBatches) {
+        numItems += 1;      // Spinner if there are more
+    }
+    
     return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    RecipeGridType gridType = [RecipeGridLayout gridTypeForRecipe:recipe];
-    NSString *cellId = [RecipeGridLayout cellIdentifierForGridType:gridType];
-    DLog(@"cellId: %@", cellId);
+    UICollectionViewCell *cell = nil;
     
-    BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
-                                                                                                          forIndexPath:indexPath];
-    [recipeCell configureRecipe:recipe book:recipe.book own:NO];
-    return recipeCell;
+    if (indexPath.item < [self.recipes count]) {
+        
+        // Recipe cell.
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+        RecipeGridType gridType = [RecipeGridLayout gridTypeForRecipe:recipe];
+        NSString *cellId = [RecipeGridLayout cellIdentifierForGridType:gridType];
+        
+        BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
+                                                                                                              forIndexPath:indexPath];
+        [recipeCell configureRecipe:recipe book:recipe.book own:NO];
+        cell = recipeCell;
+        
+    } else {
+        
+        // Spinner.
+        CKContentContainerCell *activityCell = (CKContentContainerCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:LOAD_MORE_CELL_ID
+                                                                                                                        forIndexPath:indexPath];
+        [self.activityView removeFromSuperview];
+        [activityCell configureContentView:self.activityView];
+        if (![self.activityView isAnimating]) {
+            [self.activityView startAnimating];
+        }
+        
+        cell = activityCell;
+        
+        // Load more?
+        if ([self recipeGridLayoutLoadMoreEnabled]) {
+            [self searchWithBatchIndex:self.batchIndex + 1];
+        }
+    }
+    
+    return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
@@ -161,7 +197,7 @@
 }
 
 - (CGSize)recipeGridLayoutFooterSize {
-    return CGSizeZero;
+    return self.activityView.frame.size;
 }
 
 - (CGFloat)recipeGridCellsOffset {
@@ -173,7 +209,7 @@
 }
 
 - (BOOL)recipeGridLayoutLoadMoreEnabled {
-    return NO;
+    return (self.batchIndex < self.numBatches);
 }
 
 - (BOOL)recipeGridLayoutDisabled {
@@ -199,7 +235,7 @@
 }
 
 - (NSString *)recipeSearchFieldViewPlaceholderText {
-    return @"NAME, INGREDIENT OR TAG";
+    return @"RECIPE, INGREDIENT OR TAG";
 }
 
 - (void)recipeSearchFieldViewSearchByText:(NSString *)text {
@@ -208,43 +244,7 @@
     self.keyword = text;
     
     [self enableResultsMode:YES completion:^{
-        
-        [self.searchFieldView setSearching:YES];
-        
-        [CKRecipe searchWithTerm:text
-                         success:^(NSString *keyword, NSArray *recipes, NSUInteger count) {
-                             
-                             // Ignore if keyword doesn't match this request.
-                             // Ignore if not in results mode.
-                             if (![self.keyword isEqualToString:keyword] || !self.resultsMode) {
-                                 return;
-                             }
-                             
-                             [self.searchFieldView setSearching:NO];
-                             [self.searchFieldView showNumResults:count];
-                             
-                             self.recipes = [NSMutableArray arrayWithArray:recipes];
-                             self.count = count;
-                             
-                             // Gather indexPaths to insert.
-                             NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
-                                 return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
-                             }]];
-                             
-                             // UI updates after invalidating layout.
-                             [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
-                             [self.collectionView performBatchUpdates:^{
-                                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-                             } completion:^(BOOL finished) {
-                             }];
-                             
-                         }
-                         failure:^(NSError *error) {
-                             
-                             [self.searchFieldView setSearching:NO];
-                             
-                             DLog(@"Error");
-                         }];
+        [self searchWithBatchIndex:0];
     }];
 }
 
@@ -318,6 +318,7 @@
         [self.collectionView registerClass:[BookRecipeGridExtraSmallCell class]
                 forCellWithReuseIdentifier:[RecipeGridLayout cellIdentifierForGridType:RecipeGridTypeExtraSmall]];
         [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
+        [self.collectionView registerClass:[CKContentContainerCell class] forCellWithReuseIdentifier:LOAD_MORE_CELL_ID];
     }
     return _collectionView;
 }
@@ -337,6 +338,14 @@
         _blurredImageView.image = [self.delegate recipeSearchBlurredImageForDash];
     }
     return _blurredImageView;
+}
+
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+        _activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _activityView;
 }
 
 #pragma mark - Private methods
@@ -418,10 +427,20 @@
     
     [self enableResultsMode:NO];
     
-    // Gather indexPaths to insert.
+    // Gather indexPaths to delete
     NSMutableArray *indexPathsToDelete = [NSMutableArray arrayWithArray:[self.recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
         return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
     }]];
+    
+    // Remove spinner too if it's there.
+    if ([self.collectionView numberOfItemsInSection:0] > [self.recipes count]) {
+        NSIndexPath *spinnerIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
+        [indexPathsToDelete addObject:spinnerIndexPath];
+    }
+    
+    // Clear data.
+    self.batchIndex = 0;
+    self.numBatches = 0;
     [self.recipes removeAllObjects];
     
     if ([indexPathsToDelete count] > 0) {
@@ -507,6 +526,78 @@
         self.view.bounds.size.width,
         kSearchTopOffset + self.searchFieldView.frame.size.height
     };
+}
+
+- (void)searchWithBatchIndex:(NSUInteger)batchIndex {
+    
+    if (batchIndex == 0) {
+        [self.searchFieldView setSearching:YES];
+    }
+    
+    [CKRecipe searchWithTerm:self.keyword
+                  batchIndex:batchIndex
+                     success:^(NSString *keyword, NSArray *recipes, NSUInteger count, NSUInteger searchBatchIndex,
+                               NSUInteger numBatches) {
+                         
+                         // Ignore if keyword doesn't match this request.
+                         // Ignore if not in results mode.
+                         if (![self.keyword isEqualToString:keyword] || !self.resultsMode) {
+                             return;
+                         }
+                         
+                         // Slice index to insert recipes.
+                         NSUInteger nextSliceIndex = 0;
+                         
+                         if (batchIndex == 0) {
+                             [self.searchFieldView setSearching:NO];
+                             [self.searchFieldView showNumResults:count];
+                             self.recipes = [NSMutableArray arrayWithArray:recipes];
+                         } else {
+                             nextSliceIndex = [self.recipes count];
+                             [self.recipes addObjectsFromArray:recipes];
+                         }
+                         
+                         self.count = count;
+                         self.batchIndex = searchBatchIndex;
+                         self.numBatches = numBatches;
+                         
+                         // Gather indexPaths to insert.
+                         NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+                             return [NSIndexPath indexPathForItem:nextSliceIndex + recipeIndex inSection:0];
+                         }]];
+                         
+                         // Delete spinner cell.
+                         NSArray *indexPathsToDelete = nil;
+                         if (batchIndex > 0) {
+                             indexPathsToDelete = @[[NSIndexPath indexPathForItem:nextSliceIndex inSection:0]];
+                         }
+                         
+                         // Reinsert spinner cell if there are more.
+                         if ([self recipeGridLayoutLoadMoreEnabled]) {
+                             NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
+                             [indexPathsToInsert addObject:activityInsertIndexPath];
+                         }
+                         
+                         // UI updates after invalidating layout.
+                         [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+                         [self.collectionView performBatchUpdates:^{
+                             
+                             if ([indexPathsToDelete count] > 0) {
+                                 [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+                             }
+                             
+                             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                             
+                         } completion:^(BOOL finished) {
+                         }];
+                         
+                     }
+                     failure:^(NSError *error) {
+                         [self.searchFieldView showMessage:@"UNABLE TO SEARCH"];
+                         [self.searchFieldView setSearching:NO];
+                         
+                         DLog(@"Error");
+                     }];
 }
 
 @end

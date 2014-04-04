@@ -29,5 +29,6 @@
 - (void)clearSearch;
 - (void)setSearching:(BOOL)searching;
 - (void)showNumResults:(NSUInteger)numResults;
+- (void)showMessage:(NSString *)message;
 
 @end

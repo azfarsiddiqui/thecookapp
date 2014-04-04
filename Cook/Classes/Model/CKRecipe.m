@@ -125,17 +125,23 @@
 
 #pragma mark - Search
 
-+ (void)searchWithTerm:(NSString *)searchTerm success:(RecipeSearchSuccessBlock)success
-               failure:(ObjectFailureBlock)failure {
++ (void)searchWithTerm:(NSString *)searchTerm batchIndex:(NSUInteger)batchIndex
+               success:(RecipeSearchSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"searchRecipes"
-                       withParameters:@{ @"keyword" : searchTerm, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:@{
+                                        @"keyword" : searchTerm,
+                                        @"batchIndex" : @(batchIndex),
+                                        @"cookVersion": [[AppHelper sharedInstance] appVersion]
+                                        }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
                                         NSArray *parseRecipes = [results objectForKey:@"recipes"];
-                                        NSUInteger recipeCount = [[results objectForKey:@"count"] unsignedIntegerValue];
                                         NSString *keyword = [results objectForKey:@"keyword"];
+                                        NSUInteger recipeCount = [[results objectForKey:@"count"] unsignedIntegerValue];
+                                        NSUInteger numBatches = [[results objectForKey:@"numBatches"] unsignedIntegerValue];
+                                        NSUInteger searchBatchIndex = [[results objectForKey:@"batchIndex"] unsignedIntegerValue];
                                         
                                         // Map to our model.
                                         NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
@@ -146,7 +152,7 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:user book:book];
                                         }];
                                         
-                                        success(keyword, recipes, recipeCount);
+                                        success(keyword, recipes, recipeCount, searchBatchIndex, numBatches);
                                         
                                     } else {
                                         DLog(@"Error searching recipes: %@", [error localizedDescription]);
