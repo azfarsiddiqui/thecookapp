@@ -215,7 +215,8 @@
                          success:^(NSString *keyword, NSArray *recipes, NSUInteger count) {
                              
                              // Ignore if keyword doesn't match this request.
-                             if (![self.keyword isEqualToString:keyword]) {
+                             // Ignore if not in results mode.
+                             if (![self.keyword isEqualToString:keyword] || !self.resultsMode) {
                                  return;
                              }
                              
@@ -376,6 +377,14 @@
     UIOffset offset = [self offsetForSearchFieldViewResultsMode:resultsMode];
     CGRect frame = (CGRect){ offset.horizontal, offset.vertical, searchFieldSize.width, searchFieldSize.height };
     
+    // Stop searching if resultsMode is off. Could be cancelled while still performing the previous search.
+    if (!resultsMode) {
+        [self.searchFieldView setSearching:NO];
+    }
+    
+    // Mark results mode appropriately.
+    self.resultsMode = resultsMode;
+    
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationCurveEaseInOut
@@ -384,7 +393,6 @@
                          self.searchFieldView.frame = frame;
                      }
                      completion:^(BOOL finished) {
-                         self.resultsMode = YES;
                          if (completion != nil) {
                              completion();
                          }
