@@ -83,6 +83,24 @@
     return [self replaceWithFound];
 }
 
++ (NSString *)stringForMeasureType:(CKMeasurementType)measureType {
+    switch (measureType) {
+        case CKMeasureTypeImperial:
+            return @"US IMPERIAL";
+        case CKMeasureTypeMetric:
+            return @"METRIC";
+        case CKMeasureTypeAUMetric:
+            return @"AU METRIC";
+        case CKMeasureTypeUKMetric:
+            return @"UK METRIC";
+        default:
+            return @"";
+            break;
+    }
+}
+
+#pragma mark - Utility methods
+
 //Grabs values from conversion plist based on inputs and calculates conversion
 - (NSAttributedString *)convertFromNumber:(CGFloat)fromNumber unit:(NSString *)unitString {
     NSDictionary *convertToDict = [[self unitTypes] objectForKey:[unitString uppercaseString]];
@@ -90,23 +108,49 @@
     NSString *convertedString = [convertDict objectForKey:@"name"];
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
     CGFloat convertedNum = (fromNumber * convertNum);
-    BOOL isTempConvert = NO;
+    BOOL isParenthesesConvert = NO;
     //Special case temperature since it isn't a simple multiplication
     if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
         convertedNum = (fromNumber * 1.8) + 32;
-        isTempConvert = YES;
+        isParenthesesConvert = YES;
     } else if ([unitString isEqualToString:@"°F"] && [convertedString isEqualToString:@"°C"]) {
         convertedNum = (fromNumber - 32)/1.8;
-        isTempConvert = YES;
+        isParenthesesConvert = YES;
     }
     
     NSString *convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
+    NSString *convertString;
+    
+    //Special case ml -> Imperial conversion
+    if ([self isValidUnitString:unitString] && self.toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
+
+            if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
+                //Convert to tablespoon
+                convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
+                convertedString = @"tbsp";
+                convertedNumString = [self roundFrom:convertedNum withFractionType:16];
+            } else if (fromNumber > 60) {
+                //Convert to cups
+                convertedNum = fromNumber * .004237288; //tsp -> cup
+                convertedString = @"cup";
+                convertedNumString = [self roundFrom:convertedNum withFractionType:4];
+            }
+            
+            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
+                convertString = [NSString stringWithFormat:@"~%@ %@ (%i %@)", convertedNumString, convertedString, (int)fromNumber, unitString];
+            } else {
+                convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+            }
+    } else {
+        convertString = isParenthesesConvert ? [NSString stringWithFormat:@"%@ %@ (%.2f %@)", convertedNumString, convertedString, fromNumber, unitString] :
+        [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+        
+    }
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = 4.0;
     paragraphStyle.alignment = NSTextAlignmentLeft;
-    NSString *convertString = isTempConvert ? [NSString stringWithFormat:@"%.2f %@(%@ %@)", fromNumber, unitString, convertedNumString, convertedString] :
-    [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
     NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:convertString
                                                                        attributes:@{NSForegroundColorAttributeName: self.highlightColor,
                                                                                     NSFontAttributeName: [Theme ingredientsListFont],
@@ -123,6 +167,14 @@
         [outputString insertAttributedString:replaceObj.string atIndex:replaceObj.range.location];
     }
     return outputString;
+}
+
+- (BOOL)isValidUnitString:(NSString *)unitString {
+    if (self.isTokenOnly && [unitString rangeOfString:@"\u200a"].location == NSNotFound) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 #pragma mark - Parsing methods
@@ -145,12 +197,6 @@
     [self.scanner scanCharactersFromSet:unitCharacterSet intoString:&measureString];
     
     NSString *checkMeasureString = [[measureString copy] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-//    if (![self.scanner isAtEnd]) {
-//        NSString *remainderString = [[self.scanner string] substringWithRange:(NSRange){[self.scanner scanLocation], 1}];
-//        if ([remainderString isEqualToString:@"\u200a"]) {
-//            measureString = [NSString stringWithFormat:@"%@\u200a", measureString];
-//        }
-//    }
     
     //Need to special case 'fl oz' since it has a space in it
     if ([[measureString uppercaseString] isEqualToString:@"FL"]) {
@@ -165,7 +211,7 @@
     
     
     if (measureString && [[[self unitTypes] allKeys] containsObject:[checkMeasureString uppercaseString]]) {
-        if (self.isTokenOnly && [measureString rangeOfString:@"\u200a"].location == NSNotFound) {
+        if (![self isValidUnitString:measureString]) {
             return nil;
         }
         return checkMeasureString;
@@ -236,6 +282,7 @@
         case CKFractionConvertTypeFourth: return [self convertFourths:fromNum];
         case CKFractionConvertTypeEighth: return [self convertEights:fromNum];
         case CKFractionConvertTypeTenth: return [self convertTenths:fromNum];
+        case CKFractionConvertTypeSixteenth: return [self convertSixteenths:fromNum];
         default: return [self convertTenths:fromNum];
     }
 }
@@ -248,6 +295,12 @@
 
 - (NSString *)convertEights:(CGFloat)input {
     NSArray *array = @[@"",@"1/8",@"1/4",@"3/8",@"1/2",@"5/8",@"3/4",@"7/8",@""];
+    return [self convertToFraction:input keyArray:array];
+}
+
+//For extra nice fuzzy eigths?
+- (NSString *)convertSixteenths:(CGFloat)input {
+    NSArray *array = @[@"",@"1/8",@"1/8",@"1/4",@"1/4",@"1/3",@"3/8",@"1/2",@"1/2",@"1/2",@"5/8",@"2/3",@"3/4",@"3/4",@"7/8",@"7/8",@""];
     return [self convertToFraction:input keyArray:array];
 }
 

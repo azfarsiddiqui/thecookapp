@@ -107,6 +107,7 @@
 + (UIColor *)progressSavingColour;
 + (UIFont *)progressSavingFont;
 + (UIFont *)viewOriginalFont;
++ (UIColor *)viewOriginalLabelColor;
 
 #pragma mark - Recipe Editing
 

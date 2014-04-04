@@ -342,6 +342,14 @@
     return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0f];
 }
 
++ (UIFont *)viewOriginalLabelFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:12.0f];
+}
+
++ (UIColor *)viewOriginalLabelColor {
+    return [UIColor colorWithHexString:@"888888"];
+}
+
 #pragma mark - Recipe Editing
 
 + (UIColor *)bookCoverInsideBackgroundColour {

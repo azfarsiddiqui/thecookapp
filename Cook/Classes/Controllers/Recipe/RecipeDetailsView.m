@@ -49,6 +49,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) TTTAttributedLabel *methodLabel;
 @property (nonatomic, strong) UIButton *viewOriginalButton;
+@property (nonatomic, strong) UILabel *viewOriginalLabel;
 @property (nonatomic, assign) BOOL isOriginalMeasure;
 
 // Layout
@@ -1031,7 +1032,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateViewOriginalButton {
-    if (!self.viewOriginalButton) {
+    if (!self.viewOriginalButton && !self.viewOriginalLabel) {
         self.viewOriginalButton = [[UIButton alloc] init];
         self.viewOriginalButton.titleLabel.font = [Theme viewOriginalFont];
         [self.viewOriginalButton setTitleColor:[Theme servesColor] forState:UIControlStateNormal];
@@ -1040,43 +1041,23 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert"] forState:UIControlStateNormal];
         [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert_onpress"] forState:UIControlStateHighlighted];
         [self addSubview:self.viewOriginalButton];
+        
+        self.viewOriginalLabel = [[UILabel alloc] init];
+        self.viewOriginalLabel.font = [Theme viewOriginalFont];
+        self.viewOriginalLabel.textColor = [Theme viewOriginalLabelColor];
+        self.viewOriginalLabel.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:self.viewOriginalLabel];
     }
     self.viewOriginalButton.hidden = NO;
+    self.viewOriginalLabel.hidden = NO;
     if (self.isOriginalMeasure) {
-        switch ([CKUser currentUser].measurementType) {
-            case CKMeasureTypeMetric:
-                [self.viewOriginalButton setTitle:@"VIEW METRIC" forState:UIControlStateNormal];
-                break;
-            case CKMeasureTypeAUMetric:
-                [self.viewOriginalButton setTitle:@"VIEW AU METRIC" forState:UIControlStateNormal];
-                break;
-            case CKMeasureTypeUKMetric:
-                [self.viewOriginalButton setTitle:@"VIEW UK METRIC" forState:UIControlStateNormal];
-                break;
-            case CKMeasureTypeImperial:
-                [self.viewOriginalButton setTitle:@"VIEW US IMPERIAL" forState:UIControlStateNormal];
-                break;
-            default:
-                break;
-        }
+        ////[NSString stringWithFormat:@"CONVERT TO %@", [CKMeasureConverter stringForMeasureType:[CKUser currentUser].measurementType]
+        [self.viewOriginalButton setTitle:@"VIEW CONVERSION" forState:UIControlStateNormal];
+        self.viewOriginalLabel.text = [NSString stringWithFormat:@"VIEWING IN %@", [CKMeasureConverter stringForMeasureType:self.recipeDetails.measureType]];
     } else {
         //display recipe original measure type
-        switch (self.recipeDetails.measureType) {
-            case CKMeasureTypeMetric:
-                [self.viewOriginalButton setTitle:@"VIEW METRIC" forState:UIControlStateNormal];
-                break;
-            case CKMeasureTypeAUMetric:
-                [self.viewOriginalButton setTitle:@"VIEW AU METRIC" forState:UIControlStateNormal];
-                break;
-            case CKMeasureTypeUKMetric:
-                [self.viewOriginalButton setTitle:@"VIEW UK METRIC" forState:UIControlStateNormal];
-                break;
-            case CKMeasureTypeImperial:
-                [self.viewOriginalButton setTitle:@"VIEW US IMPERIAL" forState:UIControlStateNormal];
-                break;
-            default:
-                break;
-        }
+        [self.viewOriginalButton setTitle:@"VIEW ORIGINAL" forState:UIControlStateNormal];
+        self.viewOriginalLabel.text = [NSString stringWithFormat:@"CONVERTED TO %@", [CKMeasureConverter stringForMeasureType:[CKUser currentUser].measurementType]];
     }
     [self updateViewOriginalButtonFrame];
 }
@@ -1084,15 +1065,24 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateViewOriginalButtonFrame {
     if (self.editMode || self.recipeDetails.measureType == CKMeasureTypeNone || self.recipeDetails.measureType == [CKUser currentUser].measurementType) {
         self.viewOriginalButton.hidden = YES;
+        self.viewOriginalLabel.hidden = YES;
     } else {
         self.viewOriginalButton.hidden = NO;
+        self.viewOriginalLabel.hidden = NO;
     }
-    self.viewOriginalButton.frame = (CGRect){
+    self.viewOriginalLabel.frame = (CGRect){
         kContentInsets.left,
         self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + 20,
         kMaxLeftWidth,
+        20
+    };
+    self.viewOriginalButton.frame = (CGRect){
+        kContentInsets.left,
+        self.viewOriginalLabel.frame.origin.y + 25,
+        kMaxLeftWidth,
         50
     };
+    
 }
 
 - (void)updateMethod {
