@@ -11,6 +11,11 @@
 #import "CKBook.h"
 #import "CKRecipeImage.h"
 
+typedef NS_ENUM(NSUInteger, CKRecipeSearchFilter) {
+    CKRecipeSearchFilterPopularity,
+    CKRecipeSearchFilterCreationDate,
+};
+
 typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPrivate,
     CKPrivacyFriends,
@@ -69,8 +74,9 @@ typedef void(^RecipeSearchSuccessBlock)(NSString *keyword, NSArray *recipes, NSU
                   failure:(ObjectFailureBlock)failure;
 
 // Search.
-+ (void)searchWithTerm:(NSString *)searchTerm batchIndex:(NSUInteger)batchIndex
-               success:(RecipeSearchSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)searchWithTerm:(NSString *)searchTerm filter:(CKRecipeSearchFilter)searchFilter
+            batchIndex:(NSUInteger)batchIndex success:(RecipeSearchSuccessBlock)success
+               failure:(ObjectFailureBlock)failure;
 
 // Save
 - (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress

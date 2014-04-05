@@ -37,6 +37,7 @@
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *filterButton;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CKRecipeSearchFieldView *searchFieldView;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -44,18 +45,21 @@
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, assign) NSUInteger count;
 @property (nonatomic, strong) NSString *keyword;
+@property (nonatomic, assign) CKRecipeSearchFilter searchFilter;
 
 @end
 
 @implementation RecipeSearchViewController
 
 #define kContentInsets              (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+#define BUTTON_INSETS               (UIEdgeInsets){ 30.0, 15.0, 50.0, 25.0 }
 #define kHeaderHeight               110.0
 #define kTopMaskOffset              112.0
 #define kSearchTopOffset            41.0
 #define kSearchMidOffset            220.0
 #define kSearchCollectionViewGap    20.0
 #define kHelpFont                   [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
+#define FILTER_FONT                 [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define kHeaderCellId               @"DividerHeaderId"
 #define LOAD_MORE_CELL_ID           @"LoadMoreCellId"
 
@@ -67,6 +71,9 @@
 - (id)initWithDelegate:(id<RecipeSearchViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
+        
+        // Default search filter.
+        self.searchFilter = CKRecipeSearchFilterPopularity;
     }
     return self;
 }
@@ -78,6 +85,7 @@
     [self.view addSubview:self.containerView];
     [self.containerView addSubview:self.collectionView];
     [self.containerView addSubview:self.closeButton];
+    [self.containerView addSubview:self.filterButton];
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:NO];
     [self.containerView addSubview:self.searchFieldView];
@@ -228,6 +236,7 @@
 
 - (BOOL)recipeSearchFieldShouldFocus {
     if (self.resultsMode) {
+        [self enableResultsMode:NO];
         [self clearResults];
     }
     
@@ -249,6 +258,7 @@
 }
 
 - (void)recipeSearchFieldViewClearRequested {
+    [self enableResultsMode:NO];
     [self clearResults];
 }
 
@@ -278,6 +288,28 @@
         _dividerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     }
     return _dividerView;
+}
+
+- (UIButton *)filterButton {
+    if (!_filterButton) {
+        _filterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_filterButton setTitle:[self currentDisplayForSearchFilter] forState:UIControlStateNormal];
+        [_filterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_filterButton addTarget:self action:@selector(filterTapped:) forControlEvents:UIControlEventTouchUpInside];
+        _filterButton.titleLabel.textAlignment = NSTextAlignmentRight;
+        _filterButton.titleLabel.lineBreakMode = NSLineBreakByClipping;
+        _filterButton.titleLabel.font = FILTER_FONT;
+        _filterButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_filterButton sizeToFit];
+        _filterButton.frame = (CGRect){
+            self.view.bounds.size.width - kContentInsets.right - _filterButton.frame.size.width - BUTTON_INSETS.right,
+            floorf((kHeaderHeight - _filterButton.frame.size.height) / 2.0) + 10.0,
+            _filterButton.frame.size.width,
+            _filterButton.frame.size.height
+        };
+        _filterButton.hidden = YES; // Hidden to start off with.
+    }
+    return _filterButton;
 }
 
 - (UIButton *)closeButton {
@@ -354,6 +386,33 @@
     [self.delegate recipeSearchViewControllerDismissRequested];
 }
 
+- (void)filterTapped:(id)sender {
+    self.searchFilter = [self nextSearchFilter];
+    
+    // Update filter button.
+    self.filterButton.enabled = NO;
+    self.filterButton.alpha = 0.5;
+    [self updateFilterButton];
+    
+    [self clearResultsCompletion:^{
+        [self searchWithBatchIndex:0];
+    }];
+}
+
+- (CKRecipeSearchFilter)nextSearchFilter {
+    switch (self.searchFilter) {
+        case CKRecipeSearchFilterPopularity:
+            return CKRecipeSearchFilterCreationDate;
+            break;
+        case CKRecipeSearchFilterCreationDate:
+            return CKRecipeSearchFilterPopularity;
+            break;
+        default:
+            return CKRecipeSearchFilterPopularity;
+            break;
+    }
+}
+
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
     CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
     [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerView:self.containerView];
@@ -394,6 +453,10 @@
     // Mark results mode appropriately.
     self.resultsMode = resultsMode;
     
+    if (!resultsMode) {
+        self.filterButton.hidden = YES;
+    }
+    
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationCurveEaseInOut
@@ -425,7 +488,8 @@
 
 - (void)clearResultsCompletion:(void (^)())completion  {
     
-    [self enableResultsMode:NO];
+    // Clear results display.
+    [self.searchFieldView showMessage:nil];
     
     // Gather indexPaths to delete
     NSMutableArray *indexPathsToDelete = [NSMutableArray arrayWithArray:[self.recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
@@ -535,6 +599,7 @@
     }
     
     [CKRecipe searchWithTerm:self.keyword
+                      filter:self.searchFilter
                   batchIndex:batchIndex
                      success:^(NSString *keyword, NSArray *recipes, NSUInteger count, NSUInteger searchBatchIndex,
                                NSUInteger numBatches) {
@@ -552,6 +617,12 @@
                              [self.searchFieldView setSearching:NO];
                              [self.searchFieldView showNumResults:count];
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
+                             
+                             // If there are more than 1 result then display filter.
+                             self.filterButton.hidden = (count < 2);
+                             self.filterButton.enabled = YES;
+                             self.filterButton.alpha = 1.0;
+                             
                          } else {
                              nextSliceIndex = [self.recipes count];
                              [self.recipes addObjectsFromArray:recipes];
@@ -589,6 +660,7 @@
                              [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
                              
                          } completion:^(BOOL finished) {
+                             
                          }];
                          
                      }
@@ -598,6 +670,33 @@
                          
                          DLog(@"Error");
                      }];
+}
+
+- (void)updateFilterButton {
+    NSString *filterDisplay = [self displayForSearchFilter:self.searchFilter];
+    [self.filterButton setTitle:filterDisplay forState:UIControlStateNormal];
+    [self.filterButton sizeToFit];
+    CGRect frame = self.filterButton.frame;
+    frame.origin.x = self.view.bounds.size.width - kContentInsets.right - self.filterButton.frame.size.width - BUTTON_INSETS.right;
+    self.filterButton.frame = frame;
+}
+
+- (NSString *)currentDisplayForSearchFilter {
+    return [self displayForSearchFilter:self.searchFilter];
+}
+
+- (NSString *)displayForSearchFilter:(CKRecipeSearchFilter)filter {
+    switch (filter) {
+        case CKRecipeSearchFilterPopularity:
+            return @"POPULAR";
+            break;
+        case CKRecipeSearchFilterCreationDate:
+            return @"CREATED";
+            break;
+        default:
+            return @"POPULAR";
+            break;
+    }
 }
 
 @end

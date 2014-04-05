@@ -125,12 +125,14 @@
 
 #pragma mark - Search
 
-+ (void)searchWithTerm:(NSString *)searchTerm batchIndex:(NSUInteger)batchIndex
-               success:(RecipeSearchSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)searchWithTerm:(NSString *)searchTerm filter:(CKRecipeSearchFilter)searchFilter
+            batchIndex:(NSUInteger)batchIndex success:(RecipeSearchSuccessBlock)success
+               failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"searchRecipes"
                        withParameters:@{
                                         @"keyword" : searchTerm,
+                                        @"searchFilter" : @(searchFilter),
                                         @"batchIndex" : @(batchIndex),
                                         @"cookVersion": [[AppHelper sharedInstance] appVersion]
                                         }
