@@ -13,6 +13,9 @@
 
 @property (nonatomic, strong) NSString *searchTerm;
 @property (nonatomic, assign) CKRecipeSearchFilter filter;
-@property (nonatomic, strong) NSMutableArray *results;
+@property (nonatomic, assign) NSUInteger count;
+@property (nonatomic, assign) NSUInteger batchIndex;
+@property (nonatomic, assign) NSUInteger numBatches;
+@property (nonatomic, strong) NSArray *results;
 
 @end
