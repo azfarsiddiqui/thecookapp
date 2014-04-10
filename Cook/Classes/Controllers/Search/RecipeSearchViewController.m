@@ -126,11 +126,10 @@
     NSInteger numItems = [self.recipes count];
     
     // Load more if there are more batches to load.
-    if (numItems > 0 && self.batchIndex < (self.numBatches - 1)) {
+    if (numItems > 0 && [self recipeGridLayoutLoadMoreEnabled]) {
         numItems += 1;      // Spinner if there are more
     }
     
-//    DLog(@"NUM ITEMS [%d]", numItems);
     return numItems;
 }
 
@@ -166,6 +165,8 @@
         
         // Load more?
         if ([self recipeGridLayoutLoadMoreEnabled]) {
+            self.filterButton.enabled = NO;
+            self.filterButton.alpha = 0.5;
             [self searchWithBatchIndex:self.batchIndex + 1];
         }
     }
@@ -402,29 +403,36 @@
     [self updateFilterButton];
     
     // Check results
-//    CKRecipeSearch *searchResults = [self currentFilterResults];
-//    if (searchResults) {
-//        
-//        [self clearResultsCompletion:^{
-//            
-//            self.recipes = [NSMutableArray arrayWithArray:searchResults.results];
-//            self.count = searchResults.count;
-//            self.batchIndex = searchResults.batchIndex;
-//            self.numBatches = searchResults.numBatches;
-//            
-////            DLog(@"COUNT[%d] batchIndex[%d] numBatches[%d]", self.count, self.batchIndex, self.numBatches);
-//            [self displayResults];
-//        }];
-//        
-//    } else {
-//        [self clearResultsCompletion:^{
-//            [self searchWithBatchIndex:0];
-//        }];
-//    }
+    CKRecipeSearch *searchResults = [self currentFilterResults];
+    if (searchResults) {
+        
+        // Mark as searching.
+        [self.searchFieldView setSearching:YES];
+        
+        __weak typeof(self) weakSelf = self;
+        [self clearResultsCompletion:^{
+            
+            weakSelf.recipes = [NSMutableArray arrayWithArray:searchResults.results];
+            weakSelf.count = searchResults.count;
+            weakSelf.batchIndex = searchResults.batchIndex;
+            weakSelf.numBatches = searchResults.numBatches;
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [weakSelf displayResults];
+            });
+
+        }];
+        
+    } else {
+        
+        // Mark as searching.
+        [self.searchFieldView setSearching:YES];
+        
+        [self clearResultsCompletion:^{
+            [self searchWithBatchIndex:0];
+        }];
+    }
     
-    [self clearResultsCompletion:^{
-        [self searchWithBatchIndex:0];
-    }];
 }
 
 - (CKRecipeSearchFilter)nextSearchFilter {
@@ -519,41 +527,40 @@
     // Clear results display.
     [self.searchFieldView showMessage:nil];
     
-    // Gather indexPaths to delete
-    NSMutableArray *indexPathsToDelete = [NSMutableArray arrayWithArray:[self.recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
-        return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
-    }]];
-    
-    // Remove spinner too if it's there.
-    if ([self.collectionView numberOfItemsInSection:0] > [self.recipes count]) {
-        NSIndexPath *spinnerIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
-        [indexPathsToDelete addObject:spinnerIndexPath];
-    }
-    
     // Clear data.
     self.batchIndex = 0;
     self.numBatches = 0;
     [self.recipes removeAllObjects];
     
-    if ([indexPathsToDelete count] > 0) {
-        
-        // UI updates after invalidating layout.
-        [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
-        } completion:^(BOOL finished) {
-            
-            if (completion != nil) {
-                completion();
-            }
-        }];
-        
-    } else {
-        
-        if (completion != nil) {
-            completion();
-        }
-    }
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         
+                         // Fade out the collection view.
+                         self.collectionView.alpha = 0.0;
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+                         [self.collectionView reloadData];
+                         [self.collectionView setContentOffset:CGPointZero animated:NO];
+
+                         [UIView animateWithDuration:0.25
+                                               delay:0.0
+                                             options:UIViewAnimationCurveEaseIn
+                                          animations:^{
+                                              self.collectionView.alpha = 1.0;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              
+                                              if (completion != nil) {
+                                                  completion();
+                                              }
+                                              
+                                          }];
+                     }];
     
 }
 
@@ -627,6 +634,7 @@
         [self.searchFieldView setSearching:YES];
     }
     
+    
     [CKRecipe searchWithTerm:self.keyword
                       filter:self.searchFilter
                   batchIndex:batchIndex
@@ -647,15 +655,15 @@
                              [self.searchFieldView showNumResults:count];
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
                              
-                             // If there are more than 1 result then display filter.
-                             self.filterButton.hidden = (count < 2);
-                             self.filterButton.enabled = YES;
-                             self.filterButton.alpha = 1.0;
-                             
                          } else {
                              nextSliceIndex = [self.recipes count];
                              [self.recipes addObjectsFromArray:recipes];
                          }
+                         
+                         // If there are more than 1 result then display filter.
+                         self.filterButton.hidden = (count < 2);
+                         self.filterButton.enabled = YES;
+                         self.filterButton.alpha = 1.0;
                          
                          // Save results in cache.
                          CKRecipeSearch *searchResults = [self currentFilterResults];
@@ -673,38 +681,47 @@
                          self.batchIndex = searchBatchIndex;
                          self.numBatches = numBatches;
                          
-//                         DLog(@"count[%d] batchIndex[%d] numBatches[%d]", self.count, self.batchIndex, self.numBatches);
-                         
-                         // Gather indexPaths to insert.
-                         NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
-                             return [NSIndexPath indexPathForItem:nextSliceIndex + recipeIndex inSection:0];
-                         }]];
-                         
                          // Delete spinner cell.
                          NSArray *indexPathsToDelete = nil;
-                         if (batchIndex > 0) {
-                             indexPathsToDelete = @[[NSIndexPath indexPathForItem:nextSliceIndex inSection:0]];
+                         if (nextSliceIndex > 0) {
+                             NSIndexPath *spinnerIndexPath = [NSIndexPath indexPathForItem:nextSliceIndex inSection:0];
+                             indexPathsToDelete = @[spinnerIndexPath];
                          }
                          
-                         // Reinsert spinner cell if there are more.
-                         if ([self recipeGridLayoutLoadMoreEnabled]) {
-                             NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
-                             [indexPathsToInsert addObject:activityInsertIndexPath];
+                         // Gather indexPaths to insert if any.
+                         NSMutableArray *indexPathsToInsert = nil;
+                         if ([recipes count] > 0) {
+
+                             indexPathsToInsert = [NSMutableArray arrayWithArray:[recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+                                 return [NSIndexPath indexPathForItem:nextSliceIndex + recipeIndex inSection:0];
+                             }]];
+                             
+                             // Reinsert spinner cell if there are more.
+                             if ([self recipeGridLayoutLoadMoreEnabled]) {
+                                 NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
+                                 [indexPathsToInsert addObject:activityInsertIndexPath];
+                             }
+                             
                          }
                          
                          // UI updates after invalidating layout.
                          [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
-                         [self.collectionView performBatchUpdates:^{
+                         
+                         // Need to update collection view with inserts or deletes.
+                         if ([indexPathsToDelete count] > 0 || [indexPathsToInsert count] > 0) {
                              
-                             if ([indexPathsToDelete count] > 0) {
-                                 [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
-                             }
+                             [self.collectionView performBatchUpdates:^{
+                                 if ([indexPathsToDelete count] > 0) {
+                                     [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+                                 }
+                                 if ([indexPathsToInsert count] > 0) {
+                                     [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                                 }
+                             } completion:^(BOOL finished) {
+                                 
+                             }];
                              
-                             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-                             
-                         } completion:^(BOOL finished) {
-                             
-                         }];
+                         }
                          
                      }
                      failure:^(NSError *error) {
@@ -733,8 +750,6 @@
     self.filterButton.hidden = (self.count < 2);
     self.filterButton.enabled = YES;
     self.filterButton.alpha = 1.0;
-    
-//    DLog(@"INSERT %d batchIndex[%d] numBatches[%d]", [indexPathsToInsert count], self.batchIndex, self.numBatches);
     
     // UI updates after invalidating layout.
     if ([indexPathsToInsert count] > 0) {
