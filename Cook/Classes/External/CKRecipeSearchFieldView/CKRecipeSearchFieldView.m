@@ -124,7 +124,9 @@
 
 - (void)setSearching:(BOOL)searching {
     if (searching) {
-        [self.activityView startAnimating];
+        if (![self.activityView isAnimating]) {
+            [self.activityView startAnimating];
+        }
     } else {
         [self.activityView stopAnimating];
     }
@@ -132,20 +134,20 @@
 }
 
 - (void)showNumResults:(NSUInteger)numResults {
-    if (numResults > 0) {
-        self.resultsLabel.hidden = NO;
-        self.resultsLabel.text = [NSString stringWithFormat:@"%ld RESULTS", (unsigned long)numResults];
-        [self.resultsLabel sizeToFit];
-        
-        // Add left gap.
-        CGRect frame = self.resultsLabel.frame;
-        frame.size.width += 10.0;
-        self.resultsLabel.frame = frame;
-        
-        self.textField.rightView = self.resultsLabel;
-    } else {
-        self.resultsLabel.hidden = YES;
-    }
+    [self showMessage:[self displayForNumResults:numResults]];
+}
+
+- (void)showMessage:(NSString *)message {
+    self.resultsLabel.hidden = NO;
+    self.resultsLabel.text = message;
+    [self.resultsLabel sizeToFit];
+    
+    // Add left gap.
+    CGRect frame = self.resultsLabel.frame;
+    frame.size.width += 10.0;
+    self.resultsLabel.frame = frame;
+    
+    self.textField.rightView = self.resultsLabel;
 }
 
 - (BOOL)becomeFirstResponder {
@@ -355,6 +357,14 @@
         self.textField.rightView = nil;
         [self.closeButton setBackgroundImage:[self imageForCloseOffState:YES] forState:UIControlStateNormal];
     }
+}
+
+- (NSString *)displayForNumResults:(NSUInteger)numResults {
+    NSMutableString *display = [NSMutableString stringWithFormat:@"%ld RESULT", (unsigned long)numResults];
+    if (numResults != 1) {
+        [display appendString:@"S"];
+    }
+    return display;
 }
 
 @end
