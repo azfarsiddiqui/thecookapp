@@ -124,7 +124,9 @@
 
 - (void)setSearching:(BOOL)searching {
     if (searching) {
-        [self.activityView startAnimating];
+        if (![self.activityView isAnimating]) {
+            [self.activityView startAnimating];
+        }
     } else {
         [self.activityView stopAnimating];
     }
