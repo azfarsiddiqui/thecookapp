@@ -19,7 +19,7 @@
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
-@property (nonatomic, assign) CKMeasurementType convertFromType;
+@property (nonatomic, assign) CKMeasurementType convertToType;
 @property (nonatomic, assign) BOOL compact;
 
 @end
@@ -61,7 +61,7 @@
 - (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book measureType:(CKMeasurementType)measureType {
     self.book = book;
     self.layoutOffset = 0.0;
-    self.convertFromType = measureType;
+    self.convertToType = measureType;
     
     if ([ingredients count] > 0) {
         for (UIView *ingredientLabel in self.subviews) {
@@ -145,10 +145,9 @@
                                   range:NSMakeRange(0, [measurement length])];
     }
     //Convert
-    if (self.convertFromType && self.convertFromType != CKMeasureTypeNone && self.convertFromType != [CKUser currentUser].measurementType) {
+    if (self.convertToType && self.convertToType != CKMeasureTypeNone) {
         CKMeasureConverter *ingredientConvert = [[CKMeasureConverter alloc] initWithAttributedString:ingredientDisplay
-                                                                                          fromLocale:self.convertFromType
-                                                                                            toLocale:[CKUser currentUser].measurementType
+                                                                                          toMeasureType:self.convertToType
                                                                                       highlightColor:[CKBookCover textColourForCover:self.book.cover]
                                                                                            tokenOnly:NO];
         NSAttributedString *convertedIngredient = [ingredientConvert convert];

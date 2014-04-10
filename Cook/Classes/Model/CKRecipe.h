@@ -42,7 +42,6 @@ typedef void(^RecipeSearchSuccessBlock)(NSString *keyword, NSArray *recipes, NSU
 @property (nonatomic, assign) CKPrivacy privacy;
 @property (nonatomic, strong) CKLocation *geoLocation;
 @property (nonatomic, strong) NSString *locale;
-@property (nonatomic, assign) NSInteger measureType;
 @property (nonatomic, strong) CKRecipeImage *recipeImage;
 @property (nonatomic, assign, readonly) NSInteger numViews;
 @property (nonatomic, assign, readonly) NSInteger numLikes;

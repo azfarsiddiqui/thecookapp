@@ -10,6 +10,7 @@
 #import "ViewHelper.h"
 #import "CKUser.h"
 #import "EventHelper.h"
+#import "CKMeasureConverter.h"
 
 @interface ThemeTabView ()
 
@@ -28,19 +29,19 @@
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {
         [self initTabs];
-        [self selectOptionAtIndex:[CKUser currentTheme] inform:NO];
+        [self selectOptionAtIndex:[self indexForMeasureType:[CKUser currentMeasureType]]];
     }
     return self;
 }
 
 - (void)reset {
-    [self selectOptionAtIndex:[CKUser currentTheme] inform:NO];
+    [self selectOptionAtIndex:[self indexForMeasureType:[CKUser currentMeasureType]]];
 }
 
 #pragma mark - Private methods
 
 - (void)initTabs {
-    self.options = @[@"REFLECT", @"OPPOSE"];
+    self.options = @[@"METRIC", @"US IMPERIAL"];
     self.buttons = [NSMutableArray array];
     
     UIImage *backgroundImage = [self backgroundImage];
@@ -140,10 +141,6 @@
 }
 
 - (void)selectOptionAtIndex:(NSInteger)optionIndex {
-    [self selectOptionAtIndex:optionIndex inform:YES];
-}
-
-- (void)selectOptionAtIndex:(NSInteger)optionIndex inform:(BOOL)inform {
     
     // Change state of the option.
     for (NSInteger buttonIndex = 0; buttonIndex < [self.buttons count]; buttonIndex++) {
@@ -156,16 +153,28 @@
     }
     
     CKUser *currentUser = [CKUser currentUser];
+    CKMeasurementType *selectedType = [self measureTypeForIndex:optionIndex];
     if (currentUser) {
-        [currentUser setTheme:optionIndex];
+        [currentUser setMeasurementType:selectedType];
         [currentUser saveInBackground];
     } else {
-        [CKUser setGuestTheme:optionIndex];
+        [CKUser setGuestMeasure:selectedType];
     }
-    
-    // Post theme change.
-    if (inform) {
-        [EventHelper postThemeChange];
+}
+
+- (CKMeasurementType)measureTypeForIndex:(NSInteger)measureIndex {
+    if (measureIndex == 0) {
+        return CKMeasureTypeMetric;
+    } else {
+        return CKMeasureTypeImperial;
+    }
+}
+
+- (NSInteger)indexForMeasureType:(CKMeasurementType)measureType {
+    if (measureType == CKMeasureTypeMetric) {
+        return 0;
+    } else {
+        return 1;
     }
 }
 

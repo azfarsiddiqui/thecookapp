@@ -244,26 +244,6 @@
     }
 }
 
-- (void)auMetricButtonPressed:(id)sender {
-    [self resetButtonStates];
-    self.auMetricButton.selected = YES;
-    self.auMetricLabel.alpha = 0.5;
-    [CKUser currentUser].measurementType = CKMeasureTypeAUMetric;
-    if (self.delegate) {
-        [self.delegate measurePickerControllerCloseRequested];
-    }
-}
-
-- (void)ukMetricButtonPressed:(id)sender {
-    [self resetButtonStates];
-    self.ukMetricButton.selected = YES;
-    self.ukMetricLabel.alpha = 0.5;
-    [CKUser currentUser].measurementType = CKMeasureTypeUKMetric;
-    if (self.delegate) {
-        [self.delegate measurePickerControllerCloseRequested];
-    }
-}
-
 - (void)resetButtonStates {
     self.imperialButton.selected = NO;
     self.metricButton.selected = NO;

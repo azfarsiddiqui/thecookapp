@@ -106,8 +106,7 @@
 + (UIFont *)privacyInfoFont;
 + (UIColor *)progressSavingColour;
 + (UIFont *)progressSavingFont;
-+ (UIFont *)viewOriginalFont;
-+ (UIColor *)viewOriginalLabelColor;
++ (UIFont *)changeMeasureFont;
 
 #pragma mark - Recipe Editing
 

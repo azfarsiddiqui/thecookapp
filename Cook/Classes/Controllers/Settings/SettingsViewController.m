@@ -15,12 +15,9 @@
 #import "ThemeTabView.h"
 #import "ImageHelper.h"
 #import "UIDevice+Hardware.h"
-#import "CKMeasureConverter.h"
-#import "ModalOverlayHelper.h"
-#import "MeasurePickerViewController.h"
 #import <MessageUI/MessageUI.h>
 
-@interface SettingsViewController () <MFMailComposeViewControllerDelegate, CKUserProfilePhotoViewDelegate, MeasurePickerControllerDelegate>
+@interface SettingsViewController () <MFMailComposeViewControllerDelegate, CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, weak) id<SettingsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -34,10 +31,8 @@
 @property (nonatomic, strong) UIButton *facebookButton;
 @property (nonatomic, strong) UIButton *twitterButton;
 
-@property (nonatomic, strong) UIButton *measureButton;
+@property (nonatomic, strong) ThemeTabView *measureTabView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
-
-@property (nonatomic, strong) MeasurePickerViewController *measurePickerController;
 
 @end
 
@@ -88,14 +83,6 @@
 
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
     [self processLoginLogout];
-}
-
-#pragma mark - MeasurePickerViewControllerDelegate methods
-
-- (void)measurePickerControllerCloseRequested {
-    [self resetMeasureButton];
-    [self.delegate settingsViewControllerModalOpened:NO];
-    [ModalOverlayHelper hideModalOverlayForViewController:self.measurePickerController completion:^{}];
 }
 
 #pragma mark - Properties
@@ -175,8 +162,8 @@
         _measureLabel.text = @"MEASUREMENTS";
         [_measureLabel sizeToFit];
         _measureLabel.frame = (CGRect){
-            self.measureButton.frame.origin.x + floorf((self.measureButton.frame.size.width - _measureLabel.frame.size.width) / 2.0),
-            self.measureButton.frame.origin.y - _measureLabel.frame.size.height - 9.0,
+            self.measureTabView.frame.origin.x + floorf((self.measureTabView.frame.size.width - _measureLabel.frame.size.width) / 2.0),
+            self.measureTabView.frame.origin.y - _measureLabel.frame.size.height - 9.0,
             _measureLabel.frame.size.width,
             _measureLabel.frame.size.height
         };
@@ -184,22 +171,17 @@
     return _measureLabel;
 }
 
-- (UIButton *)measureButton {
-    if (!_measureButton) {
-        _measureButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//        [_measureButton setTitle:@"MEASURE" forState:UIControlStateNormal];
-        _measureButton.frame = (CGRect){
-            50.0,
+- (ThemeTabView *)measureTabView {
+    if (!_measureTabView) {
+        _measureTabView = [[ThemeTabView alloc] init];
+        _measureTabView.frame = (CGRect){
+            42.0,
             74.0,
-            150, //_measureButton.frame.size.width,
-            34 //_measureButton.frame.size.height
+            _measureTabView.frame.size.width,
+            _measureTabView.frame.size.height
         };
-        _measureButton.titleLabel.font = [Theme settingsThemeFont];
-        [_measureButton setTitleColor:[UIColor colorWithWhite:1.000 alpha:0.700] forState:UIControlStateNormal];
-        [_measureButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_dash_settings_btn"] forState:UIControlStateNormal];
-        [_measureButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_dash_settings_btn_onpress"] forState:UIControlStateHighlighted];
     }
-    return _measureButton;
+    return _measureTabView;
 }
 
 #pragma mark - Private methods
@@ -254,8 +236,7 @@
     UIView *themeChooserContainerView = [UIView new];
     themeChooserContainerView.translatesAutoresizingMaskIntoConstraints = NO;
     [themeChooserContainerView addSubview:self.measureLabel];
-    [themeChooserContainerView addSubview:self.measureButton];
-    [self.measureButton addTarget:self action:@selector(measurePressed:) forControlEvents:UIControlEventTouchUpInside];
+    [themeChooserContainerView addSubview:self.measureTabView];
     [content1View addSubview:themeChooserContainerView];
     
     // Link buttons
@@ -368,7 +349,7 @@
                                                                              metrics:metrics
                                                                                views:views]];
     }
-    [self resetMeasureButton];
+    [self.measureTabView reset];
 }
 
 - (void)createLoginLogoutButton {
@@ -377,34 +358,7 @@
     [self.scrollView addSubview:self.loginLogoutButtonView];
 }
 
-- (void)resetMeasureButton {
-    switch ([CKUser currentUser].measurementType) {
-        case CKMeasureTypeMetric:
-            [self.measureButton setTitle:@"METRIC" forState:UIControlStateNormal];
-            break;
-        case CKMeasureTypeAUMetric:
-            [self.measureButton setTitle:@"AU METRIC" forState:UIControlStateNormal];
-            break;
-        case CKMeasureTypeUKMetric:
-            [self.measureButton setTitle:@"UK METRIC" forState:UIControlStateNormal];
-            break;
-        case CKMeasureTypeImperial:
-            [self.measureButton setTitle:@"US IMPERIAL" forState:UIControlStateNormal];
-            break;
-        default:
-            break;
-    }
-}
-
 #pragma mark - Action handlers
-
-- (void)measurePressed:(id)sender {
-    self.measurePickerController = [[MeasurePickerViewController alloc] init];
-    self.measurePickerController.delegate = self;
-    [self.delegate settingsViewControllerModalOpened:YES];
-    [ModalOverlayHelper showModalOverlayForViewController:self.measurePickerController show:YES completion:^{
-    }];
-}
 
 - (void)aboutPressed:(id)sender {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com"]];
@@ -482,12 +436,12 @@
 
 - (void)loggedIn:(NSNotification *)notification {
     [self createLoginLogoutButton];
-    [self resetMeasureButton];
+    [self.measureTabView reset];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
     [self createLoginLogoutButton];
-    [self resetMeasureButton];
+    [self.measureTabView reset];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kHasSeenProfileHintKey];
 }
 

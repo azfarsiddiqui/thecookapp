@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 #import "CKModel.h"
+#import "CKMeasureConverter.h"
 
 @class CKUser;
 
@@ -64,6 +65,8 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 + (BOOL)facebookAlreadyUsedInAnotherAccountError:(NSError *)error;
 + (void)setGuestTheme:(DashTheme)theme;
 + (DashTheme)currentTheme;
++ (void)setGuestMeasure:(CKMeasurementType)measureType;
++ (CKMeasurementType)currentMeasureType;
 + (NSURL *)defaultBlankProfileUrl;
 
 - (id)initWithParseUser:(PFUser *)parseUser;

@@ -8,6 +8,7 @@
 
 #import "CKMeasureConverter.h"
 #import "Theme.h"
+#import "CKUser.h"
 
 #pragma mark - CKReplaceConvert helper
 @interface CKReplaceConvert : NSObject
@@ -26,25 +27,23 @@
 @interface CKMeasureConverter ()
 
 @property (nonatomic, strong) NSAttributedString *inputString;
-@property (nonatomic, assign) CKMeasurementType fromLocale;
-@property (nonatomic, assign) CKMeasurementType toLocale;
 @property (nonatomic, strong) UIColor *highlightColor;
 @property (nonatomic, strong) NSMutableArray *replaceArray; //array of replaceConverts
+@property (nonatomic, assign) CKMeasurementType toType;
 @property (nonatomic, assign) BOOL isTokenOnly;
 
 @end
 
 @implementation CKMeasureConverter
 
-- (id)initWithAttributedString:(NSAttributedString *)inputString fromLocale:(CKMeasurementType)fromLocale toLocale:(CKMeasurementType)toLocale highlightColor:(UIColor *)highlightColor tokenOnly:(BOOL)isTokenOnly {
+- (id)initWithAttributedString:(NSAttributedString *)inputString toMeasureType:(CKMeasurementType)toType highlightColor:(UIColor *)highlightColor tokenOnly:(BOOL)isTokenOnly {
     if (self = [super init]) {
         self.scanner = [NSScanner scannerWithString:[inputString.string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
         self.inputString = inputString;
-        self.fromLocale = fromLocale;
-        self.toLocale = toLocale;
         self.highlightColor = highlightColor;
         self.replaceArray = [NSMutableArray array];
         self.isTokenOnly = isTokenOnly;
+        self.toType = toType;
     }
     return self;
 }
@@ -74,7 +73,9 @@
             CKReplaceConvert *replaceObj = [[CKReplaceConvert alloc] init];
             replaceObj.string = [self convertFromNumber:currentNum unit:parsedString];
             replaceObj.range = NSMakeRange(startPos, endPos - startPos);
-            [self.replaceArray addObject:replaceObj];
+            if (replaceObj.string) {
+                [self.replaceArray addObject:replaceObj];
+            }
             return [self convert];
         } else {
             return [self convert];
@@ -83,16 +84,12 @@
     return [self replaceWithFound];
 }
 
-+ (NSString *)stringForMeasureType:(CKMeasurementType)measureType {
++ (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType {
     switch (measureType) {
         case CKMeasureTypeImperial:
             return @"US IMPERIAL";
         case CKMeasureTypeMetric:
             return @"METRIC";
-        case CKMeasureTypeAUMetric:
-            return @"AU METRIC";
-        case CKMeasureTypeUKMetric:
-            return @"UK METRIC";
         default:
             return @"";
             break;
@@ -103,12 +100,30 @@
 
 //Grabs values from conversion plist based on inputs and calculates conversion
 - (NSAttributedString *)convertFromNumber:(CGFloat)fromNumber unit:(NSString *)unitString {
-    NSDictionary *convertToDict = [[self unitTypes] objectForKey:[unitString uppercaseString]];
-    NSDictionary *convertDict = [convertToDict objectForKey:[self typeToString:self.toLocale]];
+    NSArray *convertToArray = [[self unitTypes] objectForKey:[unitString uppercaseString]];
+
+    NSDictionary *convertDict;
+    //If more than 1 conversion type is available, need to assume it's the user's type and go from there
+    if ([convertToArray count] > 1) {
+        for (NSDictionary *obj in convertToArray) {
+            if ([[obj objectForKey:@"originalType"] isEqualToString:[self typeToString:self.toType]]) {
+                convertDict = obj;
+            }
+        }
+    } else {
+        convertDict = [convertToArray firstObject];
+    }
+    //Check if conversion is even needed
+    if ([self typeFromString:[convertDict objectForKey:@"newType"]] != self.toType) {
+        return nil;
+    }
+    NSString *convertString;
+    
     NSString *convertedString = [convertDict objectForKey:@"name"];
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
     CGFloat convertedNum = (fromNumber * convertNum);
     BOOL isParenthesesConvert = NO;
+    CKMeasurementType toLocale = [self typeFromString:[convertDict objectForKey:@"newType"]];
     //Special case temperature since it isn't a simple multiplication
     if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
         convertedNum = (fromNumber * 1.8) + 32;
@@ -119,34 +134,32 @@
     }
     
     NSString *convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
-    NSString *convertString;
     
     //Special case ml -> Imperial conversion
-    if ([self isValidUnitString:unitString] && self.toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
-
-            if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
-                //Convert to tablespoon
-                convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
-                convertedString = @"tbsp";
-                convertedNumString = [self roundFrom:convertedNum withFractionType:16];
-            } else if (fromNumber > 60) {
-                //Convert to cups
-                convertedNum = fromNumber * .004237288; //tsp -> cup
-                convertedString = @"cup";
-                convertedNumString = [self roundFrom:convertedNum withFractionType:4];
-            }
-            
-            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
-                convertString = [NSString stringWithFormat:@"~%@ %@ (%i %@)", convertedNumString, convertedString, (int)fromNumber, unitString];
-            } else {
-                convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
-            }
+    if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
+        
+        if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
+            //Convert to tablespoon
+            convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
+            convertedString = @"tbsp";
+            convertedNumString = [self roundFrom:convertedNum withFractionType:16];
+        } else if (fromNumber > 60) {
+            //Convert to cups
+            convertedNum = fromNumber * .004237288; //tsp -> cup
+            convertedString = @"cup";
+            convertedNumString = [self roundFrom:convertedNum withFractionType:4];
+        }
+        
+        if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
+            convertString = [NSString stringWithFormat:@"~%@ %@ (%i %@)", convertedNumString, convertedString, (int)fromNumber, unitString];
+        } else {
+            convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+        }
     } else {
         convertString = isParenthesesConvert ? [NSString stringWithFormat:@"%@ %@ (%.2f %@)", convertedNumString, convertedString, fromNumber, unitString] :
         [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
-        
     }
-    
+
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = 4.0;
@@ -253,9 +266,9 @@
 
 #pragma mark - Ingredient detection
 
+//Returns all unit types from plist
 - (NSDictionary *)unitTypes {
-    NSDictionary *localeTypes = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
-    return [localeTypes objectForKey:[self typeToString:self.fromLocale]];
+    return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
 }
 
 - (NSString *)typeToString:(CKMeasurementType)locale {
@@ -264,12 +277,18 @@
         localeString = @"Imperial";
     } else if (locale == CKMeasureTypeMetric) {
         localeString = @"Metric";
-    } else if (locale == CKMeasureTypeAUMetric) {
-        localeString = @"AUMetric";
-    } else if (locale == CKMeasureTypeUKMetric) {
-        localeString = @"UKMetric";
     }
     return localeString;
+}
+
+- (CKMeasurementType)typeFromString:(NSString *)typeString {
+    if ([typeString isEqualToString:@"Metric"]) {
+        return CKMeasureTypeMetric;
+    } else if ([typeString isEqualToString:@"Imperial"]) {
+        return CKMeasureTypeImperial;
+    } else {
+        return CKMeasureTypeNone;
+    }
 }
 
 #pragma mark - Convert from decimal to fraction

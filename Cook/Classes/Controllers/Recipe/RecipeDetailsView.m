@@ -48,9 +48,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) UIView *ingredientsDividerView;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) TTTAttributedLabel *methodLabel;
-@property (nonatomic, strong) UIButton *viewOriginalButton;
-@property (nonatomic, strong) UILabel *viewOriginalLabel;
-@property (nonatomic, assign) BOOL isOriginalMeasure;
+@property (nonatomic, strong) UISegmentedControl *changeMeasureTypeButton;
 
 // Layout
 @property (nonatomic, assign) CGPoint layoutOffset;
@@ -59,6 +57,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 // Editing.
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) CKMeasurementType selectedMeasureType;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, strong) UIView *addDetailsCardView;
@@ -91,7 +90,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.backgroundColor = [UIColor clearColor];
-        self.isOriginalMeasure = NO;
         
         // Pre-layout updates.
         [self updateFrame];
@@ -534,7 +532,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self updateServesCook];
     [self updateIngredients];
     [self updateMethod];
-    [self updateViewOriginalButton];
+    [self updateChangeMeasureButton];
 }
 
 - (void)updateProfilePhoto {
@@ -969,7 +967,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
-        CKMeasurementType measureType = self.recipeDetails.measureType;
+        CKMeasurementType measureType = self.selectedMeasureType;
         if (self.editMode) {
             measureType = CKMeasureTypeNone;
         }
@@ -1014,7 +1012,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Update ingredients.
-    CKMeasurementType measureType = self.recipeDetails.measureType;
+    CKMeasurementType measureType = self.selectedMeasureType;
     if (self.editMode) {
         measureType = CKMeasureTypeNone;
     }
@@ -1031,56 +1029,37 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.ingredientsDividerView.hidden = (self.ingredientsView.alpha == 0.0);
 }
 
-- (void)updateViewOriginalButton {
-    if (!self.viewOriginalButton && !self.viewOriginalLabel) {
-        self.viewOriginalButton = [[UIButton alloc] init];
-        self.viewOriginalButton.titleLabel.font = [Theme viewOriginalFont];
-        [self.viewOriginalButton setTitleColor:[Theme servesColor] forState:UIControlStateNormal];
-        [self.viewOriginalButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        [self.viewOriginalButton addTarget:self action:@selector(viewOriginalPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert"] forState:UIControlStateNormal];
-        [self.viewOriginalButton setBackgroundImage:[ImageHelper stretchableXImageWithName:@"cook_book_recipe_btn_convert_onpress"] forState:UIControlStateHighlighted];
-        [self addSubview:self.viewOriginalButton];
+- (void)updateChangeMeasureButton {
+    if (!self.changeMeasureTypeButton) {
+        self.selectedMeasureType = [CKUser currentMeasureType];
+        self.changeMeasureTypeButton = [[UISegmentedControl alloc] initWithItems:@[@"METRIC", @"US IMPERIAL"]];
+        [self.changeMeasureTypeButton setTintColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]];
+        [self.changeMeasureTypeButton setTitleTextAttributes:@{NSFontAttributeName : [Theme changeMeasureFont]}
+                                                    forState:UIControlStateNormal];
         
-        self.viewOriginalLabel = [[UILabel alloc] init];
-        self.viewOriginalLabel.font = [Theme viewOriginalFont];
-        self.viewOriginalLabel.textColor = [Theme viewOriginalLabelColor];
-        self.viewOriginalLabel.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:self.viewOriginalLabel];
+        if (self.selectedMeasureType == CKMeasureTypeMetric) {
+            self.changeMeasureTypeButton.selectedSegmentIndex = 0;
+        } else if (self.selectedMeasureType == CKMeasureTypeImperial) {
+            self.changeMeasureTypeButton.selectedSegmentIndex = 1;
+        }
+        [self.changeMeasureTypeButton addTarget:self action:@selector(changeMeasurePressed:) forControlEvents:UIControlEventValueChanged];
+        [self.changeMeasureTypeButton setContentPositionAdjustment:UIOffsetMake(0, 2) forSegmentType:UISegmentedControlSegmentAny barMetrics:UIBarMetricsDefault];
+        [self addSubview:self.changeMeasureTypeButton];
     }
-    self.viewOriginalButton.hidden = NO;
-    self.viewOriginalLabel.hidden = NO;
-    if (self.isOriginalMeasure) {
-        ////[NSString stringWithFormat:@"CONVERT TO %@", [CKMeasureConverter stringForMeasureType:[CKUser currentUser].measurementType]
-        [self.viewOriginalButton setTitle:@"VIEW CONVERSION" forState:UIControlStateNormal];
-        self.viewOriginalLabel.text = [NSString stringWithFormat:@"VIEWING IN %@", [CKMeasureConverter stringForMeasureType:self.recipeDetails.measureType]];
-    } else {
-        //display recipe original measure type
-        [self.viewOriginalButton setTitle:@"VIEW ORIGINAL" forState:UIControlStateNormal];
-        self.viewOriginalLabel.text = [NSString stringWithFormat:@"CONVERTED TO %@", [CKMeasureConverter stringForMeasureType:[CKUser currentUser].measurementType]];
-    }
-    [self updateViewOriginalButtonFrame];
+    [self updateChangeMeasureButtonFrame];
 }
 
-- (void)updateViewOriginalButtonFrame {
-    if (self.editMode || self.recipeDetails.measureType == CKMeasureTypeNone || self.recipeDetails.measureType == [CKUser currentUser].measurementType) {
-        self.viewOriginalButton.hidden = YES;
-        self.viewOriginalLabel.hidden = YES;
+- (void)updateChangeMeasureButtonFrame {
+    if (self.editMode || self.selectedMeasureType == CKMeasureTypeNone) {
+        self.changeMeasureTypeButton.hidden = YES;
     } else {
-        self.viewOriginalButton.hidden = NO;
-        self.viewOriginalLabel.hidden = NO;
+        self.changeMeasureTypeButton.hidden = NO;
     }
-    self.viewOriginalLabel.frame = (CGRect){
-        kContentInsets.left,
-        self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + 20,
-        kMaxLeftWidth,
-        20
-    };
-    self.viewOriginalButton.frame = (CGRect){
-        kContentInsets.left,
-        self.viewOriginalLabel.frame.origin.y + 25,
-        kMaxLeftWidth,
-        50
+    self.changeMeasureTypeButton.frame = (CGRect){
+        kContentInsets.left + 15,
+        self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + 25,
+        220,
+        40
     };
     
 }
@@ -1131,12 +1110,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
-    CKMeasurementType measureType = self.recipeDetails.measureType;
     
-    if (!self.isOriginalMeasure && measureType != CKMeasureTypeNone && measureType != [CKUser currentUser].measurementType) {
+    if (self.selectedMeasureType != CKMeasureTypeNone && self.selectedMeasureType != [CKUser currentMeasureType]) {
         CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
-                                                                                      fromLocale:measureType
-                                                                                        toLocale:[CKUser currentUser].measurementType
+                                                                                      toMeasureType:self.selectedMeasureType
                                                                                   highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
                                                                                        tokenOnly:YES];
         NSAttributedString *convertedMethod = [methodConvert convert];
@@ -1550,19 +1527,17 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      }];
 }
 
-- (void)viewOriginalPressed:(id)sender {
+- (void)changeMeasurePressed:(id)sender {
     //Toggle conversion
-    CKMeasurementType measureType;
-    self.isOriginalMeasure = !self.isOriginalMeasure;
-    if (self.isOriginalMeasure) {
-        measureType = CKMeasureTypeNone;
+    if (self.changeMeasureTypeButton.selectedSegmentIndex == 0) {
+        self.selectedMeasureType = CKMeasureTypeMetric;
     } else {
-        measureType = self.recipeDetails.measureType;
+        self.selectedMeasureType = CKMeasureTypeImperial;
     }
-    [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:measureType];
-    [self updateViewOriginalButton];
+    [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:self.selectedMeasureType];
     [self updateFrame:NO];
     [self updateMethodFrame];
+    [self updateChangeMeasureButtonFrame];
 }
 
 @end

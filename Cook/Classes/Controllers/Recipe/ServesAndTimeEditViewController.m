@@ -29,7 +29,6 @@
 @property (nonatomic, strong) UILabel *cookTitleLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
 @property (nonatomic, strong) UISlider *cookSlider;
-@property (nonatomic, strong) UISegmentedControl *measureTypeControl;
 
 @end
 
@@ -58,7 +57,6 @@
 - (UIView *)createTargetEditView {
     [self initServes];
     [self initDialers];
-    [self initMeasurePicker];
     
     // HR
     UIView *hrLine = [[UIView alloc] initWithFrame:CGRectZero];
@@ -83,15 +81,13 @@
     //Setup layout
     {
         NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@700, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
-        NSDictionary *views = @{@"measurePicker":self.measureTypeControl, @"measureLine":hrLine,
-                                @"servesTitle":self.servesTitleLabel, @"servesLabel":self.servesLabel, @"servesSlider":self.servesSlider, @"servesLine":hr2Line,
+        NSDictionary *views = @{@"servesTitle":self.servesTitleLabel, @"servesLabel":self.servesLabel, @"servesSlider":self.servesSlider, @"servesLine":hr2Line,
                                 @"prepTitle":self.prepTitleLabel, @"prepLabel":self.prepLabel,
                                 @"prepSlider":self.prepSlider,
                                 @"cookTitle":self.cookTitleLabel, @"cookLabel":self.cookLabel,
                                 @"cookSlider":self.cookSlider,
                                 @"smallServesIcon":smallServesImageView, @"largeServesIcon":largeServesImageView};
 
-        self.measureTypeControl.translatesAutoresizingMaskIntoConstraints = NO;
         self.servesTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.servesLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.servesSlider.translatesAutoresizingMaskIntoConstraints = NO;
@@ -102,8 +98,7 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(30)-[measurePicker(controlHeight)]-(30)-[measureLine(1)]-(15)-[servesTitle]-(20)-[servesSlider(controlHeight)]-(30)-[servesLine(1)]-(40)-[prepTitle]-(5)-[prepSlider(controlHeight)]-(30)-[cookTitle]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[measureLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(30)-[servesTitle]-(20)-[servesSlider(controlHeight)]-(30)-[servesLine(1)]-(40)-[prepTitle]-(5)-[prepSlider(controlHeight)]-(30)-[cookTitle]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesTitle]-[servesLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-[servesSlider(sliderWidth)]-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
@@ -111,12 +106,7 @@
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(800)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookTitle]-[cookLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(800)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.measureTypeControl
-                                                                       attribute:NSLayoutAttributeCenterX
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:self.containerView
-                                                                       attribute:NSLayoutAttributeCenterX
-                                                                      multiplier:1.f constant:0.f]];
+
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeCenterX
                                                                        relatedBy:NSLayoutRelationEqual
@@ -157,7 +147,6 @@
         [self prepSliderValueChanged];
         self.cookSlider.value = [self cookIndex];
         [self cookSliderValueChanged];
-        self.measureTypeControl.selectedSegmentIndex = [self indexForMeasureType];
     }
     
     // Disable scrolling on appear.
@@ -279,13 +268,6 @@
     return _cookSlider;
 }
 
-- (UISegmentedControl *)measureTypeControl {
-    if (!_measureTypeControl) {
-        _measureTypeControl = [[UISegmentedControl alloc] initWithItems:@[@"US IMPERIAL", @"METRIC", @"AU METRIC", @"UK METRIC"]];
-    }
-    return _measureTypeControl;
-}
-
 #pragma mark - CKNotchSliderViewDelegate methods
 
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex {
@@ -367,11 +349,6 @@
     [self.prepSlider addTarget:self action:@selector(prepSliderValueChanged) forControlEvents:UIControlEventValueChanged];
 }
 
-- (void)initMeasurePicker {
-    [self.measureTypeControl addTarget:self action:@selector(measureTypeChanged:) forControlEvents:UIControlEventValueChanged];
-    [self.containerView addSubview:self.measureTypeControl];
-}
-
 - (CGSize)availableSize {
     return CGSizeMake(self.containerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                       self.containerView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
@@ -423,10 +400,8 @@
             dialerIndex = 12 + ((minutes - 60) / 10);
             
         } else {
-            
             // 30-minute increments onwards.
             dialerIndex = 30 + ((minutes - 240) / 30);
-            
         }
         
     }
@@ -453,57 +428,11 @@
         minutes = 240 + ((dialerIndex - 30) * 30);
     }
     
-    
     return minutes;
 }
 
 - (NSInteger)maxIndexForDialer:(CKDialerControl *)dialer {
     return (360 / dialer.unitDegrees - 2);
-}
-
-- (NSInteger)indexForMeasureType {
-    //@"US IMPERIAL", @"METRIC", @"AU METRIC", @"UK METRIC"
-    switch (self.recipeDetails.measureType) {
-        case CKMeasureTypeImperial:
-            return 0;
-            break;
-        case CKMeasureTypeMetric:
-            return 1;
-            break;
-        case CKMeasureTypeAUMetric:
-            return 2;
-            break;
-        case CKMeasureTypeUKMetric:
-            return 3;
-            break;
-        default:
-            return 0;
-            break;
-    }
-}
-
-- (CKMeasurementType)selectedMeasureType {
-    switch (self.measureTypeControl.selectedSegmentIndex) {
-        case 0:
-            return CKMeasureTypeImperial;
-            break;
-        case 1:
-            return CKMeasureTypeMetric;
-            break;
-        case 2:
-            return CKMeasureTypeAUMetric;
-            break;
-        case 3:
-            return CKMeasureTypeUKMetric;
-            break;
-        default:
-            return CKMeasureTypeNone;
-            break;
-    }
-}
-
-- (void)measureTypeChanged:(id)sender {
-    self.recipeDetails.measureType = [self selectedMeasureType];
 }
 
 #pragma mark - SLider actions

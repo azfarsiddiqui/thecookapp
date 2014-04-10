@@ -338,16 +338,8 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:40];
 }
 
-+ (UIFont *)viewOriginalFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0f];
-}
-
-+ (UIFont *)viewOriginalLabelFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:12.0f];
-}
-
-+ (UIColor *)viewOriginalLabelColor {
-    return [UIColor colorWithHexString:@"888888"];
++ (UIFont *)changeMeasureFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:13.0f];
 }
 
 #pragma mark - Recipe Editing

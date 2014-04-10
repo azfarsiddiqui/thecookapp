@@ -15,7 +15,6 @@
 #import "CKServerManager.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "EventHelper.h"
-#import "CKMeasureConverter.h"
 #import "AppHelper.h"
 
 @interface CKUser ()
@@ -29,6 +28,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 @implementation CKUser
 
 #define kCookGuestTheme         @"kCookGuestTheme"
+#define kCookGuestMeasure       @"kCookGuestMeasure"
 #define kCookForceLogout        @"CookForceLogout"
 
 + (CKUser *)currentUser {
@@ -273,6 +273,21 @@ static ObjectFailureBlock loginFailureBlock = nil;
         return currentUser.theme;
     } else {
         return [[[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestTheme] integerValue];
+    }
+}
+
++ (void)setGuestMeasure:(CKMeasurementType)measureType {
+    [[NSUserDefaults standardUserDefaults] setObject:@(measureType) forKey:kCookGuestMeasure];
+}
+
++ (CKMeasurementType)currentMeasureType {
+    CKUser *currentUser = [CKUser currentUser];
+    if (currentUser) {
+        return currentUser.measurementType;
+    } else if ([[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestMeasure]) {
+        return [[[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestMeasure] integerValue];
+    } else {
+        return CKMeasureTypeMetric;
     }
 }
 
@@ -673,10 +688,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
         NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
         if ([countryCode isEqualToString:@"US"]) {
             measureType = CKMeasureTypeImperial;
-        } else if ([countryCode isEqualToString:@"AU"]) {
-            measureType = CKMeasureTypeAUMetric;
-        } else if ([countryCode isEqualToString:@"GB"]) {
-            measureType = CKMeasureTypeUKMetric;
         } else {
             measureType = CKMeasureTypeMetric;
         }

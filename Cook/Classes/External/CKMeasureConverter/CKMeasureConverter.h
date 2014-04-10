@@ -10,8 +10,6 @@
 
 typedef NS_ENUM(NSUInteger, CKMeasurementType) {
     CKMeasureTypeMetric = 1,
-    CKMeasureTypeUKMetric = 2,
-    CKMeasureTypeAUMetric = 3,
     CKMeasureTypeImperial = 4,
     CKMeasureTypeNone = 5
 };
@@ -30,13 +28,12 @@ typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
 @property (nonatomic, strong) NSScanner *scanner;
 
 - (id)initWithAttributedString:(NSAttributedString *)inputString
-                    fromLocale:(CKMeasurementType)fromLocale
-                      toLocale:(CKMeasurementType)toLocale
+                 toMeasureType:(CKMeasurementType)toType
                 highlightColor:(UIColor *)highlightColor
                      tokenOnly:(BOOL)isTokenOnly;
 
 - (NSAttributedString *)convert;
 
-+ (NSString *)stringForMeasureType:(CKMeasurementType)measureType;
++ (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType;
 
 @end

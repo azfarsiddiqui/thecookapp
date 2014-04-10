@@ -56,7 +56,6 @@
         _privacy = recipe.privacy;
         _userPhotoUrl = recipe.userPhotoUrl;
         _location = recipe.geoLocation;
-        _measureType = recipe.measureType;
         
         _ingredients = [NSArray arrayWithArray:[recipe.ingredients collect:^id(Ingredient *ingredient) {
             return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
@@ -77,7 +76,6 @@
     recipe.ingredients = self.ingredients;
     recipe.privacy = self.privacy;
     recipe.geoLocation = self.location;
-    recipe.measureType = self.measureType;
     
     // Re-assign original recipe.
     self.originalRecipe = recipe;
@@ -140,8 +138,7 @@
 - (BOOL)servesPrepUpdated {
     BOOL servesPrepUpdated = (([self.numServes integerValue] != [self.originalRecipe.numServes integerValue])
                               || ([self.prepTimeInMinutes integerValue] != [self.originalRecipe.prepTimeInMinutes integerValue])
-                              || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue])
-                              || (self.measureType != self.originalRecipe.measureType));
+                              || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue]));
     DLog(@"servesPrepUpdated[%@]", [NSString CK_stringForBoolean:servesPrepUpdated]);
     return servesPrepUpdated;
 }
