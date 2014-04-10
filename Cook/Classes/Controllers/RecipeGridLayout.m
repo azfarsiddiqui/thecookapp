@@ -392,7 +392,7 @@
         // Configure attributes ...
         attributes.alpha = 0.0;
         
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, [self.delegate recipeGridFinalOffset], 0.0);
+//        attributes.transform3D = CATransform3DMakeTranslation(0.0, [self.delegate recipeGridFinalOffset], 0.0);
     }
     
     return attributes;
