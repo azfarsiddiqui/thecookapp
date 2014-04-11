@@ -782,7 +782,7 @@
             return @"POPULAR";
             break;
         case CKRecipeSearchFilterCreationDate:
-            return @"CREATED";
+            return @"DATE";
             break;
         default:
             return @"POPULAR";
