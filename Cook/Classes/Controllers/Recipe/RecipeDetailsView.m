@@ -35,7 +35,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionTopBottom
 };
 
-@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, CKUserProfilePhotoViewDelegate, TTTAttributedLabelDelegate>
+@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, CKUserProfilePhotoViewDelegate, TTTAttributedLabelDelegate> {
+}
 
 @property (nonatomic, weak) id<RecipeDetailsViewDelegate> delegate;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -116,6 +117,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.recipeDetails.user = newUser;
         [self.profilePhotoView loadProfilePhotoForUser:newUser];
     }
+}
+
+- (CKMeasurementType)selectedMeasureType {
+    if (_selectedMeasureType == 0) {
+        _selectedMeasureType = [CKUser currentMeasureType];
+    }
+    return _selectedMeasureType;
 }
 
 - (void)enableEditMode:(BOOL)editMode {
