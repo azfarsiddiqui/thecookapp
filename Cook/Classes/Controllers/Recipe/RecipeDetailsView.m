@@ -35,7 +35,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionTopBottom
 };
 
-@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, CKUserProfilePhotoViewDelegate, TTTAttributedLabelDelegate> {
+@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate,
+                                CKUserProfilePhotoViewDelegate, TTTAttributedLabelDelegate,
+                                CKMeasureConverterDelegate> {
 }
 
 @property (nonatomic, weak) id<RecipeDetailsViewDelegate> delegate;
@@ -424,6 +426,28 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
     [self.delegate recipeDetailsViewProfileRequested];
+}
+
+#pragma mark - CKMeasureConverterDelegate method
+
+- (BOOL)isConvertible {
+    if (self.recipeDetails.locale) {
+        CKMeasurementType fromType;
+        //Guessing from measure type from locale
+        if ([self.recipeDetails.locale rangeOfString:@"US"].location != NSNotFound) {
+            fromType = CKMeasureTypeImperial;
+        } else {
+            fromType = CKMeasureTypeMetric;
+        }
+        // Check if selected convert type matches guessed type
+        if (fromType == self.selectedMeasureType) {
+            return NO;
+        } else {
+            return YES;
+        }
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - TTTAttributedLabelDelegate method
@@ -982,7 +1006,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
                                                                              book:self.recipeDetails.book
                                                                          maxWidth:kMaxLeftWidth
-                                                                    measureLocale:measureType];
+                                                                    measureLocale:measureType
+                                                                    isConvertible:[self isConvertible]];
         self.ingredientsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
@@ -1024,7 +1049,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if (self.editMode) {
         measureType = CKMeasureTypeNone;
     }
-    [self.ingredientsView updateIngredients:ingredients measureType:measureType];
+    [self.ingredientsView updateIngredients:ingredients measureType:measureType convertible:[self isConvertible]];
     CGFloat beforeIngredientsGap = self.ingredientsDividerView ? 23.0 : 0.0;
     self.ingredientsView.frame = (CGRect){
         kContentInsets.left + leftOffset,
@@ -1121,8 +1146,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     if (self.selectedMeasureType != CKMeasureTypeNone && self.selectedMeasureType != [CKUser currentMeasureType]) {
         CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
-                                                                                      toMeasureType:self.selectedMeasureType
+                                                                                   toMeasureType:self.selectedMeasureType
                                                                                   highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
+                                                                                        delegate:self
                                                                                        tokenOnly:YES];
         NSAttributedString *convertedMethod = [methodConvert convert];
         self.methodLabel.attributedText = convertedMethod;
@@ -1542,7 +1568,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     } else {
         self.selectedMeasureType = CKMeasureTypeImperial;
     }
-    [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:self.selectedMeasureType];
+    [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:self.selectedMeasureType convertible:[self isConvertible]];
     [self updateFrame:NO];
     [self updateMethodFrame];
     [self updateChangeMeasureButtonFrame];

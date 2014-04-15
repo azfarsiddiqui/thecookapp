@@ -22,7 +22,13 @@ typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
     CKFractionConvertTypeTenth = 10,
     CKFractionConvertTypeSixteenth = 16
 };
-    
+
+@protocol CKMeasureConverterDelegate <NSObject>
+
+- (BOOL)isConvertible;
+
+@end
+
 @interface CKMeasureConverter : NSObject
 
 @property (nonatomic, strong) NSScanner *scanner;
@@ -30,6 +36,7 @@ typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
 - (id)initWithAttributedString:(NSAttributedString *)inputString
                  toMeasureType:(CKMeasurementType)toType
                 highlightColor:(UIColor *)highlightColor
+                      delegate:(id<CKMeasureConverterDelegate>)delegate
                      tokenOnly:(BOOL)isTokenOnly;
 
 - (NSAttributedString *)convert;

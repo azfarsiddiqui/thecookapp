@@ -688,8 +688,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
         NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
         if ([countryCode isEqualToString:@"US"]) {
             measureType = CKMeasureTypeImperial;
-        } else {
+        } else if (countryCode) {
             measureType = CKMeasureTypeMetric;
+        } else {
+            measureType = CKMeasureTypeNone;
         }
         [self setMeasurementType:measureType];
         return measureType;
