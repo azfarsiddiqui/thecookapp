@@ -48,13 +48,17 @@
 @property (nonatomic, strong) NSString *keyword;
 @property (nonatomic, assign) CKRecipeSearchFilter searchFilter;
 @property (nonatomic, strong) NSMutableDictionary *filterResults;
+@property (nonatomic, strong) UIImage *arrowImage;
 
 @end
 
 @implementation RecipeSearchViewController
 
 #define kContentInsets              (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
-#define BUTTON_INSETS               (UIEdgeInsets){ 30.0, 15.0, 50.0, 25.0 }
+#define BUTTON_INSETS               (UIEdgeInsets){ 30.0, 15.0, 50.0, 0.0 }
+#define BUTTON_CONTENT_INSETS       (UIEdgeInsets){ 10.0, 15.0, 10.0, 5.0 }
+#define BUTTON_ARROW_GAP            -2.0
+#define BUTTON_TITLE_OFFSET         -15.0
 #define kHeaderHeight               110.0
 #define kTopMaskOffset              112.0
 #define kSearchTopOffset            41.0
@@ -86,12 +90,12 @@
     
     [self.view addSubview:self.blurredImageView];
     [self.view addSubview:self.containerView];
-    [self.containerView addSubview:self.collectionView];
-    [self.containerView addSubview:self.closeButton];
-    [self.containerView addSubview:self.filterButton];
     
     self.searchFieldView.frame = [self frameForSearchFieldViewResultsMode:NO];
+    [self.containerView addSubview:self.collectionView];
     [self.containerView addSubview:self.searchFieldView];
+    [self.containerView addSubview:self.closeButton];
+    [self.containerView addSubview:self.filterButton];
     
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -327,22 +331,31 @@
 
 - (UIButton *)filterButton {
     if (!_filterButton) {
+        
+        UIImage *arrowSelectedImage = [[UIImage imageNamed:@"cook_dash_search_downarrow_onpress.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 1.0, 0.0, 17.0 }];
+        
         _filterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_filterButton setTitle:[self currentDisplayForSearchFilter] forState:UIControlStateNormal];
+        [_filterButton setTitle:[self displayForSearchFilter:self.searchFilter] forState:UIControlStateNormal];
         [_filterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_filterButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:[self alphaForFilterButtonEnabled:NO]] forState:UIControlStateHighlighted];
         [_filterButton addTarget:self action:@selector(filterTapped:) forControlEvents:UIControlEventTouchUpInside];
-        _filterButton.titleLabel.textAlignment = NSTextAlignmentRight;
+        [_filterButton setImage:self.arrowImage forState:UIControlStateNormal];
+        [_filterButton setImage:arrowSelectedImage forState:UIControlStateHighlighted];
+        _filterButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         _filterButton.titleLabel.lineBreakMode = NSLineBreakByClipping;
         _filterButton.titleLabel.font = FILTER_FONT;
         _filterButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_filterButton sizeToFit];
         _filterButton.frame = (CGRect){
-            self.view.bounds.size.width - kContentInsets.right - _filterButton.frame.size.width - BUTTON_INSETS.right,
-            floorf((kHeaderHeight - _filterButton.frame.size.height) / 2.0) + 10.0,
-            _filterButton.frame.size.width,
-            _filterButton.frame.size.height
+            self.view.bounds.size.width - kContentInsets.right - _filterButton.frame.size.width - BUTTON_INSETS.right - BUTTON_CONTENT_INSETS.left - BUTTON_CONTENT_INSETS.right - BUTTON_ARROW_GAP,
+            self.searchFieldView.frame.origin.y + floorf((self.searchFieldView.frame.size.height - _filterButton.frame.size.height - BUTTON_CONTENT_INSETS.top - BUTTON_CONTENT_INSETS.bottom) / 2.0),
+            _filterButton.frame.size.width + BUTTON_CONTENT_INSETS.left + BUTTON_CONTENT_INSETS.right + BUTTON_ARROW_GAP,
+            _filterButton.frame.size.height + BUTTON_CONTENT_INSETS.top + BUTTON_CONTENT_INSETS.bottom,
         };
-        _filterButton.hidden = YES; // Hidden to start off with.
+        
+        _filterButton.imageEdgeInsets = (UIEdgeInsets){ 0.0, _filterButton.frame.size.width - self.arrowImage.size.width - BUTTON_CONTENT_INSETS.right, 0.0, 0.0 };
+        _filterButton.titleEdgeInsets = (UIEdgeInsets){ 0.0, BUTTON_TITLE_OFFSET, 0.0, self.arrowImage.size.width + BUTTON_CONTENT_INSETS.right + BUTTON_ARROW_GAP };
+        _filterButton.hidden = YES;
     }
     return _filterButton;
 }
@@ -353,7 +366,7 @@
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _closeButton.frame = (CGRect){
             kContentInsets.left,
-            floorf((kHeaderHeight - _closeButton.frame.size.height) / 2.0) + 5.0,
+            floorf((kHeaderHeight - _closeButton.frame.size.height) / 2.0) + 7.0,
             _closeButton.frame.size.width,
             _closeButton.frame.size.height
         };
@@ -415,10 +428,21 @@
     return _activityView;
 }
 
+- (UIImage *)arrowImage {
+    if (!_arrowImage) {
+        _arrowImage = [[UIImage imageNamed:@"cook_dash_search_downarrow.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 1.0, 0.0, 17.0 }];
+    }
+    return _arrowImage;
+}
+
 #pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
     [self.delegate recipeSearchViewControllerDismissRequested];
+}
+
+- (CGFloat)alphaForFilterButtonEnabled:(BOOL)enabled {
+    return enabled ? 1.0 : 0.5;
 }
 
 - (void)filterTapped:(id)sender {
@@ -426,7 +450,7 @@
 
     // Update filter button.
     self.filterButton.enabled = NO;
-    self.filterButton.alpha = 0.5;
+    self.filterButton.alpha = [self alphaForFilterButtonEnabled:NO];
     [self updateFilterButton];
     
     // Check results
@@ -689,7 +713,8 @@
                          // If there are more than 1 result then display filter.
                          self.filterButton.hidden = (count < 2);
                          self.filterButton.enabled = YES;
-                         self.filterButton.alpha = 1.0;
+                         self.filterButton.alpha = [self alphaForFilterButtonEnabled:YES];
+                         [self updateFilterButton];
                          
                          // Save results in cache.
                          CKRecipeSearch *searchResults = [self currentFilterResults];
@@ -775,7 +800,7 @@
     // If there are more than 1 result then display filter.
     self.filterButton.hidden = (self.count < 2);
     self.filterButton.enabled = YES;
-    self.filterButton.alpha = 1.0;
+    self.filterButton.alpha = [self alphaForFilterButtonEnabled:YES];
     
     // UI updates after invalidating layout.
     if ([indexPathsToInsert count] > 0) {
@@ -793,9 +818,23 @@
     NSString *filterDisplay = [self displayForSearchFilter:self.searchFilter];
     [self.filterButton setTitle:filterDisplay forState:UIControlStateNormal];
     [self.filterButton sizeToFit];
-    CGRect frame = self.filterButton.frame;
-    frame.origin.x = self.view.bounds.size.width - kContentInsets.right - self.filterButton.frame.size.width - BUTTON_INSETS.right;
-    self.filterButton.frame = frame;
+    self.filterButton.frame = (CGRect){
+        self.view.bounds.size.width - kContentInsets.right - self.filterButton.frame.size.width - BUTTON_INSETS.right - BUTTON_CONTENT_INSETS.left - BUTTON_CONTENT_INSETS.right - BUTTON_ARROW_GAP,
+        self.searchFieldView.frame.origin.y + floorf((self.searchFieldView.frame.size.height - self.filterButton.frame.size.height - BUTTON_CONTENT_INSETS.top - BUTTON_CONTENT_INSETS.bottom) / 2.0),
+        self.filterButton.frame.size.width + BUTTON_CONTENT_INSETS.left + BUTTON_CONTENT_INSETS.right + BUTTON_ARROW_GAP,
+        self.filterButton.frame.size.height + BUTTON_CONTENT_INSETS.top + BUTTON_CONTENT_INSETS.bottom,
+    };
+    self.filterButton.imageEdgeInsets = (UIEdgeInsets){ 0.0, self.filterButton.frame.size.width - self.arrowImage.size.width - BUTTON_CONTENT_INSETS.right, 0.0, 0.0 };
+    self.filterButton.titleEdgeInsets = (UIEdgeInsets){ 0.0, BUTTON_TITLE_OFFSET, 0.0, self.arrowImage.size.width + BUTTON_CONTENT_INSETS.right + BUTTON_ARROW_GAP };
+}
+
+- (void)updateCloseButton {
+    self.filterButton.frame = (CGRect){
+        self.view.bounds.size.width - kContentInsets.right - self.filterButton.frame.size.width - BUTTON_INSETS.right - BUTTON_CONTENT_INSETS.left - BUTTON_CONTENT_INSETS.right - BUTTON_ARROW_GAP,
+        self.searchFieldView.frame.origin.y + floorf((self.searchFieldView.frame.size.height - self.filterButton.frame.size.height - BUTTON_CONTENT_INSETS.top - BUTTON_CONTENT_INSETS.bottom) / 2.0),
+        self.filterButton.frame.size.width + BUTTON_CONTENT_INSETS.left + BUTTON_CONTENT_INSETS.right + BUTTON_ARROW_GAP,
+        self.filterButton.frame.size.height + BUTTON_CONTENT_INSETS.top + BUTTON_CONTENT_INSETS.bottom,
+    };
 }
 
 - (NSString *)currentDisplayForSearchFilter {
@@ -808,7 +847,7 @@
             return @"POPULAR";
             break;
         case CKRecipeSearchFilterCreationDate:
-            return @"DATE ADDED";
+            return @"DATE";
             break;
         default:
             return @"POPULAR";
