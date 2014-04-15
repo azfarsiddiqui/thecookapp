@@ -240,10 +240,37 @@
 #pragma mark - CKRecipeSearchFieldViewDelegate methods
 
 - (BOOL)recipeSearchFieldShouldFocus {
+    
+    // If we're in results mode, then clear it and go to normal state.
     if (self.resultsMode) {
         [self enableResultsMode:NO];
         [self clearResults];
     }
+    
+    return YES;
+}
+
+- (BOOL)recipeSearchFieldShouldResign {
+    
+    // If we're not in results mode, and have cached results, then show it again.
+    if (!self.resultsMode) {
+        
+        // Check if there are cached results to show.
+        CKRecipeSearch *searchResults = [self currentFilterResults];
+        if (searchResults) {
+            
+            __weak typeof(self) weakSelf = self;
+            
+            [self enableResultsMode:YES completion:^{
+                weakSelf.recipes = [NSMutableArray arrayWithArray:searchResults.results];
+                weakSelf.count = searchResults.count;
+                weakSelf.batchIndex = searchResults.batchIndex;
+                weakSelf.numBatches = searchResults.numBatches;
+                [weakSelf displayResults];
+                
+            }];
+        }
+    }    
     
     return YES;
 }
@@ -633,7 +660,6 @@
     if (batchIndex == 0) {
         [self.searchFieldView setSearching:YES];
     }
-    
     
     [CKRecipe searchWithTerm:self.keyword
                       filter:self.searchFilter

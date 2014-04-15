@@ -11,6 +11,7 @@
 @protocol CKRecipeSearchFieldViewDelegate <NSObject>
 
 - (BOOL)recipeSearchFieldShouldFocus;
+- (BOOL)recipeSearchFieldShouldResign;
 - (NSString *)recipeSearchFieldViewPlaceholderText;
 - (void)recipeSearchFieldViewSearchByText:(NSString *)text;
 - (void)recipeSearchFieldViewClearRequested;
