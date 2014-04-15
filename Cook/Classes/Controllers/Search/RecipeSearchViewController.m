@@ -257,7 +257,7 @@
         
         // Check if there are cached results to show.
         CKRecipeSearch *searchResults = [self currentFilterResults];
-        if (searchResults) {
+        if (searchResults && [searchResults.results count] > 0) {
             
             __weak typeof(self) weakSelf = self;
             
@@ -270,7 +270,7 @@
                 
             }];
         }
-    }    
+    }
     
     return YES;
 }
@@ -808,7 +808,7 @@
             return @"POPULAR";
             break;
         case CKRecipeSearchFilterCreationDate:
-            return @"DATE";
+            return @"DATE ADDED";
             break;
         default:
             return @"POPULAR";
