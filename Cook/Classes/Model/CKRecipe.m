@@ -128,7 +128,7 @@
             batchIndex:(NSUInteger)batchIndex success:(RecipeSearchSuccessBlock)success
                failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"searchRecipes"
+    [PFCloud callFunctionInBackground:@"searchRecipesWithRelevancy"
                        withParameters:@{
                                         @"keyword" : searchTerm,
                                         @"searchFilter" : @(searchFilter),

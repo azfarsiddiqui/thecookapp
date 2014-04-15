@@ -255,7 +255,7 @@
         textField.delegate = self;
         textField.returnKeyType = self.submit ? UIReturnKeyGo : UIReturnKeyNext;
         textField.text = @"";
-        textField.keyboardType = UIKeyboardTypeEmailAddress;
+        textField.keyboardType = self.password ? UIKeyboardTypeDefault : UIKeyboardTypeEmailAddress;
         textField.autocapitalizationType = self.autoCapitalise ? UITextAutocapitalizationTypeWords : UITextAutocapitalizationTypeNone;
         textField.autocorrectionType = UITextAutocorrectionTypeNo;
         

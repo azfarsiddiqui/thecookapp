@@ -187,7 +187,7 @@
     // Clear close button.
     self.textField.rightView = nil;
     
-    return YES;
+    return [self.delegate recipeSearchFieldShouldResign];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
