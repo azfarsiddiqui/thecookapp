@@ -335,7 +335,7 @@
                                   @"spacing":@2.0};
         NSDictionary *views = @{@"theme" : themeChooserContainerView,
                                 @"links" : linkButtonContainerView};
-        NSString *containerConstraints = @"|-285.0-[theme(themeWidth)][links(linkWidth)]";
+        NSString *containerConstraints = @"|-260.0-[theme(themeWidth)][links(linkWidth)]";
         [content1View addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:containerConstraints
                                                                                         options:NSLayoutFormatAlignAllCenterY
                                                                                         metrics:metrics
