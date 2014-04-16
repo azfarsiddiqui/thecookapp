@@ -32,13 +32,11 @@ static ObjectFailureBlock loginFailureBlock = nil;
 #define kCookForceLogout        @"CookForceLogout"
 
 + (CKUser *)currentUser {
-    @synchronized(self) {
-        PFUser *parseUser = [PFUser currentUser];
-        if (parseUser) {
-            return [[CKUser alloc] initWithParseUser:[PFUser currentUser]];
-        } else {
-            return nil;
-        }
+    PFUser *parseUser = [PFUser currentUser];
+    if (parseUser) {
+        return [[CKUser alloc] initWithParseUser:[PFUser currentUser]];
+    } else {
+        return nil;
     }
 }
 
