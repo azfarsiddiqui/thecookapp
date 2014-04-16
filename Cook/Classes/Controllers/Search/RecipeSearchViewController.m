@@ -26,6 +26,7 @@
 #import "CKContentContainerCell.h"
 #import "CKActivityIndicatorView.h"
 #import "CKRecipeSearch.h"
+#import "NSString+Utilities.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
@@ -39,10 +40,12 @@
 @property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *filterButton;
+@property (nonatomic, strong) UIButton *errorMessageButton;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CKRecipeSearchFieldView *searchFieldView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, assign) BOOL resultsMode;
+@property (nonatomic, assign) NSUInteger numRetries;
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, assign) NSUInteger count;
 @property (nonatomic, strong) NSString *keyword;
@@ -64,6 +67,7 @@
 #define kSearchTopOffset            41.0
 #define kSearchMidOffset            220.0
 #define kSearchCollectionViewGap    20.0
+#define MAX_NUM_RETRIES             1
 #define kHelpFont                   [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define FILTER_FONT                 [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define kHeaderCellId               @"DividerHeaderId"
@@ -292,7 +296,7 @@
     [self.filterResults removeAllObjects];
     
     [self enableResultsMode:YES completion:^{
-        [self searchWithBatchIndex:0];
+        [self performSearch];
     }];
 }
 
@@ -435,10 +439,37 @@
     return _arrowImage;
 }
 
+- (UIButton *)errorMessageButton {
+    if (!_errorMessageButton) {
+        _errorMessageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _errorMessageButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+        _errorMessageButton.titleLabel.numberOfLines = 0;
+        _errorMessageButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _errorMessageButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        [_errorMessageButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_errorMessageButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
+        [_errorMessageButton setTitle:[NSString stringWithFormat:@"COULDN'T CONNECT%@PLEASE TRY AGAIN", [NSString CK_lineBreakString]] forState:UIControlStateNormal];
+        _errorMessageButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_errorMessageButton sizeToFit];
+        _errorMessageButton.frame = (CGRect){
+            floorf((self.view.bounds.size.width - _errorMessageButton.frame.size.width) / 2.0),
+            floorf((self.view.bounds.size.height - _errorMessageButton.frame.size.height) / 2.0),
+            _errorMessageButton.frame.size.width,
+            _errorMessageButton.frame.size.height
+        };
+        [_errorMessageButton addTarget:self action:@selector(retryTapped:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _errorMessageButton;
+}
+
 #pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
     [self.delegate recipeSearchViewControllerDismissRequested];
+}
+
+- (void)retryTapped:(id)sender {
+    [self focusSearchField:YES];
 }
 
 - (CGFloat)alphaForFilterButtonEnabled:(BOOL)enabled {
@@ -550,8 +581,12 @@
                      animations:^{
                          [self.searchFieldView expand:!resultsMode animated:NO];
                          self.searchFieldView.frame = frame;
+                         self.errorMessageButton.alpha = 0.0;
                      }
                      completion:^(BOOL finished) {
+                         
+                         [self.errorMessageButton removeFromSuperview];
+                         
                          if (completion != nil) {
                              completion();
                          }
@@ -679,6 +714,10 @@
     };
 }
 
+- (void)performSearch {
+    [self searchWithBatchIndex:0];
+}
+
 - (void)searchWithBatchIndex:(NSUInteger)batchIndex {
     
     if (batchIndex == 0) {
@@ -776,8 +815,27 @@
                          
                      }
                      failure:^(NSError *error) {
-                         [self.searchFieldView showMessage:@"UNABLE TO SEARCH"];
-                         [self.searchFieldView setSearching:NO];
+                         
+                         // Attempt to reload data.
+                         if (batchIndex == 0 && self.numRetries < MAX_NUM_RETRIES) {
+                             self.numRetries += 1;
+                             
+                             __weak typeof(self) weakSelf = self;
+                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                 [weakSelf performSearch];
+                             });
+                             
+                         } else {
+                             
+                             // Add error message if not there.
+                             if (batchIndex == 0 && !self.errorMessageButton.superview) {
+                                 self.errorMessageButton.alpha = 1.0;
+                                 [self.view addSubview:self.errorMessageButton];
+                             }
+                             
+                             [self.searchFieldView setSearching:NO];
+                         }
+                         
                      }];
 }
 
