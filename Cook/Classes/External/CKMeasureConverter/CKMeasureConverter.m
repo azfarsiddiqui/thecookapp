@@ -31,12 +31,13 @@
 @property (nonatomic, strong) NSMutableArray *replaceArray; //array of replaceConverts
 @property (nonatomic, assign) CKMeasurementType toType;
 @property (nonatomic, assign) BOOL isTokenOnly;
+@property (nonatomic, assign) id<CKMeasureConverterDelegate> delegate;
 
 @end
 
 @implementation CKMeasureConverter
 
-- (id)initWithAttributedString:(NSAttributedString *)inputString toMeasureType:(CKMeasurementType)toType highlightColor:(UIColor *)highlightColor tokenOnly:(BOOL)isTokenOnly {
+- (id)initWithAttributedString:(NSAttributedString *)inputString toMeasureType:(CKMeasurementType)toType highlightColor:(UIColor *)highlightColor delegate:(id<CKMeasureConverterDelegate>)delegate tokenOnly:(BOOL)isTokenOnly {
     if (self = [super init]) {
         self.scanner = [NSScanner scannerWithString:[inputString.string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
         self.inputString = inputString;
@@ -44,6 +45,7 @@
         self.replaceArray = [NSMutableArray array];
         self.isTokenOnly = isTokenOnly;
         self.toType = toType;
+        self.delegate = delegate;
     }
     return self;
 }
@@ -105,8 +107,12 @@
     NSDictionary *convertDict;
     //If more than 1 conversion type is available, need to assume it's the user's type and go from there
     if ([convertToArray count] > 1) {
+        // If guessing that convertTo type matches current type, cancel out
+        if (![self.delegate isConvertible]) {
+            return nil;
+        }
         for (NSDictionary *obj in convertToArray) {
-            if ([[obj objectForKey:@"originalType"] isEqualToString:[self typeToString:self.toType]]) {
+            if ([[obj objectForKey:@"newType"] isEqualToString:[self typeToString:self.toType]]) {
                 convertDict = obj;
             }
         }
@@ -121,7 +127,7 @@
     
     NSString *convertedString = [convertDict objectForKey:@"name"];
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
-    CGFloat convertedNum = (fromNumber * convertNum);
+    __block CGFloat convertedNum = (fromNumber * convertNum);
     BOOL isParenthesesConvert = NO;
     CKMeasurementType toLocale = [self typeFromString:[convertDict objectForKey:@"newType"]];
     //Special case temperature since it isn't a simple multiplication
@@ -133,7 +139,11 @@
         isParenthesesConvert = YES;
     }
     
-    NSString *convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
+    NSString *convertedNumString;
+    //TODO: Need to determine whether to upscale or not. If no actual conversion happened, don't upscale
+    convertedNum = [self upscaleNumber:convertedNum unitString:&convertedString];
+    
+    convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
     
     //Special case ml -> Imperial conversion
     if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
@@ -169,6 +179,23 @@
                                                                                     NSFontAttributeName: [Theme ingredientsListFont],
                                                                                     NSParagraphStyleAttributeName: paragraphStyle}];
     return returnString;
+}
+
+- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString {
+    NSDictionary *upscaleDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"upscale" ofType:@"plist"]];
+    for (NSString *key in [upscaleDict allKeys]) {
+        NSDictionary *obj = [upscaleDict objectForKey:key];
+        CGFloat limit = [[obj objectForKey:@"limit"] floatValue];
+        if ([key isEqualToString:*unitString] && amount > limit) {
+            CGFloat upconvertNum = amount * [[obj objectForKey:@"conversion"] floatValue];
+            NSString *upconvertString = [obj objectForKey:@"name"];
+            
+            *unitString = upconvertString;
+            return [self upscaleNumber:upconvertNum unitString:unitString];
+        }
+    }
+    //didn't find anything to upconvert
+    return amount;
 }
 
 //Goes backward through array and replaces strings with converted values

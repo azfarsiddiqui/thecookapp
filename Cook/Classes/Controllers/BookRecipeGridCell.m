@@ -453,7 +453,9 @@
                                                                                         maxSize:[self availableBlockSize]
                                                                                   textAlignment:NSTextAlignmentCenter
                                                                                         compact:YES
-                                                                                  measureLocale:CKMeasureTypeNone];
+                                                                                  measureLocale:CKMeasureTypeNone
+                                                                                  isConvertible:NO
+                                              ];
     [self.contentView addSubview:ingredientsView];
     self.ingredientsView = ingredientsView;
 }

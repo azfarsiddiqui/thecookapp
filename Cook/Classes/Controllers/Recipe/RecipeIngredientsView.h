@@ -14,14 +14,14 @@
 @interface RecipeIngredientsView : UIView
 
 @property (nonatomic, assign) CGSize maxSize;
+@property (nonatomic, assign) BOOL convertible;
 
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType;
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize measureLocale:(CKMeasurementType)measureType;
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType isConvertible:(BOOL)isConvertible;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
             textAlignment:(NSTextAlignment)textAlignment measureLocale:(CKMeasurementType)measureType;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
-            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact measureLocale:(CKMeasurementType)measureType;
-- (void)updateIngredients:(NSArray *)ingredients measureType:(CKMeasurementType)measureType;
-- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book measureType:(CKMeasurementType)measureType;
+            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact measureLocale:(CKMeasurementType)measureType isConvertible:(BOOL)isConvertible;
+- (void)updateIngredients:(NSArray *)ingredients measureType:(CKMeasurementType)measureType convertible:(BOOL)isConvertible;
+- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book measureType:(CKMeasurementType)measureType convertible:(BOOL)isConvertible;
 
 @end

@@ -33,6 +33,7 @@
 @property (nonatomic, assign) CKPrivacy privacy;
 @property (nonatomic, strong) NSURL *userPhotoUrl;
 @property (nonatomic, readonly) NSDate *createdDateTime;
+@property (nonatomic, readonly) NSString *locale;
 
 + (NSInteger)maxPrepCookMinutes;
 + (NSInteger)maxServes;

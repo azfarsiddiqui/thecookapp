@@ -13,7 +13,7 @@
 #import "CKBook.h"
 #import "CKBookCover.h"
 
-@interface RecipeIngredientsView ()
+@interface RecipeIngredientsView () <CKMeasureConverterDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) NSTextAlignment textAlignment;
@@ -29,39 +29,38 @@
 #define kRowGap         12.0
 #define kCompactRowGap  0.0
 
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType {
-    return [self initWithIngredients:ingredients book:book maxSize:(CGSize){ maxWidth, MAXFLOAT } measureLocale:measureType];
-}
-
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize measureLocale:(CKMeasurementType)measureType {
-    return [self initWithIngredients:ingredients book:book maxSize:maxSize textAlignment:NSTextAlignmentLeft measureLocale:measureType];
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType isConvertible:(BOOL)isConvertible {
+    return [self initWithIngredients:ingredients book:book maxSize:(CGSize){ maxWidth, MAXFLOAT } textAlignment:NSTextAlignmentLeft compact:NO measureLocale:measureType isConvertible:isConvertible];
 }
 
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
             textAlignment:(NSTextAlignment)textAlignment measureLocale:(CKMeasurementType)measureType {
-    return [self initWithIngredients:ingredients book:book maxSize:maxSize textAlignment:textAlignment compact:NO measureLocale:measureType];
+    return [self initWithIngredients:ingredients book:book maxSize:maxSize textAlignment:textAlignment compact:NO measureLocale:measureType isConvertible:YES];
 }
 
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
-            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact measureLocale:(CKMeasurementType)measureType {
+            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact measureLocale:(CKMeasurementType)measureType isConvertible:(BOOL)isConvertible {
     if (self = [super initWithFrame:CGRectZero]) {
         self.book = book;
         self.maxSize = maxSize;
         self.textAlignment = textAlignment;
         self.compact = compact;
-        [self updateIngredients:ingredients book:book measureType:measureType];
+        self.convertible = isConvertible;
+        
+        [self updateIngredients:ingredients book:book measureType:measureType convertible:isConvertible];
     }
     return self;
 }
 
-- (void)updateIngredients:(NSArray *)ingredients measureType:(CKMeasurementType)measureType {
-    [self updateIngredients:ingredients book:self.book measureType:measureType];
+- (void)updateIngredients:(NSArray *)ingredients measureType:(CKMeasurementType)measureType convertible:(BOOL)isConvertible {
+    [self updateIngredients:ingredients book:self.book measureType:measureType convertible:isConvertible];
 }
 
-- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book measureType:(CKMeasurementType)measureType {
+- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book measureType:(CKMeasurementType)measureType convertible:(BOOL)isConvertible {
     self.book = book;
     self.layoutOffset = 0.0;
     self.convertToType = measureType;
+    self.convertible = isConvertible;
     
     if ([ingredients count] > 0) {
         for (UIView *ingredientLabel in self.subviews) {
@@ -100,6 +99,12 @@
     }
     
     [self updateFrame];
+}
+
+#pragma mark - CKMeasureConverter delegate
+
+- (BOOL)isConvertible {
+    return self.convertible;
 }
 
 #pragma mark - Properties
@@ -149,6 +154,7 @@
         CKMeasureConverter *ingredientConvert = [[CKMeasureConverter alloc] initWithAttributedString:ingredientDisplay
                                                                                           toMeasureType:self.convertToType
                                                                                       highlightColor:[CKBookCover textColourForCover:self.book.cover]
+                                                                                            delegate:self
                                                                                            tokenOnly:NO];
         NSAttributedString *convertedIngredient = [ingredientConvert convert];
 //        DLog(@"converted ingredient: %@ from %i to %i", convertedIngredient.string, self.convertFromType, [CKUser currentUser].measurementType);

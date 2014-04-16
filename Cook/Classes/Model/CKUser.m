@@ -32,11 +32,13 @@ static ObjectFailureBlock loginFailureBlock = nil;
 #define kCookForceLogout        @"CookForceLogout"
 
 + (CKUser *)currentUser {
-    PFUser *parseUser = [PFUser currentUser];
-    if (parseUser) {
-        return [[CKUser alloc] initWithParseUser:[PFUser currentUser]];
-    } else {
-        return nil;
+    @synchronized(self) {
+        PFUser *parseUser = [PFUser currentUser];
+        if (parseUser) {
+            return [[CKUser alloc] initWithParseUser:[PFUser currentUser]];
+        } else {
+            return nil;
+        }
     }
 }
 
@@ -688,8 +690,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
         NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
         if ([countryCode isEqualToString:@"US"]) {
             measureType = CKMeasureTypeImperial;
-        } else {
+        } else if (countryCode) {
             measureType = CKMeasureTypeMetric;
+        } else {
+            measureType = CKMeasureTypeNone;
         }
         [self setMeasurementType:measureType];
         return measureType;

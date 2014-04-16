@@ -60,6 +60,8 @@
         _ingredients = [NSArray arrayWithArray:[recipe.ingredients collect:^id(Ingredient *ingredient) {
             return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
         }]];
+        
+        _locale = recipe.locale;
     }
     return self;
 }
