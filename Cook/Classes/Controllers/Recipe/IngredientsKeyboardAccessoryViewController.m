@@ -9,6 +9,7 @@
 #import "IngredientsKeyboardAccessoryViewController.h"
 #import "IngredientsKeyboardAccessoryCell.h"
 #import "AppHelper.h"
+#import "CKUser.h"
 
 @interface IngredientsKeyboardAccessoryViewController ()
 
@@ -86,9 +87,8 @@
 //Auto scroll to guessed locale. This will eventually default to current measure type once Conversions are implemented
 - (CGFloat)posOfElementForCurrentLocale {
     NSInteger metricCellPos = 1024 * 2;
-    
-    NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
-    if ([countryCode isEqualToString:@"US"]) {
+
+    if ([CKUser currentMeasureType] == CKMeasureTypeImperial) {
         return 0;
     } else {
         return metricCellPos;

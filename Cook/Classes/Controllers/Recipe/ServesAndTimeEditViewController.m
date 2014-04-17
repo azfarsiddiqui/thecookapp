@@ -225,10 +225,12 @@
 - (UISlider *)prepSlider {
     if (!_prepSlider) {
         _prepSlider = [[TimeSliderView alloc] init];
-        _prepSlider.minimumValueImage = [UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"];
-        _prepSlider.maximumValueImage = [UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"];
+        _prepSlider.minimumValueImage = [UIImage imageNamed:@"cook_edit_details_icons_time_sm.png"];
+        _prepSlider.maximumValueImage = [UIImage imageNamed:@"cook_edit_details_icons_time_lg.png"];
         _prepSlider.minimumValue = 0.0;
         _prepSlider.maximumValue = 38.0;
+        _prepSlider.minimumTrackTintColor = [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000];
+        _prepSlider.maximumTrackTintColor = [UIColor colorWithWhite:0.863 alpha:1.000];
     }
     return _prepSlider;
 }
@@ -260,10 +262,12 @@
 - (UISlider *)cookSlider {
     if (!_cookSlider) {
         _cookSlider = [[TimeSliderView alloc] init];
-        _cookSlider.minimumValueImage = [UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"];
-        _cookSlider.maximumValueImage = [UIImage imageNamed:@"cook_book_recipe_icon_time_edit.png"];
+        _cookSlider.minimumValueImage = [UIImage imageNamed:@"cook_edit_details_icons_time_sm.png"];
+        _cookSlider.maximumValueImage = [UIImage imageNamed:@"cook_edit_details_icons_time_lg.png"];
         _cookSlider.minimumValue = 0.0;
         _cookSlider.maximumValue = 38.0;
+        _cookSlider.minimumTrackTintColor = [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000];
+        _cookSlider.maximumTrackTintColor = [UIColor colorWithWhite:0.863 alpha:1.000];
     }
     return _cookSlider;
 }
@@ -332,14 +336,14 @@
 }
 
 - (void)initServes {
-    [self.containerView addSubview:self.servesTitleLabel];
-    [self.containerView addSubview:self.servesLabel];
+//    [self.containerView addSubview:self.servesTitleLabel];
+//    [self.containerView addSubview:self.servesLabel];
     [self.containerView addSubview:self.servesSlider];
 }
 
 - (void)initDialers {
-    [self.containerView addSubview:self.prepTitleLabel];
-    [self.containerView addSubview:self.prepLabel];
+//    [self.containerView addSubview:self.prepTitleLabel];
+//    [self.containerView addSubview:self.prepLabel];
     [self.containerView addSubview:self.prepSlider];
     [self.containerView addSubview:self.cookTitleLabel];
     [self.containerView addSubview:self.cookLabel];
