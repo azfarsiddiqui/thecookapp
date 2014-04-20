@@ -101,6 +101,11 @@
     [self.containerView addSubview:self.closeButton];
     [self.containerView addSubview:self.filterButton];
     
+    UIScreenEdgePanGestureRecognizer *screenEdgeRecogniser = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                               action:@selector(screenEdgeSwiped:)];
+    screenEdgeRecogniser.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:screenEdgeRecogniser];
+    
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -915,6 +920,10 @@
 
 - (CKRecipeSearch *)currentFilterResults {
     return [self.filterResults objectForKey:@(self.searchFilter)];
+}
+
+- (void)screenEdgeSwiped:(UIScreenEdgePanGestureRecognizer *)screenEdgeRecogniser {
+    [self.delegate recipeSearchViewControllerDismissRequested];
 }
 
 @end
