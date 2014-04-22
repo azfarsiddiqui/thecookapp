@@ -17,6 +17,7 @@
 @property (nonatomic, strong) Ingredient *ingredient;
 @property (nonatomic, strong) UITextField *unitTextField;
 @property (nonatomic, assign) BOOL focusName;
+@property (nonatomic, strong) UIFont *placeholderFont;
 
 @end
 
@@ -34,6 +35,9 @@
         
         // Default font.
         self.font = [UIFont fontWithName:@"AvenirNext-Regular" size:36.0f];
+        
+        // Placeholder font
+        self.placeholderFont = [UIFont fontWithName:@"AvenirNext-Regular" size:30.0f];
         
         // Unit field.
         UITextField *unitTextField = [[UITextField alloc] initWithFrame:(CGRect){
@@ -70,6 +74,9 @@
             self.contentView.bounds.size.width - verticalDividerView.frame.origin.x - kFieldDividerGap - insets.right,
             self.textField.frame.size.height
         };
+        
+        self.textField.placeholder = @"INGREDIENT";
+        self.unitTextField.placeholder = @"QTY";
     }
     return self;
 }
@@ -135,6 +142,17 @@
     
     NSString *unit = [self.ingredient.measurement CK_whitespaceTrimmed];
     self.unitTextField.text = unit;
+    if ([self.ingredient.measurement length] > 0 || [self.ingredient.name length] > 0) {
+        self.unitTextField.placeholder = @"";
+        self.unitTextField.font = self.font;
+        self.textField.placeholder = @"";
+        self.textField.font = self.font;
+    } else {
+        self.textField.placeholder = @"INGREDIENT";
+        self.textField.font = self.placeholderFont;
+        self.unitTextField.placeholder = @"QTY";
+        self.unitTextField.font = self.placeholderFont;
+    }
 }
 
 - (NSString *)textValueForValue:(id)value {
@@ -199,6 +217,8 @@
     if (!self.focusName) {
         [self.delegate listItemFocused:YES cell:self];
     }
+    self.textField.font = self.font;
+    self.unitTextField.font = self.font;
     return YES;
 }
 
