@@ -415,7 +415,7 @@
     // Friends button.
     self.friendsButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
     self.friendsButton.frame = (CGRect){
-        self.view.bounds.size.width - self.friendsButton.frame.size.width - 25.0,
+        20.0,
         self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.friendsButton.frame.size.height) / 2.0),
         self.friendsButton.frame.size.width,
         self.friendsButton.frame.size.height
@@ -539,7 +539,7 @@
         [self.searchViewController unloadData];
         self.searchViewController.view.alpha = 0.0;
         self.searchViewController.view.hidden = NO;
-        self.backButton.transform = CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
+        self.backButton.transform = CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
     } else {
         [self.searchFieldView focus:NO];
         [self.currentStoreCollectionViewController unloadData];
@@ -552,7 +552,7 @@
                          
                          // Store tabs.
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
-                         self.storeTabView.transform = searchMode ? CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
+                         self.storeTabView.transform = searchMode ? CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
                          
                          // Search field.
                          self.searchFieldView.backgroundView.alpha = searchMode ? 1.0 : 0.0;
@@ -560,11 +560,11 @@
                          
                          // Back button.
                          self.backButton.alpha = searchMode ? 1.0 : 0.0;
-                         self.backButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
+                         self.backButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
                          
                          // Friends button.
                          self.friendsButton.alpha = searchMode ? 0.0 : 1.0;
-                         self.friendsButton.transform = searchMode ? CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
+                         self.friendsButton.transform = searchMode ? CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
                          
                          // VCs
                          self.currentStoreCollectionViewController.view.alpha = searchMode ? 0.0 : 1.0;
@@ -593,8 +593,8 @@
     self.animating = YES;
     
     if (friendsMode) {
-        self.backButton.transform = CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
-        self.friendsTabView.transform = CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
+        self.backButton.transform = CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
+        self.friendsTabView.transform = CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
     }
     
     [UIView animateWithDuration:0.35
@@ -604,23 +604,23 @@
                          
                          // Store tabs.
                          self.storeTabView.alpha = friendsMode ? 0.0 : 1.0;
-                         self.storeTabView.transform = friendsMode ? CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
+                         self.storeTabView.transform = friendsMode ? CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
                          
                          // Friends tab.
                          self.friendsTabView.alpha = friendsMode ? 1.0 : 0.0;
-                         self.friendsTabView.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
+                         self.friendsTabView.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
                          
                          // Search field.
                          self.searchFieldView.alpha = friendsMode ? 0.0 : 1.0;
-                         self.searchFieldView.transform = friendsMode ? CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0) : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
+                         self.searchFieldView.transform = friendsMode ? CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0) : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
                          
                          // Friends button.
                          self.friendsButton.alpha = friendsMode ? 0.0 : 1.0;
-                         self.friendsButton.transform = friendsMode ? CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
+                         self.friendsButton.transform = friendsMode ? CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0) : CGAffineTransformIdentity;
                          
                          // Back button.
                          self.backButton.alpha = friendsMode ? 1.0 : 0.0;
-                         self.backButton.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
+                         self.backButton.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(-self.view.bounds.size.width, 0.0);
                          
                          // Always force fade on current VC.
                          self.currentStoreCollectionViewController.view.alpha = 0.0;
@@ -640,7 +640,7 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return -floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0);
+    return (self.view.bounds.size.width - self.searchFieldView.frame.size.width) + 25.0;
 }
 
 - (void)backTapped {
