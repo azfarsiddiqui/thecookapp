@@ -923,7 +923,9 @@
 }
 
 - (void)screenEdgeSwiped:(UIScreenEdgePanGestureRecognizer *)screenEdgeRecogniser {
-    [self.delegate recipeSearchViewControllerDismissRequested];
+    if (screenEdgeRecogniser.state == UIGestureRecognizerStateBegan) {
+        [self.delegate recipeSearchViewControllerDismissRequested];
+    }
 }
 
 @end
