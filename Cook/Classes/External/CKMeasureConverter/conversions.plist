@@ -182,60 +182,6 @@
 			<integer>10</integer>
 		</dict>
 	</array>
-	<key>TSP</key>
-	<array>
-		<dict>
-			<key>originalType</key>
-			<string>Imperial</string>
-			<key>newType</key>
-			<string>Metric</string>
-			<key>name</key>
-			<string>tsp</string>
-			<key>conversion</key>
-			<integer>1</integer>
-			<key>fraction</key>
-			<integer>8</integer>
-		</dict>
-		<dict>
-			<key>originalType</key>
-			<string>Metric</string>
-			<key>newType</key>
-			<string>Imperial</string>
-			<key>name</key>
-			<string>tsp</string>
-			<key>conversion</key>
-			<integer>1</integer>
-			<key>fraction</key>
-			<integer>8</integer>
-		</dict>
-	</array>
-	<key>TBSP</key>
-	<array>
-		<dict>
-			<key>originalType</key>
-			<string>Metric</string>
-			<key>newType</key>
-			<string>Imperial</string>
-			<key>name</key>
-			<string>tbsp</string>
-			<key>conversion</key>
-			<integer>1</integer>
-			<key>fraction</key>
-			<integer>8</integer>
-		</dict>
-		<dict>
-			<key>originalType</key>
-			<string>Imperial</string>
-			<key>newType</key>
-			<string>Metric</string>
-			<key>name</key>
-			<string>tbsp</string>
-			<key>conversion</key>
-			<integer>1</integer>
-			<key>fraction</key>
-			<integer>8</integer>
-		</dict>
-	</array>
 	<key>CUP</key>
 	<array>
 		<dict>

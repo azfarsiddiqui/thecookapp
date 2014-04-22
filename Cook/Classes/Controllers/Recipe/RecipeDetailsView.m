@@ -1000,7 +1000,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
         CKMeasurementType measureType = self.selectedMeasureType;
-        if (self.editMode) {
+        
+        if (self.editMode || ![self isValidConvert]) {
             measureType = CKMeasureTypeNone;
         }
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
@@ -1084,7 +1085,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateChangeMeasureButtonFrame {
-    if (self.editMode || self.selectedMeasureType == CKMeasureTypeNone || [self.recipeDetails.ingredients count] == 0 || [self.recipeDetails.method length] == 0) {
+    if (self.editMode || self.selectedMeasureType == CKMeasureTypeNone || [self.recipeDetails.ingredients count] == 0 || ![self isValidConvert]) {
         self.changeMeasureTypeButton.alpha = 0.0;
     } else {
         self.changeMeasureTypeButton.alpha = 1.0;
@@ -1560,6 +1561,22 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      completion:^(BOOL finished) {
                          [self.addDetailsCardView removeFromSuperview];
                      }];
+}
+
+- (BOOL)isValidConvert {
+    __block BOOL isValidConvert = NO;
+    NSDictionary *conversionDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
+    // See if recipe has any of these types and flag accordingly
+    [self.recipeDetails.ingredients enumerateObjectsUsingBlock:^(Ingredient *ingred, NSUInteger idx, BOOL *stop) {
+        [[conversionDict allKeys] enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+            if ([[ingred.measurement uppercaseString] rangeOfString:obj].location != NSNotFound) {
+                isValidConvert = YES;
+                return;
+            }
+        }];
+        if (isValidConvert == YES) return;
+    }];
+    return isValidConvert;
 }
 
 - (void)changeMeasurePressed:(id)sender {
