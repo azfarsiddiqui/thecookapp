@@ -402,10 +402,13 @@
 #pragma mark - Private methods
 
 - (void)buildHeaderLayout {
-    NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    UICollectionViewLayoutAttributes *headerAttributes = [self headerLayoutAttributesForIndexPath:headerIndexPath];
-    [self.supplementaryLayoutAttributes addObject:headerAttributes];
-    [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
+    NSInteger numItems = [self.delegate recipeGridLayoutNumItems];
+    if (numItems > 0) {
+        NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+        UICollectionViewLayoutAttributes *headerAttributes = [self headerLayoutAttributesForIndexPath:headerIndexPath];
+        [self.supplementaryLayoutAttributes addObject:headerAttributes];
+        [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
+    }
 }
 
 - (void)buildFooterLayout {
