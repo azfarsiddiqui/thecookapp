@@ -78,13 +78,42 @@
     [self.containerView addSubview:smallServesImageView];
     [self.containerView addSubview:largeServesImageView];
     
+    UIView *servesView = [[UIView alloc] initWithFrame:CGRectZero];
+    {
+        [servesView addSubview:self.servesTitleLabel];
+        [servesView addSubview:self.servesLabel];
+        servesView.translatesAutoresizingMaskIntoConstraints = NO;
+        NSDictionary *servesViews = @{@"titleLabel":self.servesTitleLabel, @"servesLabel":self.servesLabel};
+        [servesView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-[servesLabel]-|" options:nil metrics:nil views:servesViews]];
+        [self.containerView addSubview:servesView];
+    }
+    UIView *prepView = [[UIView alloc] initWithFrame:CGRectZero];
+    {
+        [prepView addSubview:self.prepTitleLabel];
+        [prepView addSubview:self.prepLabel];
+        prepView.translatesAutoresizingMaskIntoConstraints = NO;
+        NSDictionary *prepViews = @{@"titleLabel":self.prepTitleLabel, @"prepLabel":self.prepLabel};
+        [prepView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-[prepLabel]-|" options:nil metrics:nil views:prepViews]];
+        [self.containerView addSubview:prepView];
+    }
+    UIView *cookView = [[UIView alloc] initWithFrame:CGRectZero];
+    {
+        [cookView addSubview:self.cookTitleLabel];
+        [cookView addSubview:self.cookLabel];
+        cookView.translatesAutoresizingMaskIntoConstraints = NO;
+        NSDictionary *cookViews = @{@"titleLabel":self.cookTitleLabel, @"cookLabel":self.cookLabel};
+        [cookView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-[cookLabel]-|" options:nil metrics:nil views:cookViews]];
+        [self.containerView addSubview:cookView];
+    }
+    
     //Setup layout
     {
         NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@700, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
-        NSDictionary *views = @{@"servesTitle":self.servesTitleLabel, @"servesLabel":self.servesLabel, @"servesSlider":self.servesSlider, @"servesLine":hr2Line,
-                                @"prepTitle":self.prepTitleLabel, @"prepLabel":self.prepLabel,
+        NSDictionary *views = @{@"servesView":servesView,
+                                @"servesSlider":self.servesSlider, @"servesLine":hr2Line,
+                                @"prepView":prepView,
                                 @"prepSlider":self.prepSlider,
-                                @"cookTitle":self.cookTitleLabel, @"cookLabel":self.cookLabel,
+                                @"cookView":cookView,
                                 @"cookSlider":self.cookSlider,
                                 @"smallServesIcon":smallServesImageView, @"largeServesIcon":largeServesImageView};
 
@@ -98,14 +127,14 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(30)-[servesTitle]-(20)-[servesSlider(controlHeight)]-(30)-[servesLine(1)]-(40)-[prepTitle]-(5)-[prepSlider(controlHeight)]-(30)-[cookTitle]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesTitle]-[servesLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(controlHeight)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(70)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-[servesSlider(sliderWidth)]-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepTitle]-[prepLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(800)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookTitle]-[cookLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(800)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(600)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(600)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
 
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeCenterX
@@ -231,6 +260,7 @@
         _prepSlider.maximumValue = 38.0;
         _prepSlider.minimumTrackTintColor = [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000];
         _prepSlider.maximumTrackTintColor = [UIColor colorWithWhite:0.863 alpha:1.000];
+        [_prepSlider setThumbImage:[UIImage imageNamed:@"cook_edit_serves_slider"] forState:UIControlStateNormal];
     }
     return _prepSlider;
 }
@@ -268,6 +298,7 @@
         _cookSlider.maximumValue = 38.0;
         _cookSlider.minimumTrackTintColor = [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000];
         _cookSlider.maximumTrackTintColor = [UIColor colorWithWhite:0.863 alpha:1.000];
+        [_cookSlider setThumbImage:[UIImage imageNamed:@"cook_edit_serves_slider"] forState:UIControlStateNormal];
     }
     return _cookSlider;
 }
@@ -345,8 +376,8 @@
 //    [self.containerView addSubview:self.prepTitleLabel];
 //    [self.containerView addSubview:self.prepLabel];
     [self.containerView addSubview:self.prepSlider];
-    [self.containerView addSubview:self.cookTitleLabel];
-    [self.containerView addSubview:self.cookLabel];
+//    [self.containerView addSubview:self.cookTitleLabel];
+//    [self.containerView addSubview:self.cookLabel];
     [self.containerView addSubview:self.cookSlider];
     
     [self.cookSlider addTarget:self action:@selector(cookSliderValueChanged) forControlEvents:UIControlEventValueChanged];
@@ -413,7 +444,6 @@
 }
 
 - (NSInteger)minutesForDialerIndex:(NSInteger)dialerIndex {
-    DLog(@"Dialer Index: %d", dialerIndex);
     NSInteger minutes = 0;
     
     if (dialerIndex <= 12) {
