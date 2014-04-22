@@ -1075,6 +1075,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         } else if (self.selectedMeasureType == CKMeasureTypeImperial) {
             self.changeMeasureTypeButton.selectedSegmentIndex = 1;
         }
+        self.changeMeasureTypeButton.alpha = 0.0;
         [self.changeMeasureTypeButton addTarget:self action:@selector(changeMeasurePressed:) forControlEvents:UIControlEventValueChanged];
         [self.changeMeasureTypeButton setContentPositionAdjustment:UIOffsetMake(0, 2) forSegmentType:UISegmentedControlSegmentAny barMetrics:UIBarMetricsDefault];
         [self addSubview:self.changeMeasureTypeButton];
@@ -1083,10 +1084,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateChangeMeasureButtonFrame {
-    if (self.editMode || self.selectedMeasureType == CKMeasureTypeNone) {
-        self.changeMeasureTypeButton.hidden = YES;
+    if (self.editMode || self.selectedMeasureType == CKMeasureTypeNone || [self.recipeDetails.ingredients count] == 0 || [self.recipeDetails.method length] == 0) {
+        self.changeMeasureTypeButton.alpha = 0.0;
     } else {
-        self.changeMeasureTypeButton.hidden = NO;
+        self.changeMeasureTypeButton.alpha = 1.0;
     }
     self.changeMeasureTypeButton.frame = (CGRect){
         kContentInsets.left + 15,

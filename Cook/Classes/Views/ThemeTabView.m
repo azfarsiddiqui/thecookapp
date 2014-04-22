@@ -63,19 +63,19 @@
         if (optionIndex == 0) //Leftmost button compensate rounded edge
         {
             [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 23.0f, 0.0f, 10.0f)];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 30.0f, 0.0f, 25.0f)];
         }
         else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
         {
             [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 23.0f)];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
         }
         [button sizeToFit];
         
         button.frame = (CGRect){
             size.width,
             self.bounds.origin.y,
-            insets.left + button.frame.size.width + insets.right,
+            100,
             size.height
         };
         [self addSubview:button];

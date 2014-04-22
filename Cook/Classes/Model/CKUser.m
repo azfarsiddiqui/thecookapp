@@ -268,12 +268,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 + (DashTheme)currentTheme {
-    CKUser *currentUser = [CKUser currentUser];
-    if (currentUser) {
-        return currentUser.theme;
-    } else {
-        return [[[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestTheme] integerValue];
-    }
+    return DashThemeReflect;
 }
 
 + (void)setGuestMeasure:(CKMeasurementType)measureType {
@@ -665,12 +660,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (DashTheme)theme {
-    NSNumber *themeNumber = [self.parseObject objectForKey:kUserAttrTheme];
-    if (themeNumber) {
-        return [themeNumber integerValue];
-    } else {
-        return DashThemeReflect;
-    }
+    return DashThemeReflect;
 }
 
 - (void)setMeasurementType:(NSInteger)measurementType {
