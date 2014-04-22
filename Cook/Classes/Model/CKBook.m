@@ -516,7 +516,7 @@
                                             return [self modelRecipeOrPinForParseObject:parseRecipeOrPin];
                                         }];
                                     
-                                        DLog(@"Loaded more recipes[%d] for page[%@] batchIndex[%d]", [recipesOrPins count], page, batchIndex);
+                                        DLog(@"Loaded more recipes[%ld] for page[%@] batchIndex[%ld]", (long)[recipesOrPins count], page, (long)batchIndex);
                                         success([CKBook bookWithParseObject:parseBook], page, batchIndex, recipesOrPins);
                                         
                                     } else {
@@ -526,7 +526,7 @@
                                 }];
 }
 
-- (void)likedRecipesForBatchIndex:(NSInteger)batchIndex success:(LikedRecipesSuccessBlock)success
+- (void)likedRecipesForBatchIndex:(NSInteger)requestedBatchIndex success:(LikedRecipesSuccessBlock)success
                failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"likedRecipes_v1_4"
@@ -534,7 +534,7 @@
                                         @"cookVersion": [[AppHelper sharedInstance] appVersion],
                                         @"bookId" : self.objectId,
                                         @"userId" : self.user.objectId,
-                                        @"batchIndex" : @(batchIndex)
+                                        @"batchIndex" : @(requestedBatchIndex)
                                         }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     
@@ -542,14 +542,14 @@
                                         
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSArray *parseRecipesOrPins = [recipeResults objectForKey:@"recipes"];
-                                        NSInteger batchIndex = [recipeResults objectForKey:@"batchIndex"];
+                                        NSInteger batchIndex = [[recipeResults objectForKey:@"batchIndex"] integerValue];
                                         
                                         // Wrap the recipes or pins in our model.
                                         NSArray *likedRecipes = [parseRecipesOrPins collect:^id(PFObject *parseRecipeOrPin) {
                                             return [self modelRecipeOrPinForParseObject:parseRecipeOrPin];
                                         }];
                                         
-                                        DLog(@"Loaded more recipes[%d] for batchIndex[%d]", [likedRecipes count], batchIndex);
+                                        DLog(@"Loaded more recipes[%ld] for batchIndex[%ld]", (long)[likedRecipes count], (long)batchIndex);
                                         success([CKBook bookWithParseObject:parseBook], batchIndex, likedRecipes);
                                         
                                     } else {
