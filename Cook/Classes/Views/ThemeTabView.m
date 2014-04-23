@@ -29,7 +29,6 @@
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {
         [self initTabs];
-        [self selectOptionAtIndex:[self indexForMeasureType:[CKUser currentMeasureType]]];
     }
     return self;
 }
@@ -53,8 +52,7 @@
     for (NSInteger optionIndex = 0; optionIndex < [self.options count]; optionIndex++) {
         
         NSString *optionName = [self.options objectAtIndex:optionIndex];
-        UIImage *selectedImage = [self selectedImageForOptionIndex:optionIndex];
-        UIEdgeInsets insets = [self insetsForOptionIndex:optionIndex];
+        UIImage *selectedImage = [self selectedImageForOptionIndex:optionIndex];;
         
         UIButton *button = [ViewHelper buttonWithImage:nil selectedImage:selectedImage target:self selector:@selector(optionTapped:)];
         button.titleLabel.font = kFont;
@@ -102,18 +100,6 @@
     return [[UIImage imageNamed:@"cook_dash_settings_tab_bg.png"] resizableImageWithCapInsets:(UIEdgeInsets){
         0.0, 17.0, 0.0, 17.0
     }];
-}
-
-- (UIEdgeInsets)insetsForOptionIndex:(NSInteger)optionIndex {
-    UIEdgeInsets insets = UIEdgeInsetsZero;
-    if (optionIndex == 0) {
-        insets = kLeftEdgeInsets;
-    } else if (optionIndex == [self.options count] - 1) {
-        insets = kRightEdgeInsets;
-    } else {
-        insets = kMidEdgeInsets;
-    }
-    return insets;
 }
 
 - (UIImage *)selectedImageForOptionIndex:(NSInteger)optionIndex {

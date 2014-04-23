@@ -64,8 +64,11 @@
     self.view.clipsToBounds = NO;   // So that background extends below.
     [self.view addSubview:backgroundView];
     
-    [self initSettingsContent];
-    [self createLoginLogoutButton];
+    // Init on next run loop to try and circumvent Parse currentUser hang bug
+    dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue(), ^{
+        [self initSettingsContent];
+        [self createLoginLogoutButton];
+    });
     
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
@@ -86,70 +89,6 @@
 }
 
 #pragma mark - Properties
-
-- (UIView *)loginLogoutButtonView {
-    if (!_loginLogoutButtonView) {
-        CKUser *currentUser = [CKUser currentUser];
-        CGSize size = (currentUser == nil) ? kLoginSize : kLogoutSize;
-        
-        _loginLogoutButtonView = [[UIView alloc] initWithFrame:(CGRect){
-            self.scrollView.bounds.size.width - size.width - 24.0,
-            floorf((self.scrollView.bounds.size.height - size.height) / 2.0) - 3,
-            size.width,
-            size.height
-        }];
-        _loginLogoutButtonView.backgroundColor = [UIColor clearColor];
-        
-        CGFloat yOffset = 0.0;
-        if (currentUser) {
-            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
-                                                                                 profileSize:ProfileViewSizeSmall border:NO];
-            photoView.delegate = self;
-            photoView.frame = (CGRect){
-                floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
-                _loginLogoutButtonView.bounds.origin.y,
-                photoView.frame.size.width,
-                photoView.frame.size.height
-            };
-            [_loginLogoutButtonView addSubview:photoView];
-            yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
-            self.profileView = photoView;
-        } else {
-            
-            UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_icon_login.png"]];
-            loginImageView.frame = (CGRect){
-                floorf((_loginLogoutButtonView.bounds.size.width - loginImageView.frame.size.width) / 2.0),
-                _loginLogoutButtonView.bounds.origin.y + 4,
-                loginImageView.frame.size.width,
-                loginImageView.frame.size.height
-            };
-            yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 14.0;
-            [_loginLogoutButtonView addSubview:loginImageView];
-        }
-        
-        UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        profileLabel.autoresizingMask = UIViewAutoresizingNone;
-        profileLabel.backgroundColor = [UIColor clearColor];
-        profileLabel.font = [Theme settingsProfileFont];
-        profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
-        profileLabel.shadowColor = [UIColor blackColor];
-        profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        profileLabel.text = (currentUser == nil) ? @"SIGN IN" : @"LOGOUT";
-        [profileLabel sizeToFit];
-        profileLabel.frame = (CGRect){
-            floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
-            yOffset - 11.0,
-            profileLabel.frame.size.width,
-            profileLabel.frame.size.height
-        };
-        [_loginLogoutButtonView addSubview:profileLabel];
-
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loginLogoutTapped:)];
-        [_loginLogoutButtonView addGestureRecognizer:tapGesture];
-        _loginLogoutButtonView.userInteractionEnabled = YES;
-    }
-    return _loginLogoutButtonView;
-}
 
 - (UILabel *)measureLabel {
     if (!_measureLabel) {
@@ -349,12 +288,68 @@
                                                                              metrics:metrics
                                                                                views:views]];
     }
-    [self.measureTabView reset];
+//    [self.measureTabView reset];
 }
 
 - (void)createLoginLogoutButton {
-    [self.loginLogoutButtonView removeFromSuperview];
-    _loginLogoutButtonView = nil;
+    CKUser *currentUser = [CKUser currentUser];
+    CGSize size = (currentUser == nil) ? kLoginSize : kLogoutSize;
+    
+    _loginLogoutButtonView = [[UIView alloc] initWithFrame:(CGRect){
+        self.scrollView.bounds.size.width - size.width - 24.0,
+        floorf((self.scrollView.bounds.size.height - size.height) / 2.0) - 3,
+        size.width,
+        size.height
+    }];
+    _loginLogoutButtonView.backgroundColor = [UIColor clearColor];
+    
+    CGFloat yOffset = 0.0;
+    if (currentUser) {
+        CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
+                                                                             profileSize:ProfileViewSizeSmall border:NO];
+        photoView.delegate = self;
+        photoView.frame = (CGRect){
+            floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
+            _loginLogoutButtonView.bounds.origin.y,
+            photoView.frame.size.width,
+            photoView.frame.size.height
+        };
+        [_loginLogoutButtonView addSubview:photoView];
+        yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
+        self.profileView = photoView;
+    } else {
+        
+        UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_icon_login.png"]];
+        loginImageView.frame = (CGRect){
+            floorf((_loginLogoutButtonView.bounds.size.width - loginImageView.frame.size.width) / 2.0),
+            _loginLogoutButtonView.bounds.origin.y + 4,
+            loginImageView.frame.size.width,
+            loginImageView.frame.size.height
+        };
+        yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 14.0;
+        [_loginLogoutButtonView addSubview:loginImageView];
+    }
+    
+    UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    profileLabel.autoresizingMask = UIViewAutoresizingNone;
+    profileLabel.backgroundColor = [UIColor clearColor];
+    profileLabel.font = [Theme settingsProfileFont];
+    profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    profileLabel.shadowColor = [UIColor blackColor];
+    profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    profileLabel.text = (currentUser == nil) ? @"SIGN IN" : @"LOGOUT";
+    [profileLabel sizeToFit];
+    profileLabel.frame = (CGRect){
+        floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
+        yOffset - 11.0,
+        profileLabel.frame.size.width,
+        profileLabel.frame.size.height
+    };
+    [_loginLogoutButtonView addSubview:profileLabel];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loginLogoutTapped:)];
+    [_loginLogoutButtonView addGestureRecognizer:tapGesture];
+    _loginLogoutButtonView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.loginLogoutButtonView];
 }
 
