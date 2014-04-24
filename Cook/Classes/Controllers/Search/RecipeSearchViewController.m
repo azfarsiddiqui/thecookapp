@@ -486,7 +486,7 @@
 
     // Update filter button.
     self.filterButton.enabled = NO;
-    self.filterButton.alpha = [self alphaForFilterButtonEnabled:NO];
+//    self.filterButton.alpha = [self alphaForFilterButtonEnabled:NO];
     [self updateFilterButton];
     
     // Check results
