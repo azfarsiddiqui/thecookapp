@@ -8,13 +8,15 @@
 
 #import "StoreFlowLayout.h"
 #import "MRCEnumerable.h"
+#import "CKCollectionViewSpringsHelper.h"
 
 @interface StoreFlowLayout ()
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
+
 @property (nonatomic, assign) BOOL springEnabled;
-@property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
+@property (nonatomic, strong) CKCollectionViewSpringsHelper *springsHelper;
 
 @end
 
@@ -28,8 +30,9 @@
         
         // Enable Spring?
         self.springEnabled = NO;
+        
         if (self.springEnabled) {
-            self.dynamicAnimator = [[UIDynamicAnimator alloc] initWithCollectionViewLayout:self];
+            self.springsHelper = [[CKCollectionViewSpringsHelper alloc] initWithCollectionViewLayout:self];
         }
         
     }
@@ -41,8 +44,8 @@
     
     // Reset all behaviours.
     if (self.springEnabled) {
-        [self.dynamicAnimator removeAllBehaviors];
-        
+        [self.springsHelper reset];
+
         CGSize contentSize = self.collectionView.contentSize;
         NSArray *items = [super layoutAttributesForElementsInRect:
                           CGRectMake(0.0f, 0.0f, contentSize.width, contentSize.height)];
@@ -52,55 +55,23 @@
 //        
 //        NSArray *items = [self layoutAttributesForElementsInRect:visibleFrame];
         
-        [items each:^(UICollectionViewLayoutAttributes *attributes) {
-            [self applyAttachmentBehaviourToAttributes:attributes];
+//        DLog(@"*** TOTAL ITEMS[%ld]", (long unsigned)[items count]);
+        
+        [items enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes *attributes, NSUInteger objectIndex, BOOL *stop) {
+//            DLog(@"*** ITEMS[%ld]: %@", (long unsigned)objectIndex, attributes);
+            [self.springsHelper applyAttachmentBehaviourToAttributes:attributes];
         }];
+        
     }
     
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    BOOL shouldInvalidate = NO;
-    
     if (self.springEnabled) {
-        
-        shouldInvalidate = NO;
-        
-        CGFloat scrollDelta = newBounds.origin.x - self.collectionView.bounds.origin.x;
-        CGPoint touchLocation = [self.collectionView.panGestureRecognizer locationInView:self.collectionView];
-        
-        // Loop through each attachment behaviour and amend the spring.
-        for (UIAttachmentBehavior *attachment in [self currentAttachmentBehaviours]) {
-            
-            CGPoint anchorPoint = attachment.anchorPoint;
-            CGFloat distanceFromTouch = fabsf(touchLocation.x - anchorPoint.x);
-            CGFloat scrollResistance = distanceFromTouch / 1500.0;
-            
-            UICollectionViewLayoutAttributes *attributes = [attachment.items firstObject];
-            CGPoint center = attributes.center;
-            
-            // Cap scrollDelta.
-            if (scrollDelta > 0.0) {
-                scrollDelta = MIN(scrollDelta, 20.0);
-            } else {
-                scrollDelta = MAX(scrollDelta, -20.0);
-            }
-            
-            // Move the center so the spring can move it back.
-            CGFloat centerOffset = scrollDelta * scrollResistance;
-            NSLog(@"CENTER OFFSET %f", centerOffset);
-            center.x += centerOffset;
-            
-            attributes.center = center;
-            
-            [self.dynamicAnimator updateItemUsingCurrentState:attributes];
-        }
-        
+        return [self.springsHelper shouldInvalidateAfterApplyingOffsetsForNewBounds:newBounds collectionView:self.collectionView];
     } else {
-        shouldInvalidate = YES;
+        return YES;
     }
-    
-    return shouldInvalidate;
 }
 
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
@@ -164,47 +135,25 @@
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSArray *layoutAttributes = nil;
     if (self.springEnabled) {
-        return [self.dynamicAnimator itemsInRect:rect];
+        layoutAttributes = [self.springsHelper layoutAttributesInFrame:rect];
     } else {
-        return [super layoutAttributesForElementsInRect:rect];
+        layoutAttributes = [super layoutAttributesForElementsInRect:rect];
     }
+//    DLog(@"********************************************************* %@", layoutAttributes);
+    return layoutAttributes;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+//    DLog(@"********************************************************* %@", indexPath);
     if (self.springEnabled) {
-        return [self.dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
+        return [self.springsHelper layoutAttributesAtIndexPath:indexPath];
     } else {
         return [super layoutAttributesForItemAtIndexPath:indexPath];
     }
 }
 
 #pragma mark - Private methods
-
-- (NSArray *)currentAttachmentBehaviours {
-    return [self.dynamicAnimator.behaviors select:^BOOL(UIDynamicBehavior *dynamicBehaviour) {
-        return [dynamicBehaviour isKindOfClass:[UIAttachmentBehavior class]];
-    }];
-}
-
-- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    
-    CGPoint center = attributes.center;
-    
-    // Main interaction spring.
-    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:attributes attachedToAnchor:center];
-    spring.length = 0.0;
-    spring.damping = 0.95;
-    spring.frequency = 1.0;
-    [self.dynamicAnimator addBehavior:spring];
-    
-    // Spring that doesn't let it fidget with residual springing.
-    UIAttachmentBehavior *restSpring = [[UIAttachmentBehavior alloc] initWithItem:attributes
-                                                                 attachedToAnchor:(CGPoint){ center.x, center.y }];
-    restSpring.length = 1.0;
-    restSpring.damping = 0.95;
-    restSpring.frequency = 1.0;
-    [self.dynamicAnimator addBehavior:restSpring];
-}
 
 @end

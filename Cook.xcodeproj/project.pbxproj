@@ -695,6 +695,7 @@
 		7692C749177807A200A5CA5C /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* BenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
 		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
+		76964E511908D156004E4158 /* CKCollectionViewSpringsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76964E4F1908D156004E4158 /* CKCollectionViewSpringsHelper.m */; };
 		769880CB17F16AAC00D1E760 /* RecipeSocialLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */; };
 		7698CB9A18FCC9C100AE83AD /* cook_dash_search_downarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7698CB9618FCC9C100AE83AD /* cook_dash_search_downarrow.png */; };
 		7698CB9B18FCC9C100AE83AD /* cook_dash_search_downarrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7698CB9718FCC9C100AE83AD /* cook_dash_search_downarrow@2x.png */; };
@@ -2446,6 +2447,8 @@
 		7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingCollectionViewLayout.m; sourceTree = "<group>"; };
 		7692C74E17782A3B00A5CA5C /* PagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingScrollView.h; sourceTree = "<group>"; };
 		7692C74F17782A3B00A5CA5C /* PagingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingScrollView.m; sourceTree = "<group>"; };
+		76964E4F1908D156004E4158 /* CKCollectionViewSpringsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCollectionViewSpringsHelper.m; sourceTree = "<group>"; };
+		76964E501908D156004E4158 /* CKCollectionViewSpringsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCollectionViewSpringsHelper.h; sourceTree = "<group>"; };
 		769880C917F16AAC00D1E760 /* RecipeSocialLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialLayout.h; sourceTree = "<group>"; };
 		769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialLayout.m; sourceTree = "<group>"; };
 		7698CB9618FCC9C100AE83AD /* cook_dash_search_downarrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_search_downarrow.png; sourceTree = "<group>"; };
@@ -4563,6 +4566,8 @@
 				7649240017EB247700C4E347 /* DataHelper.m */,
 				F6B29B4D1803AB360056513F /* AnalyticsHelper.h */,
 				F6B29B4E1803AB360056513F /* AnalyticsHelper.m */,
+				76964E501908D156004E4158 /* CKCollectionViewSpringsHelper.h */,
+				76964E4F1908D156004E4158 /* CKCollectionViewSpringsHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9018,6 +9023,7 @@
 				769AA77417CC855B00B73718 /* CKBlueSignInButtonView.m in Sources */,
 				761951B21793B86A008AB495 /* BookNavigationView.m in Sources */,
 				76496324181014C60014047B /* AddRecipeLayout.m in Sources */,
+				76964E511908D156004E4158 /* CKCollectionViewSpringsHelper.m in Sources */,
 				76558EBC17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m in Sources */,
 				76A3956317FE9F8700DF249A /* ProfileViewController.m in Sources */,
 				76735C8E17BA16780027CA3B /* BookRecipeGridLargeCell.m in Sources */,
@@ -9136,7 +9142,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5E2D8A48-A44D-481E-9716-CF404CEBDE4E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "ED959DF1-FE58-4CAA-AC12-6B1C99FB23F2";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9261,7 +9267,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "427508A5-645C-41F1-A425-7F1602524525";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B3B0B033-BB05-44D7-84EA-A145FF1CEBAA";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9386,7 +9392,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2AE574E1-E6C3-4C12-8F1D-A795B264B1C0";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1BCB7123-779F-4007-BA92-39C97DCFF559";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
