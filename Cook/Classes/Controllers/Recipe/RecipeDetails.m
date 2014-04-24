@@ -62,6 +62,7 @@
         }]];
         
         _locale = recipe.locale;
+        _quantityType = recipe.quantityType;
     }
     return self;
 }
@@ -78,6 +79,7 @@
     recipe.ingredients = self.ingredients;
     recipe.privacy = self.privacy;
     recipe.geoLocation = self.location;
+    recipe.quantityType = self.quantityType;
     
     // Re-assign original recipe.
     self.originalRecipe = recipe;
@@ -141,8 +143,9 @@
     BOOL servesPrepUpdated = (([self.numServes integerValue] != [self.originalRecipe.numServes integerValue])
                               || ([self.prepTimeInMinutes integerValue] != [self.originalRecipe.prepTimeInMinutes integerValue])
                               || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue]));
+    BOOL quantityTypeUpdated = self.quantityType != self.originalRecipe.quantityType;
     DLog(@"servesPrepUpdated[%@]", [NSString CK_stringForBoolean:servesPrepUpdated]);
-    return servesPrepUpdated;
+    return servesPrepUpdated || quantityTypeUpdated;
 }
 
 - (BOOL)ingredientsUpdated {

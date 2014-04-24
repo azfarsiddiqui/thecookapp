@@ -22,6 +22,11 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPublic
 };
 
+typedef NS_ENUM(NSUInteger, CKQuantityType) {
+    CKQuantityServes,
+    CKQuantityMakes
+};
+
 @class CKLocation;
 @class CKRecipePin;
 
@@ -54,7 +59,7 @@ typedef void(^RecipeSearchSuccessBlock)(NSString *keyword, NSArray *recipes, NSU
 @property (nonatomic, assign, readonly) NSInteger numComments;
 @property (nonatomic, strong) NSDate *recipeUpdatedDateTime;
 @property (nonatomic, readonly) NSInteger rankScore;
-
+@property (nonatomic, assign) CKQuantityType quantityType;
 
 // Max serves/prep/cook.
 + (NSInteger)maxServes;

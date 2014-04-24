@@ -15,13 +15,12 @@
 #import "CKRecipe.h"
 #import "DateHelper.h"
 #import "CKMeasureConverter.h"
+#import "ServesTabView.h"
 
-@interface ServesAndTimeEditViewController () <CKNotchSliderViewDelegate>
+@interface ServesAndTimeEditViewController () <CKNotchSliderViewDelegate, ServesTabViewDelegate>
 
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UILabel *servesTitleLabel;
-@property (nonatomic, strong) UILabel *servesLabel;
 @property (nonatomic, strong) ServesNotchSliderView *servesSlider;
 @property (nonatomic, strong) UILabel *prepTitleLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
@@ -29,6 +28,12 @@
 @property (nonatomic, strong) UILabel *cookTitleLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
 @property (nonatomic, strong) UISlider *cookSlider;
+@property (nonatomic, strong) ServesTabView *servesTabButton;
+
+@property (nonatomic, strong) UIImageView *smallServesImageView;
+@property (nonatomic, strong) UIImageView *largeServesImageView;
+@property (nonatomic, strong) UIImageView *smallMakesImageView;
+@property (nonatomic, strong) UIImageView *largeMakesImageView;
 
 @end
 
@@ -71,22 +76,27 @@
     [self.containerView addSubview:hr2Line];
     
     // Left/right serving icons.
-    UIImageView *smallServesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_serves_sm.png"]];
-    UIImageView *largeServesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_serves_lg.png"]];
-    smallServesImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    largeServesImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.containerView addSubview:smallServesImageView];
-    [self.containerView addSubview:largeServesImageView];
-    
-    UIView *servesView = [[UIView alloc] initWithFrame:CGRectZero];
-    {
-        [servesView addSubview:self.servesTitleLabel];
-        [servesView addSubview:self.servesLabel];
-        servesView.translatesAutoresizingMaskIntoConstraints = NO;
-        NSDictionary *servesViews = @{@"titleLabel":self.servesTitleLabel, @"servesLabel":self.servesLabel};
-        [servesView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-[servesLabel]-|" options:nil metrics:nil views:servesViews]];
-        [self.containerView addSubview:servesView];
+    self.smallServesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_serves_sm.png"]];
+    self.largeServesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_serves_lg.png"]];
+    self.smallServesImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.largeServesImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.containerView addSubview:self.smallServesImageView];
+    [self.containerView addSubview:self.largeServesImageView];
+    self.smallMakesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_makes_sm.png"]];
+    self.largeMakesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_makes_lg.png"]];
+    self.smallMakesImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.largeMakesImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.containerView addSubview:self.smallMakesImageView];
+    [self.containerView addSubview:self.largeMakesImageView];
+    if (self.recipeDetails.quantityType == CKQuantityMakes) {
+        self.smallServesImageView.alpha = 0.0;
+        self.largeServesImageView.alpha = 0.0;
+    } else {
+        self.smallMakesImageView.alpha = 0.0;
+        self.largeMakesImageView.alpha = 0.0;
     }
+    
+    [self.containerView addSubview:self.servesTabButton];
     UIView *prepView = [[UIView alloc] initWithFrame:CGRectZero];
     {
         [prepView addSubview:self.prepTitleLabel];
@@ -109,16 +119,15 @@
     //Setup layout
     {
         NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@700, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
-        NSDictionary *views = @{@"servesView":servesView,
+        NSDictionary *views = @{@"servesView":self.servesTabButton,
                                 @"servesSlider":self.servesSlider, @"servesLine":hr2Line,
                                 @"prepView":prepView,
                                 @"prepSlider":self.prepSlider,
                                 @"cookView":cookView,
                                 @"cookSlider":self.cookSlider,
-                                @"smallServesIcon":smallServesImageView, @"largeServesIcon":largeServesImageView};
+                                @"smallServesIcon":self.smallServesImageView, @"largeServesIcon":self.largeServesImageView};
 
-        self.servesTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.servesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.servesTabButton.translatesAutoresizingMaskIntoConstraints = NO;
         self.servesSlider.translatesAutoresizingMaskIntoConstraints = NO;
         self.prepTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.prepLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -127,8 +136,8 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(controlHeight)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(70)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(70)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-[servesSlider(sliderWidth)]-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
@@ -154,7 +163,30 @@
                                                                           toItem:self.containerView
                                                                        attribute:NSLayoutAttributeCenterX
                                                                       multiplier:1.f constant:0.f]];
-        
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.smallMakesImageView
+                                                                       attribute:NSLayoutAttributeLeading
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.smallServesImageView
+                                                                       attribute:NSLayoutAttributeLeading
+                                                                      multiplier:1.f constant:0.f]];
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.smallMakesImageView
+                                                                       attribute:NSLayoutAttributeTop
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.smallServesImageView
+                                                                       attribute:NSLayoutAttributeTop
+                                                                      multiplier:1.f constant:0.f]];
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.largeMakesImageView
+                                                                       attribute:NSLayoutAttributeLeading
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.largeServesImageView
+                                                                       attribute:NSLayoutAttributeLeading
+                                                                      multiplier:1.f constant:0.f]];
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.largeMakesImageView
+                                                                       attribute:NSLayoutAttributeTop
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.largeServesImageView
+                                                                       attribute:NSLayoutAttributeTop
+                                                                      multiplier:1.f constant:0.f]];
         
     }
     
@@ -195,29 +227,37 @@
     }
     return _containerView;
 }
+//
+//- (UILabel *)servesTitleLabel {
+//    if (!_servesTitleLabel) {
+//        _servesTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+//        _servesTitleLabel.backgroundColor = [UIColor clearColor];
+//        _servesTitleLabel.font = [Theme editServesTitleFont];
+//        _servesTitleLabel.textColor = [Theme editServesTitleColour];
+//        _servesTitleLabel.text = @"SERVES";
+//        [_servesTitleLabel sizeToFit];
+//    }
+//    return _servesTitleLabel;
+//}
+//
+//- (UILabel *)servesLabel {
+//    if (!_servesLabel) {
+//        _servesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+//        _servesLabel.backgroundColor = [UIColor clearColor];
+//        _servesLabel.font = [Theme editServesFont];
+//        _servesLabel.textColor = [Theme editServesColour];
+//        _servesLabel.text = @"0";   // Starts at 0
+//        [_servesLabel sizeToFit];
+//    }
+//    return _servesLabel;
+//}
 
-- (UILabel *)servesTitleLabel {
-    if (!_servesTitleLabel) {
-        _servesTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _servesTitleLabel.backgroundColor = [UIColor clearColor];
-        _servesTitleLabel.font = [Theme editServesTitleFont];
-        _servesTitleLabel.textColor = [Theme editServesTitleColour];
-        _servesTitleLabel.text = @"SERVES";
-        [_servesTitleLabel sizeToFit];
+- (ServesTabView *)servesTabButton {
+    if (!_servesTabButton) {
+        _servesTabButton = [[ServesTabView alloc] initWithDelegate:self selectedType:self.recipeDetails.quantityType quantityString:@"0"];
+        [_servesTabButton reset];
     }
-    return _servesTitleLabel;
-}
-
-- (UILabel *)servesLabel {
-    if (!_servesLabel) {
-        _servesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _servesLabel.backgroundColor = [UIColor clearColor];
-        _servesLabel.font = [Theme editServesFont];
-        _servesLabel.textColor = [Theme editServesColour];
-        _servesLabel.text = @"0";   // Starts at 0
-        [_servesLabel sizeToFit];
-    }
-    return _servesLabel;
+    return _servesTabButton;
 }
 
 - (ServesNotchSliderView *)servesSlider {
@@ -319,8 +359,28 @@
         } else {
             [servesDisplay appendFormat:@"%d", serves];
         }
-        self.servesLabel.text = servesDisplay;
-        [self.servesLabel sizeToFit];
+        [self.servesTabButton updateQuantity:servesDisplay];
+    }
+}
+
+#pragma mark - ServesTabViewDelegate methods
+
+- (void)didSelectQuantityType:(CKQuantityType)quantityType {
+    self.recipeDetails.quantityType = quantityType;
+    if (quantityType == CKQuantityMakes) {
+        [UIView animateWithDuration:0.4 animations:^{
+            self.smallServesImageView.alpha = 0.0;
+            self.largeServesImageView.alpha = 0.0;
+            self.smallMakesImageView.alpha = 1.0;
+            self.largeMakesImageView.alpha = 1.0;
+        }];
+    } else {
+        [UIView animateWithDuration:0.4 animations:^{
+            self.smallServesImageView.alpha = 1.0;
+            self.largeServesImageView.alpha = 1.0;
+            self.smallMakesImageView.alpha = 0.0;
+            self.largeMakesImageView.alpha = 0.0;
+        }];
     }
 }
 

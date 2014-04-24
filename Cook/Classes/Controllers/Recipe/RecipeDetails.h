@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSURL *userPhotoUrl;
 @property (nonatomic, readonly) NSDate *createdDateTime;
 @property (nonatomic, readonly) NSString *locale;
+@property (nonatomic, assign) CKQuantityType quantityType;
 
 + (NSInteger)maxPrepCookMinutes;
 + (NSInteger)maxServes;
