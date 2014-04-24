@@ -307,9 +307,7 @@
                 failure(error);
             }
         }];
-        
     }
-    
 }
 
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -775,6 +773,34 @@
 - (NSString *)locale {
     return (NSString *)[self.parseObject objectForKey:kRecipeAttrLocale];
 }
+
+- (void)setQuantityType:(CKQuantityType)quantityType {
+    [self.parseObject setObject:@(quantityType) forKey:kRecipeAttrQuantityType];
+}
+
+- (CKQuantityType)quantityType {
+    CKQuantityType quantityType = CKQuantityServes;
+    id value = [self.parseObject objectForKey:kRecipeAttrQuantityType];
+    if (value) {
+        quantityType = [value unsignedIntegerValue];
+    }
+    return quantityType;
+}
+
+/*
+ - (void)setPrivacy:(CKPrivacy)privacy {
+ [self.parseObject setObject:@(privacy) forKey:kRecipeAttrPrivacy];
+ }
+ 
+ - (CKPrivacy)privacy {
+ CKPrivacy privacy = CKPrivacyPublic;
+ id value = [self.parseObject objectForKey:kRecipeAttrPrivacy];
+ if (value) {
+ privacy = [value unsignedIntegerValue];
+ }
+ return privacy;
+ }
+ */
 
 #pragma mark - Existence methods
 

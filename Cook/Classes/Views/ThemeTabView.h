@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKTabView.h"
 
-@interface ThemeTabView : UIView
+@interface ThemeTabView : CKTabView
 
-- (void)reset;
 
 @end

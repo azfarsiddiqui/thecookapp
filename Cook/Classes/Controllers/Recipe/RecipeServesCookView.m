@@ -67,8 +67,11 @@
 
 - (void)updateServes {
     if (self.editMode || self.recipeDetails.numServes) {
-        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.editMode ? @"cook_book_recipe_icon_serves_edit.png" : @"cook_book_recipe_icon_serves"]];
-        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
+        NSString *imageString = [NSString stringWithFormat:@"cook_book_recipe_icon_%@%@",
+                                 self.recipeDetails.quantityType == CKQuantityMakes ? @"makes" : @"serves",
+                                 self.editMode ? @"_edit" : @""];
+        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageString]];
+        UIView *servesStatView = [self viewForStatText:self.recipeDetails.quantityType == CKQuantityMakes ? @"Makes" : @"Serves" statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
         CGRect servesFrame = servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
         servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;

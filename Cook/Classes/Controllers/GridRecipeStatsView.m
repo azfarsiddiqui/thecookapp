@@ -56,6 +56,11 @@
     [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numLikesForRecipe:recipe]] iconIndex:3];
     
     [self layoutIconViews];
+    
+    //Set serves/makes icon
+    UIView *iconContainerView = [self.iconViews firstObject];
+    UIImageView *iconImageView = (UIImageView *)[iconContainerView viewWithTag:kContainerIconTag];
+    iconImageView.image = [UIImage imageNamed:self.recipe.quantityType == CKQuantityMakes ? @"cook_book_inner_icon_small_makes" : @"cook_book_inner_icon_small_serves.png"];
 }
 
 #pragma mark - Private methods

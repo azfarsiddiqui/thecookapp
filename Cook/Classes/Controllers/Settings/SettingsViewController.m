@@ -288,7 +288,7 @@
                                                                              metrics:metrics
                                                                                views:views]];
     }
-//    [self.measureTabView reset];
+    [self.measureTabView reset];
 }
 
 - (void)createLoginLogoutButton {
