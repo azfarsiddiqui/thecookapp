@@ -562,12 +562,10 @@
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    
     // OK Button tapped.
     if (buttonIndex == 1) {
         [self deletePage];
     }
-    
 }
 
 #pragma mark - Properties
@@ -601,7 +599,7 @@
     return _activityView;
 }
 
-#pragma mark - Private 
+#pragma mark - Private
 
 - (void)initImageView {
     self.imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];

@@ -159,9 +159,12 @@
             convertedString = @"cup";
             convertedNumString = [self roundFrom:convertedNum withFractionType:4];
         }
+        //Convert to fl oz to put in the parentheses
+        NSString *ozConvertedString = [self roundFrom:fromNumber * 0.033814 withFractionType:10];
+        
         
         if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
-            convertString = [NSString stringWithFormat:@"~%@ %@ (%i %@)", convertedNumString, convertedString, (int)fromNumber, unitString];
+            convertString = [NSString stringWithFormat:@"~%@ %@ (%@ %@)", convertedNumString, convertedString, ozConvertedString, @"fl oz"];
         } else {
             convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
         }
@@ -244,6 +247,7 @@
         [self.scanner scanCharactersFromSet:[NSCharacterSet letterCharacterSet] intoString:&finishMeasureString];
         if ([[finishMeasureString uppercaseString] isEqualToString:@"OZ"]) {
             measureString = @"fl oz\u200a";
+            checkMeasureString = @"fl oz";
         }
     }
     

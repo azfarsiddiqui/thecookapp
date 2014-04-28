@@ -164,7 +164,7 @@
 			<key>conversion</key>
 			<real>28.35</real>
 			<key>fraction</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>LB</key>
@@ -180,33 +180,6 @@
 			<real>0.4536</real>
 			<key>fraction</key>
 			<integer>10</integer>
-		</dict>
-	</array>
-	<key>CUP</key>
-	<array>
-		<dict>
-			<key>originalType</key>
-			<string>Imperial</string>
-			<key>newType</key>
-			<string>Metric</string>
-			<key>name</key>
-			<string>cup</string>
-			<key>conversion</key>
-			<real>0.944</real>
-			<key>fraction</key>
-			<integer>8</integer>
-		</dict>
-		<dict>
-			<key>originalType</key>
-			<string>Metric</string>
-			<key>newType</key>
-			<string>Imperial</string>
-			<key>name</key>
-			<string>cup</string>
-			<key>conversion</key>
-			<real>1.05932</real>
-			<key>fraction</key>
-			<integer>8</integer>
 		</dict>
 	</array>
 </dict>
