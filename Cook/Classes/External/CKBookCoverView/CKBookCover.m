@@ -257,11 +257,13 @@
 }
 
 + (CGSize)mediumImageSize {
-    return (CGSize) { 156.0, 219.0 };
+    return (CGSize) { 156.0, 219.0 };   // 50%
+//    return (CGSize) { 162.0, 228.0 };   // 52%
+//    return (CGSize) { 150.0, 210.0 };   // 48%
 }
 
 + (CGSize)mediumShadowSize {
-    return (CGSize) { 204.0, 267.0 };
+    return (CGSize) { 204.0, 267.0 };   // 50%
 }
 
 + (CGSize)smallCoverImageSize {
