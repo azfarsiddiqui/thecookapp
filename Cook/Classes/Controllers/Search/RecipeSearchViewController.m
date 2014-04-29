@@ -36,6 +36,7 @@
 @property (nonatomic, assign) NSUInteger numBatches;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIImageView *blurredContainerView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -52,6 +53,8 @@
 @property (nonatomic, assign) CKRecipeSearchFilter searchFilter;
 @property (nonatomic, strong) NSMutableDictionary *filterResults;
 @property (nonatomic, strong) UIImage *arrowImage;
+@property (nonatomic, strong) UIImage *blurredContainerImage;
+@property (nonatomic, assign) BOOL modalBlurEnabled;
 
 @end
 
@@ -72,6 +75,7 @@
 #define FILTER_FONT                 [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define kHeaderCellId               @"DividerHeaderId"
 #define LOAD_MORE_CELL_ID           @"LoadMoreCellId"
+#define MODAL_SCALE_TRANSFORM       0.9
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -85,6 +89,9 @@
         // Default search filter.
         self.searchFilter = CKRecipeSearchFilterPopularity;
         self.filterResults = [NSMutableDictionary dictionary];
+        
+        // Modal blur?
+        self.modalBlurEnabled = NO;
     }
     return self;
 }
@@ -127,6 +134,17 @@
 
 - (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
     DLog();
+    
+    BOOL appear = [appearNumber boolValue];
+    if (appear) {
+        
+        if (self.modalBlurEnabled) {
+            self.blurredContainerView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            self.blurredContainerView.image = self.blurredContainerImage;
+            self.blurredContainerView.alpha = 0.0;
+            [self.view addSubview:self.blurredContainerView];
+        }
+    }
 }
 
 - (void)appModalViewControllerAppearing:(NSNumber *)appearingNumber {
@@ -135,15 +153,26 @@
     BOOL appearing = [appearingNumber boolValue];
     
     // Fade container in/out.
+    self.blurredImageView.alpha = appearing ? 0.0 : 1.0;
     self.containerView.alpha = appearing ? 0.5 : 1.0;
+    self.blurredContainerView.alpha = appearing ? 1.0 : 0.0;
     
     // Scale appropriate views.
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(MODAL_SCALE_TRANSFORM, MODAL_SCALE_TRANSFORM);
     self.containerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+    self.blurredContainerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
 }
 
 - (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
     DLog();
+    
+    BOOL appeared = [appearNumber boolValue];
+    if (!appeared) {
+        self.blurredContainerView.image = nil;
+        [self.blurredContainerView removeFromSuperview];
+        self.blurredContainerView = nil;
+        self.blurredContainerImage = nil;
+    }
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -564,8 +593,16 @@
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];
+    
+    // Pre-render the blurred snapshot.
+    if (self.modalBlurEnabled) {
+        self.blurredContainerImage = [ImageHelper blurredUntintedImageFromView:self.view];
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+        [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];
+    });
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
