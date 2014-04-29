@@ -276,9 +276,9 @@
 }
 
 - (void)hideContext {
-    [self.contextModalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+    [self.contextModalViewController performSelector:@selector(appModalViewControllerWillAppear:)
                                           withObject:[NSNumber numberWithBool:NO]];
-    [self.contextModalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+    [self.contextModalViewController performSelector:@selector(appModalViewControllerDidAppear:)
                                           withObject:[NSNumber numberWithBool:NO]];
     [UIView animateWithDuration:0.4
                           delay:0.0
@@ -399,9 +399,9 @@
     // Add overlay view so we can splice in under an overlay.
     self.view.backgroundColor = [UIColor clearColor];
     
-    // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
-    if (![modalViewController conformsToProtocol:@protocol(BookModalViewController)]) {
-        DLog(@"Must conform to BookModalViewController protocol.");
+    // Modal view controller has to be a UIViewController and confirms to AppModalViewControllerDelegate
+    if (![modalViewController conformsToProtocol:@protocol(AppModalViewController)]) {
+        DLog(@"Must conform to AppModalViewController protocol.");
         return;
     }
     
@@ -414,7 +414,7 @@
     [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
     
     // Inform will appear.
-    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+    [modalViewController performSelector:@selector(appModalViewControllerWillAppear:)
                               withObject:[NSNumber numberWithBool:YES]];
     
     [UIView animateWithDuration:0.4
@@ -424,7 +424,7 @@
                          modalViewController.view.alpha = 1.0;
                      }
                      completion:^(BOOL finished)  {
-                         [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                         [modalViewController performSelector:@selector(appModalViewControllerDidAppear:)
                                                    withObject:[NSNumber numberWithBool:YES]];
                      }];
 }

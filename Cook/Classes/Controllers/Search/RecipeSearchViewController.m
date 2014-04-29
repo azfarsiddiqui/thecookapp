@@ -119,6 +119,33 @@
     [self.searchFieldView focus:focus];
 }
 
+#pragma mark - AppModalViewController methods
+
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
+    DLog();
+}
+
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
+    DLog();
+}
+
+- (void)appModalViewControllerAppearing:(NSNumber *)appearingNumber {
+    DLog();
+    
+    BOOL appearing = [appearingNumber boolValue];
+    
+    // Fade container in/out.
+    self.containerView.alpha = appearing ? 0.5 : 1.0;
+    
+    // Scale appropriate views.
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
+    self.containerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+}
+
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    DLog();
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -538,7 +565,7 @@
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
     CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerView:self.containerView];
+    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
@@ -653,70 +680,6 @@
                                           }];
                      }];
     
-}
-
-- (void)loadSnapshotImage:(UIImage *)snapshotImage {
-    
-    // Blurred imageView to be hidden to start off with.
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:self.blurredImageView];
-    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
-    self.blurredImageView.image = snapshotImage;
-    
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         self.blurredImageView.alpha = 1.0;
-                     } completion:^(BOOL finished) {
-                     }];
-    
-}
-
-- (void)applyTopMaskViewIfRequired {
-    if (self.topMaskView) {
-        return;
-    }
-    
-    CGRect maskFrame = [self maskFrame];
-    self.topMaskView = [self.blurredImageView resizableSnapshotViewFromRect:maskFrame afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    self.topMaskView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    self.topMaskView.frame = maskFrame;
-    
-    // Alpha gradient.
-    CAGradientLayer *alphaGradientLayer = [CAGradientLayer layer];
-    NSArray *colours = [NSArray arrayWithObjects:
-                       (id)[[UIColor colorWithWhite:0 alpha:0] CGColor],
-                       (id)[[UIColor colorWithWhite:0 alpha:1] CGColor],
-                       nil];
-    alphaGradientLayer.colors = colours;
-    alphaGradientLayer.frame = self.topMaskView.bounds;
-    
-    // Start the gradient at the bottom and go almost half way up.
-    [alphaGradientLayer setStartPoint:CGPointMake(0.0, 1.0)];
-    [alphaGradientLayer setEndPoint:CGPointMake(0.0, 0.25)];
-    
-    // Apply the mask to the topMaskView.
-    self.topMaskView.layer.mask = alphaGradientLayer;
-    [self.view insertSubview:self.topMaskView aboveSubview:self.collectionView];
-}
-
-- (UIImage *)topBackgroundImage {
-    UIGraphicsBeginImageContextWithOptions(self.blurredImageView.bounds.size, YES, 0.0);
-    [self.blurredImageView resizableSnapshotViewFromRect:[self maskFrame] afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
-
-- (CGRect)maskFrame {
-    return (CGRect){
-        self.view.bounds.origin.x,
-        self.view.bounds.origin.y,
-        self.view.bounds.size.width,
-        kSearchTopOffset + self.searchFieldView.frame.size.height
-    };
 }
 
 - (void)performSearch {

@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
+@property (nonatomic, weak) id<AppModalViewControllerDelegate> modalDelegate;
 
 // Content and panning related.
 @property (nonatomic, strong) UIScrollView *imageScrollView;
@@ -221,13 +221,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }
 }
 
-#pragma mark - BookModalViewController methods
+#pragma mark - AppModalViewController methods
 
-- (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
     self.modalDelegate = modalViewControllerDelegate;
 }
 
-- (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
     
     // TODO Refactor and move this status bar light post to somewhere else. Notifications do not need this.
     if (!self.disableStatusBarUpdate) {
@@ -235,7 +235,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }
 }
 
-- (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
     DLog();
     
     if ([appearNumber boolValue]) {
@@ -1054,8 +1054,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                }];
     } else {
         
-        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)] && !self.isClosed) {
-            [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForAppModalViewController:)] && !self.isClosed) {
+            [self.modalDelegate fullScreenLoadedForAppModalViewController:self];
         }
     }
     
@@ -1088,8 +1088,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.placeholderHeaderView = nil;
                          
                          // Inform delegate fullscreen has been loaded.
-                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)] && !self.isClosed) {
-                             [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForAppModalViewController:)] && !self.isClosed) {
+                             [self.modalDelegate fullScreenLoadedForAppModalViewController:self];
                          }
                          
                      }];
@@ -1744,7 +1744,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                      }
                      completion:^(BOOL finished)  {
                          [AnalyticsHelper endTrackEventName:kEventRecipeView];
-                         [self.modalDelegate closeRequestedForBookModalViewController:self];
+                         [self.modalDelegate closeRequestedForAppModalViewController:self];
                      }];
 }
 

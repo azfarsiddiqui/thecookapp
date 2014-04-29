@@ -18,7 +18,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
-@property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
+@property (nonatomic, weak) id<AppModalViewControllerDelegate> modalDelegate;
 
 @end
 
@@ -42,16 +42,16 @@
     [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
 
-#pragma mark - BookModalViewController methods
+#pragma mark - AppModalViewController methods
 
-- (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
     self.modalDelegate = modalViewControllerDelegate;
 }
 
-- (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
 }
 
-- (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
     if ([appearNumber boolValue]) {
         [self loadData];
     }

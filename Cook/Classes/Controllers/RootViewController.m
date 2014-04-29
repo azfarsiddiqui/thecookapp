@@ -14,7 +14,7 @@
 #import "CKBook.h"
 #import "CKUser.h"
 #import "SettingsViewController.h"
-#import "BookModalViewController.h"
+#import "AppModalViewController.h"
 #import "WelcomeViewController.h"
 #import "EventHelper.h"
 #import "RecipeDetailsViewController.h"
@@ -38,8 +38,8 @@
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) BookTitleViewController *bookTitleViewController;
 @property (nonatomic, strong) DashboardTutorialViewController *tutorialViewController;
-@property (nonatomic, strong) NSArray *modalCallerViews;
-@property (nonatomic, strong) UIViewController *bookModalViewController;
+@property (nonatomic, strong) UIViewController *appModalViewController;
+@property (nonatomic, strong) UIViewController *appCallerModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL hideStatusBar;
@@ -147,23 +147,27 @@
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe {
-    [self showModalWithRecipe:recipe callerViews:@[]];
+    
+    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO];
 }
 
-- (void)showModalWithRecipe:(CKRecipe *)recipe callerView:(UIView *)callerView {
-    [self showModalWithRecipe:recipe callerViews:@[callerView]];
+- (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate {
+    
+    [self showModalWithRecipe:recipe book:book statusBarUpdate:statusBarUpdate callerViewController:self];
 }
 
-- (void)showModalWithRecipe:(CKRecipe *)recipe callerViews:(NSArray *)callerViews {
-    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViews:callerViews];
+- (void)showModalWithRecipe:(CKRecipe *)recipe
+       callerViewController:(UIViewController<AppModalViewController> *)callerViewController {
+    
+    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:callerViewController];
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate
-                callerViews:(NSArray *)callerViews {
+       callerViewController:(UIViewController<AppModalViewController> *)callerViewController {
     
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
     recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
-    [self showModalViewController:recipeViewController callerViews:callerViews];
+    [self showModalViewController:recipeViewController callerViewController:callerViewController];
 }
 
 #pragma mark - WelcomeViewControllerDelegate methods
@@ -377,8 +381,7 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
-    [self showModalWithRecipe:recipe book:self.selectedBook statusBarUpdate:YES
-                  callerViews:@[self.bookNavigationViewController.view, self.bookCoverViewController.view]];
+    [self showModalWithRecipe:recipe book:self.selectedBook statusBarUpdate:YES];
 }
 
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page {
@@ -413,7 +416,7 @@
 }
 
 - (BOOL)bookNavigationShouldResumeEnable {
-    if (self.bookModalViewController) {
+    if (self.appModalViewController) {
         return NO;
     } else {
         return YES;
@@ -426,17 +429,65 @@
     [self showTutorialView:NO];
 }
 
-#pragma mark - BookModalViewControllerDelegate methods
+#pragma mark - AppModalViewController methods
 
-- (void)closeRequestedForBookModalViewController:(UIViewController *)viewController {
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
+    DLog();
+}
+
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
+    DLog();
+    
+    BOOL appear = [appearNumber boolValue];
+    
+    if (appear) {
+        
+        // Create overlay.
+        self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kOverlayViewAlpha];
+        self.modalOverlayView.alpha = 0.0;
+        [self.view addSubview:self.modalOverlayView];
+    }
+    
+}
+
+- (void)appModalViewControllerAppearing:(NSNumber *)appearingNumber {
+    DLog();
+    
+    BOOL appearing = [appearingNumber boolValue];
+    
+    // Fade overlay in/out.
+    self.modalOverlayView.alpha = appearing ? 1.0 : 0.0;
+    
+    // Scale appropriate views.
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+    self.bookCoverViewController.view.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+    self.bookNavigationViewController.view.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+}
+
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    DLog();
+    
+    BOOL appeared = [appearNumber boolValue];
+    if (!appeared) {
+        [self.modalOverlayView removeFromSuperview];
+        self.modalOverlayView = nil;
+    }
+    
+}
+
+#pragma mark - AppModalViewControllerDelegate methods
+
+- (void)closeRequestedForAppModalViewController:(UIViewController *)viewController {
     [self hideViewsFromModal:NO];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self hideModalViewController:viewController];
+        [self hideModalViewController];
     });
 }
 
-- (void)fullScreenLoadedForBookModalViewController:(UIViewController *)viewController {
+- (void)fullScreenLoadedForAppModalViewController:(UIViewController *)viewController {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self hideViewsFromModal:YES];
     });
@@ -894,43 +945,41 @@
     //Only allow adding of recipe to book if book is own book
     if ([book.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
         RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:book page:page];
-        [self showModalViewController:recipeViewController
-                          callerViews:@[self.bookCoverViewController.view, self.bookNavigationViewController.view]];
+        [self showModalViewController:recipeViewController callerViewController:self];
     }
 }
 
-- (void)showModalViewController:(UIViewController *)modalViewController callerViews:(NSArray *)callerViews {
+- (void)showModalViewController:(UIViewController *)modalViewController callerViews:(NSArray *)callerViews fade:(BOOL)fade {
     [self.benchtopViewController showVisibleBooks:NO];
     
-    // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
+    // Modal view controller has to be a UIViewController and confirms to AppModalViewControllerDelegate
     if (![modalViewController isKindOfClass:[UIViewController class]]
-        && ![modalViewController conformsToProtocol:@protocol(BookModalViewController)]) {
-        DLog(@"Not UIViewController or conforms to BookModalViewController protocol.");
+        && ![modalViewController conformsToProtocol:@protocol(AppModalViewController)]) {
+        DLog(@"Not UIViewController or conforms to AppModalViewController protocol.");
         return;
     }
     
     // Prepare the dimView
-    self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kOverlayViewAlpha];
-    self.modalOverlayView.alpha = 0.0;
-    [self.view addSubview:self.modalOverlayView];
+    if (!fade) {
+        self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kOverlayViewAlpha];
+        self.modalOverlayView.alpha = 0.0;
+        [self.view addSubview:self.modalOverlayView];
+    }
     
     // Prepare the modalVC to be transitioned.
     modalViewController.view.frame = self.view.bounds;
     modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
     [self.view addSubview:modalViewController.view];
-    self.bookModalViewController = modalViewController;
+    self.appModalViewController = modalViewController;
 
     // Sets the modal view delegate for close callbacks.
     [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
     
     // Inform will appear.
-    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+    [modalViewController performSelector:@selector(appModalViewControllerWillAppear:)
                               withObject:[NSNumber numberWithBool:YES]];
-    
-    // Inform book navigation it is about to become inactive.
-    // [self.bookNavigationViewController setActive:NO];
     
     // Book scale/translate transform.
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
@@ -944,55 +993,110 @@
                          // Apply transition transform to callerViews.
                          for (UIView *view in callerViews) {
                              view.transform = modalTransform;
+                             
+                             // Fade caller views?
+                             if (fade) {
+                                 view.alpha = 0.5;
+                             }
                          }
-                     
+                         
                          // Fade in overlay.
-                         self.modalOverlayView.alpha = 1.0;
+                         if (!fade) {
+                             self.modalOverlayView.alpha = 1.0;
+                         }
                      
                          // Slide up the modal.
                          modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
                      
-                     // Remember the caller views.
-                     self.modalCallerViews = callerViews;
-                     
-                     [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                     [modalViewController performSelector:@selector(appModalViewControllerDidAppear:)
                                                withObject:[NSNumber numberWithBool:YES]];
                  }];
 }
 
-- (void)hideModalViewController:(UIViewController *)modalViewController {
+- (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
+           callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController {
+    
+    [self.benchtopViewController showVisibleBooks:NO];
+    
+    // Remember the modal VC's that are involved in this modal presentation.
+    self.appModalViewController = modalViewController;
+    self.appCallerModalViewController = callerModalViewController;
+    
+    // Sets the modal view delegate for interaction callbacks.
+    [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
+    [callerModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
+    
+    // Inform will appear.
+    [modalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(YES)];
+    [callerModalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(YES)];
+    
+    // Prepare the modalVC to be transitioned.
+    modalViewController.view.frame = self.view.bounds;
+    modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
+    [self.view addSubview:modalViewController.view];
+    
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         
+                         // Inform appearing.
+                         if ([modalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
+                             [modalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(YES)];
+                         }
+                         if ([callerModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
+                             [callerModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(YES)];
+                         }
+                         
+                         // Slide up the modal.
+                         modalViewController.view.transform = CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished)  {
+                         
+                         // Inform appeared.
+                         [modalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(YES)];
+                         [callerModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(YES)];
+                     }];
+}
+
+- (void)hideModalViewController {
     
     // Inform will disappear.
-    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
-                              withObject:[NSNumber numberWithBool:NO]];
+    [self.appCallerModalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(NO)];
+    [self.appModalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(NO)];
     
     // Animate the book back, and slide up the modalVC.
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.modalOverlayView.alpha = 0.0;
                          
-                         // Apply transition transform to callerViews.
-                         for (UIView *view in self.modalCallerViews) {
-                             view.transform = CGAffineTransformIdentity;
+                         // Inform disappearing.
+                         if ([self.appModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
+                             [self.appModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(NO)];
                          }
-                         modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
+                         if ([self.appCallerModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
+                             [self.appCallerModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(NO)];
+                         }
+                         
+                         // Slide down modal VC.
+                         self.appModalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
                      }
                      completion:^(BOOL finished)  {
-                         [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
-                                                   withObject:[NSNumber numberWithBool:NO]];
                          
-                         // Get rid of overlay.
-                         [self.modalOverlayView removeFromSuperview];
-                         self.modalOverlayView = nil;
+                         // Inform disappeared.
+                         [self.appModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(NO)];
+                         [self.appCallerModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(NO)];
                          
-                         // Get rid of modalVC and reference to it.
-                         [modalViewController.view removeFromSuperview];
-                         self.bookModalViewController = nil;
-                         self.modalCallerViews = nil;
+                         // Reset delegates.
+                         [self.appModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:nil];
+                         [self.appCallerModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:nil];
+                         
+                         // Nil them out.
+                         self.appModalViewController = nil;
+                         self.appCallerModalViewController = nil;
                          
                          [self.benchtopViewController showVisibleBooks:YES];
                          

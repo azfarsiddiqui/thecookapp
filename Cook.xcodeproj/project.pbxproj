@@ -1889,8 +1889,8 @@
 		76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewControllerDelegate.h; sourceTree = "<group>"; };
 		763AE0661716DD0500E0922D /* RecipeSocialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialViewController.h; sourceTree = "<group>"; };
 		763AE0671716DD0500E0922D /* RecipeSocialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialViewController.m; sourceTree = "<group>"; };
-		763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModalViewControllerDelegate.h; sourceTree = "<group>"; };
-		763CCBAA16D4734900A44AC7 /* BookModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModalViewController.h; sourceTree = "<group>"; };
+		763CCBA916D4710A00A44AC7 /* AppModalViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppModalViewControllerDelegate.h; sourceTree = "<group>"; };
+		763CCBAA16D4734900A44AC7 /* AppModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppModalViewController.h; sourceTree = "<group>"; };
 		763D2776166C293800A43DF9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		763E00F617AD357200CCA412 /* PageListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageListEditViewController.h; sourceTree = "<group>"; };
 		763E00F717AD357200CCA412 /* PageListEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageListEditViewController.m; sourceTree = "<group>"; };
@@ -6233,8 +6233,8 @@
 				76D84CAE16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m */,
 				76FA241D16D1D4AC00DDC439 /* GridRecipeStatsView.h */,
 				76FA241E16D1D4AC00DDC439 /* GridRecipeStatsView.m */,
-				763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */,
-				763CCBAA16D4734900A44AC7 /* BookModalViewController.h */,
+				763CCBA916D4710A00A44AC7 /* AppModalViewControllerDelegate.h */,
+				763CCBAA16D4734900A44AC7 /* AppModalViewController.h */,
 				76A7D42E16E4327200118749 /* BookLeftPageDividerView.h */,
 				76A7D42F16E4327200118749 /* BookLeftPageDividerView.m */,
 				76A7D43116E432E600118749 /* BookRightPageDividerView.h */,
