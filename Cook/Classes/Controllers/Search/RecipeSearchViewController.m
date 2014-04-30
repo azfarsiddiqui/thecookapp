@@ -832,6 +832,7 @@
                          NSUInteger nextSliceIndex = 0;
                          
                          if (batchIndex == 0) {
+                             [AnalyticsHelper trackEventName:kEventSearchSubmit params:@{ kEventParamsSearchFilter : [self currentDisplayForSearchFilter] }];
                              [self.searchFieldView setSearching:NO];
                              [self.searchFieldView showNumResults:count];
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
@@ -997,7 +998,7 @@
             return @"POPULAR";
             break;
         case CKRecipeSearchFilterCreationDate:
-            return @"DATE";
+            return @"LATEST";
             break;
         default:
             return @"POPULAR";

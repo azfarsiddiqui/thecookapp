@@ -33,11 +33,13 @@ extern NSString *const kEventRecipeSocialView;
 
 extern NSString *const kEventNotificationsView;
 extern NSString *const kEventSearchView;
+extern NSString *const kEventSearchSubmit;
 
 #pragma mark - Properties
 
 extern NSString *const kEventParamsBookPageName;
 extern NSString *const kEventParamsBookPageIndex;
+extern NSString *const kEventParamsSearchFilter;
 
 #pragma mark - Tracking methods
 
