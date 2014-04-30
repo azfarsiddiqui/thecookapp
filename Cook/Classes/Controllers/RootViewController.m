@@ -447,7 +447,7 @@
         self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kOverlayViewAlpha];
         self.modalOverlayView.alpha = 0.0;
-        [self.view addSubview:self.modalOverlayView];
+        [self.view insertSubview:self.modalOverlayView belowSubview:self.appModalViewController.view];
     }
     
 }
@@ -949,72 +949,6 @@
     }
 }
 
-- (void)showModalViewController:(UIViewController *)modalViewController callerViews:(NSArray *)callerViews fade:(BOOL)fade {
-    [self.benchtopViewController showVisibleBooks:NO];
-    
-    // Modal view controller has to be a UIViewController and confirms to AppModalViewControllerDelegate
-    if (![modalViewController isKindOfClass:[UIViewController class]]
-        && ![modalViewController conformsToProtocol:@protocol(AppModalViewController)]) {
-        DLog(@"Not UIViewController or conforms to AppModalViewController protocol.");
-        return;
-    }
-    
-    // Prepare the dimView
-    if (!fade) {
-        self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-        self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kOverlayViewAlpha];
-        self.modalOverlayView.alpha = 0.0;
-        [self.view addSubview:self.modalOverlayView];
-    }
-    
-    // Prepare the modalVC to be transitioned.
-    modalViewController.view.frame = self.view.bounds;
-    modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
-    [self.view addSubview:modalViewController.view];
-    self.appModalViewController = modalViewController;
-
-    // Sets the modal view delegate for close callbacks.
-    [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
-    
-    // Inform will appear.
-    [modalViewController performSelector:@selector(appModalViewControllerWillAppear:)
-                              withObject:[NSNumber numberWithBool:YES]];
-    
-    // Book scale/translate transform.
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
-    CGAffineTransform modalTransform = scaleTransform;
-    
-    [UIView animateWithDuration:0.4
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         
-                         // Apply transition transform to callerViews.
-                         for (UIView *view in callerViews) {
-                             view.transform = modalTransform;
-                             
-                             // Fade caller views?
-                             if (fade) {
-                                 view.alpha = 0.5;
-                             }
-                         }
-                         
-                         // Fade in overlay.
-                         if (!fade) {
-                             self.modalOverlayView.alpha = 1.0;
-                         }
-                     
-                         // Slide up the modal.
-                         modalViewController.view.transform = CGAffineTransformIdentity;
-                 }
-                 completion:^(BOOL finished)  {
-                     
-                     [modalViewController performSelector:@selector(appModalViewControllerDidAppear:)
-                                               withObject:[NSNumber numberWithBool:YES]];
-                 }];
-}
-
 - (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
            callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController {
     
@@ -1028,14 +962,14 @@
     [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
     [callerModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
     
-    // Inform will appear.
-    [modalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(YES)];
-    [callerModalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(YES)];
-    
     // Prepare the modalVC to be transitioned.
     modalViewController.view.frame = self.view.bounds;
     modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
     [self.view addSubview:modalViewController.view];
+    
+    // Inform will appear.
+    [modalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(YES)];
+    [callerModalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(YES)];
     
     [UIView animateWithDuration:0.4
                           delay:0.0

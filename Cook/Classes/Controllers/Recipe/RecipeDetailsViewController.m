@@ -233,10 +233,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     if (!self.disableStatusBarUpdate) {
         [EventHelper postStatusBarChangeForLight:[appearNumber boolValue]];
     }
-}
-
-- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
-    DLog();
     
     if ([appearNumber boolValue]) {
         
@@ -258,16 +254,22 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                     [self.privacyView selectNotch:CKPrivacyPublic animated:YES informDelegate:YES];
                 });
-
+                
             } else {
                 [self updateButtons];
             }
-
+            
         }];
         
     } else {
         
     }
+
+}
+
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    DLog();
+    
 }
 
 #pragma mark - RecipeDetailsViewDelegate methods
@@ -1003,7 +1005,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)loadData {
-    [self loadPhoto];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self loadPhoto];
+    });
     
     // Get stats and log pageView.
     self.pinButton.enabled = NO;
