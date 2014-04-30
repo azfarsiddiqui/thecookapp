@@ -164,7 +164,6 @@
 
 + (UIImage *)blurredOverlayImage:(UIImage *)image {
     return [self blurredOverlayImage:image alpha:0.38];
-    return [self blurredImage:image tintColour:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.38]];
 }
 
 + (UIImage *)blurredOverlayImage:(UIImage *)image alpha:(CGFloat)alpha {
@@ -209,6 +208,14 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return [self blurredOverlayImage:image];
+}
+
++ (UIImage *)blurredUntintedImageFromView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [self blurredImage:image tintColour:nil];
 }
 
 + (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion {

@@ -36,8 +36,11 @@
 @property (nonatomic, assign) NSUInteger numBatches;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIView *blurredContainerView;
+@property (nonatomic, strong) UIImageView *blurredContainerImageView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
+@property (nonatomic, strong) UIView *modalOverlayView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *filterButton;
 @property (nonatomic, strong) UIButton *errorMessageButton;
@@ -52,6 +55,8 @@
 @property (nonatomic, assign) CKRecipeSearchFilter searchFilter;
 @property (nonatomic, strong) NSMutableDictionary *filterResults;
 @property (nonatomic, strong) UIImage *arrowImage;
+@property (nonatomic, strong) UIImage *blurredContainerImage;
+@property (nonatomic, assign) BOOL modalBlurEnabled;
 
 @end
 
@@ -72,6 +77,8 @@
 #define FILTER_FONT                 [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20]
 #define kHeaderCellId               @"DividerHeaderId"
 #define LOAD_MORE_CELL_ID           @"LoadMoreCellId"
+#define MODAL_SCALE_TRANSFORM       0.9
+#define MODAL_OVERLAY_ALPHA         0.5
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -85,6 +92,9 @@
         // Default search filter.
         self.searchFilter = CKRecipeSearchFilterPopularity;
         self.filterResults = [NSMutableDictionary dictionary];
+        
+        // Modal blur?
+        self.modalBlurEnabled = NO;
     }
     return self;
 }
@@ -117,6 +127,94 @@
     
     // Focus the search field to kick off the keyboard event that triggers everything else.
     [self.searchFieldView focus:focus];
+}
+
+#pragma mark - AppModalViewController methods
+
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
+    DLog();
+}
+
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
+    DLog();
+    
+    BOOL appear = [appearNumber boolValue];
+    if (appear) {
+        
+        if (self.modalBlurEnabled) {
+            
+            self.blurredContainerImageView = [[UIImageView alloc] initWithFrame:self.blurredContainerView.frame];
+            self.blurredContainerImageView.image = self.blurredContainerImage;
+            self.blurredContainerImageView.frame = (CGRect) {
+                floorf((self.view.bounds.size.width - self.blurredContainerImageView.frame.size.width) / 2.0),
+                floorf((self.view.bounds.size.height - self.blurredContainerImageView.frame.size.height) / 2.0),
+                self.blurredContainerImageView.frame.size.width,
+                self.blurredContainerImageView.frame.size.height
+            };
+            self.blurredContainerImageView.alpha = 0.0;
+            [self.view addSubview:self.blurredContainerImageView];
+            
+        } else {
+            
+            // Create overlay.
+            self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+            self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:MODAL_OVERLAY_ALPHA];
+            self.modalOverlayView.alpha = 0.0;
+            [self.view addSubview:self.modalOverlayView];
+
+        }
+    }
+}
+
+- (void)appModalViewControllerAppearing:(NSNumber *)appearingNumber {
+    DLog();
+    
+    BOOL appearing = [appearingNumber boolValue];
+    
+    // Scale appropriate views.
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(MODAL_SCALE_TRANSFORM, MODAL_SCALE_TRANSFORM);
+    self.containerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+    
+    // Fade container in/out.
+    self.containerView.alpha = appearing ? 0.5 : 1.0;
+    
+    if (self.modalBlurEnabled) {
+        
+        // Fade blurred container view in/out.
+        self.blurredContainerImageView.alpha = appearing ? 1.0 : 0.0;
+        self.blurredContainerImageView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+        
+    } else {
+        
+        // Fade overlay in/out.
+        self.modalOverlayView.alpha = appearing ? 1.0 : 0.0;
+        
+    }
+    
+}
+
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    DLog();
+    
+    BOOL appeared = [appearNumber boolValue];
+    if (!appeared) {
+        
+        if (self.modalBlurEnabled) {
+            
+            // Remove blurred container view.
+            self.blurredContainerImage = nil;
+            self.blurredContainerImageView.image = nil;
+            [self.blurredContainerImageView removeFromSuperview];
+            self.blurredContainerImageView = nil;
+            
+        } else {
+            
+            [self.modalOverlayView removeFromSuperview];
+            self.modalOverlayView = nil;
+        }
+        
+    }
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -429,6 +527,24 @@
     return _blurredImageView;
 }
 
+- (UIView *)blurredContainerView {
+    if (!_blurredContainerView) {
+        
+        CGSize intendedSize = (CGSize){
+            self.view.bounds.size.width / MODAL_SCALE_TRANSFORM,
+            self.view.bounds.size.height / MODAL_SCALE_TRANSFORM
+        };
+        _blurredContainerView = [[UIImageView alloc] initWithFrame:(CGRect){
+            floorf((self.view.bounds.size.width - intendedSize.width) / 2.0),
+            floorf((self.view.bounds.size.height - intendedSize.height) / 2.0),
+            intendedSize.width,
+            intendedSize.height
+        }];
+        _blurredContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    }
+    return _blurredContainerView;
+}
+
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
@@ -537,8 +653,43 @@
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
-    [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerView:self.containerView];
+    
+    // Pre-render the blurred snapshot.
+    if (self.modalBlurEnabled) {
+        
+        // Add the blurred container view to host containerView so we can capture bigger screenshot.
+        self.blurredContainerView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - self.blurredContainerView.frame.size.width) / 2.0),
+            floorf((self.view.bounds.size.height - self.blurredContainerView.frame.size.height) / 2.0),
+            self.blurredContainerView.frame.size.width,
+            self.blurredContainerView.frame.size.height
+        };
+        [self.view addSubview:self.blurredContainerView];
+        
+        // Move container view to blurredContainer view to capture
+        [self.containerView removeFromSuperview];
+        self.containerView.frame = (CGRect){
+            floorf((self.blurredContainerView.bounds.size.width - self.containerView.frame.size.width) / 2.0),
+            floorf((self.blurredContainerView.bounds.size.height - self.containerView.frame.size.height) / 2.0),
+            self.containerView.frame.size.width,
+            self.containerView.frame.size.height
+        };
+        [self.blurredContainerView addSubview:self.containerView];
+        
+        // Capture this blurredContainerView as a bigger screenshot.
+        self.blurredContainerImage = [ImageHelper blurredImageFromView:self.blurredContainerView];
+        
+        // Move the containerView back.
+        [self.containerView removeFromSuperview];
+        self.containerView.frame = self.view.bounds;
+        [self.view insertSubview:self.containerView aboveSubview:self.blurredImageView];
+        [self.blurredContainerView removeFromSuperview];
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+        [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];
+    });
 }
 
 - (CGRect)frameForSearchFieldViewResultsMode:(BOOL)resultsMode {
@@ -655,70 +806,6 @@
     
 }
 
-- (void)loadSnapshotImage:(UIImage *)snapshotImage {
-    
-    // Blurred imageView to be hidden to start off with.
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:self.blurredImageView];
-    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
-    self.blurredImageView.image = snapshotImage;
-    
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         self.blurredImageView.alpha = 1.0;
-                     } completion:^(BOOL finished) {
-                     }];
-    
-}
-
-- (void)applyTopMaskViewIfRequired {
-    if (self.topMaskView) {
-        return;
-    }
-    
-    CGRect maskFrame = [self maskFrame];
-    self.topMaskView = [self.blurredImageView resizableSnapshotViewFromRect:maskFrame afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    self.topMaskView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    self.topMaskView.frame = maskFrame;
-    
-    // Alpha gradient.
-    CAGradientLayer *alphaGradientLayer = [CAGradientLayer layer];
-    NSArray *colours = [NSArray arrayWithObjects:
-                       (id)[[UIColor colorWithWhite:0 alpha:0] CGColor],
-                       (id)[[UIColor colorWithWhite:0 alpha:1] CGColor],
-                       nil];
-    alphaGradientLayer.colors = colours;
-    alphaGradientLayer.frame = self.topMaskView.bounds;
-    
-    // Start the gradient at the bottom and go almost half way up.
-    [alphaGradientLayer setStartPoint:CGPointMake(0.0, 1.0)];
-    [alphaGradientLayer setEndPoint:CGPointMake(0.0, 0.25)];
-    
-    // Apply the mask to the topMaskView.
-    self.topMaskView.layer.mask = alphaGradientLayer;
-    [self.view insertSubview:self.topMaskView aboveSubview:self.collectionView];
-}
-
-- (UIImage *)topBackgroundImage {
-    UIGraphicsBeginImageContextWithOptions(self.blurredImageView.bounds.size, YES, 0.0);
-    [self.blurredImageView resizableSnapshotViewFromRect:[self maskFrame] afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
-
-- (CGRect)maskFrame {
-    return (CGRect){
-        self.view.bounds.origin.x,
-        self.view.bounds.origin.y,
-        self.view.bounds.size.width,
-        kSearchTopOffset + self.searchFieldView.frame.size.height
-    };
-}
-
 - (void)performSearch {
     [self searchWithBatchIndex:0];
 }
@@ -745,6 +832,7 @@
                          NSUInteger nextSliceIndex = 0;
                          
                          if (batchIndex == 0) {
+                             [AnalyticsHelper trackEventName:kEventSearchSubmit params:@{ kEventParamsSearchFilter : [self currentDisplayForSearchFilter] }];
                              [self.searchFieldView setSearching:NO];
                              [self.searchFieldView showNumResults:count];
                              self.recipes = [NSMutableArray arrayWithArray:recipes];
@@ -910,7 +998,7 @@
             return @"POPULAR";
             break;
         case CKRecipeSearchFilterCreationDate:
-            return @"DATE";
+            return @"LATEST";
             break;
         default:
             return @"POPULAR";

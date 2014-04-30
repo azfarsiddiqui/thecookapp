@@ -7,6 +7,7 @@
 //
 
 #import "OverlayViewController.h"
+#import "AppModalViewController.h"
 
 @class CKRecipe;
 
@@ -17,7 +18,7 @@
 
 @end
 
-@interface RecipeSearchViewController : OverlayViewController
+@interface RecipeSearchViewController : OverlayViewController <AppModalViewController>
 
 - (id)initWithDelegate:(id<RecipeSearchViewControllerDelegate>)delegate;
 - (void)focusSearchField:(BOOL)focus;

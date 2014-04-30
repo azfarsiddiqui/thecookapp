@@ -30,11 +30,13 @@ NSString *const kEventRecipePin                     = @"Recipe Pin";
 NSString *const kEventRecipeSocialView              = @"Recipe Social View";
 NSString *const kEventNotificationsView             = @"Notifications View";
 NSString *const kEventSearchView                    = @"Search View";
+NSString *const kEventSearchSubmit                  = @"Search Submit";
 
 #pragma mark - Properties
 
 NSString *const kEventParamsBookPageName            = @"Page";
 NSString *const kEventParamsBookPageIndex           = @"Index";
+NSString *const kEventParamsSearchFilter            = @"Filter";
 
 #pragma mark - Tracking methods
 

@@ -22,8 +22,6 @@
 
 @implementation StoreFlowLayout
 
-#define kStoreBookInsertScale   0.5
-
 - (id)init {
     if (self = [super init]) {
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;

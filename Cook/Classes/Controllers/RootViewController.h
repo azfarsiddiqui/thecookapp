@@ -7,17 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookModalViewControllerDelegate.h"
+#import "AppModalViewController.h"
+#import "AppModalViewControllerDelegate.h"
 
 @class CKRecipe;
 @class CKBook;
 
-@interface RootViewController : UIViewController <BookModalViewControllerDelegate>
+@interface RootViewController : UIViewController <AppModalViewControllerDelegate, AppModalViewController>
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe;
-- (void)showModalWithRecipe:(CKRecipe *)recipe callerView:(UIView *)callerView;
-- (void)showModalWithRecipe:(CKRecipe *)recipe callerViews:(NSArray *)callerViews;
+- (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate;
+- (void)showModalWithRecipe:(CKRecipe *)recipe
+       callerViewController:(UIViewController<AppModalViewController> *)callerViewController;
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate
-                callerViews:(NSArray *)callerViews;
+       callerViewController:(UIViewController<AppModalViewController> *)callerViewController;
 
 @end

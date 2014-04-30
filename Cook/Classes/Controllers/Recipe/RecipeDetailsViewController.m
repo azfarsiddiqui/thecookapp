@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
+@property (nonatomic, weak) id<AppModalViewControllerDelegate> modalDelegate;
 
 // Content and panning related.
 @property (nonatomic, strong) UIScrollView *imageScrollView;
@@ -221,22 +221,18 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }
 }
 
-#pragma mark - BookModalViewController methods
+#pragma mark - AppModalViewController methods
 
-- (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
     self.modalDelegate = modalViewControllerDelegate;
 }
 
-- (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
     
     // TODO Refactor and move this status bar light post to somewhere else. Notifications do not need this.
     if (!self.disableStatusBarUpdate) {
         [EventHelper postStatusBarChangeForLight:[appearNumber boolValue]];
     }
-}
-
-- (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
-    DLog();
     
     if ([appearNumber boolValue]) {
         
@@ -258,16 +254,22 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                     [self.privacyView selectNotch:CKPrivacyPublic animated:YES informDelegate:YES];
                 });
-
+                
             } else {
                 [self updateButtons];
             }
-
+            
         }];
         
     } else {
         
     }
+
+}
+
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    DLog();
+    
 }
 
 #pragma mark - RecipeDetailsViewDelegate methods
@@ -1003,7 +1005,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)loadData {
-    [self loadPhoto];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self loadPhoto];
+    });
     
     // Get stats and log pageView.
     self.pinButton.enabled = NO;
@@ -1054,8 +1059,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                }];
     } else {
         
-        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)] && !self.isClosed) {
-            [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForAppModalViewController:)] && !self.isClosed) {
+            [self.modalDelegate fullScreenLoadedForAppModalViewController:self];
         }
     }
     
@@ -1088,8 +1093,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.placeholderHeaderView = nil;
                          
                          // Inform delegate fullscreen has been loaded.
-                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)] && !self.isClosed) {
-                             [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForAppModalViewController:)] && !self.isClosed) {
+                             [self.modalDelegate fullScreenLoadedForAppModalViewController:self];
                          }
                          
                      }];
@@ -1744,7 +1749,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                      }
                      completion:^(BOOL finished)  {
                          [AnalyticsHelper endTrackEventName:kEventRecipeView];
-                         [self.modalDelegate closeRequestedForBookModalViewController:self];
+                         [self.modalDelegate closeRequestedForAppModalViewController:self];
                      }];
 }
 

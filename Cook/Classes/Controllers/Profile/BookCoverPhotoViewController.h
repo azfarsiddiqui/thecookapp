@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "CKNavigationController.h"
-#import "BookModalViewController.h"
+#import "AppModalViewController.h"
 
 @class CKBook;
 
-@interface BookCoverPhotoViewController : UIViewController <BookModalViewController>
+@interface BookCoverPhotoViewController : UIViewController <AppModalViewController>
 
 - (id)initWithBook:(CKBook *)book;
 

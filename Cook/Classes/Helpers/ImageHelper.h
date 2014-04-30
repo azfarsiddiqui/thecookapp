@@ -49,6 +49,7 @@
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius;
 + (UIImage *)blurredOverlayImageFromView:(UIView *)view alpha:(CGFloat)alpha;
 + (UIImage *)blurredImageFromView:(UIView *)view;
++ (UIImage *)blurredUntintedImageFromView:(UIView *)view;
 + (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour completion:(void (^)(UIImage *blurredImage))completion;

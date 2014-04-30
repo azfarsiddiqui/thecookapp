@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookModalViewController.h"
+#import "AppModalViewController.h"
 
 @class CKRecipe;
 @class CKBook;
 
-@interface RecipeDetailsViewController : UIViewController <BookModalViewController, UIAlertViewDelegate>
+@interface RecipeDetailsViewController : UIViewController <AppModalViewController, UIAlertViewDelegate>
 
 @property (nonatomic, assign) BOOL hideNavigation;
 @property (nonatomic, assign) BOOL disableStatusBarUpdate;

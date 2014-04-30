@@ -10,7 +10,7 @@
 #import "ModalOverlayHelper.h"
 #import "AppHelper.h"
 #import "RecipeDetailsViewController.h"
-#import "BookModalViewController.h"
+#import "AppModalViewController.h"
 #import "CKProgressView.h"
 #import "CKActivityIndicatorView.h"
 #import "Theme.h"
