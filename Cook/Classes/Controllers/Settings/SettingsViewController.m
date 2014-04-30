@@ -64,15 +64,20 @@
     self.view.clipsToBounds = NO;   // So that background extends below.
     [self.view addSubview:backgroundView];
     
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
+    [EventHelper registerUserChange:self selector:@selector(reloadProfilePhoto:)];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     // Init on next run loop to try and circumvent Parse currentUser hang bug
-    dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self initSettingsContent];
         [self createLoginLogoutButton];
     });
     
-    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
-    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
-    [EventHelper registerUserChange:self selector:@selector(reloadProfilePhoto:)];
 }
 
 - (void)reloadProfilePhoto:(NSNotification *) notification {
