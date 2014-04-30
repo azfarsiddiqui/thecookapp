@@ -36,9 +36,11 @@
 @property (nonatomic, assign) NSUInteger numBatches;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UIImageView *blurredContainerView;
+@property (nonatomic, strong) UIView *blurredContainerView;
+@property (nonatomic, strong) UIImageView *blurredContainerImageView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
+@property (nonatomic, strong) UIView *modalOverlayView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *filterButton;
 @property (nonatomic, strong) UIButton *errorMessageButton;
@@ -76,6 +78,7 @@
 #define kHeaderCellId               @"DividerHeaderId"
 #define LOAD_MORE_CELL_ID           @"LoadMoreCellId"
 #define MODAL_SCALE_TRANSFORM       0.9
+#define MODAL_OVERLAY_ALPHA         0.5
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -139,10 +142,27 @@
     if (appear) {
         
         if (self.modalBlurEnabled) {
-            self.blurredContainerView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-            self.blurredContainerView.image = self.blurredContainerImage;
-            self.blurredContainerView.alpha = 0.0;
-            [self.view addSubview:self.blurredContainerView];
+            
+            self.blurredContainerImageView = [[UIImageView alloc] initWithFrame:self.blurredContainerView.frame];
+            self.blurredContainerImageView.image = self.blurredContainerImage;
+            self.blurredContainerImageView.frame = (CGRect) {
+                floorf((self.view.bounds.size.width - self.blurredContainerImageView.frame.size.width) / 2.0),
+                floorf((self.view.bounds.size.height - self.blurredContainerImageView.frame.size.height) / 2.0),
+                self.blurredContainerImageView.frame.size.width,
+                self.blurredContainerImageView.frame.size.height
+            };
+            self.blurredContainerImageView.alpha = 0.0;
+            [self.view addSubview:self.blurredContainerImageView];
+            
+        } else {
+            
+            // Create overlay.
+            self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+            self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:MODAL_OVERLAY_ALPHA];
+            self.modalOverlayView.alpha = 0.0;
+            [self.view addSubview:self.modalOverlayView];
+
         }
     }
 }
@@ -152,15 +172,26 @@
     
     BOOL appearing = [appearingNumber boolValue];
     
-    // Fade container in/out.
-    self.blurredImageView.alpha = appearing ? 0.0 : 1.0;
-    self.containerView.alpha = appearing ? 0.5 : 1.0;
-    self.blurredContainerView.alpha = appearing ? 1.0 : 0.0;
-    
     // Scale appropriate views.
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(MODAL_SCALE_TRANSFORM, MODAL_SCALE_TRANSFORM);
     self.containerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
-    self.blurredContainerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+    
+    // Fade container in/out.
+    self.containerView.alpha = appearing ? 0.5 : 1.0;
+    
+    if (self.modalBlurEnabled) {
+        
+        // Fade blurred container view in/out.
+        self.blurredContainerImageView.alpha = appearing ? 1.0 : 0.0;
+        self.blurredContainerImageView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+        
+    } else {
+        
+        // Fade overlay in/out.
+        self.modalOverlayView.alpha = appearing ? 1.0 : 0.0;
+        
+    }
+    
 }
 
 - (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
@@ -168,10 +199,21 @@
     
     BOOL appeared = [appearNumber boolValue];
     if (!appeared) {
-        self.blurredContainerView.image = nil;
-        [self.blurredContainerView removeFromSuperview];
-        self.blurredContainerView = nil;
-        self.blurredContainerImage = nil;
+        
+        if (self.modalBlurEnabled) {
+            
+            // Remove blurred container view.
+            self.blurredContainerImage = nil;
+            self.blurredContainerImageView.image = nil;
+            [self.blurredContainerImageView removeFromSuperview];
+            self.blurredContainerImageView = nil;
+            
+        } else {
+            
+            [self.modalOverlayView removeFromSuperview];
+            self.modalOverlayView = nil;
+        }
+        
     }
 }
 
@@ -485,6 +527,24 @@
     return _blurredImageView;
 }
 
+- (UIView *)blurredContainerView {
+    if (!_blurredContainerView) {
+        
+        CGSize intendedSize = (CGSize){
+            self.view.bounds.size.width / MODAL_SCALE_TRANSFORM,
+            self.view.bounds.size.height / MODAL_SCALE_TRANSFORM
+        };
+        _blurredContainerView = [[UIImageView alloc] initWithFrame:(CGRect){
+            floorf((self.view.bounds.size.width - intendedSize.width) / 2.0),
+            floorf((self.view.bounds.size.height - intendedSize.height) / 2.0),
+            intendedSize.width,
+            intendedSize.height
+        }];
+        _blurredContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    }
+    return _blurredContainerView;
+}
+
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
@@ -596,7 +656,34 @@
     
     // Pre-render the blurred snapshot.
     if (self.modalBlurEnabled) {
-        self.blurredContainerImage = [ImageHelper blurredUntintedImageFromView:self.view];
+        
+        // Add the blurred container view to host containerView so we can capture bigger screenshot.
+        self.blurredContainerView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - self.blurredContainerView.frame.size.width) / 2.0),
+            floorf((self.view.bounds.size.height - self.blurredContainerView.frame.size.height) / 2.0),
+            self.blurredContainerView.frame.size.width,
+            self.blurredContainerView.frame.size.height
+        };
+        [self.view addSubview:self.blurredContainerView];
+        
+        // Move container view to blurredContainer view to capture
+        [self.containerView removeFromSuperview];
+        self.containerView.frame = (CGRect){
+            floorf((self.blurredContainerView.bounds.size.width - self.containerView.frame.size.width) / 2.0),
+            floorf((self.blurredContainerView.bounds.size.height - self.containerView.frame.size.height) / 2.0),
+            self.containerView.frame.size.width,
+            self.containerView.frame.size.height
+        };
+        [self.blurredContainerView addSubview:self.containerView];
+        
+        // Capture this blurredContainerView as a bigger screenshot.
+        self.blurredContainerImage = [ImageHelper blurredImageFromView:self.blurredContainerView];
+        
+        // Move the containerView back.
+        [self.containerView removeFromSuperview];
+        self.containerView.frame = self.view.bounds;
+        [self.view insertSubview:self.containerView aboveSubview:self.blurredImageView];
+        [self.blurredContainerView removeFromSuperview];
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
