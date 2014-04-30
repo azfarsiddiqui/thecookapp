@@ -34,10 +34,10 @@
         UIEdgeInsets insets = [CKListCell listItemInsets];
         
         // Default font.
-        self.font = [UIFont fontWithName:@"AvenirNext-Regular" size:36.0f];
+        self.font = [UIFont fontWithName:@"AvenirNext-Regular" size:32.0f];
         
         // Placeholder font
-        self.placeholderFont = [UIFont fontWithName:@"AvenirNext-Regular" size:30.0f];
+        self.placeholderFont = [UIFont fontWithName:@"AvenirNext-Regular" size:32.0f];
         
         // Unit field.
         UITextField *unitTextField = [[UITextField alloc] initWithFrame:(CGRect){

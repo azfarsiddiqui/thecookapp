@@ -67,13 +67,22 @@
         }
         return [self convert];
     } else {
+        NSMutableArray *foundNums = [NSMutableArray arrayWithObject:@(currentNum)];
+        //Scan for ranges
+        if ([self scanRange]) {
+            CGFloat endNum = [self scanNumber];
+            if (endNum > 0) {
+                [foundNums addObject:@(endNum)];
+            }
+        }
+        
         //Scan for strings
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
         if (parsedString.length > 0) {
 //            DLog(@"Scanned result is: %f %@. Start pos: %i end pos: %i", currentNum, parsedString, startPos, endPos);
             CKReplaceConvert *replaceObj = [[CKReplaceConvert alloc] init];
-            replaceObj.string = [self convertFromNumber:currentNum unit:parsedString];
+            replaceObj.string = [self convertFromNumber:foundNums unit:parsedString];
             replaceObj.range = NSMakeRange(startPos, endPos - startPos);
             if (replaceObj.string) {
                 [self.replaceArray addObject:replaceObj];
@@ -101,9 +110,8 @@
 #pragma mark - Utility methods
 
 //Grabs values from conversion plist based on inputs and calculates conversion
-- (NSAttributedString *)convertFromNumber:(CGFloat)fromNumber unit:(NSString *)unitString {
+- (NSAttributedString *)convertFromNumber:(NSArray *)fromNumbers unit:(NSString *)unitString {
     NSArray *convertToArray = [[self unitTypes] objectForKey:[unitString uppercaseString]];
-
     NSDictionary *convertDict;
     //If more than 1 conversion type is available, need to assume it's the user's type and go from there
     if ([convertToArray count] > 1) {
@@ -125,54 +133,94 @@
     }
     NSString *convertString;
     
-    NSString *convertedString = [convertDict objectForKey:@"name"];
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
-    __block CGFloat convertedNum = (fromNumber * convertNum);
-    BOOL isParenthesesConvert = NO;
+    __block BOOL isParenthesesConvert = NO;
+    __block NSString *convertedString = [NSString new];
+    __block NSMutableString *convertedNumString = [NSMutableString new];
+    NSMutableString *secondaryNumString = [NSMutableString new];
+    __block NSString *secondaryUnitString = [NSMutableString new];
+    
     CKMeasurementType toLocale = [self typeFromString:[convertDict objectForKey:@"newType"]];
-    //Special case temperature since it isn't a simple multiplication
-    if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
-        convertedNum = (fromNumber * 1.8) + 32;
-        isParenthesesConvert = YES;
-    } else if ([unitString isEqualToString:@"°F"] && [convertedString isEqualToString:@"°C"]) {
-        convertedNum = (fromNumber - 32)/1.8;
-        isParenthesesConvert = YES;
-    }
     
-    NSString *convertedNumString;
-    //TODO: Need to determine whether to upscale or not. If no actual conversion happened, don't upscale
-    convertedNum = [self upscaleNumber:convertedNum unitString:&convertedString];
-    
-    convertedNumString = [self roundFrom:convertedNum withFractionType:[[convertDict objectForKey:@"fraction"] intValue]];
-    
-    //Special case ml -> Imperial conversion
-    if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
+    [fromNumbers enumerateObjectsUsingBlock:^(NSNumber *number, NSUInteger idx, BOOL *stop) {
+        CGFloat fromNumber = [number floatValue];
+        CGFloat convertedNum = (fromNumber * convertNum);
+        convertedString = [convertDict objectForKey:@"name"];
         
-        if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
-            //Convert to tablespoon
-            convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
-            convertedString = @"tbsp";
-            convertedNumString = [self roundFrom:convertedNum withFractionType:16];
-        } else if (fromNumber > 60) {
-            //Convert to cups
-            convertedNum = fromNumber * .004237288; //tsp -> cup
-            convertedString = @"cup";
-            convertedNumString = [self roundFrom:convertedNum withFractionType:4];
+        //Special case temperature since it isn't a simple multiplication
+        if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
+            convertedNum = (fromNumber * 1.8) + 32;
+            isParenthesesConvert = YES;
+        } else if ([unitString isEqualToString:@"°F"] && [convertedString isEqualToString:@"°C"]) {
+            convertedNum = (fromNumber - 32)/1.8;
+            isParenthesesConvert = YES;
         }
-        //Convert to fl oz to put in the parentheses
-        NSString *ozConvertedString = [self roundFrom:fromNumber * 0.033814 withFractionType:10];
         
+        NSString *tempNumString = @"";
+        NSInteger fraction = [[convertDict objectForKey:@"fraction"] intValue];
+        CGFloat upscaledNum = [self upscaleNumber:convertedNum unitString:&convertedString fractionType:&fraction];
+        tempNumString = [self roundFrom:upscaledNum withFractionType:fraction];
         
-        if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
-            convertString = [NSString stringWithFormat:@"~%@ %@ (%@ %@)", convertedNumString, convertedString, ozConvertedString, @"fl oz"];
+        //Special case ml -> Imperial conversion
+        if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
+            
+            if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
+                //Convert to tablespoon
+                convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
+                convertedString = @"tbsp";
+                tempNumString = [NSString stringWithFormat:idx == 0 ? @"~%@" : @"%@", [self roundFrom:convertedNum withFractionType:16]];
+            } else if (fromNumber > 60) {
+                //Convert to cups
+                convertedNum = fromNumber * .004237288; //tsp -> cup
+                convertedString = @"cup";
+                tempNumString = [NSString stringWithFormat:@"~%@", [self roundFrom:convertedNum withFractionType:4]];
+            }
+            
+            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
+                isParenthesesConvert = YES;
+                //Convert to fl oz to put in the parentheses
+                if ([secondaryNumString length] > 0) {
+                    [secondaryNumString appendString:@" - "];
+                }
+                
+                [secondaryNumString appendString:[self roundFrom:fromNumber * 0.033814 withFractionType:10]];
+                secondaryUnitString = @"fl oz";
+                
+                // If this is a range, we need to cut out the first primary value to keep it from getting ridiculously long
+                if ([fromNumbers count] > 1 && idx == 0) {
+                    tempNumString = @"";
+                }
+            }
         } else {
-            convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+            if ([secondaryNumString length] > 0) {
+                [secondaryNumString appendString:@" - "];
+            }
+            [secondaryNumString appendString:[NSString stringWithFormat:@"%.2f", fromNumber]];
+            secondaryUnitString = unitString;
         }
-    } else {
-        convertString = isParenthesesConvert ? [NSString stringWithFormat:@"%@ %@ (%.2f %@)", convertedNumString, convertedString, fromNumber, unitString] :
-        [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+        //Add built-up string to converted string if range
+        if ([convertedNumString length] > 0) {
+            // Need to check if the new incoming converted string isn't just the same number after upconversion
+            [convertedNumString appendString:@" - "];
+        }
+        [convertedNumString appendString:tempNumString];
+    }];
+    
+    if (!convertedNumString || !convertedString) {
+        isParenthesesConvert = NO;
+        return nil;
+        convertedNumString = [NSMutableString stringWithFormat:@"%f", [((NSNumber *)[fromNumbers firstObject]) floatValue]];
+        convertedString = [NSMutableString stringWithString:unitString];
     }
-
+    
+    if (isParenthesesConvert) {
+        convertString = [NSString stringWithFormat:@"%@ %@ (%@ %@)", convertedNumString, convertedString, secondaryNumString, secondaryUnitString];
+    } else {
+        convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+    }
+//        convertString = isParenthesesConvert ? [NSString stringWithFormat:@"%@ %@ (%.2f %@)", convertedNumString, convertedString, fromNumber, unitString] :
+//        [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = 4.0;
@@ -184,17 +232,16 @@
     return returnString;
 }
 
-- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString {
+- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSInteger *)fraction {
     NSDictionary *upscaleDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"upscale" ofType:@"plist"]];
     for (NSString *key in [upscaleDict allKeys]) {
         NSDictionary *obj = [upscaleDict objectForKey:key];
         CGFloat limit = [[obj objectForKey:@"limit"] floatValue];
         if ([key isEqualToString:*unitString] && amount > limit) {
             CGFloat upconvertNum = amount * [[obj objectForKey:@"conversion"] floatValue];
-            NSString *upconvertString = [obj objectForKey:@"name"];
-            
-            *unitString = upconvertString;
-            return [self upscaleNumber:upconvertNum unitString:unitString];
+            *fraction = [obj objectForKey:@"fraction"];
+            *unitString = [obj objectForKey:@"name"];
+            return [self upscaleNumber:upconvertNum unitString:unitString fractionType:fraction];
         }
     }
     //didn't find anything to upconvert
@@ -224,7 +271,6 @@
 
 //Finds a string that matches a unit from the plist
 - (NSString *)scanString {
-    //NOTES TO SELF: NSScanner is somehow still ignoring the hairline space used to detect token. Figure out why and how to stop it
     
     //Trying to ignore all whitespaces and weird characters I can think of
     NSMutableCharacterSet *unitCharacterIgnoreSet = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
@@ -272,8 +318,9 @@
     if (!found) {
         return 0;
     }
-    NSCharacterSet *divideSet = [NSCharacterSet characterSetWithCharactersInString:@"/"];
+
     BOOL foundSpace = [self.scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:nil];
+    
     if (foundSpace) { //Found a space, this is definitely a whole number, need to look for a possible numerator
         wholeNumber = firstNumber;
         BOOL foundNumerator = [self.scanner scanFloat:&numerator];
@@ -283,16 +330,50 @@
     } else { //Didn't find a space, this must be the numerator
         numerator = firstNumber;
     }
+    //Looking for divide symbol
+    NSCharacterSet *divideSet = [NSCharacterSet characterSetWithCharactersInString:@"/"];
     BOOL foundDivide = [self.scanner scanCharactersFromSet:divideSet intoString:nil];
+    //Looking for range of numbers
+    
     //This might be a fraction since we found a divide symbol, is there a denominator?
+    BOOL foundDenominator;
     if (foundDivide) {
         
-        BOOL foundDenominator = [self.scanner scanFloat:&denominator];
+        foundDenominator = [self.scanner scanFloat:&denominator];
         if (foundDenominator && denominator > 0) { //Yup, got a denominator, treat as a fraction
             return wholeNumber + (numerator / denominator);
         }
     }
+    
+    // Need to check for range indicators
+    NSCharacterSet *rangeSet = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+    NSInteger originalPosition = self.scanner.scanLocation;
+    BOOL foundRange = [self.scanner scanCharactersFromSet:rangeSet intoString:nil];
+    if (foundRange) {
+        self.scanner.scanLocation = originalPosition; //Set scan location back so that scanRange can pick it up
+        return foundDenominator && denominator > 0 ? wholeNumber + (numerator / denominator) : firstNumber;
+    }
     return 0;
+}
+
+- (BOOL)scanRange {
+    NSInteger currentLocation = self.scanner.scanLocation;
+    NSString *foundString;
+    //Scanning ahead to next number
+//    [self.scanner setCharactersToBeSkipped:nil];
+    [self.scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&foundString];
+
+    //Checking scanned string to see if it's a valid range indicator
+    // - Can't be too big, max should be "%i to %i"
+    // - Should have valid range strings in it like '-' or 'to'
+    if (foundString && [foundString length] < 6 &&
+        ([foundString rangeOfString:@"to"].location != NSNotFound || [foundString rangeOfString:@"-"].location != NSNotFound))
+    {
+        return YES;
+    } else {
+        [self.scanner setScanLocation:currentLocation];
+        return NO;
+    }
 }
 
 #pragma mark - Ingredient detection
