@@ -22,12 +22,13 @@
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) ServesNotchSliderView *servesSlider;
+@property (nonatomic, strong) TimeSliderView *makesSlider;
 @property (nonatomic, strong) UILabel *prepTitleLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
 @property (nonatomic, strong) TimeSliderView *prepSlider;
 @property (nonatomic, strong) UILabel *cookTitleLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
-@property (nonatomic, strong) UISlider *cookSlider;
+@property (nonatomic, strong) TimeSliderView *cookSlider;
 @property (nonatomic, strong) ServesTabView *servesTabButton;
 
 @property (nonatomic, strong) UIImageView *smallServesImageView;
@@ -91,9 +92,11 @@
     if (self.recipeDetails.quantityType == CKQuantityMakes) {
         self.smallServesImageView.alpha = 0.0;
         self.largeServesImageView.alpha = 0.0;
+        self.servesSlider.alpha = 0.0;
     } else {
         self.smallMakesImageView.alpha = 0.0;
         self.largeMakesImageView.alpha = 0.0;
+        self.makesSlider.alpha = 0.0;
     }
     
     [self.containerView addSubview:self.servesTabButton];
@@ -114,9 +117,9 @@
     
     //Setup layout
     {
-        NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@700, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
+        NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@670, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
         NSDictionary *views = @{@"servesView":self.servesTabButton,
-                                @"servesSlider":self.servesSlider, @"servesLine":hr2Line,
+                                @"servesSlider":self.servesSlider, @"makesSlider":self.makesSlider, @"servesLine":hr2Line,
                                 @"prepView":prepView, @"prepTitleLabel":self.prepTitleLabel, @"prepLabel":self.prepLabel,
                                 @"prepSlider":self.prepSlider,
                                 @"cookView":cookView, @"cookTitleLabel":self.cookTitleLabel, @"cookLabel":self.cookLabel,
@@ -125,6 +128,7 @@
 
         self.servesTabButton.translatesAutoresizingMaskIntoConstraints = NO;
         self.servesSlider.translatesAutoresizingMaskIntoConstraints = NO;
+        self.makesSlider.translatesAutoresizingMaskIntoConstraints = NO;
         self.prepTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.prepLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.prepSlider.translatesAutoresizingMaskIntoConstraints = NO;
@@ -134,12 +138,12 @@
         
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(70)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-[servesSlider(sliderWidth)]-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(-3)-[servesSlider(sliderWidth)]-(-3)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepTitleLabel]-[prepView(1)]-[prepLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(600)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(longControlWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookTitleLabel]-[cookView(1)]-[cookLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(600)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(longControlWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
 
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeCenterX
@@ -171,6 +175,7 @@
                                                                           toItem:self.containerView
                                                                        attribute:NSLayoutAttributeCenterX
                                                                       multiplier:1.f constant:0.f]];
+        // Serves and Makes icons overlay each other
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.smallMakesImageView
                                                                        attribute:NSLayoutAttributeLeading
                                                                        relatedBy:NSLayoutRelationEqual
@@ -194,6 +199,25 @@
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.largeServesImageView
                                                                        attribute:NSLayoutAttributeTop
+                                                                      multiplier:1.f constant:0.f]];
+        // Serves and Makes sliders overlay each other
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
+                                                                       attribute:NSLayoutAttributeLeading
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.servesSlider
+                                                                       attribute:NSLayoutAttributeLeading
+                                                                      multiplier:1.f constant:17.f]];
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
+                                                                       attribute:NSLayoutAttributeTrailing
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.servesSlider
+                                                                       attribute:NSLayoutAttributeTrailing
+                                                                      multiplier:1.f constant:-17.f]];
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
+                                                                       attribute:NSLayoutAttributeCenterY
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.servesSlider
+                                                                       attribute:NSLayoutAttributeCenterY
                                                                       multiplier:1.f constant:0.f]];
         
     }
@@ -246,9 +270,21 @@
 
 - (ServesNotchSliderView *)servesSlider {
     if (!_servesSlider) {
-        _servesSlider = [[ServesNotchSliderView alloc] initWithNumNotches:10 delegate:self];
+        _servesSlider = [[ServesNotchSliderView alloc] initWithNumNotches:12 delegate:self];
     }
     return _servesSlider;
+}
+
+- (TimeSliderView *)makesSlider {
+    if (!_makesSlider) {
+        _makesSlider = [[TimeSliderView alloc] init];
+        _makesSlider.minimumValue = 0.0;
+        _makesSlider.maximumValue = 38;
+        _makesSlider.minimumTrackTintColor = [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000];
+        _makesSlider.maximumTrackTintColor = [UIColor colorWithWhite:0.863 alpha:1.000];
+        [_makesSlider setThumbImage:[UIImage imageNamed:@"cook_edit_serves_slider"] forState:UIControlStateNormal];
+    }
+    return _makesSlider;
 }
 
 - (UILabel *)prepTitleLabel {
@@ -339,9 +375,9 @@
         
         NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
         if (serves > [CKRecipe maxServes]) {
-            [servesDisplay appendFormat:@"%d+", [CKRecipe maxServes]];
+            [servesDisplay appendFormat:@"%i+", [CKRecipe maxServes]];
         } else {
-            [servesDisplay appendFormat:@"%d", serves];
+            [servesDisplay appendFormat:@"%i", serves];
         }
         [self.servesTabButton updateQuantity:servesDisplay];
     }
@@ -355,15 +391,19 @@
         [UIView animateWithDuration:0.4 animations:^{
             self.smallServesImageView.alpha = 0.0;
             self.largeServesImageView.alpha = 0.0;
+            self.servesSlider.alpha = 0.0;
             self.smallMakesImageView.alpha = 1.0;
             self.largeMakesImageView.alpha = 1.0;
+            self.makesSlider.alpha = 1.0;
         }];
     } else {
         [UIView animateWithDuration:0.4 animations:^{
             self.smallServesImageView.alpha = 1.0;
             self.largeServesImageView.alpha = 1.0;
+            self.servesSlider.alpha = 1.0;
             self.smallMakesImageView.alpha = 0.0;
             self.largeMakesImageView.alpha = 0.0;
+            self.makesSlider.alpha = 0.0;
         }];
     }
 }
@@ -389,18 +429,24 @@
             serves = 4;
             break;
         case 5:
-            serves = 6;
+            serves = 5;
             break;
         case 6:
-            serves = 8;
+            serves = 6;
             break;
         case 7:
-            serves = 10;
+            serves = 7;
             break;
         case 8:
-            serves = 12;
+            serves = 8;
             break;
         case 9:
+            serves = 10;
+            break;
+        case 10:
+            serves = 12;
+            break;
+        case 11:
             serves = 14;
             break;
         default:
@@ -411,21 +457,17 @@
 }
 
 - (void)initServes {
-//    [self.containerView addSubview:self.servesTitleLabel];
-//    [self.containerView addSubview:self.servesLabel];
     [self.containerView addSubview:self.servesSlider];
 }
 
 - (void)initDialers {
-//    [self.containerView addSubview:self.prepTitleLabel];
-//    [self.containerView addSubview:self.prepLabel];
     [self.containerView addSubview:self.prepSlider];
-//    [self.containerView addSubview:self.cookTitleLabel];
-//    [self.containerView addSubview:self.cookLabel];
     [self.containerView addSubview:self.cookSlider];
+    [self.containerView addSubview:self.makesSlider];
     
     [self.cookSlider addTarget:self action:@selector(cookSliderValueChanged) forControlEvents:UIControlEventValueChanged];
     [self.prepSlider addTarget:self action:@selector(prepSliderValueChanged) forControlEvents:UIControlEventValueChanged];
+    [self.makesSlider addTarget:self action:@selector(makesSliderValueChanged) forControlEvents:UIControlEventValueChanged];
 }
 
 - (CGSize)availableSize {
@@ -455,14 +497,14 @@
 }
 
 - (NSInteger)prepIndex {
-    return [self dialerIndexForMinutes:[self.recipeDetails.prepTimeInMinutes integerValue]];
+    return [self sliderIndexForMinutes:[self.recipeDetails.prepTimeInMinutes integerValue]];
 }
 
 - (NSInteger)cookIndex {
-    return [self dialerIndexForMinutes:[self.recipeDetails.cookingTimeInMinutes integerValue]];
+    return [self sliderIndexForMinutes:[self.recipeDetails.cookingTimeInMinutes integerValue]];
 }
 
-- (NSInteger)dialerIndexForMinutes:(NSInteger)minutes {
+- (NSInteger)sliderIndexForMinutes:(NSInteger)minutes {
     NSInteger dialerIndex = 0;
     
     if (minutes > 0) {
@@ -487,7 +529,7 @@
     return dialerIndex;
 }
 
-- (NSInteger)minutesForDialerIndex:(NSInteger)dialerIndex {
+- (NSInteger)minutesForSliderIndex:(NSInteger)dialerIndex {
     NSInteger minutes = 0;
     
     if (dialerIndex <= 12) {
@@ -509,14 +551,28 @@
     return minutes;
 }
 
-- (NSInteger)maxIndexForDialer:(CKDialerControl *)dialer {
-    return (360 / dialer.unitDegrees - 2);
+- (NSInteger)makesForSliderIndex:(NSInteger)sliderIndex {
+    NSInteger makes = sliderIndex;
+    if (makes > 2) {
+        makes = (sliderIndex - 1) * 2;
+    }
+    return makes;
 }
+
+- (NSInteger)sliderIndexForNumberOfMakes:(NSInteger)makes {
+    NSInteger index = makes;
+    if (makes > 2) {
+        index = makes/2 + 1;
+    }
+    return index;
+}
+
+//- (NSInteger)indexFor
 
 #pragma mark - SLider actions
 - (void)cookSliderValueChanged {
     NSInteger notchIndex = self.cookSlider.value;
-    NSInteger minutes = [self minutesForDialerIndex:notchIndex];
+    NSInteger minutes = [self minutesForSliderIndex:notchIndex];
     NSMutableString *minutesDisplay = [NSMutableString string];
     [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
     if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
@@ -530,7 +586,7 @@
 
 - (void)prepSliderValueChanged {
     NSInteger notchIndex = self.prepSlider.value;
-    NSInteger minutes = [self minutesForDialerIndex:notchIndex];
+    NSInteger minutes = [self minutesForSliderIndex:notchIndex];
     NSMutableString *minutesDisplay = [NSMutableString stringWithString:@""];
     [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
     if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
@@ -540,6 +596,19 @@
     self.recipeDetails.prepTimeInMinutes = (minutes == 0) ? nil : [NSNumber numberWithInteger:minutes];
     self.prepLabel.text = minutesDisplay;
     [self.prepLabel sizeToFit];
+}
+
+- (void)makesSliderValueChanged {
+    NSInteger notchIndex = self.makesSlider.value;
+    NSInteger makes = [self makesForSliderIndex:notchIndex];
+    NSMutableString *makesDisplay = [NSMutableString stringWithString:@""];
+    [makesDisplay appendString:[@(makes) stringValue]];
+    if (makes >= [RecipeDetails maxMakes]) {
+        [makesDisplay appendString:@"+"];
+    }
+    // Nil out if num is zero.
+    self.recipeDetails.numServes = (makes == 0) ? nil : @(makes);
+    [self.servesTabButton updateQuantity:makesDisplay];
 }
 
 @end

@@ -38,6 +38,7 @@
 
 + (NSInteger)maxPrepCookMinutes;
 + (NSInteger)maxServes;
++ (NSInteger)maxMakes;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;

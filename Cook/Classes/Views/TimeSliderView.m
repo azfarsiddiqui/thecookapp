@@ -22,15 +22,27 @@
 - (id)init {
     self = [super init];
     if (!self) return nil;
-    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOnSlider)];
+    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sliderTapped:)];
     [self addGestureRecognizer:self.tapGesture];
     
     return self;
 }
 
-- (void)tappedOnSlider {
-    CGPoint touchPoint = [self.tapGesture locationInView:self];
-    [self setValue:(self.maximumValue * touchPoint.x)/self.frame.size.width animated:YES];
+//- (void)tappedOnSlider {
+//    CGPoint touchPoint = [self.tapGesture locationInView:self];
+//    [self setValue:(self.maximumValue * touchPoint.x)/self.frame.size.width animated:YES];
+//    [self sendActionsForControlEvents:UIControlEventValueChanged];
+//}
+
+- (void)sliderTapped:(UIGestureRecognizer *)g {
+    UISlider* s = (UISlider*)g.view;
+    if (s.highlighted)
+        return; // tap on thumb, let slider deal with it
+    CGPoint pt = [g locationInView: s];
+    CGFloat percentage = pt.x / s.bounds.size.width;
+    CGFloat delta = percentage * (s.maximumValue - s.minimumValue);
+    CGFloat value = s.minimumValue + delta;
+    [s setValue:value animated:YES];
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
