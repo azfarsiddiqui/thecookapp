@@ -21,7 +21,7 @@
 - (id)initWithDelegate:(id<ServesTabViewDelegate>)delegate selectedType:(CKQuantityType)selectedType quantityString:(NSString *)quantity
 {
     self = [super initWithOptions:@[@"SERVES", @"MAKES"]
-                       buttonFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:30]
+                       buttonFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:32]
                       buttonWidth:220];
     if (self) {
         // Initialization code
@@ -45,6 +45,19 @@
         }];
     }
     return self;
+}
+
+- (void)alignButton:(UIButton *)button atIndex:(NSInteger)optionIndex {
+    if (optionIndex == 0) //Leftmost button compensate rounded edge
+    {
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 20.0f, 5.0f, 10.0f)];
+    }
+    else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
+    {
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 5.0f, 25.0f)];
+    }
 }
 
 - (void)reset {
@@ -109,11 +122,11 @@
 
 - (void)updateQuantity:(NSString *)quantity {
     self.quantity = quantity;
-    NSDictionary *activeTitleAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30],
+    NSDictionary *activeTitleAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32],
                                  NSForegroundColorAttributeName: [UIColor whiteColor]};
-    NSDictionary *activeNumAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30],
+    NSDictionary *activeNumAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32],
                                           NSForegroundColorAttributeName: [Theme servesColor]};
-    NSDictionary *inactiveTitleAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30],
+    NSDictionary *inactiveTitleAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32],
                                               NSForegroundColorAttributeName: [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000]};
     
     // TODO: Redo this so that i have makesTitle, servesTitle with the attributes chosen by the ternary operatoriph

@@ -369,7 +369,7 @@
 }
 
 + (UIFont *)editServesTitleFont {
-    return [UIFont fontWithName:@"AvenirNext-Medium" size:42.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
 }
 
 + (UIColor *)editServesTitleColour {
@@ -377,7 +377,7 @@
 }
 
 + (UIFont *)editServesFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:42.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
 }
 
 + (UIColor *)editServesColour {
