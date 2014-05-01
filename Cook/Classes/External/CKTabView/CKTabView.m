@@ -55,16 +55,9 @@
         button.titleLabel.font = self.buttonFont;
         [button setTitle:optionName forState:UIControlStateNormal];
         button.titleLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.8];
-        if (optionIndex == 0) //Leftmost button compensate rounded edge
-        {
-            [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
-        }
-        else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
-        {
-            [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
-        }
+        
+        [self alignButton:button atIndex:optionIndex];
+        
         [button sizeToFit];
         
         button.frame = (CGRect){
@@ -88,6 +81,19 @@
         size.height
     };
     self.frame = backgroundImageView.frame;
+}
+
+- (void)alignButton:(UIButton *)button atIndex:(NSInteger)optionIndex {
+    if (optionIndex == 0) //Leftmost button compensate rounded edge
+    {
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
+    }
+    else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
+    {
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
+    }
 }
 
 - (void)updateTitle:(NSAttributedString *)title forButtonIndex:(NSInteger)index {

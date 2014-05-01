@@ -12,7 +12,7 @@
 #import "ViewHelper.h"
 #import "Theme.h"
 #import "CKUserProfilePhotoView.h"
-#import "ThemeTabView.h"
+#import "MeasureTabView.h"
 #import "ImageHelper.h"
 #import "UIDevice+Hardware.h"
 #import <MessageUI/MessageUI.h>
@@ -31,7 +31,7 @@
 @property (nonatomic, strong) UIButton *facebookButton;
 @property (nonatomic, strong) UIButton *twitterButton;
 
-@property (nonatomic, strong) ThemeTabView *measureTabView;
+@property (nonatomic, strong) MeasureTabView *measureTabView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 
 @end
@@ -179,9 +179,9 @@
     return _measureLabel;
 }
 
-- (ThemeTabView *)measureTabView {
+- (MeasureTabView *)measureTabView {
     if (!_measureTabView) {
-        _measureTabView = [[ThemeTabView alloc] init];
+        _measureTabView = [[MeasureTabView alloc] init];
         _measureTabView.frame = (CGRect){
             42.0,
             74.0,

@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "CKTabView.h"
 
-@interface ThemeTabView : CKTabView
-
+@interface MeasureTabView : CKTabView
 
 @end

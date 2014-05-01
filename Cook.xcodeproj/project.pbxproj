@@ -588,7 +588,7 @@
 		767FDECA183C720800E4ABC9 /* cook_library_icons_suggestions_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767FDEC6183C720800E4ABC9 /* cook_library_icons_suggestions_off@2x.png */; };
 		767FDECB183C720800E4ABC9 /* cook_library_icons_suggestions.png in Resources */ = {isa = PBXBuildFile; fileRef = 767FDEC7183C720800E4ABC9 /* cook_library_icons_suggestions.png */; };
 		767FDECC183C720800E4ABC9 /* cook_library_icons_suggestions@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767FDEC8183C720800E4ABC9 /* cook_library_icons_suggestions@2x.png */; };
-		7680103717A92A370065B2C6 /* ThemeTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7680103617A92A370065B2C6 /* ThemeTabView.m */; };
+		7680103717A92A370065B2C6 /* MeasureTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7680103617A92A370065B2C6 /* MeasureTabView.m */; };
 		7680104017A92ACF0065B2C6 /* cook_dash_settings_tab_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 7680103817A92ACF0065B2C6 /* cook_dash_settings_tab_bg.png */; };
 		7680104117A92ACF0065B2C6 /* cook_dash_settings_tab_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7680103917A92ACF0065B2C6 /* cook_dash_settings_tab_bg@2x.png */; };
 		7680104217A92ACF0065B2C6 /* cook_dash_settings_tab_selected_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 7680103A17A92ACF0065B2C6 /* cook_dash_settings_tab_selected_left.png */; };
@@ -2339,8 +2339,8 @@
 		767FDEC6183C720800E4ABC9 /* cook_library_icons_suggestions_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_icons_suggestions_off@2x.png"; sourceTree = "<group>"; };
 		767FDEC7183C720800E4ABC9 /* cook_library_icons_suggestions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_icons_suggestions.png; sourceTree = "<group>"; };
 		767FDEC8183C720800E4ABC9 /* cook_library_icons_suggestions@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_icons_suggestions@2x.png"; sourceTree = "<group>"; };
-		7680103517A92A370065B2C6 /* ThemeTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeTabView.h; sourceTree = "<group>"; };
-		7680103617A92A370065B2C6 /* ThemeTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeTabView.m; sourceTree = "<group>"; };
+		7680103517A92A370065B2C6 /* MeasureTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeasureTabView.h; sourceTree = "<group>"; };
+		7680103617A92A370065B2C6 /* MeasureTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeasureTabView.m; sourceTree = "<group>"; };
 		7680103817A92ACF0065B2C6 /* cook_dash_settings_tab_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_tab_bg.png; sourceTree = "<group>"; };
 		7680103917A92ACF0065B2C6 /* cook_dash_settings_tab_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_tab_bg@2x.png"; sourceTree = "<group>"; };
 		7680103A17A92ACF0065B2C6 /* cook_dash_settings_tab_selected_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_tab_selected_left.png; sourceTree = "<group>"; };
@@ -6142,8 +6142,8 @@
 				76EBE63017952C110099E2CB /* CKLikeView.m */,
 				76EA65F217A639D10093B9D9 /* CKImageDecorationView.h */,
 				76EA65F317A639D10093B9D9 /* CKImageDecorationView.m */,
-				7680103517A92A370065B2C6 /* ThemeTabView.h */,
-				7680103617A92A370065B2C6 /* ThemeTabView.m */,
+				7680103517A92A370065B2C6 /* MeasureTabView.h */,
+				7680103617A92A370065B2C6 /* MeasureTabView.m */,
 				76FC077517C5E89B00ABF96F /* CKNotificationView.h */,
 				76FC077617C5E89B00ABF96F /* CKNotificationView.m */,
 				76709001181402ED0065DE51 /* CKInfoView.h */,
@@ -9190,7 +9190,7 @@
 				7692C749177807A200A5CA5C /* BenchtopViewController.m in Sources */,
 				7698ED5017D37368003898A4 /* DateHelper.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,
-				7680103717A92A370065B2C6 /* ThemeTabView.m in Sources */,
+				7680103717A92A370065B2C6 /* MeasureTabView.m in Sources */,
 				7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

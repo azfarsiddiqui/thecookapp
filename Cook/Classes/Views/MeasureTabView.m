@@ -6,14 +6,14 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "ThemeTabView.h"
+#import "MeasureTabView.h"
 #import "ViewHelper.h"
 #import "CKUser.h"
 #import "EventHelper.h"
 #import "CKMeasureConverter.h"
 
 
-@implementation ThemeTabView
+@implementation MeasureTabView
 
 - (id)init {
     if (self = [super initWithOptions:@[@"METRIC", @"US IMPERIAL"]
@@ -62,6 +62,19 @@
         }];
     }
     return image;
+}
+
+- (void)alignButton:(UIButton *)button atIndex:(NSInteger)optionIndex {
+    if (optionIndex == 0) //Leftmost button compensate rounded edge
+    {
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 25.0f, 0.0f, 15.0f)];
+    }
+    else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
+    {
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
+    }
 }
 
 #pragma mark - Private methods
