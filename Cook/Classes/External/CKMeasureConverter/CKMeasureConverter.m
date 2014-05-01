@@ -61,10 +61,10 @@
     CGFloat currentNum = [self scanNumber];
     //If no numbers found after all, (eg. //SAUCE for section headers), invalid and can't convert, keep searching
     if (currentNum <= 0) {
-        self.scanner.scanLocation++;
         if ([self.scanner isAtEnd]) {
             return [self replaceWithFound]; //reached the end, nothing to scan
         }
+        self.scanner.scanLocation++;
         return [self convert];
     } else {
         NSMutableArray *foundNums = [NSMutableArray arrayWithObject:@(currentNum)];
