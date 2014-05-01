@@ -81,7 +81,7 @@
 #pragma mark - CKListCell methods
 
 + (UIEdgeInsets)listItemInsets {
-    return UIEdgeInsetsMake(23.0, 20.0, 18.0, 30.0);
+    return UIEdgeInsetsMake(27.0, 20.0, 18.0, 30.0);
 }
 
 - (void)configureValue:(id)value {
