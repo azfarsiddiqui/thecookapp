@@ -15,6 +15,7 @@
 
 @property (nonatomic, assign) CGSize maxSize;
 @property (nonatomic, assign) BOOL convertible;
+@property (nonatomic, readonly) CGFloat numIngredientsConvertible;
 
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType isConvertible:(BOOL)isConvertible;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize

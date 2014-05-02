@@ -95,6 +95,44 @@
     return [self replaceWithFound];
 }
 
+- (BOOL)findConvertibleElements {
+    if ([self.scanner isAtEnd]) {
+        return [self replaceWithFound]; //reached the end, nothing to scan
+    }
+    NSInteger startPos = 0;
+    NSInteger endPos = 0;
+    //Scan for numbers
+    startPos = self.scanner.scanLocation;
+    CGFloat currentNum = [self scanNumber];
+    //If no numbers found after all, (eg. //SAUCE for section headers), invalid and can't convert, keep searching
+    if (currentNum <= 0) {
+        if ([self.scanner isAtEnd]) {
+            return [self replaceWithFound]; //reached the end, nothing to scan
+        }
+        self.scanner.scanLocation++;
+        return [self convert];
+    } else {
+        NSMutableArray *foundNums = [NSMutableArray arrayWithObject:@(currentNum)];
+        //Scan for ranges
+        if ([self scanRange]) {
+            CGFloat endNum = [self scanNumber];
+            if (endNum > 0) {
+                [foundNums addObject:@(endNum)];
+            }
+        }
+        
+        //Scan for strings
+        NSString *parsedString = [self scanString];
+        endPos = self.scanner.scanLocation;
+        if (parsedString.length > 0) {
+            return YES;
+        } else {
+            return [self convert];
+        }
+    }
+    return [self replaceWithFound];
+}
+
 + (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType {
     switch (measureType) {
         case CKMeasureTypeImperial:
@@ -105,6 +143,10 @@
             return @"";
             break;
     }
+}
+
+- (CGFloat)numOfConvertibleElements {
+    return [self.replaceArray count];
 }
 
 #pragma mark - Utility methods

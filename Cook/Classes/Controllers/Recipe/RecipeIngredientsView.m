@@ -157,6 +157,7 @@
                                                                                             delegate:self
                                                                                            tokenOnly:NO];
         NSAttributedString *convertedIngredient = [ingredientConvert convert];
+        _numIngredientsConvertible = [ingredientConvert numOfConvertibleElements];
 //        DLog(@"converted ingredient: %@ from %i to %i", convertedIngredient.string, self.convertFromType, [CKUser currentUser].measurementType);
         return convertedIngredient;
     } else {

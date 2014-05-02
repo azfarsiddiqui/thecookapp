@@ -1457,13 +1457,16 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // See if recipe has any of these types and flag accordingly
     [self.recipeDetails.ingredients enumerateObjectsUsingBlock:^(Ingredient *ingred, NSUInteger idx, BOOL *stop) {
         [[conversionDict allKeys] enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
-            if ([[ingred.measurement uppercaseString] rangeOfString:obj].location != NSNotFound) {
+            NSString *searchString = [NSString stringWithFormat:@"%@", obj];
+            if ([[ingred.measurement uppercaseString] rangeOfString:searchString].location != NSNotFound) {
                 isValidConvert = YES;
                 return;
             }
         }];
-        if (isValidConvert == YES) return;
+        
+//        if (isValidConvert == YES) return;
     }];
+
     return isValidConvert;
 }
 

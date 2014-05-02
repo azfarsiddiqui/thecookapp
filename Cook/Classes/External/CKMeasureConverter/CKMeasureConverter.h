@@ -40,6 +40,7 @@ typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
                      tokenOnly:(BOOL)isTokenOnly;
 
 - (NSAttributedString *)convert;
+- (CGFloat)numOfConvertibleElements;
 
 + (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType;
 
