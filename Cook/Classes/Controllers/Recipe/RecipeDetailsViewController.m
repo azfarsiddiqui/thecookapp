@@ -1714,6 +1714,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)closeRecipeView {
     self.isClosed = YES;
+    
+    // Nil out the delegate in case of firing callbacks after closing.
+    self.scrollView.delegate = nil;
+    
     [self hideButtons];
     [self processLayoutIfRequired];
     [self fadeOutBackgroundImageThenClose];
