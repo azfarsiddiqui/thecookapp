@@ -13,13 +13,14 @@
 #import "Theme.h"
 #import "ViewHelper.h"
 #import "DataHelper.h"
+#import "UIView+CutOut.h"
 
 @interface CKNotificationView ()
 
 @property (nonatomic, weak) id<CKNotificationViewDelegate> delegate;
+@property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIButton *offButtonIcon;
 @property (nonatomic, strong) UIButton *onButtonIcon;
-@property (nonatomic, strong) UILabel *badgeLabel;
 @property (nonatomic, assign) BOOL on;
 @property (nonatomic, assign) BOOL loading;
 @property (nonatomic, assign) NSUInteger badgeCount;
@@ -41,17 +42,15 @@
 - (id)initWithDelegate:(id<CKNotificationViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
-        self.frame = self.offButtonIcon.frame;
-        [self addSubview:self.offButtonIcon];
-        [self addSubview:self.onButtonIcon];
-        [self addSubview:self.badgeLabel];
+        
+        [self reset];
+        [self loadData];
         
         [EventHelper registerAppActive:self selector:@selector(appActive:)];
         [EventHelper registerUserNotifications:self selector:@selector(notificationsReceived:)];
         [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
         [EventHelper registerLoginSucessful:self selector:@selector(loggedOut:)];
         
-        [self loadData];
     }
     return self;
 }
@@ -62,6 +61,14 @@
 }
 
 #pragma mark - Properties
+
+- (UIView *)containerView {
+    if (!_containerView) {
+        _containerView = [[UIView alloc] initWithFrame:self.offButtonIcon.frame];
+        _containerView.backgroundColor = [UIColor clearColor];
+    }
+    return _containerView;
+}
 
 - (UIButton *)offButtonIcon {
     if (!_offButtonIcon) {
@@ -82,20 +89,6 @@
         _onButtonIcon.hidden = YES;   // Hidden to start off with.
     }
     return _onButtonIcon;
-}
-
-- (UILabel *)badgeLabel {
-    if (!_badgeLabel) {
-        _badgeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _badgeLabel.backgroundColor = [UIColor clearColor];
-//        _badgeLabel.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
-        _badgeLabel.font = kFont;
-        _badgeLabel.textColor = [UIColor colorWithHexString:@"8e8e8e"];
-        _badgeLabel.textAlignment = NSTextAlignmentCenter;
-        _badgeLabel.lineBreakMode = NSLineBreakByClipping;
-        _badgeLabel.hidden = YES;   // Hidden to start off with.
-    }
-    return _badgeLabel;
 }
 
 #pragma mark - Private methods
@@ -135,49 +128,35 @@
 
 - (void)updateBadge {
     BOOL hasNotifications = (self.badgeCount > 0);
+    
+    // Reset the views.
+    [self reset];
+    
     if (hasNotifications) {
         
-        // Update the label.
-        self.badgeLabel.text = [DataHelper formattedDisplayForInteger:self.badgeCount];
-        self.badgeLabel.font = [self fontForBadgeCount];
-        [self.badgeLabel sizeToFit];
+        // Figure out the required text size.
+        NSString *badgeText = [DataHelper formattedDisplayForInteger:self.badgeCount];
+        CGSize requiredTextSize = [badgeText sizeWithAttributes:@{ NSFontAttributeName : [self fontForBadgeCount] }];
         
+        // Adjust the frame of ourselves.
         CGRect frame = self.frame;
-        CGFloat requiredWidth = self.bounds.size.width - kLabelInsets.left - kLabelInsets.right;
-        if (self.badgeLabel.frame.size.width > requiredWidth) {
-            frame.size.width = self.badgeLabel.frame.size.width + kLabelInsets.left + kLabelInsets.right;
+        CGSize containerSize = self.containerView.frame.size;
+        CGFloat requiredWidth = containerSize.width - kLabelInsets.left - kLabelInsets.right;
+        if (requiredTextSize.width > requiredWidth) {
+            containerSize.width = requiredTextSize.width + kLabelInsets.left + kLabelInsets.right;
         }
+        self.containerView.frame = (CGRect){ self.bounds.origin.x, self.bounds.origin.y, containerSize.width, containerSize.height };
+        frame.size = containerSize;
+        self.frame = frame;
         
-        // Adjust frame accordingly.
-        self.badgeLabel.frame = (CGRect){
-            kLabelInsets.left,
-            kLabelInsets.top,
-            frame.size.width - kLabelInsets.left - kLabelInsets.right,
-            self.badgeLabel.frame.size.height
-        };
-        
-        if (!self.on) {
-            
-            // Swap the on image in.
-            self.onButtonIcon.alpha = 0.0;
-            self.onButtonIcon.hidden = NO;
-            self.badgeLabel.alpha = 0.0;
-            self.badgeLabel.hidden = NO;
-            [UIView animateWithDuration:0.25
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.frame = frame;
-                                 self.offButtonIcon.alpha = 0.0;
-                                 self.onButtonIcon.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished) {
-                                 self.offButtonIcon.hidden = YES;
-                                 self.badgeLabel.alpha = 1.0;
-                             }];
-        }
-        
+        // Mark as ON.
+        self.offButtonIcon.hidden = YES;
+        self.onButtonIcon.hidden = NO;
         self.on = YES;
+        
+        [self.containerView setMaskWithText:[DataHelper formattedDisplayForInteger:self.badgeCount]
+                                       font:[self fontForBadgeCount]
+                                     offset:(UIOffset){ 2.0, -3.0 }];
         
     } else {
         
@@ -187,12 +166,8 @@
         
         if (self.on) {
             
-            // Hide the badge label first.
-            self.badgeLabel.hidden = YES;
-            
             // Swap the off image in.
             self.offButtonIcon.alpha = 0.0;
-            self.offButtonIcon.hidden = NO;
             [UIView animateWithDuration:0.3
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
@@ -202,10 +177,12 @@
                                  self.onButtonIcon.alpha = 0.0;
                              }
                              completion:^(BOOL finished) {
-                                 self.onButtonIcon.hidden = YES;
                              }];
         }
         
+        // Mark as OFF.
+        self.offButtonIcon.hidden = NO;
+        self.onButtonIcon.hidden = YES;
         self.on = NO;
     }
     
@@ -243,6 +220,28 @@
         self.loading = NO;
         [self updateBadge];
     }
+}
+
+- (void)reset {
+    
+    // Reset the views.
+    [self.offButtonIcon removeFromSuperview];
+    [self.onButtonIcon removeFromSuperview];
+    [self.containerView removeFromSuperview];
+    _offButtonIcon = nil;
+    _onButtonIcon = nil;
+    _containerView = nil;
+    
+    [self.containerView addSubview:self.offButtonIcon];
+    [self.containerView addSubview:self.onButtonIcon];
+    
+    CGSize containerSize = self.containerView.frame.size;
+    CGRect frame = self.frame;
+    frame.size = containerSize;
+    self.frame = frame;
+    [self addSubview:self.containerView];
+    [self.containerView addSubview:self.offButtonIcon];
+    [self.containerView addSubview:self.onButtonIcon];
 }
 
 @end
