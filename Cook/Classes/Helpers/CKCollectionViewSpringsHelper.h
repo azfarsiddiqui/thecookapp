@@ -13,12 +13,14 @@
 @property (nonatomic, assign) CGFloat springDamping;
 @property (nonatomic, assign) CGFloat springMaxOffset;
 @property (nonatomic, assign) CGFloat springResistance;
+@property (nonatomic, assign) BOOL collisionEnabled;
 
 - (id)initWithCollectionViewLayout:(UICollectionViewLayout *)collectionViewLayout;
 - (void)reset;
 - (BOOL)shouldInvalidateAfterApplyingOffsetsForNewBounds:(CGRect)newBounds collectionView:(UICollectionView *)collectionView;
 - (NSArray *)layoutAttributesInFrame:(CGRect)frame;
 - (UICollectionViewLayoutAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath;
-- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes;
+- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes;
+- (void)applyCollisionBehaviourToAttributeItems:(NSArray *)attributes;
 
 @end

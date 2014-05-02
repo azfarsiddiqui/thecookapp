@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) UICollectionViewLayout *collectionViewLayout;
 @property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
+@property (nonatomic, strong) NSArray *supportedBehaviours;
 
 @end
 
@@ -25,8 +26,11 @@
         
         // Default spring values.
         self.springDamping = 0.7;
-        self.springMaxOffset = 15.0;
+        self.springMaxOffset = self.collisionEnabled ? MAXFLOAT : 20.0;
         self.springResistance = 4000.0;
+        
+        // Supported behaviours.
+        self.supportedBehaviours = @[[UIAttachmentBehavior class], [UICollisionBehavior class]];
     }
     return self;
 }
@@ -79,12 +83,12 @@
     return [self.dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
 }
 
-- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes {
+- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     
     // Spring anchor point has to be rounded (not fractional which pulsates it).
     CGPoint anchorPoint = (CGPoint) {
-        round(attributes.center.x),
-        round(attributes.center.y)
+        round(layoutAttributes.center.x),
+        round(layoutAttributes.center.y)
     };
     
     DLog(@"Anchor Point: %@", NSStringFromCGPoint(anchorPoint));
@@ -93,19 +97,41 @@
     CGFloat frequency = 1.0;
     
     // Main interaction spring.
-    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:attributes attachedToAnchor:anchorPoint];
+    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:layoutAttributes attachedToAnchor:anchorPoint];
     spring.length = 0.0;
     spring.damping = self.springDamping;
     spring.frequency = frequency;
     [self.dynamicAnimator addBehavior:spring];
     
     // Spring that doesn't let it fidget with residual springing.
-    UIAttachmentBehavior *restSpring = [[UIAttachmentBehavior alloc] initWithItem:attributes
+    UIAttachmentBehavior *restSpring = [[UIAttachmentBehavior alloc] initWithItem:layoutAttributes
                                                                  attachedToAnchor:(CGPoint){ anchorPoint.x, anchorPoint.y }];
     restSpring.length = 1.0;
     restSpring.damping = self.springDamping;
     restSpring.frequency = frequency;
     [self.dynamicAnimator addBehavior:restSpring];
+}
+
+- (void)applyCollisionBehaviourToAttributeItems:(NSArray *)attributes {
+    UICollisionBehavior* collisionBehavior = [[UICollisionBehavior alloc] initWithItems:attributes];
+    collisionBehavior.translatesReferenceBoundsIntoBoundary = YES;
+    
+    UICollectionViewLayoutAttributes *firstLayoutAttributes = [attributes firstObject];
+    CGFloat availableVerticalSpace = self.collectionViewLayout.collectionView.bounds.size.height - firstLayoutAttributes.frame.size.height;
+    CGFloat availableHorizontalSpace = -196.0;
+//    CGFloat availableHorizontalSpace = 30.0;
+    
+    // Left/Right edges needs to be inset to take into account the shadow.
+    // Top/Bottom edges to be extend above/below book to prevent pulsing/rotation when they collide.
+//    [collisionBehavior setTranslatesReferenceBoundsIntoBoundaryWithInsets:(UIEdgeInsets){ 100.0, -48.0, 100.0, -48.0 }];
+    
+    [collisionBehavior setTranslatesReferenceBoundsIntoBoundaryWithInsets:(UIEdgeInsets){
+        floorf(availableVerticalSpace / 2.0),
+        floorf(availableHorizontalSpace / 2.0),
+        floorf(availableVerticalSpace / 2.0),
+        floorf(availableHorizontalSpace / 2.0),
+    }];
+    [self.dynamicAnimator addBehavior:collisionBehavior];
 }
 
 #pragma mark - Private methods
@@ -115,6 +141,7 @@
     // return behaviour that are
     return [self.dynamicAnimator.behaviors filteredArrayUsingPredicate:
             [NSPredicate predicateWithBlock:^BOOL(UIDynamicBehavior *dynamicBehaviour, NSDictionary *bindings) {
+        
         return [dynamicBehaviour isKindOfClass:[UIAttachmentBehavior class]];
     }]];
 }

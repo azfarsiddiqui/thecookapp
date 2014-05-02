@@ -27,6 +27,7 @@
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
 
 @property (nonatomic, assign) BOOL springEnabled;
+@property (nonatomic, assign) BOOL collisionEnabled;
 @property (nonatomic, strong) CKCollectionViewSpringsHelper *springsHelper;
 
 @end
@@ -51,7 +52,9 @@
         // Enable Spring?
         self.springEnabled = YES;
         if (self.springEnabled) {
+            self.collisionEnabled = NO;
             self.springsHelper = [[CKCollectionViewSpringsHelper alloc] initWithCollectionViewLayout:self];
+            self.springsHelper.collisionEnabled = self.collisionEnabled;
         }
     }
     return self;
@@ -318,6 +321,10 @@
                 if (self.springEnabled) {
                     [self.springsHelper applyAttachmentBehaviourToAttributes:attributes];
                 }
+            }
+            
+            if (self.springEnabled && self.collisionEnabled) {
+                [self.springsHelper applyCollisionBehaviourToAttributeItems:self.itemsLayoutAttributes];
             }
             
         } else {
