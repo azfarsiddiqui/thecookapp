@@ -540,8 +540,8 @@
         CKUser *currentUser = [CKUser currentUser];
         NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : @"None"];
         NSString *badRecipeString = [NSString stringWithFormat:@"Reported Recipe ID: %@ \n Reported Recipe Name: %@", self.recipe.objectId, self.recipe.name];
-        
-        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@", versionString, userDisplay, badRecipeString];
+        NSString *badURLString = [NSString stringWithFormat:@"Reported Recipe URL: http://www.worldscookbook.com/%@", self.recipe.objectId];
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@\n%@", versionString, userDisplay, badRecipeString, badURLString];
         
         [mailDialog setToRecipients:@[@"report@thecookapp.com"]];
         [mailDialog setSubject:@"Report a Recipe to Cook"];
