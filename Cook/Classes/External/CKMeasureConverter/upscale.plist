@@ -64,9 +64,9 @@
 		<key>name</key>
 		<string>cup</string>
 		<key>conversion</key>
-		<real>0.08</real>
+		<real>0.0625</real>
 		<key>fraction</key>
-		<integer>10</integer>
+		<integer>8</integer>
 	</dict>
 </dict>
 </plist>

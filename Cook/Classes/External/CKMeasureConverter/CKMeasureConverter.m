@@ -206,19 +206,19 @@
         //Special case ml -> Imperial conversion
         if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
             
-            if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
-                //Convert to tablespoon
-                convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
-                convertedString = @"tbsp";
-                tempNumString = [NSString stringWithFormat:idx == 0 ? @"~%@" : @"%@", [self roundFrom:convertedNum withFractionType:16]];
-            } else if (fromNumber > 60) {
-                //Convert to cups
-                convertedNum = fromNumber * .004237288; //tsp -> cup
-                convertedString = @"cup";
-                tempNumString = [NSString stringWithFormat:@"~%@", [self roundFrom:convertedNum withFractionType:4]];
-            }
+//            if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
+//                //Convert to tablespoon
+//                convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
+//                convertedString = @"tbsp";
+//                tempNumString = [NSString stringWithFormat:idx == 0 ? @"~%@" : @"%@", [self roundFrom:convertedNum withFractionType:16]];
+//            } else if (fromNumber > 60) {
+//                //Convert to cups
+//                convertedNum = fromNumber * .004237288; //tsp -> cup
+//                convertedString = @"cup";
+//                tempNumString = [NSString stringWithFormat:@"~%@", [self roundFrom:convertedNum withFractionType:4]];
+//            }
             
-            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
+//            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
                 isParenthesesConvert = YES;
                 //Convert to fl oz to put in the parentheses
                 if ([secondaryNumString length] > 0) {
@@ -232,7 +232,7 @@
                 if ([fromNumbers count] > 1 && idx == 0) {
                     tempNumString = @"";
                 }
-            }
+//            }
         } else {
             if ([secondaryNumString length] > 0) {
                 [secondaryNumString appendString:@" - "];
