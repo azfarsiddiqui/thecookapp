@@ -50,6 +50,16 @@
     return self;
 }
 
+//TODO: would be nice to refactor this, findConvertibleElements, and scanning methods into a superclass or something
+- (instancetype)initForCheckWithInputString:(NSString *)inputString {
+    if (self = [super init]) {
+        self.scanner = [NSScanner scannerWithString:[inputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+        self.inputString = [[NSAttributedString alloc] initWithString:inputString attributes:nil];
+        self.isTokenOnly = NO;
+    }
+    return self;
+}
+
 - (NSAttributedString *)convert {
     if ([self.scanner isAtEnd]) {
         return [self replaceWithFound]; //reached the end, nothing to scan
@@ -96,8 +106,8 @@
 }
 
 - (BOOL)findConvertibleElements {
-    if ([self.scanner isAtEnd]) {
-        return [self replaceWithFound]; //reached the end, nothing to scan
+    if (self.scanner && [self.scanner isAtEnd]) {
+        return NO; //reached the end, didn't find anything
     }
     NSInteger startPos = 0;
     NSInteger endPos = 0;
@@ -107,30 +117,24 @@
     //If no numbers found after all, (eg. //SAUCE for section headers), invalid and can't convert, keep searching
     if (currentNum <= 0) {
         if ([self.scanner isAtEnd]) {
-            return [self replaceWithFound]; //reached the end, nothing to scan
+            return NO; //reached the end, didn't find anything
         }
         self.scanner.scanLocation++;
-        return [self convert];
+        return [self findConvertibleElements];
     } else {
-        NSMutableArray *foundNums = [NSMutableArray arrayWithObject:@(currentNum)];
-        //Scan for ranges
-        if ([self scanRange]) {
-            CGFloat endNum = [self scanNumber];
-            if (endNum > 0) {
-                [foundNums addObject:@(endNum)];
-            }
-        }
+        // Can ignore scanning for ranges since all we're doing is detecting if convertible
         
         //Scan for strings
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
         if (parsedString.length > 0) {
-            return YES;
+            self.scanner = nil;
+            return YES; //Found a number-string combo! This text block is convertible
         } else {
-            return [self convert];
+            return [self findConvertibleElements];
         }
     }
-    return [self replaceWithFound];
+    return NO; // Dunno if this ever gets reached
 }
 
 + (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType {
@@ -143,10 +147,6 @@
             return @"";
             break;
     }
-}
-
-- (CGFloat)numOfConvertibleElements {
-    return [self.replaceArray count];
 }
 
 #pragma mark - Utility methods
@@ -326,7 +326,6 @@
     [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"°\u200a"]];
 //    [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@""]];
     [self.scanner scanCharactersFromSet:unitCharacterSet intoString:&measureString];
-    
     NSString *checkMeasureString = [[measureString copy] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     //Need to special case 'fl oz' since it has a space in it
@@ -340,8 +339,6 @@
     }
     
     //Checking for token and invalidating if class option has been set
-    
-    
     if (measureString && [[[self unitTypes] allKeys] containsObject:[checkMeasureString uppercaseString]]) {
         if (![self isValidUnitString:measureString]) {
             return nil;

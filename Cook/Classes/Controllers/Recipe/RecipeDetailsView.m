@@ -1445,7 +1445,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (UIEdgeInsets)editInsetsForEditingView:(UIView *)editingView minimumInsets:(UIEdgeInsets)minimumInsets
                          toDisplayAsSize:(CGSize)size {
-    
     UIEdgeInsets editInsets = UIEdgeInsetsZero;
     
     return editInsets;
@@ -1453,20 +1452,15 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (BOOL)isValidConvert {
     __block BOOL isValidConvert = NO;
-    NSDictionary *conversionDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
-    // See if recipe has any of these types and flag accordingly
+    //Need to call a preconversion thing to check if convertible values exist
     [self.recipeDetails.ingredients enumerateObjectsUsingBlock:^(Ingredient *ingred, NSUInteger idx, BOOL *stop) {
-        [[conversionDict allKeys] enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
-            NSString *searchString = [NSString stringWithFormat:@"%@", obj];
-            if ([[ingred.measurement uppercaseString] rangeOfString:searchString].location != NSNotFound) {
-                isValidConvert = YES;
-                return;
-            }
-        }];
-        
-//        if (isValidConvert == YES) return;
+        CKMeasureConverter *measureConverter = [[CKMeasureConverter alloc] initForCheckWithInputString:ingred.measurement];
+        isValidConvert = [measureConverter findConvertibleElements];
+        if (isValidConvert == YES) {
+            *stop = YES;
+            return;
+        }
     }];
-
     return isValidConvert;
 }
 

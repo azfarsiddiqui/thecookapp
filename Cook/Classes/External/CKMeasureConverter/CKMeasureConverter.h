@@ -38,9 +38,10 @@ typedef NS_ENUM(NSUInteger, CKFractionConvertType) {
                 highlightColor:(UIColor *)highlightColor
                       delegate:(id<CKMeasureConverterDelegate>)delegate
                      tokenOnly:(BOOL)isTokenOnly;
+- (instancetype)initForCheckWithInputString:(NSString *)inputString;
 
 - (NSAttributedString *)convert;
-- (CGFloat)numOfConvertibleElements;
+- (BOOL)findConvertibleElements;
 
 + (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType;
 
