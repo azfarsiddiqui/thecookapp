@@ -91,7 +91,7 @@
         round(layoutAttributes.center.y)
     };
     
-    DLog(@"Anchor Point: %@", NSStringFromCGPoint(anchorPoint));
+//    DLog(@"Anchor Point: %@", NSStringFromCGPoint(anchorPoint));
     
     // Spring properties.
     CGFloat frequency = 1.0;

@@ -198,9 +198,10 @@
     }
     self.loading = YES;
     
-    if ([CKUser isLoggedIn]) {
+    CKUser *currentUser = [CKUser currentUser];
+    if ([currentUser isSignedIn]) {
         
-        [[CKUser currentUser] numUnreadNotificationsCompletion:^(int count) {
+        [currentUser numUnreadNotificationsCompletion:^(int count) {
             
             self.badgeCount = count;
             self.loading = NO;

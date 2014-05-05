@@ -33,6 +33,7 @@
 
 @property (nonatomic, strong) MeasureTabView *measureTabView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
+@property (nonatomic, strong) CKUser *currentUser;
 
 @end
 
@@ -52,6 +53,7 @@
 - (id)initWithDelegate:(id<SettingsViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
+        self.currentUser = [CKUser currentUser];
     }
     return self;
 }
@@ -97,8 +99,8 @@
 
 - (UIView *)loginLogoutButtonView {
     if (!_loginLogoutButtonView) {
-        CKUser *currentUser = [CKUser currentUser];
-        CGSize size = (currentUser == nil) ? kLoginSize : kLogoutSize;
+        
+        CGSize size = (self.currentUser == nil) ? kLoginSize : kLogoutSize;
         
         _loginLogoutButtonView = [[UIView alloc] initWithFrame:(CGRect){
             self.scrollView.bounds.size.width - size.width - 24.0,
@@ -109,8 +111,8 @@
         _loginLogoutButtonView.backgroundColor = [UIColor clearColor];
         
         CGFloat yOffset = 0.0;
-        if (currentUser) {
-            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
+        if (self.currentUser) {
+            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:self.currentUser placeholder:NO
                                                                                  profileSize:ProfileViewSizeSmall border:NO];
             photoView.delegate = self;
             photoView.frame = (CGRect){
@@ -142,7 +144,7 @@
         profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         profileLabel.shadowColor = [UIColor blackColor];
         profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        profileLabel.text = (currentUser == nil) ? @"SIGN IN" : @"LOGOUT";
+        profileLabel.text = (self.currentUser == nil) ? @"SIGN IN" : @"LOGOUT";
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
@@ -380,8 +382,7 @@
         NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
         NSString *versionString = [NSString stringWithFormat:@"Version: %@", minorVersion];
         
-        CKUser *currentUser = [CKUser currentUser];
-        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : @"None"];
+        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (self.currentUser != nil) ? self.currentUser.objectId : @"None"];
         
         NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
         NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@", versionString, userDisplay, deviceString];
@@ -424,11 +425,7 @@
 
 - (void)processLoginLogout {
     
-    if ([CKUser isLoggedIn]) {
-        
-    // HERE FOR DEV TESTING OF UNLINKING FB user.
-    //        [PFFacebookUtils unlinkUser:[CKUser currentUser].parseUser];
-    //
+    if ([self.currentUser isSignedIn]) {
         
         [CKUser logoutWithCompletion:^{
             
@@ -443,11 +440,13 @@
 }
 
 - (void)loggedIn:(NSNotification *)notification {
+    self.currentUser = [CKUser currentUser];
     [self createLoginLogoutButton];
     [self.measureTabView reset];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    self.currentUser = nil;
     [self createLoginLogoutButton];
     [self.measureTabView reset];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kHasSeenProfileHintKey];

@@ -133,7 +133,7 @@
     [self initNotificationView];
     [self initSearchView];
     
-    if ([CKUser isLoggedIn]) {
+    if ([self.currentUser isSignedIn]) {
         [self loadBenchtop];
     }
     
