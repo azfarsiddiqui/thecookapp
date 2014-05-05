@@ -183,6 +183,7 @@
     __block NSString *secondaryUnitString = [NSMutableString new];
     
     CKMeasurementType toLocale = [self typeFromString:[convertDict objectForKey:@"newType"]];
+    __block NSString *limitString;
     
     [fromNumbers enumerateObjectsUsingBlock:^(NSNumber *number, NSUInteger idx, BOOL *stop) {
         CGFloat fromNumber = [number floatValue];
@@ -200,25 +201,14 @@
         
         NSString *tempNumString = @"";
         NSInteger fraction = [[convertDict objectForKey:@"fraction"] intValue];
-        CGFloat upscaledNum = [self upscaleNumber:convertedNum unitString:&convertedString fractionType:&fraction];
+        CGFloat upscaledNum = [self upscaleNumber:convertedNum unitString:&convertedString fractionType:&fraction unitLimit:limitString];
+        limitString = convertedString;
         tempNumString = [self roundFrom:upscaledNum withFractionType:fraction];
         
         //Special case ml -> Imperial conversion
         if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
             
-//            if (fromNumber == 15 || (fromNumber >= 30 && fromNumber <= 60)) {
-//                //Convert to tablespoon
-//                convertedNum = fromNumber * 0.066666666; //tsp -> tbsp
-//                convertedString = @"tbsp";
-//                tempNumString = [NSString stringWithFormat:idx == 0 ? @"~%@" : @"%@", [self roundFrom:convertedNum withFractionType:16]];
-//            } else if (fromNumber > 60) {
-//                //Convert to cups
-//                convertedNum = fromNumber * .004237288; //tsp -> cup
-//                convertedString = @"cup";
-//                tempNumString = [NSString stringWithFormat:@"~%@", [self roundFrom:convertedNum withFractionType:4]];
-//            }
-            
-//            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
+            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
                 isParenthesesConvert = YES;
                 //Convert to fl oz to put in the parentheses
                 if ([secondaryNumString length] > 0) {
@@ -232,7 +222,7 @@
                 if ([fromNumbers count] > 1 && idx == 0) {
                     tempNumString = @"";
                 }
-//            }
+            }
         } else {
             if ([secondaryNumString length] > 0) {
                 [secondaryNumString appendString:@" - "];
@@ -274,19 +264,24 @@
     return returnString;
 }
 
-- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSInteger *)fraction {
+- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSInteger *)fraction unitLimit:(NSString *)limitString {
     NSDictionary *upscaleDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"upscale" ofType:@"plist"]];
     for (NSString *key in [upscaleDict allKeys]) {
         NSDictionary *obj = [upscaleDict objectForKey:key];
         CGFloat limit = [[obj objectForKey:@"limit"] floatValue];
         if ([key isEqualToString:*unitString] && amount > limit) {
-            CGFloat upconvertNum = amount * [[obj objectForKey:@"conversion"] floatValue];
-            *fraction = [obj objectForKey:@"fraction"];
-            *unitString = [obj objectForKey:@"name"];
-            return [self upscaleNumber:upconvertNum unitString:unitString fractionType:fraction];
+            // If a limit was provided, stop upscaling here, otherwise keep recursively looping
+            if (limitString && [limitString isEqualToString:key]) {
+                return amount;
+            } else {
+                CGFloat upconvertNum = amount * [[obj objectForKey:@"conversion"] floatValue];
+                *fraction = [obj objectForKey:@"fraction"];
+                *unitString = [obj objectForKey:@"name"];
+                return [self upscaleNumber:upconvertNum unitString:unitString fractionType:fraction unitLimit:limitString];
+            }
         }
     }
-    //didn't find anything to upconvert
+    
     return amount;
 }
 
