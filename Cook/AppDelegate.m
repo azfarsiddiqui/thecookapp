@@ -49,7 +49,9 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [[CKServerManager sharedInstance] handleFacebookCallback:url];
+    
+    return [[CKServerManager sharedInstance] handleFacebookCallback:url sourceApplication:sourceApplication
+                                                         annotation:annotation];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

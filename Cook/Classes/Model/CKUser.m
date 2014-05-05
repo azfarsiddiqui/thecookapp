@@ -32,9 +32,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
 #define kCookForceLogout        @"CookForceLogout"
 
 + (CKUser *)currentUser {
+//    DLog(@"%@", [NSThread callStackSymbols]);
     PFUser *parseUser = [PFUser currentUser];
     if (parseUser) {
-        return [[CKUser alloc] initWithParseUser:[PFUser currentUser]];
+        return [[CKUser alloc] initWithParseUser:parseUser];
     } else {
         return nil;
     }
@@ -308,7 +309,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (BOOL)isFacebookUser {
-    return [PFFacebookUtils isLinkedWithUser:self.parseUser];
+    return [self isSignedIn] && [PFFacebookUtils isLinkedWithUser:self.parseUser];
 }
 
 - (id)initWithParseUser:(PFUser *)parseUser {

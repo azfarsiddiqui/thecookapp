@@ -20,7 +20,7 @@
 - (void)stop;
 
 // Facebook integration.
-- (BOOL)handleFacebookCallback:(NSURL *)url;
+- (BOOL)handleFacebookCallback:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation;
 
 // Push notifications.
 - (void)registerForPush;
