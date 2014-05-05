@@ -83,10 +83,11 @@
     
     // Resets the badge.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    CKUser *currentUser = [CKUser currentUser];
     
     // Set the owner for this installation by associating with the currently logged on user if not set.
-    if ([CKUser isLoggedIn] && ![currentInstallation objectForKey:kUserModelForeignKeyName]) {
-        [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+    if ([currentUser isSignedIn] && ![currentInstallation objectForKey:kUserModelForeignKeyName]) {
+        [currentInstallation setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
         saveInstallation = YES;
     }
     
@@ -102,6 +103,11 @@
         [currentInstallation saveEventually];
     }
     
+    // Re-activate FB.
+    if ([currentUser isFacebookUser]) {
+        [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+    }
+    
     // Post app active
     [EventHelper postAppActive:YES];
 }
@@ -110,8 +116,8 @@
     DLog(@"Stopped ServerManager");
 }
 
-- (BOOL)handleFacebookCallback:(NSURL *)url {
-    return [PFFacebookUtils handleOpenURL:url];
+- (BOOL)handleFacebookCallback:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
 }
 
 #pragma mark - Push notifications
@@ -124,8 +130,9 @@
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     
     // Set the owner for this installation by associating with the currently logged on user.
-    if ([CKUser isLoggedIn]) {
-        [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+    CKUser *currentUser = [CKUser currentUser];
+    if ([currentUser isSignedIn]) {
+        [currentInstallation setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
     }
     
     [currentInstallation setDeviceTokenFromData:deviceToken];
@@ -153,8 +160,9 @@
         
         // Set owner owner from the current installation.
         PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-        if ([CKUser isLoggedIn]) {
-            [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+        CKUser *currentUser = [CKUser currentUser];
+        if ([currentUser isSignedIn]) {
+            [currentInstallation setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
         }
         [currentInstallation saveEventually];
         
@@ -162,7 +170,7 @@
         [self registerForPush];
         
         // Identifier the user.
-        [Crashlytics setUserIdentifier:[PFUser currentUser].objectId];
+        [Crashlytics setUserIdentifier:currentUser.parseUser.objectId];
     }
 }
 
