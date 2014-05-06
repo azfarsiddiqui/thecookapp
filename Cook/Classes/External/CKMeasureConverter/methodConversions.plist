@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>°C</key>
+	<array>
+		<dict>
+			<key>originalType</key>
+			<string>Metric</string>
+			<key>newType</key>
+			<string>Imperial</string>
+			<key>name</key>
+			<string>°F</string>
+			<key>conversion</key>
+			<integer>1</integer>
+			<key>fraction</key>
+			<integer>10</integer>
+		</dict>
+	</array>
+	<key>°F</key>
+	<array>
+		<dict>
+			<key>originalType</key>
+			<string>Imperial</string>
+			<key>newType</key>
+			<string>Metric</string>
+			<key>name</key>
+			<string>°C</string>
+			<key>conversion</key>
+			<integer>1</integer>
+			<key>fraction</key>
+			<integer>10</integer>
+		</dict>
+	</array>
+</dict>
+</plist>

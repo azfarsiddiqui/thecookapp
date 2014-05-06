@@ -370,7 +370,7 @@
     //Looking for range of numbers
     
     //This might be a fraction since we found a divide symbol, is there a denominator?
-    BOOL foundDenominator;
+    BOOL foundDenominator = NO;
     if (foundDivide) {
         
         foundDenominator = [self.scanner scanFloat:&denominator];
@@ -387,7 +387,7 @@
         self.scanner.scanLocation = originalPosition; //Set scan location back so that scanRange can pick it up
         return foundDenominator && denominator > 0 ? wholeNumber + (numerator / denominator) : firstNumber;
     }
-    return 0;
+    return firstNumber;
 }
 
 - (BOOL)scanRange {
@@ -414,7 +414,12 @@
 
 //Returns all unit types from plist
 - (NSDictionary *)unitTypes {
-    return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
+    if (self.isTokenOnly) {
+        return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"methodConversions" ofType:@"plist"]];
+    }
+    else {
+        return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
+    }
 }
 
 - (NSString *)typeToString:(CKMeasurementType)locale {

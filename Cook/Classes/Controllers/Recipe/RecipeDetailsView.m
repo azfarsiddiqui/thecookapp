@@ -1076,7 +1076,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
     
-    if (self.selectedMeasureType != CKMeasureTypeNone && self.selectedMeasureType != [CKUser currentMeasureType]) {
+    if (self.selectedMeasureType != CKMeasureTypeNone) {
         CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
                                                                                    toMeasureType:self.selectedMeasureType
                                                                                   highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
