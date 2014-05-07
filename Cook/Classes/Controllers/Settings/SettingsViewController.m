@@ -15,6 +15,7 @@
 #import "MeasureTabView.h"
 #import "ImageHelper.h"
 #import "UIDevice+Hardware.h"
+#import "ConversionHelper.h"
 #import <MessageUI/MessageUI.h>
 
 @interface SettingsViewController () <MFMailComposeViewControllerDelegate, CKUserProfilePhotoViewDelegate>
@@ -75,13 +76,15 @@
     [super viewDidAppear:animated];
     
     // Init on next run loop to try and circumvent Parse currentUser hang bug
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self initSettingsContent];
     });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self createLoginLogoutButton];
     });
-    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self updateConversions];
+    });
 }
 
 - (void)reloadProfilePhoto:(NSNotification *) notification {
@@ -362,6 +365,10 @@
                                                                                views:views]];
     }
     [self.measureTabView reset];
+}
+
+- (void)updateConversions {
+    [[ConversionHelper sharedInstance] updatePlists];
 }
 
 - (void)createLoginLogoutButton {

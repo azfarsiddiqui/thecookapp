@@ -9,6 +9,7 @@
 #import "CKMeasureConverter.h"
 #import "Theme.h"
 #import "CKUser.h"
+#import "ConversionHelper.h"
 
 #pragma mark - CKReplaceConvert helper
 @interface CKReplaceConvert : NSObject
@@ -264,7 +265,7 @@
 }
 
 - (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSInteger *)fraction unitLimit:(NSString *)limitString {
-    NSDictionary *upscaleDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"upscale" ofType:@"plist"]];
+    NSDictionary *upscaleDict = [ConversionHelper sharedInstance].upscaleDict;
     for (NSString *key in [upscaleDict allKeys]) {
         NSDictionary *obj = [upscaleDict objectForKey:key];
         CGFloat limit = [[obj objectForKey:@"limit"] floatValue];
@@ -307,7 +308,7 @@
 
 //Finds a string that matches a unit from the plist
 - (NSString *)scanString {
-    NSDictionary *checkDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"unitRecognition" ofType:@"plist"]];
+    NSDictionary *checkDict = [ConversionHelper sharedInstance].unitRecognitionDict;
     //Trying to ignore all whitespaces and weird characters I can think of
     NSMutableCharacterSet *unitCharacterIgnoreSet = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
     [unitCharacterIgnoreSet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
@@ -428,10 +429,10 @@
 //Returns all unit types from plist
 - (NSDictionary *)unitTypes {
     if (self.isTokenOnly) {
-        return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"methodConversions" ofType:@"plist"]];
+        return [ConversionHelper sharedInstance].methodConversionsDict;
     }
     else {
-        return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
+        return [ConversionHelper sharedInstance].conversionsDict;
     }
 }
 
