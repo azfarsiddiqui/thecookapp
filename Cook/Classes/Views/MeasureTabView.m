@@ -12,6 +12,11 @@
 #import "EventHelper.h"
 #import "CKMeasureConverter.h"
 
+@interface MeasureTabView ()
+
+@property (nonatomic, strong) CKUser *currentUser;
+
+@end
 
 @implementation MeasureTabView
 
@@ -26,15 +31,15 @@
 #pragma mark - Override superclass methods
 
 - (void)reset {
-    [self selectOptionAtIndex:[self indexForMeasureType:[CKUser currentMeasureType]]];
+    self.currentUser = [CKUser currentUser];
+    [self selectOptionAtIndex:[self indexForMeasureType:[CKUser currentMeasureTypeForUser:self.currentUser]]];
 }
 
 - (void)didSelectOptionAtIndex:(NSInteger)optionIndex {
-    CKUser *currentUser = [CKUser currentUser];
     CKMeasurementType *selectedType = [self measureTypeForIndex:optionIndex];
-    if (currentUser) {
-        [currentUser setMeasurementType:selectedType];
-        [currentUser saveInBackground];
+    if (self.currentUser) {
+        [self.currentUser setMeasurementType:selectedType];
+        [self.currentUser saveInBackground];
     } else {
         [CKUser setGuestMeasure:selectedType];
     }
