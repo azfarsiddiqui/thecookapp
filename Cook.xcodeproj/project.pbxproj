@@ -1343,6 +1343,7 @@
 		F613C67117DF4F7E00A5962A /* cook_customise_photo_filter_icon_warm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C64F17DF4F7E00A5962A /* cook_customise_photo_filter_icon_warm@2x.png */; };
 		F613C67217DF4F7E00A5962A /* cook_customise_photo_filter_picker.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C65017DF4F7E00A5962A /* cook_customise_photo_filter_picker.png */; };
 		F613C67317DF4F7E00A5962A /* cook_customise_photo_filter_picker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C65117DF4F7E00A5962A /* cook_customise_photo_filter_picker@2x.png */; };
+		F61856EC1919CD0900CB5F0C /* unitRecognition.plist in Resources */ = {isa = PBXBuildFile; fileRef = F61856EB1919CD0900CB5F0C /* unitRecognition.plist */; };
 		F61A85FF18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FB18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png */; };
 		F61A860018E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FC18E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png */; };
 		F61A860118E001CC00ED5D0E /* cook_dash_settings_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = F61A85FD18E001CC00ED5D0E /* cook_dash_settings_btn.png */; };
@@ -3245,6 +3246,7 @@
 		F613C64F17DF4F7E00A5962A /* cook_customise_photo_filter_icon_warm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_filter_icon_warm@2x.png"; sourceTree = "<group>"; };
 		F613C65017DF4F7E00A5962A /* cook_customise_photo_filter_picker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_photo_filter_picker.png; sourceTree = "<group>"; };
 		F613C65117DF4F7E00A5962A /* cook_customise_photo_filter_picker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_filter_picker@2x.png"; sourceTree = "<group>"; };
+		F61856EB1919CD0900CB5F0C /* unitRecognition.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = unitRecognition.plist; sourceTree = "<group>"; };
 		F61A85FB18E001CC00ED5D0E /* cook_dash_settings_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_btn@2x.png"; sourceTree = "<group>"; };
 		F61A85FC18E001CC00ED5D0E /* cook_dash_settings_btn_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_btn_onpress@2x.png"; sourceTree = "<group>"; };
 		F61A85FD18E001CC00ED5D0E /* cook_dash_settings_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_btn.png; sourceTree = "<group>"; };
@@ -7494,6 +7496,7 @@
 				F6FF203718DA716F00565253 /* conversions.plist */,
 				F650AE9118F22D8F00DDFC10 /* upscale.plist */,
 				F63615C819186902000B0839 /* methodConversions.plist */,
+				F61856EB1919CD0900CB5F0C /* unitRecognition.plist */,
 			);
 			path = CKMeasureConverter;
 			sourceTree = "<group>";
@@ -7912,6 +7915,7 @@
 				768E74F117D605DD00502C19 /* cook_login_rightarrow_sm@2x.png in Resources */,
 				767E6F17182223CD00908B58 /* cook_title_arrow_left_fr2@2x.png in Resources */,
 				F64299ED1907500200124DDE /* cook_customise_toggle_right_on@2x.png in Resources */,
+				F61856EC1919CD0900CB5F0C /* unitRecognition.plist in Resources */,
 				763546B417941988007A9DF6 /* cook_book_inner_icon_comment_light.png in Resources */,
 				76E9868717E2CEB700D9CAF3 /* cook_library_icons_search.png in Resources */,
 				7627E07217E0AE0100FD443D /* cook_book_Ingredientshint@2x.png in Resources */,
@@ -9335,7 +9339,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9460,7 +9464,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9585,7 +9589,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>°C</key>
+	<string>°C</string>
+	<key>CELSIUS</key>
+	<string>°C</string>
+	<key>DEGREES CELSIUS</key>
+	<string>°C</string>
+	<key>DEG CELSIUS</key>
+	<string>°C</string>
+	<key>DEGREES C</key>
+	<string>°C</string>
+	<key>DEG C</key>
+	<string>°C</string>
+	<key>°F</key>
+	<string>°F</string>
+	<key>FAHRENHEIT</key>
+	<string>°F</string>
+	<key>DEGREES FAHRENHEIT</key>
+	<string>°F</string>
+	<key>DEG FAHRENHEIT</key>
+	<string>°F</string>
+	<key>DEGREES F</key>
+	<string>°F</string>
+	<key>DEG F</key>
+	<string>°F</string>
+	<key>MM</key>
+	<string>MM</string>
+	<key>MILLIMETER</key>
+	<string>MM</string>
+	<key>MILLIMETERS</key>
+	<string>MM</string>
+	<key>MILLIMETRE</key>
+	<string>MM</string>
+	<key>MILLIMETRES</key>
+	<string>MM</string>
+	<key>ML</key>
+	<string>ML</string>
+	<key>MILLILITER</key>
+	<string>ML</string>
+	<key>MILLILITERS</key>
+	<string>ML</string>
+	<key>MILLILITRE</key>
+	<string>ML</string>
+	<key>MILLILITRES</key>
+	<string>ML</string>
+	<key>L</key>
+	<string>L</string>
+	<key>LITER</key>
+	<string>L</string>
+	<key>LITERS</key>
+	<string>L</string>
+	<key>LITRE</key>
+	<string>L</string>
+	<key>LITRES</key>
+	<string>L</string>
+	<key>G</key>
+	<string>G</string>
+	<key>GRAM</key>
+	<string>G</string>
+	<key>GRAMS</key>
+	<string>G</string>
+	<key>KG</key>
+	<string>KG</string>
+	<key>KGS</key>
+	<string>KG</string>
+	<key>KILOGRAM</key>
+	<string>KG</string>
+	<key>KILOGRAMS</key>
+	<string>KG</string>
+	<key>IN</key>
+	<string>IN</string>
+	<key>INCH</key>
+	<string>IN</string>
+	<key>INCHES</key>
+	<string>IN</string>
+	<key>FL OZ</key>
+	<string>FL OZ</string>
+	<key>FL OZS</key>
+	<string>FL OZ</string>
+	<key>FLUID OUNCES</key>
+	<string>FL OZ</string>
+	<key>FLUID OZ</key>
+	<string>FL OZ</string>
+	<key>FLUID OZS</key>
+	<string>FL OZ</string>
+	<key>FL OUNCES</key>
+	<string>FL OZ</string>
+	<key>PT</key>
+	<string>PT</string>
+	<key>PTS</key>
+	<string>PT</string>
+	<key>PINT</key>
+	<string>PT</string>
+	<key>PINTS</key>
+	<string>PT</string>
+	<key>OZ</key>
+	<string>OZ</string>
+	<key>OZS</key>
+	<string>OZ</string>
+	<key>OUNCE</key>
+	<string>OZ</string>
+	<key>OUNCES</key>
+	<string>OZ</string>
+	<key>LB</key>
+	<string>LB</string>
+	<key>LBS</key>
+	<string>LB</string>
+	<key>POUND</key>
+	<string>LB</string>
+	<key>POUNDS</key>
+	<string>LB</string>
+</dict>
+</plist>
