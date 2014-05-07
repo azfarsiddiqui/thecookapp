@@ -287,6 +287,16 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }
 }
 
++ (CKMeasurementType)currentMeasureTypeForUser:(CKUser *)user {
+    if (user) {
+        return user.measurementType;
+    } else if ([[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestMeasure]) {
+        return [[[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestMeasure] integerValue];
+    } else {
+        return CKMeasureTypeMetric;
+    }
+}
+
 + (NSURL *)defaultBlankProfileUrl {
     static dispatch_once_t pred;
     static NSURL *sharedProfileUrl = nil;
@@ -344,6 +354,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
     // CHeck profilePhoto first before falling back to FB photo.
     PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
+//    DLog(@"##### profilePhoto: %@", [NSString CK_stringForBoolean:profilePhoto.isDataAvailable]);
     if (profilePhoto != nil) {
         pictureUrl = [NSURL URLWithString:profilePhoto.url];
     } else if ([self.facebookId length] > 0) {

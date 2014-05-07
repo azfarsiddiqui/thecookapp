@@ -67,6 +67,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 + (DashTheme)currentTheme;
 + (void)setGuestMeasure:(CKMeasurementType)measureType;
 + (CKMeasurementType)currentMeasureType;
++ (CKMeasurementType)currentMeasureTypeForUser:(CKUser *)user;
 + (NSURL *)defaultBlankProfileUrl;
 
 - (id)initWithParseUser:(PFUser *)parseUser;
