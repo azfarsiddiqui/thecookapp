@@ -138,7 +138,7 @@
         
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(>=10)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(90)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(5)-[servesSlider(sliderWidth)]-(5)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(0)-[servesSlider(sliderWidth)]-(5)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepTitleLabel]-(-20)-[prepView(20)]-[prepLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(longControlWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
@@ -206,13 +206,13 @@
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeLeading
-                                                                      multiplier:1.f constant:16.f]];
+                                                                      multiplier:1.f constant:20.f]];
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
                                                                        attribute:NSLayoutAttributeTrailing
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeTrailing
-                                                                      multiplier:1.f constant:-10.f]];
+                                                                      multiplier:1.f constant:-20.f]];
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
                                                                        attribute:NSLayoutAttributeCenterY
                                                                        relatedBy:NSLayoutRelationEqual
@@ -388,6 +388,7 @@
 - (void)didSelectQuantityType:(CKQuantityType)quantityType {
     self.recipeDetails.quantityType = quantityType;
     if (quantityType == CKQuantityMakes) {
+        [self makesSliderValueChanged];
         [UIView animateWithDuration:0.4 animations:^{
             self.smallServesImageView.alpha = 0.0;
             self.largeServesImageView.alpha = 0.0;
@@ -397,6 +398,7 @@
             self.makesSlider.alpha = 1.0;
         }];
     } else {
+        [self notchSliderView:self.servesSlider selectedIndex:self.servesSlider.currentNotchIndex];
         [UIView animateWithDuration:0.4 animations:^{
             self.smallServesImageView.alpha = 1.0;
             self.largeServesImageView.alpha = 1.0;
@@ -566,8 +568,6 @@
     }
     return index;
 }
-
-//- (NSInteger)indexFor
 
 #pragma mark - SLider actions
 - (void)cookSliderValueChanged {

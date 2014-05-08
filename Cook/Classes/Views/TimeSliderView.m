@@ -42,9 +42,9 @@
 
 - (CGRect)thumbRectForBounds:(CGRect)bounds trackRect:(CGRect)rect value:(float)value {
     float valueRatio = ( value - self.minimumValue ) / (self.maximumValue + 1);
-    CGFloat rangeLimit = self.minimumValueImage ? 150 : 20;
+    CGFloat rangeLimit = self.minimumValueImage ? 150 : 0;
     CGFloat yOffset = self.minimumValueImage ? 0 : 10;
-    CGFloat xOffset = self.minimumValueImage ? 58 : -10;
+    CGFloat xOffset = self.minimumValueImage ? 58 : -15;
     return CGRectMake(valueRatio * (bounds.size.width - rangeLimit) + xOffset, yOffset, 48, 48);
 }
 
