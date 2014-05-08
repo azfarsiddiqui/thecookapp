@@ -391,6 +391,8 @@
         kImageSize.height
     }];
     imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.clipsToBounds = YES;
     [self.contentView addSubview:imageView];
     self.imageView = imageView;
     
