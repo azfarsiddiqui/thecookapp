@@ -13,7 +13,6 @@
 @property (nonatomic, strong) UIImageView *thumbnailView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
-@property (nonatomic, assign) BOOL isImageLoaded;
 
 - (void)setThumbnailImage:(UIImage *)thumbImage;
 - (void)setFullImage:(UIImage *)fullImage;

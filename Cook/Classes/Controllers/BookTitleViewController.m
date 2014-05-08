@@ -39,7 +39,6 @@
 
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
-@property (nonatomic, assign) BOOL cachedImageLoaded;
 @property (nonatomic, assign) BOOL didScrollBack;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 
@@ -77,6 +76,7 @@
 #define kArrowAnimationDuration 0.3
 #define kHeaderHeight           420.0
 #define kHeaderCellGap          135.0
+#define BLUR_TINT_COLOUR        0.58
 
 - (void)dealloc {
     [self.photoView cleanImageViews]; self.photoView = nil;
@@ -106,26 +106,28 @@
     // Attempt to load a cached title image.
     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
     if (cachedTitleImage) {
+        
+        // Display cached full image.
         [self.photoView setThumbnailImage:cachedTitleImage];
-        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
         
-        __weak BookTitleViewController *weakSelf = self;
-        [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
-                                                     tintColor:tintColour
-                                                    thumbImage:cachedTitleImage
-                                                    completion:^(UIImage *thumbImage, NSString *name) {
-                                                        [weakSelf.photoView setBlurredImage:thumbImage];
-                                                    }];
-        
+        // On-demand blur it - this will get replaced later when a hero recipe is assigned.
+        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:BLUR_TINT_COLOUR];
+        [[CKPhotoManager sharedInstance] blurredImageForRecipeWithImage:cachedTitleImage
+                                                              tintColor:tintColour
+                                                             completion:^(UIImage *blurredImage) {
+                                                                 [self.photoView setBlurredImage:blurredImage];
+                                                             }];
+
+        // Apply top shadow.
         self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-        self.cachedImageLoaded = YES;
+
     } else {
+        
+        // The coloured grid backgroound.
         [self.photoView setThumbnailImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]];
     }
     
     [self addCloseButtonLight:YES];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnFromBackground) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)configureLoading:(BOOL)loading {
@@ -229,18 +231,10 @@
                                  if ([self profileCardRequired]) {
                                      [self showProfileHintCard:YES];
                                  }
+                                 
                                  // Open ze gates.
                                  [self openGates];
-                                 
-                                 if (self.cachedImageLoaded) {
-                                     //Tile backgroundImage, which will get rid of heavy imageView
-                                     UIImage *cachedTitleImage = [[CKPhotoManager sharedInstance] cachedTitleImageForBook:self.book];
-                                     __weak BookTitleViewController *weakSelf = self;
-                                     [self.photoView setFullImage:cachedTitleImage completion:^{
-                                         weakSelf.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
-                                     }];
-                                 }
-                                 
+
                              }];
         }];
     }
@@ -253,8 +247,9 @@
     // Make sure view is available when this is invoked.
     self.view.hidden = NO;
     
-    if ([recipe hasPhotos] && !self.cachedImageLoaded) {
+    if ([recipe hasPhotos]) {
         
+        // iOS 7.1 has a different UIProgressView padding.
         CGFloat progressOffset = [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? 60.0 : 20.0;
         
         // Add progress.
@@ -283,9 +278,7 @@
                                                     }
                                                 }
                                                      completion:^(UIImage *image, NSString *name) {
-                                                         weakSelf.fullImageLoaded = YES;
                                                          [weakSelf configureHeroRecipeImage:image thumb:NO];
-                                                         weakSelf.progressView.hidden = YES;
                                                      }];
     }
 }
@@ -716,13 +709,11 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)configureHeroRecipeImage:(UIImage *)image thumb:(BOOL)isThumb {
-    self.progressView.hidden = self.fullImageLoaded;
     
     if (isThumb) {
         [self.photoView setThumbnailImage:image];
-        self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
         
-        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:0.58];
+        UIColor *tintColour = [[CKBookCover bookContentTintColourForCover:self.book.cover] colorWithAlphaComponent:BLUR_TINT_COLOUR];
         
         __weak BookTitleViewController *weakSelf = self;
         [[CKPhotoManager sharedInstance] blurredImageForRecipe:self.heroRecipe
@@ -733,10 +724,21 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         }];
         
     } else {
+        
+        // Hide progress view.
+        self.progressView.hidden = YES;
+        
+        // Show the full image.
         [self.photoView setFullImage:image];
+        
+        // Cache title image as book.
         [[CKPhotoManager sharedInstance] cacheTitleImage:image book:self.book];
+        
         self.fullImageLoaded = YES;
     }
+    
+    // Add top shadow.
+    self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
 }
 
 - (void)applyOffset:(CGFloat)offset distance:(CGFloat)distance view:(UIView *)view {
@@ -843,7 +845,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (NSArray *)animationImagesWithBaseName:(NSString *)baseName frameCount:(NSUInteger)frameCount {
     NSMutableArray *animationImages = [NSMutableArray arrayWithCapacity:frameCount];
     for (NSUInteger frameIndex = 1; frameIndex <= frameCount; frameIndex++) {
-        UIImage *frameImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@%d.png", baseName, frameIndex]];
+        UIImage *frameImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@%d.png", baseName, (unsigned int)frameIndex]];
         [animationImages addObject:frameImage];
     }
     return animationImages;
@@ -865,10 +867,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (BOOL)hasPages {
     return [self.collectionView numberOfItemsInSection:0];
-}
-
-- (void)returnFromBackground {
-    self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
 }
 
 @end

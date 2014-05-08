@@ -28,10 +28,10 @@
 
 @implementation CKPhotoManager
 
-#define kImageCompression           0.6
-#define kThumbImageCompression      0.6
-#define kBookTitleImagePrefix       @"titleImageForBook-"
-#define kGeneratedAssetDirectory    @"generatedAssets"
+#define kImageCompression               0.6
+#define kThumbImageCompression          0.6
+#define kBookTitleImagePrefix           @"titleImageForBook-"
+#define kGeneratedAssetDirectory        @"generatedAssets"
 
 + (CKPhotoManager *)sharedInstance {
     static dispatch_once_t pred;
@@ -126,18 +126,34 @@
 - (void)blurredImageForRecipe:(CKRecipe *)recipe
                     tintColor:(UIColor *)tint
                    thumbImage:(UIImage *)image
-                   completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
+                   completion:(void (^)(UIImage *blurredImage, NSString *name))completion {
+    
     NSString *imageName = [self photoNameForBlurredRecipe:recipe];
     UIImage *cachedImage = [self cachedImageForName:imageName size:[ImageHelper blurredSize]];
     if (cachedImage) {
+        
         // Return cached image.
         completion(cachedImage, imageName);
+        
     } else if (image) {
-        [ImageHelper blurredImage:image tintColour:tint radius:10.0 completion:^(UIImage *blurredImage) {
+        
+        // Blur it and cache it.
+        [self blurredImageForRecipeWithImage:image tintColor:tint completion:^(UIImage *blurredImage) {
+            
             [self storeImage:blurredImage forKey:[self cacheKeyForName:imageName size:[ImageHelper blurredSize]] toDisk:YES skipMemory:NO];
             completion(blurredImage, imageName);
         }];
+        
     }
+}
+
+- (void)blurredImageForRecipeWithImage:(UIImage *)image
+                             tintColor:(UIColor *)tint
+                            completion:(void (^)(UIImage *blurredImage))completion {
+    
+    [ImageHelper blurredImage:image tintColour:tint radius:10.0 completion:^(UIImage *blurredImage) {
+        completion(blurredImage);
+    }];
 }
 
 // Image retrieval for the given recipe at the specified size and with logical name for callback completion comparison.

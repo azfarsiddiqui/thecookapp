@@ -17,22 +17,23 @@
 
 @implementation CKPhotoView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.isImageLoaded = NO;
-    }
-    return self;
+- (void)dealloc {
+    self.imageView.image = nil;
+    [self.imageView removeFromSuperview];
+    self.blurredImageView.image = nil;
+    [self.blurredImageView removeFromSuperview];
+    self.thumbnailView.image = nil;
+    [self.thumbnailView removeFromSuperview];
 }
 
-- (void)dealloc {
-    [self.imageView removeFromSuperview];
-    self.imageView = nil;
-    [self.blurredImageView removeFromSuperview];
-    self.blurredImageView = nil;
-    self.thumbnailView = nil;
-    [self.thumbnailView removeFromSuperview];
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self addSubview:self.thumbnailView];
+        [self addSubview:self.imageView];
+        [self addSubview:self.blurredImageView];
+    }
+    return self;
 }
 
 - (CGRect)imageViewFrame {
@@ -47,7 +48,6 @@
         _thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
         _thumbnailView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         _thumbnailView.image = [ImageHelper imageFromDiskNamed:@"cook_edit_bg_blank" type:@"png"];
-        [self insertSubview:_thumbnailView belowSubview:self.imageView];
     }
     return _thumbnailView;
 }
@@ -57,7 +57,6 @@
         _imageView = [[UIImageView alloc] initWithFrame:[self imageViewFrame]];
         _imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        [self addSubview:_imageView];
     }
     return _imageView;
 }
@@ -67,7 +66,6 @@
         _blurredImageView = [[UIImageView alloc] initWithFrame:[self imageViewFrame]];
         _blurredImageView.contentMode = UIViewContentModeScaleAspectFill;
         _blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        [self insertSubview:_blurredImageView aboveSubview:self.imageView];
         _blurredImageView.alpha = 0.0;
     }
     return _blurredImageView;
@@ -77,7 +75,6 @@
 
 - (void)setThumbnailImage:(UIImage *)thumbImage {
     self.thumbnailView.image = thumbImage;
-    self.isImageLoaded = YES;
 }
 
 - (void)setFullImage:(UIImage *)fullImage {
@@ -87,7 +84,6 @@
 - (void)setFullImage:(UIImage *)fullImage completion:(void (^)())completion {
     self.imageView.image = fullImage;
 //    self.thumbnailView.image = nil;
-    self.isImageLoaded = YES;
 }
 
 - (void)setBlurredImage:(UIImage *)thumbImage {
@@ -103,7 +99,6 @@
 //    self.thumbnailView.image = nil;
     self.blurredImageView.image = nil;
     self.imageView.image = nil;
-    self.isImageLoaded = NO;
 }
 
 - (void)deactivateImage {
