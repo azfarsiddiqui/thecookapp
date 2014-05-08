@@ -58,7 +58,10 @@
 - (void)blurredImageForRecipe:(CKRecipe *)recipe
                     tintColor:(UIColor *)tint
                    thumbImage:(UIImage *)image
-                   completion:(void (^)(UIImage *thumbImage, NSString *name))completion;
+                   completion:(void (^)(UIImage *blurredImage, NSString *name))completion;
+- (void)blurredImageForRecipeWithImage:(UIImage *)image
+                             tintColor:(UIColor *)tint
+                            completion:(void (^)(UIImage *blurredImage))completion;
 - (void)thumbImageForURL:(NSURL *)url size:(CGSize)size
               completion:(void (^)(UIImage *image, NSString *name))completion;
 
