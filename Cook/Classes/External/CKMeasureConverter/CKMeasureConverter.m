@@ -9,6 +9,7 @@
 #import "CKMeasureConverter.h"
 #import "Theme.h"
 #import "CKUser.h"
+#import "ConversionHelper.h"
 
 #pragma mark - CKReplaceConvert helper
 @interface CKReplaceConvert : NSObject
@@ -90,7 +91,6 @@
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
         if (parsedString.length > 0) {
-//            DLog(@"Scanned result is: %f %@. Start pos: %i end pos: %i", currentNum, parsedString, startPos, endPos);
             CKReplaceConvert *replaceObj = [[CKReplaceConvert alloc] init];
             replaceObj.string = [self convertFromNumber:foundNums unit:parsedString];
             replaceObj.range = NSMakeRange(startPos, endPos - startPos);
@@ -265,7 +265,7 @@
 }
 
 - (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSInteger *)fraction unitLimit:(NSString *)limitString {
-    NSDictionary *upscaleDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"upscale" ofType:@"plist"]];
+    NSDictionary *upscaleDict = [ConversionHelper sharedInstance].upscaleDict;
     for (NSString *key in [upscaleDict allKeys]) {
         NSDictionary *obj = [upscaleDict objectForKey:key];
         CGFloat limit = [[obj objectForKey:@"limit"] floatValue];
@@ -308,7 +308,7 @@
 
 //Finds a string that matches a unit from the plist
 - (NSString *)scanString {
-    
+    NSDictionary *checkDict = [ConversionHelper sharedInstance].unitRecognitionDict;
     //Trying to ignore all whitespaces and weird characters I can think of
     NSMutableCharacterSet *unitCharacterIgnoreSet = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
     [unitCharacterIgnoreSet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
@@ -316,31 +316,45 @@
     [unitCharacterIgnoreSet removeCharactersInString:@"\u200a"];
     [self.scanner setCharactersToBeSkipped:unitCharacterIgnoreSet];
     
-    NSString *measureString;
+    NSMutableString *secondMeasureCheckString = [NSMutableString new];
+    NSString *firstMeasureCheckString;
     NSMutableCharacterSet *unitCharacterSet = [NSMutableCharacterSet letterCharacterSet];
     [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"°\u200a"]];
-//    [unitCharacterSet formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@""]];
-    [self.scanner scanCharactersFromSet:unitCharacterSet intoString:&measureString];
-    NSString *checkMeasureString = [[measureString copy] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([self.scanner scanCharactersFromSet:unitCharacterSet intoString:&firstMeasureCheckString]) {
+        [secondMeasureCheckString appendString:firstMeasureCheckString];
+    }
     
-    //Need to special case 'fl oz' since it has a space in it
-    if ([[measureString uppercaseString] isEqualToString:@"FL"]) {
-        NSString *finishMeasureString;
-        [self.scanner scanCharactersFromSet:[NSCharacterSet letterCharacterSet] intoString:&finishMeasureString];
-        if ([[finishMeasureString uppercaseString] isEqualToString:@"OZ"]) {
-            measureString = @"fl oz\u200a";
-            checkMeasureString = @"fl oz";
+    //Account for unit with spaces in them (eg fl oz)
+    NSInteger originalScanLocation = self.scanner.scanLocation;
+    {
+        NSString *secondPartString;
+        [self.scanner scanCharactersFromSet:unitCharacterSet intoString:&secondPartString];
+        if (secondPartString) {
+            [secondMeasureCheckString appendString:@" "];
+            [secondMeasureCheckString appendString:secondPartString];
         }
     }
     
+    NSString *check1stMeasureString = [[firstMeasureCheckString copy] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *check2ndMeasureString = [[secondMeasureCheckString copy] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
     //Checking for token and invalidating if class option has been set
-    if (measureString && [[[self unitTypes] allKeys] containsObject:[checkMeasureString uppercaseString]]) {
-        if (![self isValidUnitString:measureString]) {
+    if (firstMeasureCheckString && [[checkDict allKeys] containsObject:[check1stMeasureString uppercaseString]]) {
+        self.scanner.scanLocation = originalScanLocation;
+        if (![self isValidUnitString:firstMeasureCheckString]) {
             return nil;
         }
-        return checkMeasureString;
-    } else
+        return [checkDict objectForKey:[check1stMeasureString uppercaseString]];
+    } else if (secondMeasureCheckString && [[checkDict allKeys] containsObject:[check2ndMeasureString uppercaseString]]) {
+        if (![self isValidUnitString:secondMeasureCheckString]) {
+            self.scanner.scanLocation = originalScanLocation;
+            return nil;
+        }
+        return [checkDict objectForKey:[check2ndMeasureString uppercaseString]];
+    } else {
+        self.scanner.scanLocation = originalScanLocation;
         return nil;
+    }
 }
 
 //Scans for a number that might have fractions and returns converted number
@@ -370,7 +384,7 @@
     //Looking for range of numbers
     
     //This might be a fraction since we found a divide symbol, is there a denominator?
-    BOOL foundDenominator;
+    BOOL foundDenominator = NO;
     if (foundDivide) {
         
         foundDenominator = [self.scanner scanFloat:&denominator];
@@ -387,7 +401,7 @@
         self.scanner.scanLocation = originalPosition; //Set scan location back so that scanRange can pick it up
         return foundDenominator && denominator > 0 ? wholeNumber + (numerator / denominator) : firstNumber;
     }
-    return 0;
+    return firstNumber;
 }
 
 - (BOOL)scanRange {
@@ -414,7 +428,12 @@
 
 //Returns all unit types from plist
 - (NSDictionary *)unitTypes {
-    return [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"conversions" ofType:@"plist"]];
+    if (self.isTokenOnly) {
+        return [ConversionHelper sharedInstance].methodConversionsDict;
+    }
+    else {
+        return [ConversionHelper sharedInstance].conversionsDict;
+    }
 }
 
 - (NSString *)typeToString:(CKMeasurementType)locale {
