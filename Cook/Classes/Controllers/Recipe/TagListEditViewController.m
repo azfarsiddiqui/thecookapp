@@ -79,7 +79,7 @@
     [self.containerView addSubview:titleAlignView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.font = [Theme editServesTitleFont];
+    titleLabel.font = [Theme tagTitleFont];
     titleLabel.textColor = [Theme editServesTitleColour];
     titleLabel.text = @"TAGS";
     [titleAlignView addSubview:titleLabel];

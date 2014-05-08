@@ -369,7 +369,7 @@
 }
 
 + (UIFont *)editServesTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.0];
 }
 
 + (UIColor *)editServesTitleColour {
@@ -377,15 +377,15 @@
 }
 
 + (UIFont *)editServesFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.60];
 }
 
 + (UIColor *)editServesColour {
-    return [UIColor lightGrayColor];
+    return [UIColor colorWithRed:0.842 green:0.922 blue:0.997 alpha:1];
 }
 
 + (UIFont *)editPrepTitleFont {
-    return [self editServesTitleFont];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
 }
 
 + (UIColor *)editPrepTitleColour {
@@ -393,31 +393,35 @@
 }
 
 + (UIFont *)editPrepFont {
-    return [self editServesFont];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
 }
 
 + (UIColor *)editPrepColour {
-    return [self editServesColour];
+    return [UIColor lightGrayColor];
 }
 
 + (UIFont *)editCookTitleFont {
-    return [self editServesTitleFont];
+    return [self editPrepTitleFont];
 }
 
 + (UIColor *)editCookTitleColour {
-    return [self editServesTitleColour];
+    return [self editPrepTitleColour];
 }
 
 + (UIFont *)editCookFont {
-    return [self editServesFont];
+    return [self editPrepFont];
 }
 
 + (UIColor *)editCookColour {
-    return [self editServesColour];
+    return [self editPrepColour];
 }
 
 + (UIColor *)dividerRuleColour {
     return [UIColor colorWithHexString:@"EAEAEA"];
+}
+
++ (UIFont *)tagTitleFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:38.0];
 }
 
 + (UIFont *)tagLabelFont {

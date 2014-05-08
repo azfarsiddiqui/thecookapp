@@ -122,11 +122,11 @@
 
 - (void)updateQuantity:(NSString *)quantity {
     self.quantity = quantity;
-    NSDictionary *activeTitleAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32],
+    NSDictionary *activeTitleAttributes = @{NSFontAttributeName: [Theme editServesTitleFont],
                                  NSForegroundColorAttributeName: [UIColor whiteColor]};
-    NSDictionary *activeNumAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32],
-                                          NSForegroundColorAttributeName: [Theme servesColor]};
-    NSDictionary *inactiveTitleAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32],
+    NSDictionary *activeNumAttributes = @{NSFontAttributeName: [Theme editServesFont],
+                                          NSForegroundColorAttributeName: [Theme editServesColour]};
+    NSDictionary *inactiveTitleAttributes = @{NSFontAttributeName: [Theme editServesFont],
                                               NSForegroundColorAttributeName: [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000]};
     
     // TODO: Redo this so that i have makesTitle, servesTitle with the attributes chosen by the ternary operatoriph

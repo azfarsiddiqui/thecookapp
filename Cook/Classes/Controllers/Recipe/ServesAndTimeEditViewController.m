@@ -117,7 +117,7 @@
     
     //Setup layout
     {
-        NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@670, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
+        NSDictionary *metrics = @{@"controlHeight":@50, @"longControlWidth":@690, @"dividerWidth":@800, @"sliderWidth":[NSNumber numberWithFloat:self.servesSlider.frame.size.width]};
         NSDictionary *views = @{@"servesView":self.servesTabButton,
                                 @"servesSlider":self.servesSlider, @"makesSlider":self.makesSlider, @"servesLine":hr2Line,
                                 @"prepView":prepView, @"prepTitleLabel":self.prepTitleLabel, @"prepLabel":self.prepLabel,
@@ -136,11 +136,11 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(70)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(>=10)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(90)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(-3)-[servesSlider(sliderWidth)]-(-3)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(5)-[servesSlider(sliderWidth)]-(5)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepTitleLabel]-[prepView(1)]-[prepLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepTitleLabel]-(-20)-[prepView(20)]-[prepLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepSlider(longControlWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookTitleLabel]-[cookView(1)]-[cookLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(longControlWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
@@ -206,19 +206,19 @@
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeLeading
-                                                                      multiplier:1.f constant:17.f]];
+                                                                      multiplier:1.f constant:16.f]];
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
                                                                        attribute:NSLayoutAttributeTrailing
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeTrailing
-                                                                      multiplier:1.f constant:-17.f]];
+                                                                      multiplier:1.f constant:-10.f]];
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.makesSlider
                                                                        attribute:NSLayoutAttributeCenterY
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeCenterY
-                                                                      multiplier:1.f constant:0.f]];
+                                                                      multiplier:1.f constant:3.f]];
         
     }
     
@@ -410,52 +410,6 @@
 
 #pragma mark - Private methods
 
-- (NSInteger)numServesForIndex:(NSInteger)notchIndex {
-    NSInteger serves = notchIndex * kUnitServes;
-    switch (notchIndex) {
-        case 0:
-            serves = 0;
-            break;
-        case 1:
-            serves = 1;
-            break;
-        case 2:
-            serves = 2;
-            break;
-        case 3:
-            serves = 3;
-            break;
-        case 4:
-            serves = 4;
-            break;
-        case 5:
-            serves = 5;
-            break;
-        case 6:
-            serves = 6;
-            break;
-        case 7:
-            serves = 7;
-            break;
-        case 8:
-            serves = 8;
-            break;
-        case 9:
-            serves = 10;
-            break;
-        case 10:
-            serves = 12;
-            break;
-        case 11:
-            serves = 14;
-            break;
-        default:
-            serves = 0;
-            break;
-    }
-    return serves;
-}
-
 - (void)initServes {
     [self.containerView addSubview:self.servesSlider];
 }
@@ -473,27 +427,6 @@
 - (CGSize)availableSize {
     return CGSizeMake(self.containerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                       self.containerView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
-}
-
-- (NSInteger)servesIndex {
-    NSInteger numServes = [self.recipeDetails.numServes integerValue];
-    NSInteger notchIndex = 0;
-    if (numServes < 6)
-    {
-        notchIndex = numServes;
-    } else if (numServes >= 6 && numServes < 8) {
-        notchIndex = 5;
-    } else if (numServes >= 8 && numServes < 10) {
-        notchIndex = 6;
-    } else if (numServes >= 10 && numServes < [CKRecipe maxServes]) {
-        notchIndex = 7;
-    } else if (numServes == [CKRecipe maxServes]) {
-        notchIndex = 8;
-    } else {
-        //Set to max index
-        notchIndex = self.servesSlider.numNotches - 1;
-    }
-    return notchIndex;
 }
 
 - (NSInteger)prepIndex {
@@ -549,6 +482,73 @@
     }
     
     return minutes;
+}
+
+- (NSInteger)numServesForIndex:(NSInteger)notchIndex {
+    NSInteger serves = notchIndex * kUnitServes;
+    switch (notchIndex) {
+        case 0:
+            serves = 0;
+            break;
+        case 1:
+            serves = 1;
+            break;
+        case 2:
+            serves = 2;
+            break;
+        case 3:
+            serves = 3;
+            break;
+        case 4:
+            serves = 4;
+            break;
+        case 5:
+            serves = 5;
+            break;
+        case 6:
+            serves = 6;
+            break;
+        case 7:
+            serves = 7;
+            break;
+        case 8:
+            serves = 8;
+            break;
+        case 9:
+            serves = 10;
+            break;
+        case 10:
+            serves = 12;
+            break;
+        case 11:
+            serves = 14;
+            break;
+        default:
+            serves = 0;
+            break;
+    }
+    return serves;
+}
+
+- (NSInteger)servesIndex {
+    NSInteger numServes = [self.recipeDetails.numServes integerValue];
+    NSInteger notchIndex = 0;
+    if (numServes < 6)
+    {
+        notchIndex = numServes;
+    } else if (numServes >= 6 && numServes < 8) {
+        notchIndex = 5;
+    } else if (numServes >= 8 && numServes < 10) {
+        notchIndex = 6;
+    } else if (numServes >= 10 && numServes < [CKRecipe maxServes]) {
+        notchIndex = 7;
+    } else if (numServes == [CKRecipe maxServes]) {
+        notchIndex = 8;
+    } else {
+        //Set to max index
+        notchIndex = self.servesSlider.numNotches - 1;
+    }
+    return notchIndex;
 }
 
 - (NSInteger)makesForSliderIndex:(NSInteger)sliderIndex {

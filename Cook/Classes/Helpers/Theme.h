@@ -132,6 +132,7 @@
 + (UIColor *)dividerRuleColour;
 + (UIFont *)tagLabelFont;
 + (UIColor *)tagLabelColor;
++ (UIFont *)tagTitleFont;
 
 #pragma mark - Social view.
 
