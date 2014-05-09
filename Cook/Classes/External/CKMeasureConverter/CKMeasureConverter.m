@@ -32,6 +32,8 @@
 @property (nonatomic, strong) NSMutableArray *replaceArray; //array of replaceConverts
 @property (nonatomic, assign) CKMeasurementType toType;
 @property (nonatomic, assign) BOOL isTokenOnly;
+@property (nonatomic, strong) NSNumberFormatter *tempConverterFormatter;
+@property (nonatomic, strong) NSNumberFormatter *tenthConverterFormatter;
 @property (nonatomic, assign) id<CKMeasureConverterDelegate> delegate;
 
 @end
@@ -47,6 +49,10 @@
         self.isTokenOnly = isTokenOnly;
         self.toType = toType;
         self.delegate = delegate;
+        self.tempConverterFormatter = [[NSNumberFormatter alloc] init];
+        [self.tempConverterFormatter setMaximumFractionDigits:2];
+        self.tenthConverterFormatter = [[NSNumberFormatter alloc] init];
+        [self.tenthConverterFormatter setMaximumFractionDigits:1];
     }
     return self;
 }
@@ -215,6 +221,10 @@
             
             if ((NSInteger)(roundf(upscaledNum * 100)/100 * 10) % 10 != 0) {
                 isParenthesesConvert = YES;
+                if ([convertedString isEqualToString:@"cup"]) {
+                    tempNumString = [NSString stringWithFormat:@"~%@", tempNumString];
+                }
+                
                 //Convert to fl oz to put in the parentheses
                 if ([secondaryNumString length] > 0) {
                     [secondaryNumString appendString:@" - "];
@@ -232,7 +242,7 @@
             if ([secondaryNumString length] > 0) {
                 [secondaryNumString appendString:@" - "];
             }
-            [secondaryNumString appendString:[NSString stringWithFormat:@"%.2f", fromNumber]];
+            [secondaryNumString appendString:[self.tempConverterFormatter stringFromNumber:@(fromNumber)]];   //[NSString stringWithFormat:@"%.2f", fromNumber]];
             secondaryUnitString = unitString;
         }
         //Add built-up string to converted string if range
@@ -479,7 +489,7 @@
 //For large metric measures, keep decimal but round to tenth
 - (NSString *)convertTenths:(CGFloat)input {
     CGFloat rounded = roundf(input * 100)/ 100;
-    return [NSString stringWithFormat:@"%.1f", rounded];
+    return [self.tenthConverterFormatter stringFromNumber:@(rounded)];
 }
 
 - (NSString *)convertEights:(CGFloat)input {
@@ -504,7 +514,7 @@
 }
 
 - (NSString *)convertWhole:(CGFloat)input {
-    return [NSString stringWithFormat:@"%i", (NSInteger)roundf(input)];
+    return [@(input) stringValue];
 }
 
 - (NSString *)convertToFraction:(CGFloat)input keyArray:(NSArray *)array {
