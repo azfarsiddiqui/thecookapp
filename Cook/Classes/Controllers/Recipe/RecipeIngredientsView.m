@@ -127,7 +127,7 @@
 #pragma mark - Private methods
 
 - (void)updateFrame {
-    CGRect frame = (CGRect){ 0.0, 0.0, 0.0, 0.0 };;
+    CGRect frame = CGRectZero;
     for (UIView *subview in self.subviews) {
         frame = (CGRectUnion(frame, subview.frame));
     }

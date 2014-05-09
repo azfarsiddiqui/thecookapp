@@ -32,7 +32,7 @@
 #define kStatViewOffset         -4.0
 #define kStatRowGap             -10.0
 #define kLabelTag               300
-#define kContentInsets          (UIEdgeInsets){ 0.0, 0.0, -11.0, 12.0 }
+#define kContentInsets          (UIEdgeInsets){ 0.0, 0.0, -7.0, 12.0 }
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode {
     if (self = [super initWithFrame:CGRectZero]) {

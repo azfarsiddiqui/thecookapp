@@ -168,11 +168,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                          self.profilePhotoView.alpha = editMode ? 0.0 : 1.0;
                          self.pageLabel.alpha = editMode ? 1.0 : 0.0;
                          pageTextBoxView.alpha = editMode ? 1.0 : 0.0;
-//                         self.tagsLabel.alpha = editMode ? 1.0 : 0.0;
                          tagsTextBoxView.alpha = editMode ? 1.0 : 0.0;
                          
                          // Fade the divider lines.
-//                         self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
                          self.ingredientsDividerView.alpha = editMode ? 0.0 : 1.0;
                          
                      }
@@ -903,7 +901,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateServesCookFrame {
-    CGFloat beforeGap = 0.0;
+    CGFloat beforeGap = -5.0;
     self.servesCookView.frame = (CGRect){
         kContentInsets.left,
         self.contentOffset.y + beforeGap,
