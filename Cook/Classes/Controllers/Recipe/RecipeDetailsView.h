@@ -16,6 +16,7 @@
 
 - (void)recipeDetailsViewEditing:(BOOL)editing;
 - (void)recipeDetailsViewUpdated:(BOOL)doSnap;
+- (void)recipeDetailsViewAdjusted;
 - (BOOL)recipeDetailsViewAddMode;
 - (void)recipeDetailsViewProfileRequested;
 @optional

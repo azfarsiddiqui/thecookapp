@@ -307,6 +307,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self showProfileOverlay:YES];
 }
 
+- (void)recipeDetailsViewAdjusted {
+    [self adjustRecipeDetailsView];
+}
+
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
@@ -2221,6 +2225,28 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (!self.recipeDetailsView.superview) {
         [self.scrollView addSubview:self.recipeDetailsView];
     }
+}
+
+- (void)adjustRecipeDetailsView {
+    CGSize contentSize = self.recipeDetailsView.frame.size;
+    contentSize.height += kFooterTopGap + self.recipeFooterView.frame.size.height + kFooterBottomGap;
+    contentSize.height = MAX(contentSize.height, 768.0 - kContentTopOffset); // UGH need to force 768.0 as autoresize hasn't kicked in for scrollView yet.
+    [UIView animateWithDuration:0.2 animations:^{
+        self.scrollView.contentSize = contentSize;
+    }];
+    self.recipeFooterView.frame = (CGRect){
+        floorf((self.scrollView.bounds.size.width - self.recipeFooterView.frame.size.width) / 2.0),
+        contentSize.height - kFooterBottomGap - self.recipeFooterView.frame.size.height,
+        self.recipeFooterView.frame.size.width,
+        self.recipeFooterView.frame.size.height
+    };
+    self.recipeDetailsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    self.recipeDetailsView.frame = (CGRect){
+        floorf((self.scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
+        0.0,
+        self.recipeDetailsView.frame.size.width,
+        self.recipeDetailsView.frame.size.height
+    };
 }
 
 - (CGFloat)currentAlphaForPhotoButtonView {

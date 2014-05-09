@@ -1472,9 +1472,23 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.selectedMeasureType = CKMeasureTypeImperial;
     }
     [self.ingredientsView updateIngredients:self.recipeDetails.ingredients measureType:self.selectedMeasureType convertible:[self isConvertible]];
-    [self updateFrame:NO];
+    CGFloat ingredientBottom = self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height;
+    
     [self updateMethodFrame];
+    CGFloat methodBottom = self.methodLabel.frame.origin.y + self.methodLabel.frame.size.height;
+    
     [self updateChangeMeasureButtonFrame];
+    
+    //Check to see if we need to grow view
+    CGFloat bottommostPoint = ingredientBottom > methodBottom ? ingredientBottom : methodBottom;
+    CGFloat heightDiff = (self.frame.size.height - 100) - bottommostPoint;
+    if (heightDiff < 0) {
+        //Something has grown bigger than frame, need to grow it
+        CGRect frame = self.frame; //(CGRect){ kContentInsets.top, 0.0, kWidth, 0.0 };
+        frame.size.height -= heightDiff;
+        self.frame = frame;
+        [self.delegate recipeDetailsViewAdjusted];
+    }
 }
 
 @end
