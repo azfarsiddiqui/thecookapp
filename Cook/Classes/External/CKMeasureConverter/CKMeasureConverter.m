@@ -200,10 +200,10 @@
         }
         
         NSString *tempNumString = @"";
-        NSInteger fraction = [[convertDict objectForKey:@"fraction"] intValue];
+        NSNumber *fraction = [convertDict objectForKey:@"fraction"];
         CGFloat upscaledNum = [self upscaleNumber:convertedNum unitString:&convertedString fractionType:&fraction unitLimit:limitString];
         limitString = convertedString;
-        tempNumString = [self roundFrom:upscaledNum withFractionType:fraction];
+        tempNumString = [self roundFrom:upscaledNum withFractionType:[fraction integerValue]];
         
         //Special case ml -> Imperial conversion
         if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
@@ -264,7 +264,7 @@
     return returnString;
 }
 
-- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSInteger *)fraction unitLimit:(NSString *)limitString {
+- (CGFloat)upscaleNumber:(CGFloat)amount unitString:(NSString **)unitString fractionType:(NSNumber **)fraction unitLimit:(NSString *)limitString {
     NSDictionary *upscaleDict = [ConversionHelper sharedInstance].upscaleDict;
     for (NSString *key in [upscaleDict allKeys]) {
         NSDictionary *obj = [upscaleDict objectForKey:key];
