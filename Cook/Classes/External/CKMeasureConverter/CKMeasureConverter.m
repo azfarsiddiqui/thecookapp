@@ -205,10 +205,15 @@
         limitString = convertedString;
         tempNumString = [self roundFrom:upscaledNum withFractionType:[fraction integerValue]];
         
+        //Need conversion check Dict to determine if this is a millimeter conversion
+        NSDictionary *checkDict = [ConversionHelper sharedInstance].unitRecognitionDict;
+        NSArray *checkML = [checkDict allKeysForObject:@"ML"];
+        
         //Special case ml -> Imperial conversion
-        if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial && [[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@"ml"]) {
+        if ([self isValidUnitString:unitString] && toLocale == CKMeasureTypeImperial &&
+            [checkML containsObject:[[unitString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString]]) {
             
-            if ((NSInteger)(roundf(convertedNum * 100)/100 * 10) % 10 != 0) {
+            if ((NSInteger)(roundf(upscaledNum * 100)/100 * 10) % 10 != 0) {
                 isParenthesesConvert = YES;
                 //Convert to fl oz to put in the parentheses
                 if ([secondaryNumString length] > 0) {
