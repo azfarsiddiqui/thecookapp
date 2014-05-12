@@ -237,7 +237,12 @@
     [super targetTextEditingViewDidAppear:appear];
     
     if (appear) {
-        [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:YES];
+        if (self.recipeDetails.quantityType == CKQuantityServes) {
+            [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:YES];
+        } else {
+            [self.makesSlider setValue:[self sliderIndexForNumberOfMakes:self.originalNumServes] animated:YES];
+            [self makesSliderValueChanged];
+        }
         self.prepSlider.value = [self prepIndex];
         [self prepSliderValueChanged];
         self.cookSlider.value = [self cookIndex];

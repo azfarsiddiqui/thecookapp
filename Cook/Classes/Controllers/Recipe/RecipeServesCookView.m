@@ -123,7 +123,7 @@
             self.prepLabel = (UILabel *)[prepStatView viewWithTag:kLabelTag];
         }
         
-        if (self.editMode ||self.recipeDetails.cookingTimeInMinutes) {
+        if (self.editMode || self.recipeDetails.cookingTimeInMinutes) {
             
             // Cook.
             cookStatView = [self viewForStatText:@"Cook" statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes formatted:YES]];
@@ -239,8 +239,10 @@
     if (!statValue && self.editMode) {
         statValue = @"0";
     } else {
-        if ([statNumber integerValue] > [RecipeDetails maxServes]) {
-            statValue = [NSString stringWithFormat:@"%d+", [RecipeDetails maxServes]];
+        if (self.recipeDetails.quantityType == CKQuantityServes && [statNumber integerValue] > [RecipeDetails maxServes]) {
+            statValue = [NSString stringWithFormat:@"%@+", [@([RecipeDetails maxServes]) stringValue]];
+        } else if (self.recipeDetails.quantityType == CKQuantityMakes && [statNumber integerValue] > [RecipeDetails maxMakes]) {
+            statValue = [NSString stringWithFormat:@"%@+", [@([RecipeDetails maxMakes]) stringValue]];
         }
     }
     return statValue;
