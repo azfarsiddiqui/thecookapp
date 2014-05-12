@@ -21,6 +21,7 @@
 
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, assign) NSInteger originalNumServes;
 @property (nonatomic, strong) ServesNotchSliderView *servesSlider;
 @property (nonatomic, strong) TimeSliderView *makesSlider;
 @property (nonatomic, strong) UILabel *prepTitleLabel;
@@ -56,6 +57,7 @@
     
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white]) {
         self.recipeDetails = recipeDetails;
+        self.originalNumServes = [recipeDetails.numServes integerValue];
     }
     return self;
 }
@@ -235,7 +237,7 @@
     [super targetTextEditingViewDidAppear:appear];
     
     if (appear) {
-        [self.servesSlider selectNotch:[self servesIndex] animated:YES];
+        [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:YES];
         self.prepSlider.value = [self prepIndex];
         [self prepSliderValueChanged];
         self.cookSlider.value = [self cookIndex];
@@ -371,7 +373,7 @@
         NSInteger serves = [self numServesForIndex:notchIndex];
         
         // Nil out if num serves was zero.
-        self.recipeDetails.numServes = (serves == 0) ? nil : [NSNumber numberWithInteger:serves];
+        self.recipeDetails.numServes = [NSNumber numberWithInteger:serves];
         
         NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
         if (serves > [CKRecipe maxServes]) {
@@ -533,19 +535,22 @@
 }
 
 - (NSInteger)servesIndex {
-    NSInteger numServes = [self.recipeDetails.numServes integerValue];
+    return [self servesIndexForNumServes:[self.recipeDetails.numServes integerValue]];
+}
+
+- (NSInteger)servesIndexForNumServes:(NSInteger)numServes {
     NSInteger notchIndex = 0;
-    if (numServes < 6)
+    if (numServes < 8)
     {
         notchIndex = numServes;
-    } else if (numServes >= 6 && numServes < 8) {
-        notchIndex = 5;
     } else if (numServes >= 8 && numServes < 10) {
-        notchIndex = 6;
-    } else if (numServes >= 10 && numServes < [CKRecipe maxServes]) {
-        notchIndex = 7;
-    } else if (numServes == [CKRecipe maxServes]) {
         notchIndex = 8;
+    } else if (numServes >= 10 && numServes < 12) {
+        notchIndex = 9;
+    } else if (numServes >= 12 && numServes < [CKRecipe maxServes]) {
+        notchIndex = 10;
+    } else if (numServes == [CKRecipe maxServes]) {
+        notchIndex = 11;
     } else {
         //Set to max index
         notchIndex = self.servesSlider.numNotches - 1;
