@@ -314,7 +314,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    
     // Photo picker
     if (editingView == self.photoButtonView) {
         [self snapToViewport:SnapViewportBelow animated:YES completion:^{
@@ -2341,17 +2340,23 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)updateShareButton {
     if (self.shareButton) {
-        BOOL shareable = [self.recipe isShareable];
+        BOOL shareable = [self isRecipeDetailShareable];
         UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
         [self.shareButton setBackgroundImage:shareImage forState:UIControlStateNormal];
         UIImage *shareImageSelected = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light_onpress.png"];
         [self.shareButton setBackgroundImage:shareImageSelected forState:UIControlStateHighlighted];
         if (shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] == 0) {
             [self.shareButton addTarget:self action:@selector(shareTapped:) forControlEvents:UIControlEventTouchUpInside];
+            self.shareButton.enabled = YES;
         } else if (!shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] > 0) {
             [self.shareButton removeTarget:self action:@selector(shareTapped:) forControlEvents:UIControlEventTouchUpInside];
+            self.shareButton.enabled = NO;
         }
     }
+}
+
+- (BOOL)isRecipeDetailShareable {
+    return (self.recipeDetails.privacy != CKPrivacyPrivate);
 }
 
 - (CGFloat)headerHeight {
