@@ -408,6 +408,12 @@
         }
     }
     
+    //Found 2 numbers but they weren't a fraction
+    if (wholeNumber && foundSpace && !foundDivide) {
+        self.scanner.scanLocation = firstNumberLocation;
+        return firstNumber;
+    }
+    
     // Need to check for range indicators
     NSCharacterSet *rangeSet = [NSCharacterSet characterSetWithCharactersInString:@"-"];
     NSInteger originalPosition = self.scanner.scanLocation;
