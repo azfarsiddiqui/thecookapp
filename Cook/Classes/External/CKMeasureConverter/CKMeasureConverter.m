@@ -381,7 +381,7 @@
     if (!found) {
         return 0;
     }
-
+    NSInteger firstNumberLocation = self.scanner.scanLocation;
     BOOL foundSpace = [self.scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:nil];
     
     if (foundSpace) { //Found a space, this is definitely a whole number, need to look for a possible numerator
@@ -416,6 +416,8 @@
         self.scanner.scanLocation = originalPosition; //Set scan location back so that scanRange can pick it up
         return foundDenominator && denominator > 0 ? wholeNumber + (numerator / denominator) : firstNumber;
     }
+    // Only found 1 number, reset scanner location and return first number
+    self.scanner.scanLocation = firstNumberLocation;
     return firstNumber;
 }
 
