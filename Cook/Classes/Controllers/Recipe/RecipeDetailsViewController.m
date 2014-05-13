@@ -624,12 +624,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                  scrollView.contentSize.height * 0.5 + offsetY);
 }
 
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
-    if (scrollView == self.imageScrollView && scale == 1.0 && !self.zoomedLevel) {
-        [self toggleImage];
-    }
-}
-
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
