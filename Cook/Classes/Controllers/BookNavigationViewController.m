@@ -580,8 +580,12 @@
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    
-    return YES;
+    if ([gestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]] && otherGestureRecognizer == self.collectionView.panGestureRecognizer) {
+        [otherGestureRecognizer requireGestureRecognizerToFail:gestureRecognizer];
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - BookPageViewControllerDelegate methods
@@ -602,7 +606,7 @@
     self.currentEditViewController = bookPageViewController;
     [self enableEditMode:editMode];
     if (!editMode) {
-        self.collectionView.userInteractionEnabled = YES;
+        [self enableInteractions:YES];
     }
 }
 
@@ -764,7 +768,7 @@
 }
 
 - (void)bookTitleSelectedPage:(NSString *)page {
-    self.collectionView.userInteractionEnabled = NO;
+    [self enableInteractions:NO];
     // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
     double delayInSeconds = 0.1;
     
@@ -986,7 +990,9 @@
     [self updateNavigationButtons];
     [self trackPageView];
     
-    self.collectionView.userInteractionEnabled = YES;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self enableInteractions:YES];
+    });
     self.fastForward = NO;
 }
 
@@ -1204,7 +1210,7 @@
 
 - (void)returnFromBackground {
     if ([self.delegate bookNavigationShouldResumeEnable]) {
-        self.collectionView.userInteractionEnabled = YES;
+        [self enableInteractions:YES];
     }
 }
 
@@ -1714,8 +1720,6 @@
         if (visibleFrame.origin.x >= ([self contentStartSection] * self.collectionView.bounds.size.width)) {
             [self scrollToHome];
         }
-    } else {
-        self.collectionView.panGestureRecognizer.enabled = YES;
     }
 }
 
@@ -1774,13 +1778,20 @@
     [self fastForwardToPageIndex:kIndexSection];
 }
 
+- (void)scrollToHomeAnimated:(BOOL)animated {
+    [self.collectionView setContentOffset:(CGPoint){
+        kIndexSection * self.collectionView.bounds.size.width,
+        self.collectionView.contentOffset.y
+    } animated:animated];
+}
+
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
     [self fastForwardToPageIndex:pageIndex animated:YES];
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex animated:(BOOL)animated {
 
-    self.collectionView.userInteractionEnabled = NO;
+    [self enableInteractions: NO];
     self.destinationIndexes = @[@(pageIndex)];
     
     [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
@@ -1840,13 +1851,6 @@
         [self pageContentDidShow];
     }
     
-}
-
-- (void)scrollToHomeAnimated:(BOOL)animated {
-    [self.collectionView setContentOffset:(CGPoint){
-        kIndexSection * self.collectionView.bounds.size.width,
-        self.collectionView.contentOffset.y
-    } animated:animated];
 }
 
 - (void)peekTheBook {
@@ -2402,6 +2406,11 @@
 
 - (NSString *)photoNameForRecipe:(CKRecipe *)recipe {
     return [NSString stringWithFormat:@"background_%@", recipe.objectId];
+}
+
+- (void)enableInteractions:(BOOL)isEnabled {
+    self.collectionView.userInteractionEnabled = isEnabled;
+    self.collectionView.panGestureRecognizer.enabled = isEnabled;
 }
 
 @end
