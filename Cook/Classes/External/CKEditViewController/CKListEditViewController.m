@@ -223,7 +223,7 @@
         visibleFrame.size.height -= self.keyboardFrame.size.height;
         
         // Add the contentInset of the keyboard at the bottom.
-        self.collectionView.contentInset = (UIEdgeInsets){ 0.0, 0.0, self.keyboardFrame.size.height, 0.0 };
+        self.collectionView.contentInset = (UIEdgeInsets){ 0.0, 0.0, self.keyboardFrame.size.height + 20, 0.0 };
         
         if (!CGRectContainsPoint(visibleFrame, (CGPoint){ cellFrame.origin.x, cellFrame.origin.y + cellFrame.size.height })) {
         
