@@ -1087,6 +1087,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
+    size.width = kMaxRightWidth - 20; //because sizeThatFits is sometimes retarded
     //Center story if no ingredients or serves
     if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {
         self.methodLabel.frame = CGRectIntegral((CGRect){
