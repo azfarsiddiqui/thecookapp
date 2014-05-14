@@ -329,7 +329,7 @@
 }
 
 - (BOOL)recipeGridLayoutHeaderEnabled {
-    return YES;
+    return (self.resultsMode && [self.recipes count] > 0);
 }
 
 - (BOOL)recipeGridLayoutLoadMoreEnabled {
