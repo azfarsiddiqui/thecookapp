@@ -312,7 +312,7 @@
 }
 
 - (BOOL)isValidUnitString:(NSString *)unitString {
-    if (self.isTokenOnly && [unitString rangeOfString:@"\u200a"].location == NSNotFound) {
+    if (self.isTokenOnly && [unitString rangeOfString:@"\u200a"].location == NSNotFound && [unitString rangeOfString:@"°"].location == NSNotFound) {
         return NO;
     } else {
         return YES;
