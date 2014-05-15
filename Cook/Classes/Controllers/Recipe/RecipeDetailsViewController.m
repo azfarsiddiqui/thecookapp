@@ -480,13 +480,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 }
 
 - (void)recipeImageViewTapped {
-    if (self.imageScrollView.zoomScale == 1.0) {
+    if (self.imageScrollView.zoomScale <= 1.0) {
         [self toggleImage];
     }
 }
 
 - (void)recipeImageViewDoubleTappedAtPoint:(CGPoint)point {
-    CGFloat scale = (self.imageScrollView.zoomScale == 1.0) ? 2.0 : 1.0;
+    CGFloat scale = (self.imageScrollView.zoomScale <= 1.0) ? 2.0 : 1.0;
     CGRect zoomFrame = [self zoomFrameForScale:scale withCenter:point];
     [self.imageScrollView zoomToRect:zoomFrame animated:YES];
 }
@@ -1452,6 +1452,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Zoomable only in fullscreen mode.
     self.imageScrollView.maximumZoomScale = fullscreen ? 2.0 : 1.0;
+    self.imageScrollView.minimumZoomScale = 0.95;
     
     [self snapToViewport:toggleViewport animated:YES completion:^{
         
@@ -1463,6 +1464,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         // Opaque background so when you zoom less, you don't get a clear background.
         self.imageScrollView.backgroundColor = fullscreen ? [UIColor blackColor] : [UIColor clearColor];
+        
+        self.imageScrollView.contentSize = self.imageView.frame.size;
         
         // Fade in/out the buttons based on fullscreen mode or not.
         [UIView animateWithDuration:0.2
@@ -2320,7 +2323,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
     
     // If detected, then close the recipe.
-    if (edgeGesture.state == UIGestureRecognizerStateBegan && self.imageScrollView.zoomScale == 1.0) {
+    if (edgeGesture.state == UIGestureRecognizerStateBegan && self.imageScrollView.zoomScale <= 1.0) {
         if (self.editMode) {
             [self cancelTapped:nil];
         } else if (self.currentViewport == SnapViewportBelow ) {
