@@ -14,7 +14,7 @@
 			<key>conversion</key>
 			<integer>1</integer>
 			<key>fraction</key>
-			<integer>10</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>°F</key>
@@ -29,7 +29,7 @@
 			<key>conversion</key>
 			<integer>1</integer>
 			<key>fraction</key>
-			<integer>10</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>MM</key>
