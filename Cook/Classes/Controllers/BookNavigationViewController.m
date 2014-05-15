@@ -1346,7 +1346,7 @@
     }
     
     // Do we have likes?
-    if (self.enableLikes && [self.book isOwner]) {
+    if ([self showLikes]) {
         
         // Resolve a Likes page name.
         self.likesPageName = [self resolveLikesPageName];
@@ -1392,12 +1392,14 @@
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
     
-    if (self.enableLikes && [self.book isOwner]) {
+    // Show Likes?
+    if ([self showLikes]) {
         [self.pages addObject:self.likesPageName];
     }
     
     // If not my book, reject empty pages.
-    if (![self.book isOwner]) {
+    if (![self.book isOwner]
+        ) {
         self.pages = [NSMutableArray arrayWithArray:[self.pages reject:^BOOL(NSString *page) {
             
             return ([[self.pageRecipeCount objectForKey:page] integerValue] == 0);
@@ -2104,7 +2106,7 @@
     
     NSInteger currentPageIndex = [self currentPageIndex];
     NSInteger pageIndex = [self.pages count] + [self contentStartSection] - 1;
-    if (self.enableLikes && [self.book isOwner] && currentPageIndex == pageIndex) {
+    if ([self showLikes] && currentPageIndex == pageIndex) {
         
         // Likes page if it's the last page of my own book.
         likesPage = YES;
@@ -2411,6 +2413,10 @@
 - (void)enableInteractions:(BOOL)isEnabled {
     self.collectionView.userInteractionEnabled = isEnabled;
     self.collectionView.panGestureRecognizer.enabled = isEnabled;
+}
+
+- (BOOL)showLikes {
+    return (self.enableLikes && ([self.book isOwner] || self.book.showLikes));
 }
 
 @end

@@ -76,6 +76,7 @@ NSString *const kBookAttrPages                  = @"pages";
 NSString *const kBookAttrCategories             = @"categories";
 NSString *const kBookAttrAuthor                 = @"author";
 NSString *const kBookAttrFeatured               = @"featured";
+NSString *const kBookAttrShowLikes              = @"showLikes";
 NSString *const kBookAttrFeaturedOrder          = @"featuredOrder";
 NSString *const kBookAttrDefaultNameValue       = @"My favorite recipes and food";
 NSString *const kBookAttrDefaultCaptionValue    = @"Tell us more about your book";

@@ -47,6 +47,7 @@ typedef enum {
 @property (nonatomic, strong) NSArray *pages;
 @property (nonatomic, strong) NSArray *currentCategories;
 @property (nonatomic, assign) BOOL featured;
+@property (nonatomic, assign) BOOL showLikes;
 @property (nonatomic, assign) BookStatus status;
 @property (nonatomic, assign) BOOL guest;
 @property (nonatomic, assign) BOOL disabled;
