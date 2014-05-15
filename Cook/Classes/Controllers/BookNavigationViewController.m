@@ -15,7 +15,6 @@
 #import "BookNavigationLayout.h"
 #import "BookProfileViewController.h"
 #import "BookTitleViewController.h"
-#import "BookHeaderView.h"
 #import "BookProfileHeaderView.h"
 #import "BookNavigationView.h"
 #import "MRCEnumerable.h"
