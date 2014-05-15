@@ -227,6 +227,10 @@
                                  self.collectionView.transform = CGAffineTransformIdentity;
                              }
                              completion:^(BOOL finished){
+                                 
+                                 // Clip it now.
+                                 self.collectionView.clipsToBounds = YES;
+                                 
                                  [self showIntroCard:([pages count] <= 1)];
                                  if ([self profileCardRequired]) {
                                      [self showProfileHintCard:YES];
@@ -696,6 +700,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     // Start slightly lower.
     self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, kStartUpOffset);
+    
+    // Don't clip so that title card can move past.
+    self.collectionView.clipsToBounds = NO;
 }
 
 - (void)addPage {
