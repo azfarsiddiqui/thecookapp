@@ -33,6 +33,7 @@
 
 - (id)initWithBook:(CKBook *)book;
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode;
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode withinBook:(BOOL)withinBook;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 
 @end

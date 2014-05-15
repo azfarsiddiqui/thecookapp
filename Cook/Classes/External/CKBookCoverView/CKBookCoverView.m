@@ -30,7 +30,7 @@
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
-@property (nonatomic, assign) BOOL storeMode;
+@property (nonatomic, assign) BOOL standaloneMode;
 @property (nonatomic, strong) UIImageView *updatesIcon;
 @property (nonatomic, strong) UILabel *updatesLabel;
 
@@ -46,7 +46,7 @@
 #define kDisabledAlpha  1.0
 
 - (void)dealloc {
-    if (!self.storeMode) {
+    if (!self.standaloneMode) {
         [EventHelper unregisterPhotoLoading:self];
     }
 }
@@ -56,13 +56,13 @@
 }
 
 - (id)initWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
-    return [self initWithStoreMode:NO delegate:delegate];
+    return [self initWithStandaloneMode:NO delegate:delegate];
 }
 
-- (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate {
+- (id)initWithStandaloneMode:(BOOL)standaloneMode delegate:(id<CKBookCoverViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
-        self.storeMode = storeMode;
+        self.standaloneMode = standaloneMode;
 
         CGSize coverSize = [CKBookCover coverImageSize];
         self.frame = (CGRect){ 0.0, 0.0, coverSize.width, coverSize.height };
@@ -81,7 +81,7 @@
         
         // Register photo loading events only for non-store mode, as store will handle remote covers loading in order
         // to do resizing.
-        if (!self.storeMode) {
+        if (!self.standaloneMode) {
             [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
         }
     }
@@ -749,7 +749,7 @@
 }
 
 - (UIFont *)authorFont {
-    if (self.storeMode) {
+    if (self.standaloneMode) {
         return [Theme bookCoverViewStoreModeNameMaxFont];
     } else {
         return [Theme bookCoverViewModeNameMaxFont];

@@ -194,6 +194,10 @@
     [self.bookCoverView showDownloadable];
 }
 
+- (BOOL)bookSummaryViewWithinBook {
+    return NO;
+}
+
 #pragma mark - CKStoreBookCoverViewDelegate methods
 
 - (void)storeBookCoverViewAddRequested {
@@ -274,7 +278,7 @@
 
 - (void)initBookSummaryView {
     
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES];
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES withinBook:NO];
     bookSummaryView.delegate = self;
     bookSummaryView.frame = CGRectMake(floorf((self.bookContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        87,

@@ -53,7 +53,7 @@
 }
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
-    return [[CKBookCoverView alloc] initWithStoreMode:YES delegate:delegate];
+    return [[CKBookCoverView alloc] initWithStandaloneMode:YES delegate:delegate];
 }
 
 - (UIImage *)shadowImage {

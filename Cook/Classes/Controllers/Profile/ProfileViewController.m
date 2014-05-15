@@ -99,6 +99,10 @@
     [self.bookCoverView showDownloadable];
 }
 
+- (BOOL)bookSummaryViewWithinBook {
+    return YES;
+}
+
 #pragma mark - CKStoreBookCoverViewDelegate methods
 
 - (void)storeBookCoverViewAddRequested {

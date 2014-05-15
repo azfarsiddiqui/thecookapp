@@ -30,7 +30,7 @@
 @property (nonatomic, copy) NSString *captionValue;
 
 - (id)initWithDelegate:(id<CKBookCoverViewDelegate>)delegate;
-- (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
+- (id)initWithStandaloneMode:(BOOL)standaloneMode delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)enable:(BOOL)enable;
 - (void)enable:(BOOL)enable animated:(BOOL)animated;
 - (void)loadBook:(CKBook *)book;
