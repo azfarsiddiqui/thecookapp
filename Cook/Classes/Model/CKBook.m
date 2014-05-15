@@ -442,6 +442,10 @@
     return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }
 
+- (BOOL)showLikes {
+    return [[self.parseObject objectForKey:kBookAttrShowLikes] boolValue];
+}
+
 - (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     DLog();
     

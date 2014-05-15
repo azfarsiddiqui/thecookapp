@@ -75,6 +75,7 @@ extern NSString *const kBookAttrPages;
 extern NSString *const kBookAttrCategories;
 extern NSString *const kBookAttrAuthor;
 extern NSString *const kBookAttrFeatured;
+extern NSString *const kBookAttrShowLikes;
 extern NSString *const kBookAttrFeaturedOrder;
 extern NSString *const kBookAttrDefaultNameValue;
 extern NSString *const kBookAttrDefaultCaptionValue;
