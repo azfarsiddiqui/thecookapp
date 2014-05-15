@@ -9260,7 +9260,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "ED959DF1-FE58-4CAA-AC12-6B1C99FB23F2";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "78C8A88C-BEA0-426F-8C11-0B23AECECD92";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9379,7 +9379,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B3B0B033-BB05-44D7-84EA-A145FF1CEBAA";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "78C8A88C-BEA0-426F-8C11-0B23AECECD92";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9498,7 +9498,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1BCB7123-779F-4007-BA92-39C97DCFF559";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "78C8A88C-BEA0-426F-8C11-0B23AECECD92";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9529,7 +9529,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F3B60E06-1545-4E86-BE4E-5A45063A11F9";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1430F91D-F900-47B3-9FC2-951C0D4B8D17";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
