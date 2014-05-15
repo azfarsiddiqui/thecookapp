@@ -27,9 +27,7 @@
 
 @interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
     CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
-{
-    UILabel *_signInLabel;
-}
+
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
@@ -39,13 +37,14 @@
 @property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *actionButtonCaptionLabel;
-@property (nonatomic, strong, readonly) UILabel *signInLabel;
+@property (nonatomic, strong) UILabel *signInLabel;
 @property (nonatomic, strong) CKButtonView *actionButtonView;
 @property (nonatomic, strong) CKStatView *followersStatView;
 @property (nonatomic, strong) CKStatView *numRecipesStatView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, assign) BOOL storeMode;
+@property (nonatomic, assign) BOOL withinBook;
 @property (nonatomic, assign) BOOL pendingAcceptance;
 
 @property (nonatomic, strong) UIAlertView *friendRequestAlert;
@@ -83,9 +82,14 @@
 }
 
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode {
+    return [self initWithBook:book storeMode:storeMode withinBook:YES];
+}
+
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode withinBook:(BOOL)withinBook {
     if (self = [super initWithFrame:(CGRect){ 0.0, 0.0, [CKBookSummaryView sizeForStoreMode:storeMode].width, [CKBookSummaryView sizeForStoreMode:storeMode].height }]) {
         self.book = book;
         self.storeMode = storeMode;
+        self.withinBook = withinBook;
         self.backgroundColor = [UIColor clearColor];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.currentUser = [CKUser currentUser];
@@ -393,7 +397,8 @@
     }
     
     //Show Sign In label if Guest user
-    if (self.currentUser == nil && self.storeMode && self.book.featured && self.book.status != kBookStatusFollowed) {
+    if (self.currentUser == nil && self.storeMode && self.book.featured && self.book.status != kBookStatusFollowed
+        && !self.withinBook) {
         [self addSubview:self.signInLabel];
     }
 }

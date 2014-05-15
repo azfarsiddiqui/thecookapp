@@ -191,6 +191,10 @@
     [self.bookPageDelegate bookPageViewController:self editing:editing];
 }
 
+- (BOOL)bookSummaryViewWithinBook {
+    return YES;
+}
+
 #pragma mark - Properties
 
 - (UIButton *)editButton {
