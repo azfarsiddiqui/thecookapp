@@ -243,7 +243,7 @@
             if ([secondaryNumString length] > 0) {
                 [secondaryNumString appendString:@" - "];
             }
-            [secondaryNumString appendString:[self.tempConverterFormatter stringFromNumber:@(fromNumber)]];   //[NSString stringWithFormat:@"%.2f", fromNumber]];
+            [secondaryNumString appendString:[self.tempConverterFormatter stringFromNumber:@(fromNumber)]];
             secondaryUnitString = unitString;
         }
         //Add built-up string to converted string if range
@@ -357,12 +357,12 @@
     //Checking for token and invalidating if class option has been set
     if (firstMeasureCheckString && [[checkDict allKeys] containsObject:[check1stMeasureString uppercaseString]]) {
         self.scanner.scanLocation = originalScanLocation;
-        if (![self isValidUnitString:firstMeasureCheckString]) {
+        if (![self isValidUnitString:[checkDict objectForKey:firstMeasureCheckString]]) {
             return nil;
         }
         return [checkDict objectForKey:[check1stMeasureString uppercaseString]];
     } else if (secondMeasureCheckString && [[checkDict allKeys] containsObject:[check2ndMeasureString uppercaseString]]) {
-        if (![self isValidUnitString:secondMeasureCheckString]) {
+        if (![self isValidUnitString:[checkDict objectForKey:[check2ndMeasureString uppercaseString]]]) {
             self.scanner.scanLocation = originalScanLocation;
             return nil;
         }
