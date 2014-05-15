@@ -12,6 +12,6 @@
 
 + (CKLocation *)locationWithCoreLocation:(CLLocation *)location placemark:(CLPlacemark *)placemark;
 - (NSString *)displayName;
-- (NSString *)englishDisplayName;
+- (NSString *)localeDisplayName;
 
 @end

@@ -57,7 +57,7 @@
     if (recipeDetails.location) {
         
         UIView *locationView = [self elementViewWithIcon:[UIImage imageNamed:@"cook_book_inner_icon_small_location.png"]
-                                                    text:[[recipeDetails.location englishDisplayName] uppercaseString]];
+                                                    text:[[recipeDetails.location localeDisplayName] uppercaseString]];
         locationView.frame = (CGRect){
             xOffset,
             0.0,
