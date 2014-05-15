@@ -33,7 +33,7 @@
 		<key>conversion</key>
 		<real>0.125</real>
 		<key>fraction</key>
-		<integer>10</integer>
+		<integer>8</integer>
 	</dict>
 	<key>oz</key>
 	<dict>
@@ -44,7 +44,7 @@
 		<key>conversion</key>
 		<real>0.0625</real>
 		<key>fraction</key>
-		<integer>10</integer>
+		<integer>8</integer>
 	</dict>
 	<key>tsp</key>
 	<dict>

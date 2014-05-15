@@ -53,6 +53,7 @@
         [self.tempConverterFormatter setMaximumFractionDigits:2];
         self.tenthConverterFormatter = [[NSNumberFormatter alloc] init];
         [self.tenthConverterFormatter setMaximumFractionDigits:1];
+        [self.tenthConverterFormatter setMinimumIntegerDigits:1];
     }
     return self;
 }
@@ -522,7 +523,8 @@
 }
 
 - (NSString *)convertWhole:(CGFloat)input {
-    return [@(input) stringValue];
+    NSInteger outputInt = input + 0.5f;
+    return [@(outputInt) stringValue];
 }
 
 - (NSString *)convertToFraction:(CGFloat)input keyArray:(NSArray *)array {
