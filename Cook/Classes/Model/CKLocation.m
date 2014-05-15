@@ -47,6 +47,15 @@
     return countryName;
 }
 
+- (NSString *)localeDisplayName {
+    NSString *countryName = nil;
+    NSLocale *currentLocale = [NSLocale currentLocale];
+    NSString *countryCode = [self.parseObject objectForKey:kLocationCountryCode];
+    NSString *identifier = [NSLocale localeIdentifierFromComponents:[NSDictionary dictionaryWithObject:countryCode forKey:NSLocaleCountryCode]];
+    countryName = [currentLocale displayNameForKey:NSLocaleIdentifier value:identifier];
+    return countryName;
+}
+
 #pragma mark - Properties
 
 
