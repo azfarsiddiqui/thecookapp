@@ -2367,25 +2367,30 @@
         // Current list of recipes for this page.
         NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
         
-        // Undupe any recipes that already exists in the current array.
-        NSArray *undupedRecipes = [recipes reject:^BOOL(CKModel *recipeOrPin) {
-            CKRecipe *incomingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
+        // Undupe only if I own the books, as I can add/delete recipes to the page.
+        if ([self.book isOwner]) {
             
-            return [pageRecipes detect:^BOOL(CKModel *existingRecipeOrPin) {
-                CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:existingRecipeOrPin];
-                return [incomingRecipe.objectId isEqualToString:existingRecipe.objectId];
+            // Undupe any recipes that already exists in the current array.
+            recipes = [recipes reject:^BOOL(CKModel *recipeOrPin) {
+                CKRecipe *incomingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
+                
+                return [pageRecipes detect:^BOOL(CKModel *existingRecipeOrPin) {
+                    CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:existingRecipeOrPin];
+                    return [incomingRecipe.objectId isEqualToString:existingRecipe.objectId];
+                }];
             }];
-        }];
+                        
+        }
         
         // Append to the current list.
-        [pageRecipes addObjectsFromArray:undupedRecipes];
+        [pageRecipes addObjectsFromArray:recipes];
         
         // Update the batch index.
         [self.pageCurrentBatches setObject:@(batchIndex) forKey:page];
         
         // Update the BookContentVC
         BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
-        [contentViewController loadMoreRecipes:undupedRecipes];
+        [contentViewController loadMoreRecipes:recipes];
 
     }
 }
