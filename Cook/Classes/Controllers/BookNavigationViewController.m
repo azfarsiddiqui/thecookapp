@@ -1772,6 +1772,12 @@
     pageIndex += [self contentStartSection];
     
     [self fastForwardToPageIndex:pageIndex animated:animated];
+    
+    // Light status bar after index page.
+    if (pageIndex > kIndexSection) {
+        self.lightStatusBar = (pageIndex > kIndexSection);
+        [EventHelper postStatusBarChangeForLight:self.lightStatusBar];
+    }
 }
 
 - (void)scrollToHome {
