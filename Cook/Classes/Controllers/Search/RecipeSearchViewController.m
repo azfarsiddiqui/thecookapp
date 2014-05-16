@@ -258,7 +258,7 @@
         
         BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId
                                                                                                               forIndexPath:indexPath];
-        [recipeCell configureRecipe:recipe book:recipe.book own:NO];
+        [recipeCell configureRecipe:recipe book:recipe.book own:NO displayDate:recipe.createdDateTime];
         cell = recipeCell;
         
     } else {

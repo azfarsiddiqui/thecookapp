@@ -26,6 +26,7 @@
 @interface BookRecipeGridCell () <CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, assign) BOOL ownBook;
+@property (nonatomic, strong) NSDate *displayDate;
 
 @end
 
@@ -98,10 +99,15 @@
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own {
+    [self configureRecipe:recipe book:book own:own displayDate:nil];
+}
+
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own displayDate:(NSDate *)displayDate {
     
     self.recipe = recipe;
     self.book = book;
     self.ownBook = own;
+    self.displayDate = displayDate;
     
     [self updateImageView];
     [self updateTitle];
@@ -200,11 +206,18 @@
 
 - (void)updateTimeInterval {
     
-    NSDate *updatedTime = self.recipe.recipeUpdatedDateTime;
-    
-    // If it was a pinned recipe and not from featured book, then show pinned date.
-    if (!self.book.featured && self.recipePin) {
-        updatedTime = self.recipePin.createdDateTime;
+    NSDate *updatedTime = nil;
+    if (self.displayDate) {
+        updatedTime = self.displayDate;
+    } else {
+        
+        updatedTime = self.recipe.recipeUpdatedDateTime;
+        
+        // If it was a pinned recipe and not from featured book, then show pinned date.
+        if (!self.book.featured && self.recipePin) {
+            updatedTime = self.recipePin.createdDateTime;
+        }
+        
     }
     
     self.timeIntervalLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:updatedTime] uppercaseString];

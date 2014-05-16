@@ -39,6 +39,7 @@
 + (CGSize)imageSize;
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own;
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own displayDate:(NSDate *)displayDate;
 - (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book;
 - (void)configureRecipePin:(CKRecipePin *)recipePin book:(CKBook *)book own:(BOOL)own;
 
