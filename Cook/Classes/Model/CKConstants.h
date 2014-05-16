@@ -165,13 +165,6 @@ extern NSString *const kRecipeTagCategory;
 extern NSString *const kRecipeTagOrderIndex;
 extern NSString *const kRecipeTagImageType;
 
-#pragma mark - Activity class
-
-extern NSString *const kActivityModelName;
-extern NSString *const kActivityNameAddRecipe;
-extern NSString *const kActivityNameUpdateRecipe;
-extern NSString *const kActivityNameLikeRecipe;
-
 #pragma mark - UserNotification class
 
 extern NSString *const kUserNotificationModelName;

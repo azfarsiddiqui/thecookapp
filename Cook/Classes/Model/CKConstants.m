@@ -166,13 +166,6 @@ NSString *const kRecipeTagCategory              = @"category";
 NSString *const kRecipeTagOrderIndex            = @"orderIndex";
 NSString *const kRecipeTagImageType             = @"iconType";
 
-#pragma mark - Activity class
-
-NSString *const kActivityModelName              = @"Activity";
-NSString *const kActivityNameAddRecipe          = @"AddRecipe";
-NSString *const kActivityNameUpdateRecipe       = @"UpdateRecipe";
-NSString *const kActivityNameLikeRecipe         = @"LikeRecipe";
-
 #pragma mark - UserNotification class
 
 NSString *const kUserNotificationModelName                  = @"UserNotification";
