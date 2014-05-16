@@ -725,7 +725,7 @@
         
         // Show frame is above the full height offset by the visible height.
         CGRect showFrame = CGRectMake(self.view.bounds.origin.x,
-                                      self.storeViewController.view.frame.size.height + [self.storeViewController visibleHeight],
+                                      -self.storeViewController.view.frame.size.height + [self.storeViewController visibleHeight],
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {
@@ -778,7 +778,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.origin.y - self.storeViewController.view.frame.size.height + [self.storeViewController visibleHeight],
+                           -self.storeViewController.view.frame.size.height + [self.storeViewController visibleHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     } else if (level == kBenchtopLevel) {
@@ -788,7 +788,7 @@
                            self.storeViewController.view.frame.size.height);
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.origin.y - self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - [self.storeViewController bottomShadowHeight],
+                           -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShadowHeight] - self.settingsViewController.view.frame.size.height,
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     }
@@ -809,7 +809,7 @@
         frame = self.view.bounds;
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.origin.y - self.settingsViewController.view.frame.size.height,
+                           -self.settingsViewController.view.frame.size.height,
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     }
