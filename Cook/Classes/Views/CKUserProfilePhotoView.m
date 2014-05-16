@@ -157,9 +157,7 @@
         
         // Load photo if user was given.
         if (user) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self loadProfilePhotoForUser:user];
-            });
+            [self loadProfilePhotoForUser:user];
         } else {
             self.profileImageView.image = placeholderImage;
         }
