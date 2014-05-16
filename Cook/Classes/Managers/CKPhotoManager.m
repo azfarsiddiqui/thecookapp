@@ -695,6 +695,8 @@
                     // Clear the placeholders.
                     recipeImage.thumbImageUuid = nil;
                     recipeImage.imageUuid = nil;
+                    recipeImage.imageHeight = image.size.height;
+                    recipeImage.imageWidth = image.size.width;
                     
                     // Save the recipe image to Parse.
                     [recipeImage saveInBackground:^{
