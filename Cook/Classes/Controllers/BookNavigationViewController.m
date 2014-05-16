@@ -1717,7 +1717,6 @@
     
     // If we're past the category pages, then this shortcuts back to home.
     if (edgeGesture.state == UIGestureRecognizerStateBegan) {
-        self.collectionView.panGestureRecognizer.enabled = NO;
         if (visibleFrame.origin.x >= ([self contentStartSection] * self.collectionView.bounds.size.width)) {
             [self scrollToHome];
         }
@@ -1792,7 +1791,7 @@
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex animated:(BOOL)animated {
 
-    [self enableInteractions: NO];
+    [self enableInteractions:NO];
     self.destinationIndexes = @[@(pageIndex)];
     
     [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
