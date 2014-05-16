@@ -721,7 +721,7 @@
         
         self.isLoadMore = YES;
         //Cehck why its crashing here when doing airplane mode during load more
-        DLog(@"Loading more for page[%@], requestedIndex: %i, %i", page, requestedBatchIndex, numBatches);
+        DLog(@"Loading more for page[%@], requestedIndex: %ld, %ld", page, requestedBatchIndex, numBatches);
         
         if ([self onLikesPage]) {
             
@@ -2359,16 +2359,28 @@
     
     if (self.book) {
         
-        // Append to the list of recipes.
+        // Current list of recipes for this page.
         NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
-        [pageRecipes addObjectsFromArray:recipes];
+        
+        // Undupe any recipes that already exists in the current array.
+        NSArray *undupedRecipes = [recipes reject:^BOOL(CKModel *recipeOrPin) {
+            CKRecipe *incomingRecipe = [self recipeFromRecipeOrPin:recipeOrPin];
+            
+            return [pageRecipes detect:^BOOL(CKModel *existingRecipeOrPin) {
+                CKRecipe *existingRecipe = [self recipeFromRecipeOrPin:existingRecipeOrPin];
+                return [incomingRecipe.objectId isEqualToString:existingRecipe.objectId];
+            }];
+        }];
+        
+        // Append to the current list.
+        [pageRecipes addObjectsFromArray:undupedRecipes];
         
         // Update the batch index.
         [self.pageCurrentBatches setObject:@(batchIndex) forKey:page];
         
         // Update the BookContentVC
         BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
-        [contentViewController loadMoreRecipes:recipes];
+        [contentViewController loadMoreRecipes:undupedRecipes];
 
     }
 }
