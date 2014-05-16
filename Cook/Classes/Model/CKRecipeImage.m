@@ -95,4 +95,12 @@
     [self.parseObject setObject:thumbImageFile forKey:kRecipeImageAttrThumbImageFile];
 }
 
+- (void)setImageWidth:(NSInteger)imageWidth {
+    [self.parseObject setObject:@(imageWidth) forKey:kRecipeImageAttrWidth];
+}
+
+- (void)setImageHeight:(NSInteger)imageHeight {
+    [self.parseObject setObject:@(imageHeight) forKey:kRecipeImageAttrHeight];
+}
+
 @end

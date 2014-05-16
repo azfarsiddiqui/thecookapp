@@ -184,6 +184,7 @@
     
     CGFloat convertNum = [[convertDict objectForKey:@"conversion"] floatValue];
     __block BOOL isParenthesesConvert = NO;
+    __block BOOL isTemperatureConvert = NO;
     __block NSString *convertedString = [NSString new];
     __block NSMutableString *convertedNumString = [NSMutableString new];
     NSMutableString *secondaryNumString = [NSMutableString new];
@@ -200,10 +201,10 @@
         //Special case temperature since it isn't a simple multiplication
         if ([unitString isEqualToString:@"°C"] && [convertedString isEqualToString:@"°F"]) {
             convertedNum = (fromNumber * 1.8) + 32;
-            isParenthesesConvert = YES;
+            isTemperatureConvert = YES;
         } else if ([unitString isEqualToString:@"°F"] && [convertedString isEqualToString:@"°C"]) {
             convertedNum = (fromNumber - 32)/1.8;
-            isParenthesesConvert = YES;
+            isTemperatureConvert = YES;
         }
         
         NSString *tempNumString = @"";
@@ -261,7 +262,9 @@
         convertedString = [NSMutableString stringWithString:unitString];
     }
     
-    if (isParenthesesConvert) {
+    if (isTemperatureConvert) {
+        convertString = [NSString stringWithFormat:@"%@ %@ (%@ %@)", secondaryNumString, secondaryUnitString, convertedNumString, convertedString];
+    } else if (isParenthesesConvert) {
         convertString = [NSString stringWithFormat:@"%@ %@ (%@ %@)", convertedNumString, convertedString, secondaryNumString, secondaryUnitString];
     } else {
         convertString = [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];

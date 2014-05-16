@@ -19,6 +19,8 @@
 // UUIDs for images that are being uploaded, doesn't get persisted to Parse.
 @property (nonatomic, strong) NSString *imageUuid;
 @property (nonatomic, strong) NSString *thumbImageUuid;
+@property (nonatomic, assign) NSInteger imageWidth;
+@property (nonatomic, assign) NSInteger imageHeight;
 
 + (CKRecipeImage *)recipeImage;
 + (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe;
