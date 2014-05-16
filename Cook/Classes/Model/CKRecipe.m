@@ -13,7 +13,6 @@
 #import "Ingredient.h"
 #import "CKConstants.h"
 #import "NSArray+Enumerable.h"
-#import "CKActivity.h"
 #import "NSString+Utilities.h"
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"

@@ -64,8 +64,6 @@
 #define kShelfTopOffset             439.0
 #define kShelfTopOffsetFromBottom   275.0
 #define kShelfHeight                249.0
-#define kShellBottomShelfTrayHeight 25.0
-#define kShellBottomShadowHeight    48.0
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
@@ -113,12 +111,8 @@
     return kVisibleHeight;
 }
 
-- (CGFloat)bottomShelfTrayHeight {
-    return kShellBottomShelfTrayHeight;
-}
-
 - (CGFloat)bottomShadowHeight {
-    return kShellBottomShadowHeight;
+    return self.bottomShadowView.frame.size.height;
 }
 
 #pragma mark - StoreTabView methods
