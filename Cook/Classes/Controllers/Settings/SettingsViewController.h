@@ -18,5 +18,6 @@
 @interface SettingsViewController : UIViewController
 
 - (id)initWithDelegate:(id<SettingsViewControllerDelegate>)delegate;
+- (void)enable:(BOOL)enable;
 
 @end

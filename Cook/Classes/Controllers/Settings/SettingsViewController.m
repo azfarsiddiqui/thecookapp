@@ -59,6 +59,12 @@
     return self;
 }
 
+- (void)enable:(BOOL)enable {
+    if (enable && self.currentUser && ![self.profileView isUserConfigured]) {
+        [self.profileView loadProfilePhotoForUser:self.currentUser];
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -117,8 +123,9 @@
         
         CGFloat yOffset = 0.0;
         if (self.currentUser) {
-            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:self.currentUser placeholder:NO
-                                                                                 profileSize:ProfileViewSizeSmall border:NO];
+            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:nil
+                                                                                 profileSize:ProfileViewSizeSmall
+                                                                                      border:NO];
             photoView.delegate = self;
             photoView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),

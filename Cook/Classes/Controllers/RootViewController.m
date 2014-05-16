@@ -685,6 +685,7 @@
                                                   self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:(benchtopLevel == kStoreLevel)];
                                                   [self.benchtopViewController enable:(benchtopLevel == kBenchtopLevel)];
+                                                  [self.settingsViewController enable:(benchtopLevel == kSettingsLevel)];
                                                   
                                                   // Black status bar only in store mode.
                                                   [self updateStatusBarLight:(benchtopLevel != kStoreLevel)];
