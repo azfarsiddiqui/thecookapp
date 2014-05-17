@@ -60,9 +60,6 @@
 }
 
 - (void)enable:(BOOL)enable {
-    if (enable && self.currentUser && ![self.profileView isUserConfigured]) {
-        [self.profileView loadProfilePhotoForUser:self.currentUser];
-    }
 }
 
 - (void)viewDidLoad {
@@ -81,16 +78,9 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // Init on next run loop to try and circumvent Parse currentUser hang bug
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self initSettingsContent];
-    });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self createLoginLogoutButton];
-    });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self updateConversions];
-    });
+    [self initSettingsContent];
+    [self createLoginLogoutButton];
+    [self updateConversions];
 }
 
 - (void)reloadProfilePhoto:(NSNotification *) notification {
@@ -123,7 +113,7 @@
         
         CGFloat yOffset = 0.0;
         if (self.currentUser) {
-            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:nil
+            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:self.currentUser
                                                                                  profileSize:ProfileViewSizeSmall
                                                                                       border:NO];
             photoView.delegate = self;

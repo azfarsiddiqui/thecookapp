@@ -36,10 +36,9 @@
 }
 
 - (void)didSelectOptionAtIndex:(NSInteger)optionIndex {
-    CKMeasurementType *selectedType = [self measureTypeForIndex:optionIndex];
+    CKMeasurementType selectedType = [self measureTypeForIndex:optionIndex];
     if (self.currentUser) {
         [self.currentUser setMeasurementType:selectedType];
-        [self.currentUser saveInBackground];
     } else {
         [CKUser setGuestMeasure:selectedType];
     }

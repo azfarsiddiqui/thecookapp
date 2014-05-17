@@ -676,8 +676,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (void)setMeasurementType:(NSInteger)measurementType {
-    [self.parseObject setObject:@(measurementType) forKey:kUserAttrMeasureType];
-    [self.parseObject saveInBackground];
+    
+    CKMeasurementType currentMeasurementType = [self measurementType];
+    if (currentMeasurementType != measurementType) {
+        [self.parseObject setObject:@(measurementType) forKey:kUserAttrMeasureType];
+        [self.parseObject saveInBackground];
+    }
 }
 
 - (NSInteger)measurementType {
@@ -685,7 +689,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     if (measureNumber) {
         return [measureNumber integerValue];
     } else {
-        //If not set yet, try to guess preferrred measurement type based on locale
+        //If not set yet, try to guess preferred measurement type based on locale
         NSInteger measureType = CKMeasureTypeNone;
         NSString *countryCode = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
         if ([countryCode isEqualToString:@"US"]) {
@@ -695,7 +699,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
         } else {
             measureType = CKMeasureTypeNone;
         }
-        [self setMeasurementType:measureType];
         return measureType;
     }
 }
