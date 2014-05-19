@@ -261,6 +261,14 @@
     self.profileImageView.image = [ImageHelper croppedImage:profileImage size:self.profileImageView.bounds.size];
 }
 
+- (void)clearUser {
+    self.user = nil;
+}
+
+- (BOOL)isUserConfigured {
+    return (self.user != nil);
+}
+
 #pragma mark - Touches
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{

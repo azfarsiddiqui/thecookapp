@@ -58,7 +58,12 @@
     
     // Register/refresh device tokens if logged in.
     if ([CKUser isLoggedIn]) {
+        
+        // Register for push.
         [self registerForPush];
+        
+        // Refresh user.
+        [CKUser refreshCurrentUser];
     }
     
     // Set up Facebook

@@ -52,5 +52,7 @@ typedef enum {
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 - (void)loadProfileUrl:(NSURL *)profileUrl;
 - (void)loadProfileImage:(UIImage *)profileImage;
+- (void)clearUser;
+- (BOOL)isUserConfigured;
 
 @end

@@ -59,6 +59,9 @@
     return self;
 }
 
+- (void)enable:(BOOL)enable {
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -75,16 +78,9 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // Init on next run loop to try and circumvent Parse currentUser hang bug
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self initSettingsContent];
-    });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self createLoginLogoutButton];
-    });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self updateConversions];
-    });
+    [self initSettingsContent];
+    [self createLoginLogoutButton];
+    [self updateConversions];
 }
 
 - (void)reloadProfilePhoto:(NSNotification *) notification {
@@ -117,8 +113,9 @@
         
         CGFloat yOffset = 0.0;
         if (self.currentUser) {
-            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:self.currentUser placeholder:NO
-                                                                                 profileSize:ProfileViewSizeSmall border:NO];
+            CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:self.currentUser
+                                                                                 profileSize:ProfileViewSizeSmall
+                                                                                      border:NO];
             photoView.delegate = self;
             photoView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
