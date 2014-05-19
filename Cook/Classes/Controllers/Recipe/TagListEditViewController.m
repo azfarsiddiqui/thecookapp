@@ -85,8 +85,8 @@
     [titleAlignView addSubview:titleLabel];
     
     self.titleCountLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    self.titleCountLabel.font = [Theme editServesFont];
-    self.titleCountLabel.textColor = [Theme editServesColour];
+    self.titleCountLabel.font = [Theme tagTitleNumberFont];
+    self.titleCountLabel.textColor = [Theme tagTitleNumberColor];
     self.titleCountLabel.text = [NSString stringWithFormat:@"%i", [self.selectedItems count]];
     [titleAlignView addSubview:self.titleCountLabel];
     

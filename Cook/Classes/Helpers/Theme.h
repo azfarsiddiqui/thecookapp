@@ -133,6 +133,8 @@
 + (UIFont *)tagLabelFont;
 + (UIColor *)tagLabelColor;
 + (UIFont *)tagTitleFont;
++ (UIFont *)tagTitleNumberFont;
++ (UIColor *)tagTitleNumberColor;
 
 #pragma mark - Social view.
 

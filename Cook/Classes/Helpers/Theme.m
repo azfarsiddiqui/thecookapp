@@ -432,6 +432,14 @@
     return [UIColor colorWithHexString:@"888888"];
 }
 
++ (UIFont *)tagTitleNumberFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:38.0];
+}
+
++ (UIColor *)tagTitleNumberColor {
+    return [UIColor colorWithHexString:@"888888"];
+}
+
 #pragma mark - Social view.
 
 + (UIFont *)recipeCommenterFont {
