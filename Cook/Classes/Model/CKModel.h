@@ -19,7 +19,7 @@ typedef void(^BoolObjectSuccessBlock)(BOOL yesNo);
 typedef void(^ListObjectsSuccessBlock)(NSArray *results);
 typedef void(^DictionaryObjectsSuccessBlock)(NSDictionary *results);
 typedef void(^ProgressBlock)(int percentDone);
-typedef void(^PaginatedListSuccessBlock)(NSArray *items, NSUInteger numItems, NSUInteger batchIndex, NSUInteger numBatches);
+typedef void(^PaginatedListSuccessBlock)(NSArray *items, NSUInteger totalCount, NSUInteger itemIndex);
 
 #define kCKErrorDomain                  @"CKErrorDomain"
 #define kCKLoginFailedErrorCode         210

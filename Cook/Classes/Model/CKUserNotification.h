@@ -20,8 +20,8 @@
 
 + (void)hasNotificationsForUser:(CKUser *)user completion:(BoolObjectSuccessBlock)completion
                         failure:(ObjectFailureBlock)failure;
-+ (void)notificationsWithBatchIndex:(NSUInteger)batchIndex completion:(PaginatedListSuccessBlock)completion
-                            failure:(ObjectFailureBlock)failure;
++ (void)notificationsFromItemIndex:(NSUInteger)itemIndex completion:(PaginatedListSuccessBlock)completion
+                           failure:(ObjectFailureBlock)failure;
 + (void)notificationsCountCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 
 - (CKUser *)user;

@@ -27,7 +27,6 @@
 #import "CKActivityIndicatorView.h"
 #import "CKRecipeSearch.h"
 #import "NSString+Utilities.h"
-#import "PaginationHelper.h"
 
 @interface RecipeSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     RecipeGridLayoutDelegate, CKRecipeSearchFieldViewDelegate>
@@ -54,7 +53,11 @@
 @property (nonatomic, strong) UIImage *arrowImage;
 @property (nonatomic, strong) UIImage *blurredContainerImage;
 @property (nonatomic, assign) BOOL modalBlurEnabled;
-@property (nonatomic, strong) PaginationHelper *paginationHelper;
+
+// Search
+@property (nonatomic, strong) NSMutableArray *recipes;
+@property (nonatomic, assign) NSUInteger maxItems;
+@property (nonatomic, assign) NSUInteger totalCount;
 
 @end
 
@@ -232,7 +235,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    NSInteger numItems = [self.paginationHelper currentNumItems];
+    NSInteger numItems = [self.recipes count];
     
     // Load more if there are more batches to load.
     if (numItems > 0 && [self recipeGridLayoutLoadMoreEnabled]) {
@@ -247,10 +250,10 @@
     
     UICollectionViewCell *cell = nil;
     
-    if (indexPath.item < [self.paginationHelper currentNumItems]) {
+    if (indexPath.item < [self.recipes count]) {
         
         // Recipe cell.
-        CKRecipe *recipe = [self.paginationHelper itemAtIndex:indexPath.item];
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
         RecipeGridType gridType = [RecipeGridLayout gridTypeForRecipe:recipe];
         NSString *cellId = [RecipeGridLayout cellIdentifierForGridType:gridType];
         
@@ -276,7 +279,7 @@
         if ([self recipeGridLayoutLoadMoreEnabled]) {
             self.filterButton.enabled = NO;
             self.filterButton.alpha = 0.5;
-            [self searchWithBatchIndex:[self.paginationHelper nextBatchIndex]];
+            [self searchFromItemIndex:[self.recipes count]];
         }
     }
     
@@ -306,11 +309,11 @@
 }
 
 - (NSInteger)recipeGridLayoutNumItems {
-    return [self.paginationHelper currentNumItems];
+    return [self.recipes count];
 }
 
 - (RecipeGridType)recipeGridTypeForItemAtIndex:(NSInteger)itemIndex {
-    CKRecipe *recipe = [self.paginationHelper itemAtIndex:itemIndex];
+    CKRecipe *recipe = [self.recipes objectAtIndex:itemIndex];
     return [RecipeGridLayout gridTypeForRecipe:recipe];
 }
 
@@ -327,11 +330,11 @@
 }
 
 - (BOOL)recipeGridLayoutHeaderEnabled {
-    return (self.resultsMode && [self.paginationHelper currentNumItems] > 0);
+    return (self.resultsMode && [self.recipes count] > 0);
 }
 
 - (BOOL)recipeGridLayoutLoadMoreEnabled {
-    return [self.paginationHelper hasMoreItems];
+    return [self.recipes count] < self.maxItems;
 }
 
 - (BOOL)recipeGridLayoutDisabled {
@@ -372,11 +375,10 @@
             
             [self enableResultsMode:YES completion:^{
                 
-                // Update pagination helper.
-                [weakSelf.paginationHelper updateWithItems:searchResults.results
-                                                batchIndex:searchResults.batchIndex
-                                                  numItems:searchResults.count
-                                                 numBatches:searchResults.numBatches];
+                // Reassign search results data.
+                weakSelf.recipes = [NSMutableArray arrayWithArray:searchResults.results];
+                weakSelf.totalCount = searchResults.count;
+                weakSelf.maxItems = searchResults.maxItems;
                 
                 [weakSelf displayResults];
             }];
@@ -583,13 +585,6 @@
     return _errorMessageButton;
 }
 
-- (PaginationHelper *)paginationHelper {
-    if (!_paginationHelper) {
-        _paginationHelper = [[PaginationHelper alloc] init];
-    }
-    return _paginationHelper;
-}
-
 #pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
@@ -621,11 +616,10 @@
         __weak typeof(self) weakSelf = self;
         [self clearResultsCompletion:^{
             
-            // Update pagination helper.
-            [weakSelf.paginationHelper updateWithItems:searchResults.results
-                                            batchIndex:searchResults.batchIndex
-                                              numItems:searchResults.count
-                                             numBatches:searchResults.numBatches];
+            // Reassign search results data.
+            weakSelf.recipes = [NSMutableArray arrayWithArray:searchResults.results];
+            weakSelf.totalCount = searchResults.count;
+            weakSelf.maxItems = searchResults.maxItems;
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [weakSelf displayResults];
@@ -639,7 +633,7 @@
         [self.searchFieldView setSearching:YES];
         
         [self clearResultsCompletion:^{
-            [self searchWithBatchIndex:0];
+            [self searchFromItemIndex:0];
         }];
     }
     
@@ -694,7 +688,7 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        CKRecipe *recipe = [self.paginationHelper itemAtIndex:indexPath.item];
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
         [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];
     });
 }
@@ -777,7 +771,9 @@
     [self.searchFieldView showMessage:nil];
     
     // Clear data.
-    [self.paginationHelper reset];
+    [self.recipes removeAllObjects];
+    self.totalCount = 0;
+    self.maxItems = 0;
     
     [UIView animateWithDuration:0.25
                           delay:0.0
@@ -812,20 +808,20 @@
 }
 
 - (void)performSearch {
-    [self searchWithBatchIndex:0];
+    [self searchFromItemIndex:0];
 }
 
-- (void)searchWithBatchIndex:(NSUInteger)batchIndex {
+- (void)searchFromItemIndex:(NSUInteger)itemIndex {
     
-    if (batchIndex == 0) {
+    if (itemIndex == 0) {
         [self.searchFieldView setSearching:YES];
     }
     
     [CKRecipe searchWithTerm:self.keyword
                       filter:self.searchFilter
-                  batchIndex:batchIndex
-                     success:^(NSString *keyword, NSArray *recipes, NSUInteger count, NSUInteger searchBatchIndex,
-                               NSUInteger numBatches) {
+                   itemIndex:itemIndex
+                     success:^(NSString *keyword, NSArray *recipes, NSUInteger count, NSUInteger maxItems,
+                               NSUInteger searchItemIndex) {
                          
                          // Ignore if keyword doesn't match this request.
                          // Ignore if not in results mode.
@@ -836,13 +832,13 @@
                          // Slice index to insert recipes.
                          NSUInteger nextSliceIndex = 0;
                          
-                         if (batchIndex == 0) {
+                         if (itemIndex == 0) {
                              [AnalyticsHelper trackEventName:kEventSearchSubmit params:@{ kEventParamsSearchFilter : [self currentDisplayForSearchFilter] }];
                              [self.searchFieldView setSearching:NO];
                              [self.searchFieldView showNumResults:count];
                              
                          } else {
-                             nextSliceIndex = [self.paginationHelper nextSliceIndex];
+                             nextSliceIndex = [self.recipes count];
                          }
                          
                          // If there are more than 1 result then display filter.
@@ -851,11 +847,14 @@
                          self.filterButton.alpha = [self alphaForFilterButtonEnabled:YES];
                          [self updateFilterButton];
                          
-                         // Update pagination stuff.
-                         [self.paginationHelper updateWithItems:recipes
-                                                     batchIndex:batchIndex
-                                                       numItems:count
-                                                     numBatches:numBatches];
+                         // Capture data.
+                         if (searchItemIndex == 0) {
+                             self.recipes = [NSMutableArray arrayWithArray:recipes];
+                         } else {
+                             [self.recipes addObjectsFromArray:recipes];
+                         }
+                         self.maxItems = maxItems;
+                         self.totalCount = count;
                          
                          // Save results in cache.
                          CKRecipeSearch *searchResults = [self currentFilterResults];
@@ -863,10 +862,10 @@
                              searchResults = [[CKRecipeSearch alloc] init];
                              [self.filterResults setObject:searchResults forKey:@(self.searchFilter)];
                          }
-                         searchResults.batchIndex = searchBatchIndex;
-                         searchResults.numBatches = numBatches;
-                         searchResults.results = [NSArray arrayWithArray:self.paginationHelper.items];
+                         searchResults.itemIndex = searchItemIndex;
+                         searchResults.results = [NSArray arrayWithArray:self.recipes];
                          searchResults.count = count;
+                         searchResults.maxItems = maxItems;
                          
                          // Delete spinner cell.
                          NSArray *indexPathsToDelete = nil;
@@ -885,7 +884,7 @@
                              
                              // Reinsert spinner cell if there are more.
                              if ([self recipeGridLayoutLoadMoreEnabled]) {
-                                 NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.paginationHelper.items count] inSection:0];
+                                 NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
                                  [indexPathsToInsert addObject:activityInsertIndexPath];
                              }
                              
@@ -914,7 +913,7 @@
                      failure:^(NSError *error) {
                          
                          // Attempt to reload data.
-                         if (batchIndex == 0 && self.numRetries < MAX_NUM_RETRIES) {
+                         if (itemIndex == 0 && self.numRetries < MAX_NUM_RETRIES) {
                              self.numRetries += 1;
                              
                              __weak typeof(self) weakSelf = self;
@@ -925,7 +924,7 @@
                          } else {
                              
                              // Add error message if not there.
-                             if (batchIndex == 0 && !self.errorMessageButton.superview) {
+                             if (itemIndex == 0 && !self.errorMessageButton.superview) {
                                  self.errorMessageButton.alpha = 1.0;
                                  [self.view addSubview:self.errorMessageButton];
                              }
@@ -939,21 +938,21 @@
 - (void)displayResults {
     
     // Gather indexPaths to insert.
-    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[self.paginationHelper.items collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
+    NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[self.recipes collectWithIndex:^(CKRecipe *recipe, NSUInteger recipeIndex) {
         return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
     }]];
     
     // Reinsert spinner cell if there are more.
     if ([self recipeGridLayoutLoadMoreEnabled]) {
-        NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.paginationHelper.items count] inSection:0];
+        NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.recipes count] inSection:0];
         [indexPathsToInsert addObject:activityInsertIndexPath];
     }
     
     [self.searchFieldView setSearching:NO];
-    [self.searchFieldView showNumResults:self.paginationHelper.numItems];
+    [self.searchFieldView showNumResults:self.totalCount];
     
     // If there are more than 1 result then display filter.
-    self.filterButton.hidden = (self.paginationHelper.numItems < 2);
+    self.filterButton.hidden = ([self.recipes count] < 2);
     self.filterButton.enabled = YES;
     self.filterButton.alpha = [self alphaForFilterButtonEnabled:YES];
     

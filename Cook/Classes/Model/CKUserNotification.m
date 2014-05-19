@@ -29,13 +29,13 @@
     }];
 }
 
-+ (void)notificationsWithBatchIndex:(NSUInteger)batchIndex completion:(PaginatedListSuccessBlock)completion
-                            failure:(ObjectFailureBlock)failure {
++ (void)notificationsFromItemIndex:(NSUInteger)itemIndex completion:(PaginatedListSuccessBlock)completion
+                           failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"notifications_v1_5"
                        withParameters:@{
                                         @"cookVersion": [[AppHelper sharedInstance] appVersion],
-                                        @"batchIndex" : @(batchIndex),
+                                        @"itemIndex"  : @(itemIndex),
                                         }
                                 block:^(NSDictionary *results, NSError *error) {
                                     
@@ -48,11 +48,10 @@
                                         }];
                                         
                                         // Pagination metadata.
-                                        NSUInteger numBatches = [[results objectForKey:@"numBatches"] unsignedIntegerValue];
                                         NSUInteger numItems = [[results objectForKey:@"count"] unsignedIntegerValue];
-                                        NSUInteger notificationsBatchIndex = [[results objectForKey:@"batchIndex"] unsignedIntegerValue];
+                                        NSUInteger notificationsItemIndex = [[results objectForKey:@"itemIndex"] unsignedIntegerValue];
                                         
-                                        completion(notifications, numItems, notificationsBatchIndex, numBatches);
+                                        completion(notifications, numItems, notificationsItemIndex);
 
                                     } else {
                                         DLog(@"Error loading notifications: %@", [error localizedDescription]);

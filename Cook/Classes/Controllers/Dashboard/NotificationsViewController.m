@@ -20,7 +20,6 @@
 #import "RecipeSocialViewController.h"
 #import "ProfileViewController.h"
 #import "AnalyticsHelper.h"
-#import "PaginationHelper.h"
 #import "CKActivityIndicatorView.h"
 #import "CKContentContainerCell.h"
 
@@ -33,9 +32,11 @@
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
-@property (nonatomic, strong) PaginationHelper *paginationHelper;
 @property (nonatomic, strong) UIView *loadMoreContainerView;
 @property (nonatomic, strong) CKActivityIndicatorView *loadMoreActivityView;
+
+@property (nonatomic, assign) NSUInteger totalCount;
+@property (nonatomic, strong) NSMutableArray *notifications;
 
 @end
 
@@ -126,11 +127,11 @@ referenceSizeForHeaderInSection:(NSInteger)section {
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CGSize unitSize = [NotificationCell unitSize];
-    if (self.paginationHelper.ready) {
+    if (self.notifications) {
         
-        if ([self.paginationHelper.items count] > 0) {
+        if ([self.notifications count] > 0) {
             
-            if (indexPath.item < [self.paginationHelper.items count]) {
+            if (indexPath.item < [self.notifications count]) {
                 
                 return [NotificationCell unitSize];
                 
@@ -161,7 +162,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self.paginationHelper.items count] > 0) {
+    if ([self.notifications count] > 0) {
         return YES;
     } else {
         return NO;
@@ -170,7 +171,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CKUserNotification *notification = [self.paginationHelper itemAtIndex:indexPath.item];
+    CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
     NSString *notificationName = notification.name;
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
@@ -207,13 +208,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
-    if (self.paginationHelper.ready) {
+    if (self.notifications) {
         
-        if ([self.paginationHelper.items count] > 0) {
-            numItems = [self.paginationHelper.items count];
+        if ([self.notifications count] > 0) {
+            numItems = [self.notifications count];
             
-            // Load more.
-            if ([self.paginationHelper hasMoreItems]) {
+            // Load more?
+            if ([self.notifications count] < self.totalCount) {
                 numItems += 1;
             }
             
@@ -235,17 +236,17 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     UICollectionViewCell *cell = nil;
     
-    if (self.paginationHelper.ready) {
+    if (self.notifications) {
         
-        if ([self.paginationHelper.items count] > 0) {
+        if ([self.notifications count] > 0) {
             
-            if (indexPath.item < [self.paginationHelper.items count]) {
+            if (indexPath.item < [self.notifications count]) {
                 
                 // Notification item cell.
                 NotificationCell *notificationCell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                                         forIndexPath:indexPath];
                 notificationCell.delegate = self;
-                CKUserNotification *notification = [self.paginationHelper itemAtIndex:indexPath.item];
+                CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
                 [notificationCell configureNotification:notification];
                 cell = notificationCell;
                 
@@ -263,8 +264,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                 cell = activityCell;
                 
                 // Load more?
-                if ([self.paginationHelper hasMoreItems]) {
-                    [self notificationsBatchIndex:[self.paginationHelper nextBatchIndex]];
+                if ([self.notifications count] < self.totalCount) {
+                    [self notificationsFromItemIndex:[self.notifications count]];
                 }
 
             }
@@ -357,13 +358,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _collectionView;
 }
 
-- (PaginationHelper *)paginationHelper {
-    if (!_paginationHelper) {
-        _paginationHelper = [[PaginationHelper alloc] init];
-    }
-    return _paginationHelper;
-}
-
 - (UIView *)loadMoreContainerView {
     if (!_loadMoreContainerView) {
         UIEdgeInsets spinnerInsets = (UIEdgeInsets){ 30.0, 0.0, 0.0, 0.0 };
@@ -396,7 +390,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)loadData {
-    [self notificationsBatchIndex:[self.paginationHelper nextBatchIndex]];
+    [self notificationsFromItemIndex:[self.notifications count]];
 }
 
 - (void)closeTapped:(id)sender {
@@ -471,7 +465,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                 NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
                 
                 // Remove notification from list.
-                [self.paginationHelper removeItemAtIndex:indexPath.item];
+                [self.notifications removeObjectAtIndex:indexPath.item];
                 
                 [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
                 
@@ -508,61 +502,66 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 }
 
-- (void)notificationsBatchIndex:(NSUInteger)batchIndex {
-    [CKUserNotification notificationsWithBatchIndex:batchIndex
-                                         completion:^(NSArray *notifications, NSUInteger numItems,
-                                                      NSUInteger notificationBatchIndex, NSUInteger numBatches) {
+- (void)notificationsFromItemIndex:(NSUInteger)itemIndex {
+    [CKUserNotification notificationsFromItemIndex:itemIndex
+                                        completion:^(NSArray *notifications, NSUInteger totalCount,
+                                                     NSUInteger notificationItemIndex) {
                                              
-                                             DLog(@"Loaded notifications [%ld]", (long)[notifications count]);
-                                             [self.delegate notificationsViewControllerDataLoaded];
-                                             
-                                             NSUInteger nextSliceIndex = [self.paginationHelper nextSliceIndex];
-                                             
-                                             // Collect the indexpaths to insert.
-                                             NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[notifications collectWithIndex:^id(CKUserNotification *notification,
+                                            DLog(@"Loaded notifications [%ld]", (long)[notifications count]);
+                                            [self.delegate notificationsViewControllerDataLoaded];
+                                            
+                                            // Current item index.
+                                            NSUInteger nextSliceIndex = [self.notifications count];
+                                            
+                                            // Capture items to display.
+                                            if (!self.notifications) {
+                                                self.notifications = [NSMutableArray arrayWithArray:notifications];
+                                            } else {
+                                                [self.notifications addObjectsFromArray:notifications];
+                                            }
+                                            
+                                            // Capture pagination metadata.
+                                            self.totalCount = totalCount;
+                                            
+                                            // Collect the indexpaths to insert.
+                                            NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithArray:[notifications collectWithIndex:^id(CKUserNotification *notification,
                                                                                                                                                      NSUInteger notificationIndex) {
                                                  return [NSIndexPath indexPathForItem:nextSliceIndex + notificationIndex
                                                                             inSection:kNotificationsSection];
                                              }]];
-                                             
-                                             // Update pagination helper with data.
-                                             [self.paginationHelper updateWithItems:notifications
-                                                                         batchIndex:notificationBatchIndex
-                                                                           numItems:numItems
-                                                                         numBatches:numBatches];
-                                             
-                                             if ([indexPathsToInsert count] > 0) {
+                                            
+                                            // If we have stuff to insert.
+                                            if ([indexPathsToInsert count] > 0) {
                                                  
-                                                 // Index paths to delete.
-                                                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+                                                // Index paths to delete.
+                                                NSMutableArray *indexPathsToDelete = [NSMutableArray array];
                                                  
-                                                 if (notificationBatchIndex == 0) {
+                                                if (notificationItemIndex == 0) {
                                                      
-                                                     // Remove loading spinner if batchIndex is 0
-                                                     [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:0 inSection:0]];
+                                                    // Remove loading spinner if itemIndex was 0
+                                                    [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:0 inSection:0]];
                                                      
-                                                 } else {
+                                                } else {
                                                      
-                                                     // Remove load more spinner.
-                                                     [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:nextSliceIndex inSection:0]];
+                                                    // Remove load more spinner.
+                                                    [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:nextSliceIndex inSection:0]];
                                                      
-                                                 }
+                                                }
                                                  
-                                                 // Add load more spinner cell.
-                                                 if ([self.paginationHelper hasMoreItems]) {
-                                                     NSIndexPath *lastIndexPath = [indexPathsToInsert lastObject];
-                                                     
-                                                     NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:lastIndexPath.item + 1 inSection:0];
-                                                     [indexPathsToInsert addObject:activityInsertIndexPath];
-                                                 }
-                                                 
-                                                 [self.collectionView performBatchUpdates:^{
-                                                     
-                                                     if ([indexPathsToDelete count] > 0) {
-                                                         [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
-                                                     }
-                                                     
-                                                     [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                                                // Add load more spinner cell.
+                                                if ([self.notifications count] < self.totalCount) {
+                                                    NSIndexPath *activityInsertIndexPath = [NSIndexPath indexPathForItem:[self.notifications count] inSection:0];
+                                                    [indexPathsToInsert addObject:activityInsertIndexPath];
+                                                }
+                                                
+                                                // Now insert into our collection view.
+                                                [self.collectionView performBatchUpdates:^{
+                                                    
+                                                    // Any cell to delete?
+                                                    if ([indexPathsToDelete count] > 0) {
+                                                        [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+                                                    }
+                                                    [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
                                                      
                                                  } completion:^(BOOL finished) {
                                                  }];
@@ -570,8 +569,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                              } else {
                                                  [self.collectionView reloadData];
                                              }
-                                             
-                                             
+                                            
                                          } failure:^(NSError *error) {
                                              DLog(@"Unable to load notifications");
                                          }];

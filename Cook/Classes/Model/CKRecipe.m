@@ -124,15 +124,15 @@
 #pragma mark - Search
 
 + (void)searchWithTerm:(NSString *)searchTerm filter:(CKRecipeSearchFilter)searchFilter
-            batchIndex:(NSUInteger)batchIndex success:(RecipeSearchSuccessBlock)success
+             itemIndex:(NSUInteger)itemIndex success:(RecipeSearchSuccessBlock)success
                failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"searchRecipesWithRelevancy"
                        withParameters:@{
-                                        @"keyword" : searchTerm,
+                                        @"keyword"      : searchTerm,
                                         @"searchFilter" : @(searchFilter),
-                                        @"batchIndex" : @(batchIndex),
-                                        @"cookVersion": [[AppHelper sharedInstance] appVersion]
+                                        @"itemIndex"    : @(itemIndex),
+                                        @"cookVersion"  : [[AppHelper sharedInstance] appVersion]
                                         }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
@@ -140,19 +140,18 @@
                                         NSArray *parseRecipes = [results objectForKey:@"recipes"];
                                         NSString *keyword = [results objectForKey:@"keyword"];
                                         NSUInteger recipeCount = [[results objectForKey:@"count"] unsignedIntegerValue];
-                                        NSUInteger numBatches = [[results objectForKey:@"numBatches"] unsignedIntegerValue];
-                                        NSUInteger searchBatchIndex = [[results objectForKey:@"batchIndex"] unsignedIntegerValue];
+                                        NSUInteger maxItems = [[results objectForKey:@"maxItems"] unsignedIntegerValue];
+                                        NSUInteger searchItemIndex = [[results objectForKey:@"itemIndex"] unsignedIntegerValue];
                                         
                                         // Map to our model.
                                         NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
-                                            
                                             PFUser *parseUser = [parseRecipe objectForKey:kUserModelForeignKeyName];
                                             CKUser *user = [CKUser userWithParseUser:parseUser];
                                             CKBook *book = [[CKBook alloc] initWithParseBook:[parseRecipe objectForKey:kBookModelForeignKeyName] user:user];
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:user book:book];
                                         }];
                                         
-                                        success(keyword, recipes, recipeCount, searchBatchIndex, numBatches);
+                                        success(keyword, recipes, recipeCount, maxItems, searchItemIndex);
                                         
                                     } else {
                                         DLog(@"Error searching recipes: %@", [error localizedDescription]);
