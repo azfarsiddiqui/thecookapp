@@ -364,7 +364,7 @@
     return [UIColor colorWithHexString:@"1b76b6"];
 }
 
-+ (UIFont *) typeItUpFont {
++ (UIFont *)typeItUpFont {
     return [Theme defaultBoldFontWithSize:28.0f];
 }
 
