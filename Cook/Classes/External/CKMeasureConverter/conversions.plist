@@ -171,9 +171,9 @@
 	<array>
 		<dict>
 			<key>originalType</key>
-			<string>Metric</string>
-			<key>newType</key>
 			<string>Imperial</string>
+			<key>newType</key>
+			<string>Metric</string>
 			<key>name</key>
 			<string>kg</string>
 			<key>conversion</key>
