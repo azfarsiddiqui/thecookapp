@@ -68,7 +68,7 @@
     
     if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
         attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, 20.0, 0.0);
         attributes.alpha = 0.0;
     }
     
