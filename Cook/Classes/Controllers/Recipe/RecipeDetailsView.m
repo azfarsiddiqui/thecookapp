@@ -1074,9 +1074,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
     
-    if (self.selectedMeasureType != CKMeasureTypeNone && !self.editMode) {
+    if (!self.editMode) {
+        CKMeasurementType selectedMeasureType = self.selectedMeasureType;
+        if (selectedMeasureType == CKMeasureTypeNone) {
+            selectedMeasureType = [CKUser currentUser].measurementType;
+        }
         CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
-                                                                                   toMeasureType:self.selectedMeasureType
+                                                                                   toMeasureType:selectedMeasureType
                                                                                   highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
                                                                                         delegate:self
                                                                                        tokenOnly:YES];
@@ -1086,8 +1090,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.methodLabel.attributedText = methodDisplay;
     }
     
-    CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
-    size.width = kMaxRightWidth - 20; //because sizeThatFits is sometimes retarded
+    CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth - 20, MAXFLOAT }];
     //Center story if no ingredients or serves
     if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {
         self.methodLabel.frame = CGRectIntegral((CGRect){
