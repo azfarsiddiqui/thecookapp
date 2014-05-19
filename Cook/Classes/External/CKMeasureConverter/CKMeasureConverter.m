@@ -177,7 +177,9 @@
         convertDict = [convertToArray firstObject];
     }
     //Check if conversion is even needed
-    if ([self typeFromString:[convertDict objectForKey:@"newType"]] != self.toType) {
+    if ([self typeFromString:[convertDict objectForKey:@"newType"]] != self.toType
+        && ![unitString isEqualToString:@"°F"]
+        && ![unitString isEqualToString:@"°C"]) {
         return nil;
     }
     NSString *convertString;
