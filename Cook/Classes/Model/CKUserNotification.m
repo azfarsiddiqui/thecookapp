@@ -29,20 +29,35 @@
     }];
 }
 
-+ (void)notificationsCompletion:(ListObjectsSuccessBlock)completion failure:(ObjectFailureBlock)failure {
++ (void)notificationsWithBatchIndex:(NSUInteger)batchIndex completion:(PaginatedListSuccessBlock)completion
+                            failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"notifications_v1_4"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
-                                block:^(NSArray *notificationObjects, NSError *error) {
+    [PFCloud callFunctionInBackground:@"notifications_v1_5"
+                       withParameters:@{
+                                        @"cookVersion": [[AppHelper sharedInstance] appVersion],
+                                        @"batchIndex" : @(batchIndex),
+                                        }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    
                                     if (!error) {
+                                        
+                                        // Extract notifications.
+                                        NSArray *notificationObjects = [results objectForKey:@"items"];
                                         NSArray *notifications = [notificationObjects collect:^id(PFObject *parseNotification) {
                                             return [[CKUserNotification alloc] initWithParseObject:parseNotification];
                                         }];
-                                        completion(notifications);
                                         
+                                        // Pagination metadata.
+                                        NSUInteger numBatches = [[results objectForKey:@"numBatches"] unsignedIntegerValue];
+                                        NSUInteger numItems = [[results objectForKey:@"count"] unsignedIntegerValue];
+                                        NSUInteger notificationsBatchIndex = [[results objectForKey:@"batchIndex"] unsignedIntegerValue];
+                                        
+                                        completion(notifications, numItems, notificationsBatchIndex, numBatches);
+
                                     } else {
                                         DLog(@"Error loading notifications: %@", [error localizedDescription]);
                                     }
+                                    
                                 }];
 }
 

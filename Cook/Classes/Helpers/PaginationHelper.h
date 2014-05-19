@@ -10,4 +10,17 @@
 
 @interface PaginationHelper : NSObject
 
+@property (nonatomic, assign) BOOL ready;
+@property (nonatomic, assign) NSUInteger numItems;
+@property (nonatomic, strong) NSArray *items;
+
+- (void)reset;
+- (void)updateWithItems:(NSArray *)items batchIndex:(NSUInteger)batchIndex numItems:(NSUInteger)numItems numBatches:(NSUInteger)numBatches;
+- (void)removeItemAtIndex:(NSUInteger)itemIndex;
+- (NSUInteger)currentNumItems;
+- (NSUInteger)nextBatchIndex;
+- (NSUInteger)nextSliceIndex;
+- (BOOL)hasMoreItems;
+- (id)itemAtIndex:(NSUInteger)itemIndex;
+
 @end
