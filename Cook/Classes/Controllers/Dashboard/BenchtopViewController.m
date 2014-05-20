@@ -1073,7 +1073,7 @@
         [self.followReloadView enableActivity:NO hideReload:YES];
         
         // My book.
-        if (self.currentUser) {
+        if (myBook) {
             self.myBook = myBook;
         }
         
