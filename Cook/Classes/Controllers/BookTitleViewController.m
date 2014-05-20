@@ -254,7 +254,7 @@
     if ([recipe hasPhotos]) {
         
         // iOS 7.1 has a different UIProgressView padding.
-        CGFloat progressOffset = [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? 60.0 : 20.0;
+        CGFloat progressOffset = [[AppHelper sharedInstance] systemVersionAtLeast:@"7.1"] ? 50.0 : 20.0;
         
         // Add progress.
         self.progressView.frame = (CGRect){
