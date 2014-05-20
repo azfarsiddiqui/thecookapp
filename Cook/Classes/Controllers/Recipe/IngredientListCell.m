@@ -42,7 +42,7 @@
         // Unit field.
         UITextField *unitTextField = [[UITextField alloc] initWithFrame:(CGRect){
             insets.left,
-            insets.top,
+            insets.top + 1,
             kUnitWidth,
             self.textField.frame.size.height
         }];
@@ -70,12 +70,12 @@
         self.textField.textAlignment = NSTextAlignmentLeft;
         self.textField.frame = (CGRect){
             verticalDividerView.frame.origin.x + kFieldDividerGap,
-            self.textField.frame.origin.y,
+            self.textField.frame.origin.y + 1,
             self.contentView.bounds.size.width - verticalDividerView.frame.origin.x - kFieldDividerGap - insets.right,
             self.textField.frame.size.height
         };
         
-        self.textField.placeholder = @"INGREDIENT";
+        self.textField.placeholder = @"  INGREDIENT";
         self.unitTextField.placeholder = @"QTY";
     }
     return self;
@@ -148,7 +148,7 @@
         self.textField.placeholder = @"";
         self.textField.font = self.font;
     } else {
-        self.textField.placeholder = @"INGREDIENT";
+        self.textField.placeholder = @"    INGREDIENT";
         self.textField.font = self.placeholderFont;
         self.unitTextField.placeholder = @"QTY";
         self.unitTextField.font = self.placeholderFont;
