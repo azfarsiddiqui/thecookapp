@@ -22,7 +22,7 @@
 
 @end
 
-@interface RecipeSocialViewController : OverlayViewController <CKNavigationControllerSupport>
+@interface RecipeSocialViewController : OverlayViewController
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate;
 - (NSInteger)currentNumComments;

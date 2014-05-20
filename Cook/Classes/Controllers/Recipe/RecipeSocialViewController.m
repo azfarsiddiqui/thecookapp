@@ -28,12 +28,11 @@
 #import "RecipeSocialLikeLayout.h"
 #import "AnalyticsHelper.h"
 #import "ProfileViewController.h"
+#import "ModalOverlayHelper.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, RecipeSocialLikeCellDelegate,
-UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
-
-@property (nonatomic, strong) CKNavigationController *cookNavigationController;
+    ProfileViewControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UICollectionView *likesCollectionView;
@@ -45,6 +44,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) NSMutableArray *likeViews;
 @property (nonatomic, strong) ModalOverlayHeaderView *headerView;
+@property (nonatomic, strong) ProfileViewController *profileViewController;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -106,7 +106,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.likesCollectionView];
     [self.view addSubview:self.collectionView];
@@ -157,55 +157,19 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         [self.view addSubview:self.likeButton];
     }
     
-    if (self.cookNavigationController) {
-        self.collectionView.alpha = 0.0;
-        self.likesCollectionView.alpha = 0.0;
-        
-        if ([self.cookNavigationController isTopViewController:self]) {
-            self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
-        } else {
-            self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(backTapped:)];
-        }
-    } else {
-        self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
-        [self loadData];
-    }
+    self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
+    [self loadData];
+    
+    UIScreenEdgePanGestureRecognizer *screenEdgeRecogniser = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                               action:@selector(screenEdgeSwiped:)];
+    screenEdgeRecogniser.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:screenEdgeRecogniser];
     
     [AnalyticsHelper trackEventName:kEventRecipeSocialView];
 }
 
 - (NSInteger)currentNumComments {
     return [self.comments count];
-}
-
-#pragma mark - CKNavigationControllerSupport methods
-
-- (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber {
-    if (![boolNumber boolValue]) {
-        [self.activityView stopAnimating];
-        [self.cookNavigationController hideContext];
-    }
-}
-
-- (void)cookNavigationControllerViewAppearing:(NSNumber *)boolNumber {
-    BOOL appear = [boolNumber boolValue];
-    self.backButton.alpha = appear ? 1.0 : 0.0;
-    self.collectionView.alpha = appear ? 1.0 : 0.0;
-    self.likesCollectionView.alpha = appear ? 1.0 : 0.0;
-}
-
-- (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
-    if ([boolNumber boolValue]) {
-        
-        [self loadData];
-        
-        // Only show context if this was nested.
-        if (![self.cookNavigationController isTopViewController:self]) {
-            [self.cookNavigationController showContextWithRecipe:self.recipe];
-        }
-    } else {
-        [self.cookNavigationController hideContext];
-    }
 }
 
 #pragma mark - RecipeCommentBoxFooterViewDelegate methods
@@ -285,16 +249,16 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 }
 
 - (void)recipeSocialCommentCellProfileRequestedForUser:(CKUser *)user {
-    if (self.cookNavigationController && user) {
-        [self.cookNavigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+    if (user) {
+        [self showProfileOverlay:YES user:user];
     }
 }
 
 #pragma mark - RecipeSocialLikeCellDelegate methods
 
 - (void)recipeSocialLikeCellProfileRequestedForUser:(CKUser *)user {
-    if (self.cookNavigationController && user) {
-        [self.cookNavigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+    if (user) {
+        [self showProfileOverlay:YES user:user];
     }
 }
 
@@ -318,6 +282,12 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 - (UIEdgeInsets)recipeSocialLayoutContentInsets {
     return (UIEdgeInsets) { 0.0, (self.view.bounds.size.width - self.likesCollectionView.frame.origin.x), 0.0, 0.0 };
+}
+
+#pragma mark - ProfileViewControllerDelegate methods
+
+- (void)profileViewControllerCloseRequested {
+    [self showProfileOverlay:NO user:nil];
 }
 
 #pragma mark - CKEditViewControllerDelegate methods
@@ -583,7 +553,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
     }
     
     [self.recipe commentsLikesWithCompletion:^(NSArray *comments, NSArray *likes) {
-        DLog(@"Loaded [%d] comments", [comments count]);
+        DLog(@"Loaded [%ld] comments", (unsigned long)[comments count]);
         
         [[self currentLayout] setNeedsRelayout:YES];
         self.loading = NO;
@@ -652,7 +622,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 }
 
 - (void)backTapped:(id)sender {
-    [self.cookNavigationController popViewControllerAnimated:YES];
+    [self.delegate recipeSocialViewControllerCloseRequested];
 }
 
 - (void)closeTapped:(id)sender {
@@ -838,6 +808,26 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         }
     }
     
+}
+
+- (void)showProfileOverlay:(BOOL)show user:(CKUser *)user {
+    if (show) {
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user delegate:self];
+    }
+    
+    [ModalOverlayHelper showModalOverlayForViewController:self.profileViewController
+                                                     show:show
+                                               completion:^{
+                                                   if (!show) {
+                                                       self.profileViewController = nil;
+                                                   }
+                                               }];
+}
+
+- (void)screenEdgeSwiped:(UIScreenEdgePanGestureRecognizer *)screenEdgeRecogniser {
+    if (screenEdgeRecogniser.state == UIGestureRecognizerStateBegan) {
+        [self.delegate recipeSocialViewControllerCloseRequested];
+    }
 }
 
 @end
