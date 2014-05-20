@@ -519,6 +519,7 @@
 		7676058117B3EB7000CA441B /* cook_book_recipe_icon_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7676057B17B3EB7000CA441B /* cook_book_recipe_icon_serves@2x.png */; };
 		7676058217B3EB7000CA441B /* cook_book_recipe_icon_time.png in Resources */ = {isa = PBXBuildFile; fileRef = 7676057C17B3EB7000CA441B /* cook_book_recipe_icon_time.png */; };
 		7676058317B3EB7000CA441B /* cook_book_recipe_icon_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7676057D17B3EB7000CA441B /* cook_book_recipe_icon_time@2x.png */; };
+		7676B85E192AEA600081E5B3 /* JEProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7676B85D192AEA600081E5B3 /* JEProgressView.m */; };
 		767E6F10182223CD00908B58 /* cook_book_inner_title_border_bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E6F00182223CD00908B58 /* cook_book_inner_title_border_bottom.png */; };
 		767E6F11182223CD00908B58 /* cook_book_inner_title_border_bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E6F01182223CD00908B58 /* cook_book_inner_title_border_bottom@2x.png */; };
 		767E6F12182223CD00908B58 /* cook_book_inner_title_border_top.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E6F02182223CD00908B58 /* cook_book_inner_title_border_top.png */; };
@@ -2271,6 +2272,8 @@
 		7676057B17B3EB7000CA441B /* cook_book_recipe_icon_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_icon_serves@2x.png"; sourceTree = "<group>"; };
 		7676057C17B3EB7000CA441B /* cook_book_recipe_icon_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_recipe_icon_time.png; sourceTree = "<group>"; };
 		7676057D17B3EB7000CA441B /* cook_book_recipe_icon_time@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_icon_time@2x.png"; sourceTree = "<group>"; };
+		7676B85C192AEA600081E5B3 /* JEProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JEProgressView.h; sourceTree = "<group>"; };
+		7676B85D192AEA600081E5B3 /* JEProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JEProgressView.m; sourceTree = "<group>"; };
 		767E6F00182223CD00908B58 /* cook_book_inner_title_border_bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_title_border_bottom.png; sourceTree = "<group>"; };
 		767E6F01182223CD00908B58 /* cook_book_inner_title_border_bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_title_border_bottom@2x.png"; sourceTree = "<group>"; };
 		767E6F02182223CD00908B58 /* cook_book_inner_title_border_top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_title_border_top.png; sourceTree = "<group>"; };
@@ -4741,6 +4744,15 @@
 			path = featured_books;
 			sourceTree = "<group>";
 		};
+		7676B85B192AEA530081E5B3 /* JEProgressView */ = {
+			isa = PBXGroup;
+			children = (
+				7676B85C192AEA600081E5B3 /* JEProgressView.h */,
+				7676B85D192AEA600081E5B3 /* JEProgressView.m */,
+			);
+			path = JEProgressView;
+			sourceTree = "<group>";
+		};
 		767EE9FF17BDBF62001E7D0B /* welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -6268,6 +6280,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				7676B85B192AEA530081E5B3 /* JEProgressView */,
 				76A8ECDD1910DA57006BAFB3 /* NSSeeThroughView */,
 				F64299EE1907588300124DDE /* CKTabView */,
 				76F5441F18E3FAE400E6E672 /* CKRecipeSearchFieldView */,
@@ -9170,6 +9183,7 @@
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
 				76411338182C86C700366512 /* CKContentContainerCell.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
+				7676B85E192AEA600081E5B3 /* JEProgressView.m in Sources */,
 				7648FF27181564DA00E36041 /* CKStoreBookCoverView.m in Sources */,
 				76735C8B17BA12000027CA3B /* BookRecipeGridCell.m in Sources */,
 				763E00F817AD357200CCA412 /* PageListEditViewController.m in Sources */,

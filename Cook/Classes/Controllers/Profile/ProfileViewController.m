@@ -76,6 +76,11 @@
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
         [self.view addGestureRecognizer:tapGesture];
         
+        UIScreenEdgePanGestureRecognizer *screenEdgeRecogniser = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                                   action:@selector(screenEdgeSwiped:)];
+        screenEdgeRecogniser.edges = UIRectEdgeLeft;
+        [self.view addGestureRecognizer:screenEdgeRecogniser];
+        
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
         
@@ -390,6 +395,12 @@
                          }
                          completion:^(BOOL finished) {
                          }];
+    }
+}
+
+- (void)screenEdgeSwiped:(UIScreenEdgePanGestureRecognizer *)screenEdgeRecogniser {
+    if (screenEdgeRecogniser.state == UIGestureRecognizerStateBegan) {
+        [self.delegate profileViewControllerCloseRequested];
     }
 }
 

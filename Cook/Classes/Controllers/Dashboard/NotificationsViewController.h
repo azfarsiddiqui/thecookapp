@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "OverlayViewController.h"
-#import "CKNavigationController.h"
+#import "AppModalViewController.h"
 
 @protocol NotificationsViewControllerDelegate <NSObject>
 
@@ -18,7 +18,7 @@
 
 @end
 
-@interface NotificationsViewController : OverlayViewController <CKNavigationControllerSupport>
+@interface NotificationsViewController : OverlayViewController <AppModalViewController>
 
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate;
 

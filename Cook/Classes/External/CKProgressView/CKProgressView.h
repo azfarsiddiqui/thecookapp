@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JEProgressView.h"
 
 // http://stackoverflow.com/questions/7848766/how-can-we-programmatically-detect-which-ios-version-is-device-running-on
 #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
@@ -15,7 +16,7 @@
 #define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
-@interface CKProgressView : UIProgressView
+@interface CKProgressView : JEProgressView
 
 - (id)initWithWidth:(CGFloat)width;
 - (void)setProgress:(float)progress completion:(void (^)())completion;

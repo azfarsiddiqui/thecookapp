@@ -24,10 +24,6 @@
         self.trackImage = [[UIImage imageNamed:@"cook_book_recipe_progressbar_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 9.0, 0.0, 9.0)];
         self.progressImage = [[UIImage imageNamed:@"cook_book_recipe_progressbar_inner.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 9.0, 0.0, 9.0)];
         
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")) {
-            [self setTintColor:[UIColor whiteColor]];
-        }
-        
         // Fix the width.
         CGRect frame = self.frame;
         frame.size = CGSizeMake(width, self.trackImage.size.height);

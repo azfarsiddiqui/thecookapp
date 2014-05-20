@@ -100,7 +100,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
 
 // Social layer.
-@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 @property (nonatomic, strong) RecipeSocialViewController *socialViewController;
 
 // Share layer.
@@ -1621,14 +1620,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
-        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.socialViewController
-                                                                                          delegate:self];        
     } else {
         self.view.userInteractionEnabled = YES;
         self.scrollView.userInteractionEnabled = YES;
         self.imageScrollView.userInteractionEnabled = YES;
     }
-    [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController
+    [ModalOverlayHelper showModalOverlayForViewController:self.socialViewController
                                                      show:show
                                                 animation:^{
                                                     
@@ -1648,7 +1645,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                         [self.view addSubview:self.likeButton];
                                                         
                                                         self.socialViewController = nil;
-                                                        self.cookNavigationController = nil;
                                                         
                                                         [self updateButtons];
                                                     }
