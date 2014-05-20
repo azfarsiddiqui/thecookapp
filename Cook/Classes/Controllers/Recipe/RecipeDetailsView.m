@@ -532,9 +532,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         // Wrap it immediately as it's only visible in edit mode.
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
         [self.editingHelper wrapEditingView:self.pageLabel contentInsets:(UIEdgeInsets){
-            defaultInsets.top + 6.0,
+            defaultInsets.top + 4.0,
             defaultInsets.left,
-            defaultInsets.bottom,
+            defaultInsets.bottom - 2.0,
             defaultInsets.right - 2.0
         } delegate:self white:YES iconImage:[UIImage imageNamed:@"cook_customise_icon_page"]];
         
@@ -636,9 +636,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         UIImage *iconImage = [UIImage imageNamed:@"cook_customise_icon_tag"];
         UIEdgeInsets  defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
         [self.editingHelper wrapEditingView:self.tagsLabel contentInsets:(UIEdgeInsets){
-            defaultInsets.top + 8.0,
+            defaultInsets.top + 6.0,
             defaultInsets.left,
-            defaultInsets.bottom + 4.0,
+            defaultInsets.bottom + 2.0,
             defaultInsets.right
         } delegate:self white:YES iconImage:iconImage];
     }
@@ -901,7 +901,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateServesCookFrame {
-    CGFloat beforeGap = -5.0;
+    CGFloat beforeGap = -1.0;
     self.servesCookView.frame = (CGRect){
         kContentInsets.left,
         self.contentOffset.y + beforeGap,
@@ -1091,6 +1091,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth - 20, MAXFLOAT }];
+    size.width = kMaxRightWidth - 20;
     //Center story if no ingredients or serves
     if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {
         self.methodLabel.frame = CGRectIntegral((CGRect){
@@ -1295,7 +1296,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Serves.
     [self enableEditModeOnView:self.servesCookView editMode:editMode editIcon:NO
                  minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 7.0,
+                     defaultEditInsets.top + 11.0,
                      defaultEditInsets.left - 19.0,
                      defaultEditInsets.bottom + 5.0,
                      defaultEditInsets.right

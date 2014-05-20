@@ -16,7 +16,7 @@
 
 @implementation CKEditingViewHelper
 
-#define kContentEditInsets  (UIEdgeInsets){ 16.0, 32.0, 11.0, 42.0 }
+#define kContentEditInsets  (UIEdgeInsets){ 20.0, 32.0, 13.0, 42.0 }
 #define kContentInsets      (UIEdgeInsets){ 16.0, 28.0, 11.0, 38.0 }
 #define kTextBoxInsets      (UIEdgeInsets){ 15.0, 12.0, 12.0, 22.0 }
 #define kTextBoxScale       0.98
