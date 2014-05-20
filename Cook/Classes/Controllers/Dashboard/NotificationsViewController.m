@@ -194,7 +194,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
         || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]
-        || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
         ) {
 
         CKUser *user = notification.actionUser;
@@ -206,6 +205,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                || [notificationName isEqualToString:kUserNotificationTypeReply]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
                || [notificationName isEqualToString:kUserNotificationTypePin]
+               || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
                ) {
         
         CKRecipe *recipe = notification.recipe;
