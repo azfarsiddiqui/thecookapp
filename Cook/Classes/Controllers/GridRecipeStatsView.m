@@ -50,7 +50,13 @@
     [self reset];
     
     self.recipe = recipe;
-    [self configureValue:[self servesDisplayForPrepTime:recipe.numServes] iconIndex:0];
+    
+    if (self.recipe.quantityType == CKQuantityServes) {
+        [self configureValue:[self servesDisplayForPrepTime:recipe.numServes] iconIndex:0];
+    } else {
+        [self configureValue:[self makesDisplayForPrepTime:recipe.numServes] iconIndex:0];
+    }
+    
     [self configureValue:[self prepCookTotalDisplayForPrepTime:recipe.prepTimeInMinutes cookTime:recipe.cookingTimeInMinutes] iconIndex:1];
     [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numCommentsForRecipe:recipe]] iconIndex:2];
     [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numLikesForRecipe:recipe]] iconIndex:3];
@@ -182,9 +188,17 @@
 - (NSString *)servesDisplayForPrepTime:(NSNumber *)serves {
     NSString *servesDisplay = [NSString CK_stringOrNilForNumber:serves];
     if (serves && [serves integerValue] > [RecipeDetails maxServes]) {
-        servesDisplay = [NSString stringWithFormat:@"%d+", [RecipeDetails maxServes]];
+        servesDisplay = [NSString stringWithFormat:@"%ld+", [RecipeDetails maxServes]];
     }
     return servesDisplay;
+}
+
+- (NSString *)makesDisplayForPrepTime:(NSNumber *)makes {
+    NSString *makesDisplay = [NSString CK_stringOrNilForNumber:makes];
+    if (makes && [makes integerValue] > [RecipeDetails maxMakes]) {
+        makesDisplay = [NSString stringWithFormat:@"%li+", (long)[RecipeDetails maxMakes]];
+    }
+    return makesDisplay;
 }
 
 - (UIImage *)likesIcon {
