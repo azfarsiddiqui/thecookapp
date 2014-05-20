@@ -22,19 +22,25 @@
 #import "AnalyticsHelper.h"
 #import "CKActivityIndicatorView.h"
 #import "CKContentContainerCell.h"
+#import "AppHelper.h"
+#import "RootViewController.h"
+#import "ModalOverlayHelper.h"
 
 @interface NotificationsViewController () <NotificationCellDelegate, UICollectionViewDataSource,
-    UICollectionViewDelegateFlowLayout, RecipeSocialViewControllerDelegate>
+    UICollectionViewDelegateFlowLayout, RecipeSocialViewControllerDelegate, ProfileViewControllerDelegate>
 
 @property (nonatomic, weak) id<NotificationsViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIView *modalOverlayView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableDictionary *notificationActionsInProgress;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 @property (nonatomic, strong) UIView *loadMoreContainerView;
 @property (nonatomic, strong) CKActivityIndicatorView *loadMoreActivityView;
+@property (nonatomic, strong) ProfileViewController *profileViewController;
 
+@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, assign) NSUInteger totalCount;
 @property (nonatomic, strong) NSMutableArray *notifications;
 
@@ -42,13 +48,15 @@
 
 @implementation NotificationsViewController
 
-#define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
-#define kUnderlayMaxAlpha       0.7
-#define kHeaderCellId           @"HeaderCell"
-#define kCellId                 @"NotificationCell"
-#define kActivityId             @"ActivityCell"
-#define LOAD_MORE_CELL_ID       @"LoadMoreCellId"
-#define kNotificationsSection   0
+#define kContentInsets              (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+#define kUnderlayMaxAlpha           0.7
+#define kHeaderCellId               @"HeaderCell"
+#define kCellId                     @"NotificationCell"
+#define kActivityId                 @"ActivityCell"
+#define LOAD_MORE_CELL_ID           @"LoadMoreCellId"
+#define kNotificationsSection       0
+#define MODAL_SCALE_TRANSFORM       0.9
+#define MODAL_OVERLAY_ALPHA         0.5
 
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -60,9 +68,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     self.view.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.closeButton];
+    [self.view addSubview:self.blurredImageView];
+    [self.view addSubview:self.containerView];
+    
+    [self.containerView addSubview:self.collectionView];
+    [self.containerView addSubview:self.closeButton];
+    
+    UIScreenEdgePanGestureRecognizer *screenEdgeRecogniser = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                               action:@selector(screenEdgeSwiped:)];
+    screenEdgeRecogniser.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:screenEdgeRecogniser];
+    
     [self loadData];
     
     [AnalyticsHelper trackEventName:kEventNotificationsView];
@@ -79,14 +97,14 @@
 }
 
 - (void)notificationCellProfileRequestedForUser:(CKUser *)user {
-    [self showProfileForUser:user];
+    [self showProfileOverlay:YES user:user];
 }
 
 #pragma mark - RecipeSocialViewControllerDelegate methods
 
 - (void)recipeSocialViewControllerCloseRequested {
     DLog();
-    [self.cookNavigationController popViewControllerAnimated:YES];
+    [self.delegate notificationsViewControllerDismissRequested];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -181,7 +199,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
         CKUser *user = notification.actionUser;
         if (user) {
-            [self showProfileForUser:user];
+            [self showProfileOverlay:YES user:user];
         }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
@@ -192,8 +210,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         
         CKRecipe *recipe = notification.recipe;
         if (recipe) {
-            RecipeSocialViewController *recipeSocialViewController = [[RecipeSocialViewController alloc] initWithRecipe:recipe delegate:self];
-            [self.cookNavigationController pushViewController:recipeSocialViewController animated:YES];
+            [self showRecipe:recipe];
         }
     }
 
@@ -311,7 +328,58 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return supplementaryView;
 }
 
+#pragma mark - ProfileViewControllerDelegate methods
+
+- (void)profileViewControllerCloseRequested {
+    [self showProfileOverlay:NO user:nil];
+}
+
+#pragma mark - AppModalViewController methods
+
+- (void)setModalViewControllerDelegate:(id<AppModalViewControllerDelegate>)modalViewControllerDelegate {
+    DLog();
+}
+
+- (void)appModalViewControllerWillAppear:(NSNumber *)appearNumber {
+    DLog();
+    
+    BOOL appear = [appearNumber boolValue];
+    if (appear) {
+        
+        // Create overlay.
+        self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:MODAL_OVERLAY_ALPHA];
+        self.modalOverlayView.alpha = 0.0;
+        [self.view addSubview:self.modalOverlayView];
+        
+    }
+}
+
+- (void)appModalViewControllerAppearing:(NSNumber *)appearingNumber {
+    DLog();
+    BOOL appearing = [appearingNumber boolValue];
+    [self applyModalTransitionToAppear:appearing];
+}
+
+- (void)appModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    DLog();
+    BOOL appeared = [appearNumber boolValue];
+    if (!appeared) {
+        [self.modalOverlayView removeFromSuperview];
+        self.modalOverlayView = nil;
+    }
+}
+
 #pragma mark - Properties
+
+- (UIView *)containerView {
+    if (!_containerView) {
+        _containerView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    }
+    return _containerView;
+}
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
@@ -386,6 +454,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     }
     return _loadMoreActivityView;
 }
+
+- (UIImageView *)blurredImageView {
+    if (!_blurredImageView) {
+        _blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        _blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _blurredImageView.image = [self.delegate notificationsViewControllerSnapshotImageRequested];
+    }
+    return _blurredImageView;
+}
+
 
 #pragma mark - Private methods
 
@@ -493,15 +571,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     }];
 }
 
-- (void)showProfileForUser:(CKUser *)user {
-    if (!user) {
-        return;
-    }
-    ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.cookNavigationController pushViewController:profileViewController animated:YES];
-
-}
-
 - (void)notificationsFromItemIndex:(NSUInteger)itemIndex {
     [CKUserNotification notificationsFromItemIndex:itemIndex
                                         completion:^(NSArray *notifications, NSUInteger totalCount,
@@ -573,6 +642,45 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                          } failure:^(NSError *error) {
                                              DLog(@"Unable to load notifications");
                                          }];
+}
+
+- (void)showRecipe:(CKRecipe *)recipe {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];
+    });
+}
+
+- (void)showProfileOverlay:(BOOL)show user:(CKUser *)user {
+    if (show) {
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user delegate:self];
+    }
+    
+    [ModalOverlayHelper showModalOverlayForViewController:self.profileViewController
+                                                     show:show
+                                               completion:^{
+                                                   if (!show) {
+                                                       self.profileViewController = nil;
+                                                   }
+                                               }];
+}
+
+- (void)applyModalTransitionToAppear:(BOOL)appearing {
+    
+    // Scale appropriate views.
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(MODAL_SCALE_TRANSFORM, MODAL_SCALE_TRANSFORM);
+    self.containerView.transform = appearing ? scaleTransform : CGAffineTransformIdentity;
+    
+    // Fade container in/out.
+    self.containerView.alpha = appearing ? 0.5 : 1.0;
+    
+    // Fade overlay in/out.
+    self.modalOverlayView.alpha = appearing ? 1.0 : 0.0;
+}
+
+- (void)screenEdgeSwiped:(UIScreenEdgePanGestureRecognizer *)screenEdgeRecogniser {
+    if (screenEdgeRecogniser.state == UIGestureRecognizerStateBegan) {
+        [self.delegate notificationsViewControllerDismissRequested];
+    }
 }
 
 @end

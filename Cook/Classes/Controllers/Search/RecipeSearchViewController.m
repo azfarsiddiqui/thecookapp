@@ -611,39 +611,6 @@
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
-    
-    // Pre-render the blurred snapshot.
-//    if (self.modalBlurEnabled) {
-//        
-//        // Add the blurred container view to host containerView so we can capture bigger screenshot.
-//        self.blurredContainerView.frame = (CGRect){
-//            floorf((self.view.bounds.size.width - self.blurredContainerView.frame.size.width) / 2.0),
-//            floorf((self.view.bounds.size.height - self.blurredContainerView.frame.size.height) / 2.0),
-//            self.blurredContainerView.frame.size.width,
-//            self.blurredContainerView.frame.size.height
-//        };
-//        [self.view addSubview:self.blurredContainerView];
-//        
-//        // Move container view to blurredContainer view to capture
-//        [self.containerView removeFromSuperview];
-//        self.containerView.frame = (CGRect){
-//            floorf((self.blurredContainerView.bounds.size.width - self.containerView.frame.size.width) / 2.0),
-//            floorf((self.blurredContainerView.bounds.size.height - self.containerView.frame.size.height) / 2.0),
-//            self.containerView.frame.size.width,
-//            self.containerView.frame.size.height
-//        };
-//        [self.blurredContainerView addSubview:self.containerView];
-//        
-//        // Capture this blurredContainerView as a bigger screenshot.
-//        self.blurredContainerImage = [ImageHelper blurredImageFromView:self.blurredContainerView];
-//        
-//        // Move the containerView back.
-//        [self.containerView removeFromSuperview];
-//        self.containerView.frame = self.view.bounds;
-//        [self.view insertSubview:self.containerView aboveSubview:self.blurredImageView];
-//        [self.blurredContainerView removeFromSuperview];
-//    }
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
         [[[AppHelper sharedInstance] rootViewController] showModalWithRecipe:recipe callerViewController:self];

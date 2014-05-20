@@ -616,11 +616,18 @@
 }
 
 - (void)notificationsViewControllerDismissRequested {
-    [self showNotificationsOverlay:NO];
+    if (self.notificationsViewController) {
+        __weak typeof(self) weakSelf = self;
+        [self hideOverlayForViewController:self.notificationsViewController completion:^{
+            weakSelf.notificationsViewController = nil;
+        }];
+    } else {
+        [self hideOverlayForViewControllerCompletion:nil];
+    }
 }
 
 - (UIImage *)notificationsViewControllerSnapshotImageRequested {
-    return [self dashBlurredImage];
+    return [self darkDashBlurredImage];
 }
 
 #pragma mark - RecipeSearchViewControllerDelegate methods
@@ -2114,7 +2121,7 @@
 }
 
 - (void)showOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion {
-    [self showOverlayForViewController:viewController withNavController:YES completion:completion];
+    [self showOverlayForViewController:viewController withNavController:NO completion:completion];
 }
 
 - (void)showOverlayForViewController:(UIViewController *)viewController withNavController:(BOOL)withNavController
