@@ -12,7 +12,6 @@
 
 @interface RecipeFooterView : UIView
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails;
 - (void)updateFooterWithRecipeDetails:(RecipeDetails *)recipeDetails;
 
 @end

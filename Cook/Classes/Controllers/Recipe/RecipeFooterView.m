@@ -14,7 +14,6 @@
 
 @interface RecipeFooterView ()
 
-@property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) NSMutableArray *elementViews;
 @property (nonatomic, strong) CKUser *currentUser;
 
@@ -36,33 +35,22 @@
     return self;
 }
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
-    if (self = [super initWithFrame:CGRectZero]) {
-        self.currentUser = [CKUser currentUser];
-        self.elementViews = [NSMutableArray array];
-        [self updateFooterWithRecipeDetails:recipeDetails];
-    }
-    return self;
-}
-
 - (void)updateFooterWithRecipeDetails:(RecipeDetails *)recipeDetails {
-    self.recipeDetails = recipeDetails;
-    
     [self.elementViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self.elementViews removeAllObjects];
     
-    UIOffset offset = (UIOffset) { kContentInsets.left, kContentInsets.top };
+    CGFloat xOffset = kContentInsets.left;
     
     // Visibility and Creation date.
     UIView *dateView = [self elementViewWithIcon:[self imageForPrivacy:recipeDetails.privacy]
                                             text:[[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:recipeDetails.createdDateTime] uppercaseString]];
     dateView.frame = (CGRect){
-        offset.horizontal,
+        xOffset,
         0.0,
         dateView.frame.size.width,
         dateView.frame.size.height
     };
-    offset.horizontal += dateView.frame.size.width + kElementsGap;
+    xOffset += dateView.frame.size.width + kElementsGap;
     [self.elementViews addObject:dateView];
     
     // Location if any.
@@ -71,12 +59,12 @@
         UIView *locationView = [self elementViewWithIcon:[UIImage imageNamed:@"cook_book_inner_icon_small_location.png"]
                                                     text:[[recipeDetails.location localeDisplayName] uppercaseString]];
         locationView.frame = (CGRect){
-            offset.horizontal,
+            xOffset,
             0.0,
             locationView.frame.size.width,
             locationView.frame.size.height
         };
-        offset.horizontal += locationView.frame.size.width + kElementsGap;
+        xOffset += locationView.frame.size.width + kElementsGap;
         [self.elementViews addObject:locationView];
     }
     
