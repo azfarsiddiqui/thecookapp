@@ -150,7 +150,7 @@
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
-            yOffset - 11.0,
+            yOffset - 13.0,
             profileLabel.frame.size.width,
             profileLabel.frame.size.height
         };
@@ -175,7 +175,7 @@
         [_measureLabel sizeToFit];
         _measureLabel.frame = (CGRect){
             self.measureTabView.frame.origin.x + floorf((self.measureTabView.frame.size.width - _measureLabel.frame.size.width) / 2.0),
-            self.measureTabView.frame.origin.y - _measureLabel.frame.size.height - 9.0,
+            self.measureTabView.frame.origin.y - _measureLabel.frame.size.height - 15.0,
             _measureLabel.frame.size.width,
             _measureLabel.frame.size.height
         };
@@ -188,7 +188,7 @@
         _measureTabView = [[MeasureTabView alloc] init];
         _measureTabView.frame = (CGRect){
             42.0,
-            74.0,
+            75.0,
             _measureTabView.frame.size.width,
             _measureTabView.frame.size.height
         };
@@ -347,7 +347,7 @@
                                   @"spacing":@2.0};
         NSDictionary *views = @{@"theme" : themeChooserContainerView,
                                 @"links" : linkButtonContainerView};
-        NSString *containerConstraints = @"|-260.0-[theme(themeWidth)][links(linkWidth)]";
+        NSString *containerConstraints = @"|-271.0-[theme(themeWidth)]-(14.0)-[links(linkWidth)]";
         [content1View addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:containerConstraints
                                                                                         options:NSLayoutFormatAlignAllCenterY
                                                                                         metrics:metrics
