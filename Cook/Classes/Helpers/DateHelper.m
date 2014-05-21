@@ -12,6 +12,7 @@
 @interface DateHelper ()
 
 @property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
+@property (nonatomic, strong) NSNumberFormatter *numberFormatter;
 
 @end
 
@@ -32,6 +33,9 @@
         // Past dates formatting.
         self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
         [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
+        self.numberFormatter = [[NSNumberFormatter alloc] init];
+        self.numberFormatter.maximumIntegerDigits = 2;
+        self.numberFormatter.minimumIntegerDigits = 2;
     }
     return self;
 }
@@ -44,22 +48,25 @@
     return [self.timeIntervalFormatter stringForTimeIntervalFromDate:fromDate toDate:date];
 }
 
-- (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes {
+-  (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes {
+    return [self formattedDurationDisplayForMinutes:minutes isHourOnly:NO];
+}
+
+- (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes isHourOnly:(BOOL)isHourOnly {
     NSMutableString *formattedDisplay = [NSMutableString string];
     NSInteger hours = (minutes / 60);
-    if (hours > 0) {
-        NSInteger remainderMinutes = minutes % 60;
-        [formattedDisplay appendFormat:@"%dh", hours];
-        if (remainderMinutes > 0) {
-            [formattedDisplay appendString:@" "];
-            if (remainderMinutes < 10) {
-                [formattedDisplay appendString:@"0"];
-            }
-            [formattedDisplay appendFormat:@"%dm", remainderMinutes];
-        }
-    } else {
-        [formattedDisplay appendFormat:@"%dm", minutes];
+
+    NSInteger remainderMinutes = minutes % 60;
+    if (minutes == 0) {
+        return @" 0m";
     }
+    if (hours > 0) {
+        [formattedDisplay appendFormat:@"%@h", [@(hours) stringValue]];
+    }
+    if (!isHourOnly) {
+        [formattedDisplay appendFormat:@" %@m", [self.numberFormatter stringFromNumber:@(remainderMinutes)]];
+    }
+
     return formattedDisplay;
 }
 

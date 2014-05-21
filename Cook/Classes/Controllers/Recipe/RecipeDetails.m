@@ -28,7 +28,7 @@
 }
 
 + (NSInteger)maxMakes {
-    return 72;
+    return 60;
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {

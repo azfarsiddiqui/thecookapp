@@ -24,7 +24,7 @@
 @implementation IngredientListCell
 
 #define kFieldDividerGap        10.0
-#define kUnitWidth              160.0
+#define kUnitWidth              150.0
 #define kDividerInsets          (UIEdgeInsets){ 17.0, 0.0, 10.0, 0.0 }
 #define kMaxLengthMeasurement   10
 
@@ -69,13 +69,13 @@
         // Move the main textfield across to make way for the unit text field.
         self.textField.textAlignment = NSTextAlignmentLeft;
         self.textField.frame = (CGRect){
-            verticalDividerView.frame.origin.x + kFieldDividerGap,
+            verticalDividerView.frame.origin.x + kFieldDividerGap + 10,
             self.textField.frame.origin.y + 1,
             self.contentView.bounds.size.width - verticalDividerView.frame.origin.x - kFieldDividerGap - insets.right,
             self.textField.frame.size.height
         };
         
-        self.textField.placeholder = @"  INGREDIENT";
+        self.textField.placeholder = @"INGREDIENT";
         self.unitTextField.placeholder = @"QTY";
     }
     return self;
@@ -148,7 +148,7 @@
         self.textField.placeholder = @"";
         self.textField.font = self.font;
     } else {
-        self.textField.placeholder = @"    INGREDIENT";
+        self.textField.placeholder = @"INGREDIENT";
         self.textField.font = self.placeholderFont;
         self.unitTextField.placeholder = @"QTY";
         self.unitTextField.font = self.placeholderFont;
