@@ -26,7 +26,6 @@
 #import "NotificationsViewController.h"
 #import "CKError.h"
 #import "CardViewHelper.h"
-#import "CKNavigationController.h"
 #import "CKBookManager.h"
 #import "RootViewController.h"
 #import "FollowReloadButtonView.h"
@@ -39,7 +38,7 @@
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate,
-    CKNavigationControllerDelegate, FollowReloadButtonViewDelegate, RecipeSearchViewControllerDelegate>
+    FollowReloadButtonViewDelegate, RecipeSearchViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -57,7 +56,6 @@
 @property (nonatomic, strong) SignupViewController *signUpViewController;
 @property (nonatomic, strong) NotificationsViewController *notificationsViewController;
 @property (nonatomic, strong) RecipeSearchViewController *searchViewController;
-@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -621,8 +619,6 @@
         [self hideOverlayForViewController:self.notificationsViewController completion:^{
             weakSelf.notificationsViewController = nil;
         }];
-    } else {
-        [self hideOverlayForViewControllerCompletion:nil];
     }
 }
 
@@ -642,8 +638,6 @@
         [self hideOverlayForViewController:self.searchViewController completion:^{
             weakSelf.searchViewController = nil;
         }];
-    } else {
-        [self hideOverlayForViewControllerCompletion:nil];
     }
 }
 
@@ -1656,14 +1650,13 @@
 }
 
 - (void)showNotificationsOverlay:(BOOL)show {
-    
     __weak typeof(self) weakSelf = self;
     if (show) {
         NotificationsViewController *notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
         [self showOverlayForViewController:notificationsViewController completion:nil];
         self.notificationsViewController = notificationsViewController;
     } else {
-        [self hideOverlayForViewControllerCompletion:^{
+        [self hideOverlayForViewController:self.notificationsViewController completion:^{
             weakSelf.notificationsViewController = nil;
         }];
     }
@@ -2107,32 +2100,24 @@
     __weak typeof(self) weakSelf = self;
     if (show) {
         RecipeSearchViewController *searchViewController = [[RecipeSearchViewController alloc] initWithDelegate:self];
-        [self showOverlayForViewController:searchViewController withNavController:NO completion:^{
+        [self showOverlayForViewController:searchViewController completion:^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [searchViewController focusSearchField:YES];
             });
         }];
         self.searchViewController = searchViewController;
     } else {
-        [self hideOverlayForViewControllerCompletion:^{
+        [self hideOverlayForViewController:self.searchViewController completion:^{
             weakSelf.searchViewController = nil;
         }];
     }
 }
 
 - (void)showOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion {
-    [self showOverlayForViewController:viewController withNavController:NO completion:completion];
-}
 
-- (void)showOverlayForViewController:(UIViewController *)viewController withNavController:(BOOL)withNavController
-                          completion:(void (^)())completion {
     [self.delegate panEnabledRequested:NO];
     
-    if (withNavController) {
-        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:viewController delegate:self];
-    }
-    
-    [ModalOverlayHelper showModalOverlayForViewController:withNavController ? self.cookNavigationController : viewController
+    [ModalOverlayHelper showModalOverlayForViewController:viewController
                                                      show:YES
                                                 animation:^{
                                                     [self fadeBenchtopIcons:YES];
@@ -2143,17 +2128,12 @@
                                                 }];
 }
 
-- (void)hideOverlayForViewControllerCompletion:(void (^)())completion {
-    [self hideOverlayForViewController:self.cookNavigationController completion:completion];
-}
-
 - (void)hideOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion {
     [self.delegate panEnabledRequested:YES];
     [ModalOverlayHelper hideModalOverlayForViewController:viewController
                                                 animation:^{
                                                     [self fadeBenchtopIcons:NO];
                                                 } completion:^{
-                                                    self.cookNavigationController = nil;
                                                     if (completion != nil) {
                                                         completion();
                                                     }
