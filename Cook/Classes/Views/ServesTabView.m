@@ -83,10 +83,10 @@
         UIButton *button = [self.buttons objectAtIndex:buttonIndex];
         if (buttonIndex == optionIndex) {
             [button setBackgroundImage:[self selectedImageForOptionIndex:buttonIndex] forState:UIControlStateNormal];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 20.0f, 8.0f, 10.0f)];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, buttonIndex == 0 ? 25.0f : 20.0f, 8.0f, buttonIndex == 0 ? 10.0f : 25.0f)];
         } else {
             [button setBackgroundImage:[self deselectedImageForOptionIndex:buttonIndex] forState:UIControlStateNormal];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 20.0f, 5.0f, 10.0f)];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, buttonIndex == 0 ? 20.0f : 10.0f, 5.0f, buttonIndex == 0 ? 10.0f : 25.0f)];
         }
     }
     
