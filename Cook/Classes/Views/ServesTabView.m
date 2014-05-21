@@ -53,7 +53,7 @@
         [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
         [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 20.0f, 5.0f, 10.0f)];
     }
-    else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
+    else if (optionIndex == [self.options count] - 1) //Rightmost button compensate rounded edge
     {
         [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
         [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 5.0f, 25.0f)];
@@ -83,8 +83,10 @@
         UIButton *button = [self.buttons objectAtIndex:buttonIndex];
         if (buttonIndex == optionIndex) {
             [button setBackgroundImage:[self selectedImageForOptionIndex:buttonIndex] forState:UIControlStateNormal];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 20.0f, 8.0f, 10.0f)];
         } else {
             [button setBackgroundImage:[self deselectedImageForOptionIndex:buttonIndex] forState:UIControlStateNormal];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 20.0f, 5.0f, 10.0f)];
         }
     }
     

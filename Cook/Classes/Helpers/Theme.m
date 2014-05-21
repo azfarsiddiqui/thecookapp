@@ -377,7 +377,7 @@
 }
 
 + (UIFont *)editServesFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.60];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.0];
 }
 
 + (UIColor *)editServesColour {

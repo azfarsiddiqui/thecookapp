@@ -14,5 +14,6 @@
 - (NSString *)relativeDateTimeDisplayForDate:(NSDate *)date;
 - (NSString *)relativeDateTimeDisplayForDate:(NSDate *)date fromDate:(NSDate *)fromDate;
 - (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes;
+- (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes isHourOnly:(BOOL)isHourOnly;
 
 @end
