@@ -70,4 +70,23 @@
     return formattedDisplay;
 }
 
+- (NSString *)formattedShortDurationDisplayForMinutes:(NSInteger)minutes {
+    NSMutableString *formattedDisplay = [NSMutableString string];
+    NSInteger hours = (minutes / 60);
+    if (hours > 0) {
+        NSInteger remainderMinutes = minutes % 60;
+        [formattedDisplay appendFormat:@"%dh", hours];
+        if (remainderMinutes > 0) {
+            [formattedDisplay appendString:@" "];
+            if (remainderMinutes < 10) {
+                [formattedDisplay appendString:@"0"];
+            }
+            [formattedDisplay appendFormat:@"%dm", remainderMinutes];
+        }
+    } else {
+        [formattedDisplay appendFormat:@"%dm", minutes];
+    }
+    return formattedDisplay;
+}
+
 @end

@@ -177,9 +177,9 @@
     if (prepTime || cookTime) {
         totalTimeInMinutes = [prepTime integerValue] + [cookTime integerValue];
         if (totalTimeInMinutes >= [RecipeDetails maxPrepCookMinutes]) {
-            totalDisplay = [NSString stringWithFormat:@"%@+", [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:[RecipeDetails maxPrepCookMinutes]]];
+            totalDisplay = [NSString stringWithFormat:@"%@+", [[DateHelper sharedInstance] formattedShortDurationDisplayForMinutes:[RecipeDetails maxPrepCookMinutes]]];
         } else {
-            totalDisplay = [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:totalTimeInMinutes];
+            totalDisplay = [[DateHelper sharedInstance] formattedShortDurationDisplayForMinutes:totalTimeInMinutes];
         }
     }
     return totalDisplay;

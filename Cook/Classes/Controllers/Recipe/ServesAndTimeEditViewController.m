@@ -604,8 +604,8 @@
     NSInteger minutes = [self minutesForSliderIndex:notchIndex];
     NSMutableString *minutesDisplay = [NSMutableString stringWithString:@""];
     if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
-        [minutesDisplay appendString:@"+"];
         [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes isHourOnly:YES]];
+        [minutesDisplay appendString:@"+"];
     } else {
         [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes isHourOnly:NO]];
     }
