@@ -247,12 +247,12 @@
     return cell;
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    NSString *sectionIdentifier = [kind isEqualToString:UICollectionElementKindSectionHeader] ? kTagSectionHeadID : kTagSectionFootID;
-    UICollectionReusableView *sectionHead = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionIdentifier forIndexPath:indexPath];
-    sectionHead.backgroundColor = [UIColor clearColor];
-    return sectionHead;
-}
+//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+//    NSString *sectionIdentifier = [kind isEqualToString:UICollectionElementKindSectionHeader] ? kTagSectionHeadID : kTagSectionFootID;
+//    UICollectionReusableView *sectionHead = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionIdentifier forIndexPath:indexPath];
+//    sectionHead.backgroundColor = [UIColor clearColor];
+//    return sectionHead;
+//}
 
 //Adds padding to the front of the row of cells to make sure first one isn't faded
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
