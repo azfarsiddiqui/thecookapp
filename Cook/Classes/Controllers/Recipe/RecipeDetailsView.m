@@ -25,6 +25,7 @@
 #import "CKBookCover.h"
 #import "ImageHelper.h"
 #import "CKMeasureConverter.h"
+#import "RecipeFooterView.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -52,6 +53,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) TTTAttributedLabel *methodLabel;
 @property (nonatomic, strong) UISegmentedControl *changeMeasureTypeButton;
+@property (nonatomic, strong) RecipeFooterView *recipeFooterView;
 
 // Layout
 @property (nonatomic, assign) CGPoint layoutOffset;
@@ -93,6 +95,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.backgroundColor = [UIColor clearColor];
+        self.recipeFooterView = [[RecipeFooterView alloc] initWithRecipeDetails:recipeDetails];
         
         // Pre-layout updates.
         [self updateFrame];

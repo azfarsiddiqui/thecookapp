@@ -2185,9 +2185,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         if (!self.recipeFooterView) {
             self.recipeFooterView = [[RecipeFooterView alloc] init];
             self.recipeFooterView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-            [self.scrollView addSubview:self.recipeFooterView];
+//            [self.scrollView addSubview:self.recipeFooterView];
         }
-        [self.recipeFooterView updateFooterWithRecipeDetails:self.recipeDetails];
+//        [self.recipeFooterView updateFooterWithRecipeDetails:self.recipeDetails];
         
         CGSize contentSize = self.recipeDetailsView.frame.size;
         contentSize.height += kFooterTopGap + self.recipeFooterView.frame.size.height + kFooterBottomGap;
