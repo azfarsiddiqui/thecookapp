@@ -35,6 +35,7 @@
 @property (nonatomic, readonly) NSDate *createdDateTime;
 @property (nonatomic, readonly) NSString *locale;
 @property (nonatomic, assign) CKQuantityType quantityType;
+@property (nonatomic, readonly) NSString *credits;
 
 + (NSInteger)maxPrepCookMinutes;
 + (NSInteger)maxServes;
@@ -59,6 +60,7 @@
 - (BOOL)hasTitle;
 - (BOOL)hasStory;
 - (BOOL)hasMethod;
+- (BOOL)hasCredits;
 - (BOOL)hasServes;
 - (BOOL)hasIngredients;
 

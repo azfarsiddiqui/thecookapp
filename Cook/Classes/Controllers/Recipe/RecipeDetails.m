@@ -54,6 +54,7 @@
         }];
         _tags = tempTags;
         _method = recipe.method;
+        _credits = recipe.credits;
         _numServes = recipe.numServes;
         _prepTimeInMinutes = recipe.prepTimeInMinutes;
         _cookingTimeInMinutes = recipe.cookingTimeInMinutes;
@@ -222,6 +223,10 @@
 
 - (BOOL)hasMethod {
     return [self.method CK_containsText];
+}
+
+- (BOOL)hasCredits {
+    return [self.credits CK_containsText];
 }
 
 - (BOOL)hasServes {

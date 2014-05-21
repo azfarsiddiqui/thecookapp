@@ -87,6 +87,8 @@
 + (UIColor *)pageNameColour;
 + (UIFont *) methodFont;
 + (UIColor *) methodColor;
++ (UIFont *)creditsFont;
++ (UIColor *)creditsColor;
 + (UIFont *)recipeStatTextFont;
 + (UIColor *)recipeStatTextColour;
 + (UIFont *)recipeStatValueFont;

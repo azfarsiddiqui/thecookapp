@@ -77,7 +77,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #define kMaxMethodHeight        300.0
 #define kDividerWidth           600.0
 #define kIngredientDividerWidth 170.0
-#define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
+#define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 23.0, 0.0 }
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate {
     return [self initWithRecipeDetails:recipeDetails editMode:NO delegate:delegate];
@@ -93,6 +93,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.backgroundColor = [UIColor clearColor];
+//        self.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
         
         // Pre-layout updates.
         [self updateFrame];

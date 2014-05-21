@@ -225,7 +225,7 @@
     return [UIColor colorWithHexString:@"333333"];
 }
 
-+(UIFont *)storyFont
++ (UIFont *)storyFont
 {
     return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
@@ -243,7 +243,7 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Light" size:52];
 }
 
-+(UIColor *)recipeNameColor
++ (UIColor *)recipeNameColor
 {
     return [UIColor colorWithHexString:@"333333"];
     
@@ -257,14 +257,20 @@
     return [UIColor colorWithHexString:@"333333"];
 }
 
-+(UIFont *)methodFont
-{
++(UIFont *)methodFont {
     return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
 
-+(UIColor*) methodColor
-{
++ (UIColor*) methodColor {
     return [UIColor colorWithHexString:@"333333"];
+}
+
++(UIFont *)creditsFont {
+    return [UIFont fontWithName:@"AvenirNext-Italic" size:17.0];
+}
+
++ (UIColor *)creditsColor {
+    return [UIColor colorWithHexString:@"888888"];
 }
 
 + (UIFont *)recipeStatTextFont {
