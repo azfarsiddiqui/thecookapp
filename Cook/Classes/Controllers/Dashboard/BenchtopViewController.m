@@ -91,8 +91,8 @@
 #define kFollowSection      1
 #define kPagingRate         2.0
 #define kBlendPageWidth     1024.0
-#define kHasSeenUpdateIntro @"HasSeen1.5.7"
-#define kHasSeenDashArrow   @"HasSeenArrows1.5.7"
+#define kHasSeenUpdateIntro @"HasSeen1.5.9"
+#define kHasSeenDashArrow   @"HasSeenArrows1.5.9"
 #define kContentInsets      (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
