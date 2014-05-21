@@ -15,7 +15,6 @@
 
 - (void)enable:(BOOL)enable;
 - (CGFloat)visibleHeight;
-- (CGFloat)bottomShelfTrayHeight;
 - (CGFloat)bottomShadowHeight;
 
 @end
