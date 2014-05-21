@@ -44,6 +44,7 @@ typedef void(^RecipeSearchSuccessBlock)(NSString *keyword, NSArray *recipes, NSU
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
+@property (nonatomic, strong) NSString *credits;
 @property (nonatomic, assign) NSNumber *numServes;
 @property (nonatomic, assign) NSNumber *prepTimeInMinutes;
 @property (nonatomic, assign) NSNumber *cookingTimeInMinutes;

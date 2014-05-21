@@ -572,6 +572,14 @@
     [self.parseObject setObject:[NSString CK_safeString:method] forKey:kRecipeAttrDescription];
 }
 
+- (NSString *)credits {
+    return [self.parseObject objectForKey:kRecipeAttrCredits];
+}
+
+- (void)setCredits:(NSString *)credits {
+    [self.parseObject setObject:[NSString CK_safeString:credits] forKey:kRecipeAttrCredits];
+}
+
 - (NSString *)page {
     return [self.parseObject objectForKey:kRecipeAttrPage];
 }
@@ -816,6 +824,10 @@
 
 - (BOOL)hasMethod {
     return [self.method CK_containsText];
+}
+
+- (BOOL)hasCredits {
+    return [self.credits CK_containsText];
 }
 
 - (BOOL)hasIngredients {

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CKNavigationController.h"
 #import "OverlayViewController.h"
 
 @class CKUser;
@@ -18,7 +17,9 @@
 
 @end
 
-@interface ProfileViewController : OverlayViewController <CKNavigationControllerSupport>
+@interface ProfileViewController : OverlayViewController
+
+@property (nonatomic, assign) BOOL useBackButton;
 
 - (id)initWithUser:(CKUser *)user;
 - (id)initWithUser:(CKUser *)user delegate:(id<ProfileViewControllerDelegate>)delegate;

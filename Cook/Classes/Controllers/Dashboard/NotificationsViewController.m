@@ -194,7 +194,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
         || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]
-        || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
         ) {
 
         CKUser *user = notification.actionUser;
@@ -206,6 +205,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                || [notificationName isEqualToString:kUserNotificationTypeReply]
                || [notificationName isEqualToString:kUserNotificationTypeLike]
                || [notificationName isEqualToString:kUserNotificationTypePin]
+               || [notificationName isEqualToString:kUserNotificationTypeFeedPin]
                ) {
         
         CKRecipe *recipe = notification.recipe;
@@ -653,10 +653,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)showProfileOverlay:(BOOL)show user:(CKUser *)user {
     if (show) {
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user delegate:self];
+        self.profileViewController.useBackButton = YES;
     }
     
     [ModalOverlayHelper showModalOverlayForViewController:self.profileViewController
                                                      show:show
+                                                 duration:0.4
+                                                animation:^{
+                                                    [self applyModalTransitionToAppear:show];
+                                                }
                                                completion:^{
                                                    if (!show) {
                                                        self.profileViewController = nil;

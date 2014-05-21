@@ -26,7 +26,23 @@
 }
 
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
+                                 duration:(NSTimeInterval)duration completion:(void (^)())completion {
+    
+    [self showModalOverlayForViewController:viewController show:show duration:duration
+                                  animation:nil completion:completion];
+}
+
++ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
                                 animation:(void (^)())animation completion:(void (^)())completion {
+    
+    NSTimeInterval duration = show ? 0.3 : 0.2;
+    [self showModalOverlayForViewController:viewController show:show duration:duration
+                                  animation:animation completion:completion];
+}
+
++ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
+                                 duration:(NSTimeInterval)duration animation:(void (^)())animation
+                               completion:(void (^)())completion {
     
     if (show) {
         UIView *rootView = [[AppHelper sharedInstance] rootView];
@@ -34,7 +50,7 @@
         viewController.view.alpha = 0.0;
         [rootView addSubview:viewController.view];
     }
-    [UIView animateWithDuration:show? 0.3 : 0.2
+    [UIView animateWithDuration:duration
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
@@ -60,10 +76,23 @@
     [self hideModalOverlayForViewController:viewController animation:nil completion:completion];
 }
 
++ (void)hideModalOverlayForViewController:(UIViewController *)viewController duration:(NSTimeInterval)duration
+                               completion:(void (^)())completion {
+    
+    [self hideModalOverlayForViewController:viewController duration:duration completion:completion];
+}
+
 + (void)hideModalOverlayForViewController:(UIViewController *)viewController animation:(void (^)())animation
                                completion:(void (^)())completion {
     
     [self showModalOverlayForViewController:viewController show:NO animation:animation completion:completion];
+}
+
++ (void)hideModalOverlayForViewController:(UIViewController *)viewController duration:(NSTimeInterval)duration
+                                animation:(void (^)())animation completion:(void (^)())completion {
+    
+    [self showModalOverlayForViewController:viewController show:NO duration:duration
+                                  animation:animation completion:completion];
 }
 
 @end

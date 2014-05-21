@@ -13,13 +13,22 @@
 + (UIColor *)modalOverlayBackgroundColour;
 + (UIColor *)modalOverlayBackgroundColourWithAlpha:(CGFloat)alpha;
 
-+ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
++ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show 
                                completion:(void (^)())completion;
++ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
+                                 duration:(NSTimeInterval)duration completion:(void (^)())completion;
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
                                 animation:(void (^)())animation completion:(void (^)())completion;
++ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
+                                 duration:(NSTimeInterval)duration animation:(void (^)())animation
+                               completion:(void (^)())completion;
 
 + (void)hideModalOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion;
++ (void)hideModalOverlayForViewController:(UIViewController *)viewController duration:(NSTimeInterval)duration
+                               completion:(void (^)())completion;
 + (void)hideModalOverlayForViewController:(UIViewController *)viewController animation:(void (^)())animation
                                completion:(void (^)())completion;
++ (void)hideModalOverlayForViewController:(UIViewController *)viewController duration:(NSTimeInterval)duration
+                                animation:(void (^)())animation completion:(void (^)())completion;
 
 @end
