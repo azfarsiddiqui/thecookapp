@@ -653,10 +653,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)showProfileOverlay:(BOOL)show user:(CKUser *)user {
     if (show) {
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user delegate:self];
+        self.profileViewController.useBackButton = YES;
     }
     
     [ModalOverlayHelper showModalOverlayForViewController:self.profileViewController
                                                      show:show
+                                                 duration:0.4
+                                                animation:^{
+                                                    [self applyModalTransitionToAppear:show];
+                                                }
                                                completion:^{
                                                    if (!show) {
                                                        self.profileViewController = nil;
