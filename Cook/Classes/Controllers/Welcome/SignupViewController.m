@@ -712,7 +712,7 @@
     // Convert keyboard frame to currentView to handle rotated interface.
     keyboardFrame = [self.scrollView convertRect:keyboardFrame fromView:nil];
     
-    CGFloat yOffset = self.signUpMode ? 70.0 : 55.0;
+    CGFloat yOffset = self.signUpMode ? 90.0 : 100.0;
     CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, -floorf(keyboardFrame.origin.y / 2.0) + yOffset);
     [UIView animateWithDuration:0.2
                           delay:0.0
