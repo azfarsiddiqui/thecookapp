@@ -24,7 +24,6 @@
 @property (nonatomic, weak) id<ProfileViewControllerDelegate> delegate;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIView *summaryContainerView;
-@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
@@ -62,30 +61,25 @@
     
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     
-    if (self.cookNavigationController) {
-        self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(backTapped:)];
-        
-        // Inherits the black overlay of navigation controller.
-        self.view.backgroundColor = [UIColor clearColor];
-        
+    if (self.useBackButton) {
+        self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
     } else {
-        
         self.closeButton = [ViewHelper addCloseButtonToView:self.view light:YES target:self selector:@selector(closeTapped:)];
-        
-        // Register tap.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
-        [self.view addGestureRecognizer:tapGesture];
-        
-        UIScreenEdgePanGestureRecognizer *screenEdgeRecogniser = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
-                                                                                                                   action:@selector(screenEdgeSwiped:)];
-        screenEdgeRecogniser.edges = UIRectEdgeLeft;
-        [self.view addGestureRecognizer:screenEdgeRecogniser];
-        
-        // Register photo loading events.
-        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-        
-        [self loadData];
     }
+    
+    // Register tap.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
+    [self.view addGestureRecognizer:tapGesture];
+    
+    UIScreenEdgePanGestureRecognizer *screenEdgeRecogniser = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                               action:@selector(screenEdgeSwiped:)];
+    screenEdgeRecogniser.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:screenEdgeRecogniser];
+    
+    // Register photo loading events.
+    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+    
+    [self loadData];
     
     [self.view addSubview:self.summaryContainerView];
 }
@@ -112,47 +106,6 @@
 
 - (void)storeBookCoverViewAddRequested {
     [self followTapped];
-}
-
-#pragma mark - CKNavigationControllerSupport methods
-
-- (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber {
-    if (![boolNumber boolValue]) {
-        [self.activityView stopAnimating];
-        [self.cookNavigationController hideContext];
-    }
-}
-
-- (void)cookNavigationControllerViewAppearing:(NSNumber *)boolNumber {
-    if (![boolNumber boolValue]) {
-        self.backButton.alpha = 0.0;
-        self.summaryContainerView.alpha = 0.0;
-    }
-}
-
-- (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
-    if ([boolNumber boolValue]) {
-        [self loadData];
-        
-        // Register photo loading events.
-        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-        
-        // Fade in the back button.
-        [UIView animateWithDuration:0.25
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.backButton.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    } else {
-        
-        // Register photo loading events.
-        [EventHelper unregisterPhotoLoading:self];
-        
-        [self.cookNavigationController hideContext];
-    }
 }
 
 #pragma mark - Properties
@@ -279,11 +232,6 @@
                      }];
 }
 
-//For display from NavigationController only
-- (void)backTapped:(id)sender {
-    [self.cookNavigationController popViewControllerAnimated:YES];
-}
-
 - (void)closeTapped:(id)sender {
     if ([self.delegate respondsToSelector:@selector(profileViewControllerCloseRequested)]) {
         [EventHelper unregisterPhotoLoading:self];
@@ -294,13 +242,7 @@
 - (void)loadBookCoverPhotoImage {
     if ([self.book hasCoverPhoto]) {
         DLog(@"Loading book cover photo");
-        
-        CGSize size = CGSizeZero;
-        if (self.cookNavigationController) {
-            size = self.cookNavigationController.backgroundImageView.bounds.size;
-        } else {
-            size = self.backgroundImageView.bounds.size;
-        }
+        CGSize size = self.backgroundImageView.bounds.size;
         [[CKPhotoManager sharedInstance] imageForBook:self.book size:size];
     }
 }
@@ -323,11 +265,7 @@
 }
 
 - (void)loadImage:(UIImage *)image {
-    if (self.cookNavigationController) {
-        [self.cookNavigationController loadBackgroundImage:image];
-    } else {
-        [self loadBackgroundImage:image];
-    }
+    [self loadBackgroundImage:image];
 }
 
 - (void)followTapped {
