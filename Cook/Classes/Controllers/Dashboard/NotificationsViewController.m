@@ -58,6 +58,10 @@
 #define MODAL_SCALE_TRANSFORM       0.9
 #define MODAL_OVERLAY_ALPHA         0.5
 
+- (void)dealloc {
+    self.blurredImageView.image = nil;
+}
+
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;

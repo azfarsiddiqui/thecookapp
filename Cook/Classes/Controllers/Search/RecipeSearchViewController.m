@@ -35,7 +35,6 @@
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIView *blurredContainerView;
-@property (nonatomic, strong) UIImageView *blurredContainerImageView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *topMaskView;
 @property (nonatomic, strong) UIView *modalOverlayView;
@@ -51,7 +50,6 @@
 @property (nonatomic, assign) CKRecipeSearchFilter searchFilter;
 @property (nonatomic, strong) NSMutableDictionary *filterResults;
 @property (nonatomic, strong) UIImage *arrowImage;
-@property (nonatomic, strong) UIImage *blurredContainerImage;
 
 // Search
 @property (nonatomic, strong) NSMutableArray *recipes;
@@ -81,6 +79,7 @@
 #define MODAL_OVERLAY_ALPHA         0.5
 
 - (void)dealloc {
+    self.blurredImageView.image = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
