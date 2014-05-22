@@ -22,6 +22,7 @@
 - (BOOL)benchtopInSettings;
 - (void)benchtopRequested;
 - (void)benchtopLoggedOutCompletion:(void (^)())completion;
+- (void)backgroundFetchEnabled;
 
 @optional
 - (void)benchtopFirstTimeLaunched;

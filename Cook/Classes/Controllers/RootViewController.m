@@ -262,6 +262,12 @@
     }
 }
 
+- (void)backgroundFetchEnabled {
+    if (self.benchtopLevel != kBenchtopLevel) {
+        [self snapToLevel:kBenchtopLevel bounce:NO completion:nil];
+    }
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {

@@ -167,10 +167,9 @@
 - (void)loadBenchtopBackgroundFetch:(BOOL)isBackground {
     
     // Re-enable if it's not background.
-    if (!isBackground && ![self.delegate benchtopInSettings] && ![self.delegate benchtopInLibrary]) {
+    if (!isBackground) {
         [self enable:YES];
     }
-
     [self loadBooksBackgroundFetch:isBackground];
     [self.delegate benchtopLoaded];
 }
@@ -1439,6 +1438,7 @@
 
 - (void)dashFetch:(NSNotification *)notification {
     BOOL backgroundMode = [EventHelper isBackgroundForDashFetch:notification];
+    [self.delegate backgroundFetchEnabled];
     [self loadBenchtopBackgroundFetch:backgroundMode];
 }
 
