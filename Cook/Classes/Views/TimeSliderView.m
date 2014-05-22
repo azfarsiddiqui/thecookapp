@@ -48,4 +48,10 @@
     return CGRectMake(valueRatio * (bounds.size.width - rangeLimit) + xOffset, yOffset, 48, 48);
 }
 
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent*)event {
+    CGRect bounds = self.bounds;
+    bounds = CGRectInset(bounds, -25, 0);
+    return CGRectContainsPoint(bounds, point);
+}
+
 @end
