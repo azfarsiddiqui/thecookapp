@@ -139,6 +139,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
 - (void)dealloc {
+    self.imageView.image = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

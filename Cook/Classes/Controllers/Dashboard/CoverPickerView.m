@@ -12,7 +12,7 @@
 
 @interface CoverPickerView () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, assign) id<CoverPickerViewDelegate> delegate;
+@property (nonatomic, weak) id<CoverPickerViewDelegate> delegate;
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIView *sliderView;
 @property (nonatomic, strong) UIImageView *sliderContentView;

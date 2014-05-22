@@ -12,7 +12,7 @@
 
 @interface ServesTabView ()
 
-@property (nonatomic, assign) id<ServesTabViewDelegate> delegate;
+@property (nonatomic, weak) id<ServesTabViewDelegate> delegate;
 
 @end
 

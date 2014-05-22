@@ -29,7 +29,7 @@
 @interface StoreBookViewController () <CKBookCoverViewDelegate, CKBookSummaryViewDelegate, CKStoreBookCoverViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, assign) id<StoreBookViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<StoreBookViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *imageOverlayView;
 @property (nonatomic, strong) UIView *bookContainerView;

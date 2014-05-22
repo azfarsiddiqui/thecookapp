@@ -22,7 +22,7 @@
 
 @interface CKBookCoverView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
-@property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
+@property (nonatomic, weak) id<CKBookCoverViewDelegate> delegate;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
 @property (nonatomic, strong) UIView *contentOverlay;
 @property (nonatomic, strong) UITextView *nameTextView;

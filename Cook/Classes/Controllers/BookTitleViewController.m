@@ -79,7 +79,8 @@
 #define BLUR_TINT_COLOUR        0.58
 
 - (void)dealloc {
-    [self.photoView cleanImageViews]; self.photoView = nil;
+    [self.photoView cleanImageViews];
+    self.photoView = nil;
     self.topShadowView.image = nil;
     [EventHelper unregisterPhotoLoading:self];
     [EventHelper unregisterPhotoLoadingProgress:self];

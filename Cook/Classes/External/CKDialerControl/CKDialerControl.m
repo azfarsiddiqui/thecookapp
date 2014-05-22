@@ -10,7 +10,7 @@
 
 @interface CKDialerControl ()
 
-@property (nonatomic, assign) id<CKDialerControlDelegate> delegate;
+@property (nonatomic, weak) id<CKDialerControlDelegate> delegate;
 @property (nonatomic, strong) UIView *dialerView;
 @property (nonatomic, assign) CGAffineTransform startTransform;
 @property (nonatomic, assign) CGFloat deltaAngle;

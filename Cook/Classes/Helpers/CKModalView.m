@@ -10,7 +10,7 @@
 
 @interface CKModalView ()
 
-@property (nonatomic, assign) id<CKModalViewContentDelegate> delegate;
+@property (nonatomic, weak) id<CKModalViewContentDelegate> delegate;
 @property (nonatomic, strong) UIViewController *contentViewController;
 @property (nonatomic, strong) UIView *backgroundOverlay;
 @property (nonatomic, assign) BOOL animating;

@@ -34,7 +34,7 @@
 @property (nonatomic, assign) BOOL isTokenOnly;
 @property (nonatomic, strong) NSNumberFormatter *tempConverterFormatter;
 @property (nonatomic, strong) NSNumberFormatter *tenthConverterFormatter;
-@property (nonatomic, assign) id<CKMeasureConverterDelegate> delegate;
+@property (nonatomic, weak) id<CKMeasureConverterDelegate> delegate;
 
 @end
 

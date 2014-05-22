@@ -12,7 +12,7 @@
 
 @interface CKTextFieldView () <UITextFieldDelegate>
 
-@property (nonatomic, assign) id<CKTextFieldViewDelegate> delegate;
+@property (nonatomic, weak) id<CKTextFieldViewDelegate> delegate;
 @property (nonatomic, assign) CGFloat width;
 @property (nonatomic, strong) UILabel *placeholderLabel;
 @property (nonatomic, strong) UIImageView *validationImageView;

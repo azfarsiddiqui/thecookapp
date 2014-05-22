@@ -22,7 +22,7 @@
 
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<SignupViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -64,6 +64,7 @@
 #define kUntappableSize     (CGSize){ 500.0, 600.0 }
 
 - (void)dealloc {
+    self.blurredImageView.image = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
