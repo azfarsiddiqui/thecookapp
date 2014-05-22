@@ -12,7 +12,7 @@
 
 @interface CoverPickerViewController () <CoverPickerViewDelegate>
 
-@property (nonatomic, assign) id<CoverPickerViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<CoverPickerViewControllerDelegate> delegate;
 @property (nonatomic, strong) CoverPickerView *coverPickerView;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *doneButton;

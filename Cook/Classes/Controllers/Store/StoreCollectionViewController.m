@@ -30,7 +30,7 @@
 @property (nonatomic, strong) NSMutableArray *bookCoverImages;
 @property (nonatomic, strong) NSMutableArray *bookCovers;
 @property (nonatomic, strong) StoreBookViewController *storeBookViewController;
-@property (nonatomic, assign) id<StoreCollectionViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<StoreCollectionViewControllerDelegate> delegate;
 
 @end
 

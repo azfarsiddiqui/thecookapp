@@ -10,7 +10,7 @@
 
 @interface CKPrivacyView ()
 
-@property (nonatomic, assign) id<CKPrivacyViewDelegate> delegate;
+@property (nonatomic, weak) id<CKPrivacyViewDelegate> delegate;
 @property (nonatomic, assign) BOOL privateMode;
 @property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UIImageView *iconView;

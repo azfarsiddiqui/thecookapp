@@ -11,7 +11,7 @@
 
 @interface StoreViewController : UIViewController
 
-@property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<BenchtopViewControllerDelegate> delegate;
 
 - (void)enable:(BOOL)enable;
 - (CGFloat)visibleHeight;

@@ -12,7 +12,7 @@
 
 @interface StoreTabView ()
 
-@property (nonatomic, assign) id<StoreTabViewDelegate> delegate;
+@property (nonatomic, weak) id<StoreTabViewDelegate> delegate;
 @property (nonatomic, strong) NSArray *tabViews;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) NSInteger numTabs;

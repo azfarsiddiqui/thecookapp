@@ -13,7 +13,7 @@
 
 @interface BenchtopViewController : UIViewController
 
-@property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<BenchtopViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL allowDelete;
 
 - (void)loadBenchtop;

@@ -16,7 +16,7 @@
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, assign) BOOL activity;
-@property (nonatomic, assign) id<CKSignInButtonViewDelegate> delegate;
+@property (nonatomic, weak) id<CKSignInButtonViewDelegate> delegate;
 
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UILabel *textLabel;

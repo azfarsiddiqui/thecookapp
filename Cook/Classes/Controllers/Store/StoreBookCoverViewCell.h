@@ -18,7 +18,7 @@
 
 @interface StoreBookCoverViewCell : BenchtopBookCoverViewCell
 
-@property (nonatomic, assign) id<StoreBookCoverViewCellDelegate> delegate;
+@property (nonatomic, weak) id<StoreBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
 - (void)loadBookCoverImage:(UIImage *)bookCoverImage status:(BookStatus)bookStatus;

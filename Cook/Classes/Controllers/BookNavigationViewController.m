@@ -43,7 +43,7 @@
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
 @property (nonatomic, strong) CKRecipe *saveOrUpdatedRecipe;
 @property (nonatomic, strong) NSString *saveOrUpdatedPage;
-@property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipeCount;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;

@@ -19,7 +19,7 @@
 
 @property (nonatomic, strong) NSString *cover;
 @property (nonatomic, strong) NSMutableArray *availableIllustrations;
-@property (nonatomic, assign) id<IllustrationPickerViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<IllustrationPickerViewControllerDelegate> delegate;
 @property (nonatomic, assign) NSInteger currentIndex;
 
 @end
