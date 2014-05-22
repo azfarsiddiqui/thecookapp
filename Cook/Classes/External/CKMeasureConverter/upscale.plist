@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>mm</key>
+	<dict>
+		<key>limit</key>
+		<integer>100</integer>
+		<key>name</key>
+		<string>cm</string>
+		<key>conversion</key>
+		<real>0.1</real>
+		<key>fraction</key>
+		<real>10</real>
+	</dict>
 	<key>ml</key>
 	<dict>
 		<key>limit</key>

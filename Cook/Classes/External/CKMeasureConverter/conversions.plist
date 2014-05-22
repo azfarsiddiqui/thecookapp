@@ -141,15 +141,15 @@
 	<array>
 		<dict>
 			<key>originalType</key>
-			<string>Metric</string>
-			<key>newType</key>
 			<string>Imperial</string>
+			<key>newType</key>
+			<string>Metric</string>
 			<key>name</key>
-			<string>L</string>
+			<string>ml</string>
 			<key>conversion</key>
-			<real>0.5</real>
+			<real>473.176</real>
 			<key>fraction</key>
-			<integer>10</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>OZ</key>
