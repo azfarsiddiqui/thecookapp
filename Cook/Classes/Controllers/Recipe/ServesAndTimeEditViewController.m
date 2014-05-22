@@ -281,7 +281,7 @@
     if (!_makesSlider) {
         _makesSlider = [[TimeSliderView alloc] init];
         _makesSlider.minimumValue = 0.0;
-        _makesSlider.maximumValue = 31;
+        _makesSlider.maximumValue = 32;
         _makesSlider.minimumTrackTintColor = [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000];
         _makesSlider.maximumTrackTintColor = [UIColor colorWithWhite:0.863 alpha:1.000];
         [_makesSlider setThumbImage:[UIImage imageNamed:@"cook_edit_serves_slider"] forState:UIControlStateNormal];
@@ -628,7 +628,8 @@
     NSInteger makes = [self makesForSliderIndex:notchIndex];
     NSMutableString *makesDisplay = [NSMutableString stringWithString:@""];
     [makesDisplay appendString:[@(makes) stringValue]];
-    if (makes >= [RecipeDetails maxMakes]) {
+    if (makes > [RecipeDetails maxMakes]) {
+        makesDisplay = [NSMutableString stringWithString:[@([RecipeDetails maxMakes]) stringValue]];
         [makesDisplay appendString:@"+"];
     }
     // Nil out if num is zero.
