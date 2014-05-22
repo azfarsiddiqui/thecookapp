@@ -1003,37 +1003,38 @@
     [self.appModalViewController performSelector:@selector(appModalViewControllerWillAppear:) withObject:@(NO)];
     
     // Animate the book back, and slide up the modalVC.
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          
                          // Inform disappearing.
-                         if ([self.appModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
-                             [self.appModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(NO)];
+                         if ([weakSelf.appModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
+                             [weakSelf.appModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(NO)];
                          }
-                         if ([self.appCallerModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
-                             [self.appCallerModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(NO)];
+                         if ([weakSelf.appCallerModalViewController respondsToSelector:@selector(appModalViewControllerAppearing:)]) {
+                             [weakSelf.appCallerModalViewController performSelector:@selector(appModalViewControllerAppearing:) withObject:@(NO)];
                          }
                          
                          // Slide down modal VC.
-                         self.appModalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
+                         weakSelf.appModalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
                      }
                      completion:^(BOOL finished)  {
                          
                          // Inform disappeared.
-                         [self.appModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(NO)];
-                         [self.appCallerModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(NO)];
+                         [weakSelf.appModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(NO)];
+                         [weakSelf.appCallerModalViewController performSelector:@selector(appModalViewControllerDidAppear:) withObject:@(NO)];
                          
                          // Reset delegates.
-                         [self.appModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:nil];
-                         [self.appCallerModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:nil];
+                         [weakSelf.appModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:nil];
+                         [weakSelf.appCallerModalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:nil];
                          
                          // Nil them out.
-                         self.appModalViewController = nil;
-                         self.appCallerModalViewController = nil;
+                         weakSelf.appModalViewController = nil;
+                         weakSelf.appCallerModalViewController = nil;
                          
-                         [self.benchtopViewController showVisibleBooks:YES];
+                         [weakSelf.benchtopViewController showVisibleBooks:YES];
                          
                      }];
 }
