@@ -503,7 +503,7 @@
 
 - (void)settingsViewControllerSignInRequested {
     [self snapToLevel:kBenchtopLevel completion:^{
-        [self.benchtopViewController showLoginViewSignUp:NO];
+        [self.benchtopViewController showLoginView];
     }];
 }
 

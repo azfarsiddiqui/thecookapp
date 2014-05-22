@@ -174,6 +174,13 @@
     [self.delegate benchtopLoaded];
 }
 
+- (void)showLoginView {
+    __weak typeof(self) weakSelf = self;
+    [self scrollToFrontCompletion:^{
+        [weakSelf showLoginViewSignUp:NO];
+    }];
+}
+
 - (void)showLoginViewSignUp:(BOOL)signUp {
     
     // Ignore in editMode.
@@ -461,6 +468,8 @@
     
     if ([self.currentUser isSignedIn]) {
         [self showNotificationsOverlay:YES];
+    } else {
+        [self showLoginView];
     }
     
 }
@@ -752,7 +761,6 @@
     notificationView.frame = CGRectMake(18.0, 33.0, notificationView.frame.size.width, notificationView.frame.size.height);
     [self.view addSubview:notificationView];
     self.notificationView = notificationView;
-    self.notificationView.hidden = ![self.currentUser isSignedIn];
 }
 
 - (void)initSearchView {
@@ -768,7 +776,6 @@
     };
     [self.view addSubview:searchButton];
     self.searchButton = searchButton;
-    self.searchButton.hidden = ![self.currentUser isSignedIn];
     self.searchButton = searchButton;
 }
 
@@ -1396,10 +1403,6 @@
             
         }];
         
-        // Show notification/search.
-        self.notificationView.hidden = NO;
-        self.searchButton.hidden = NO;
-        
         // Reset the current user.
         self.currentUser = [CKUser currentUser];
         
@@ -1411,10 +1414,6 @@
     // Clear the current user
     self.currentUser = nil;
     self.newUser = NO;
-    
-    // Hide notification view.
-    self.notificationView.hidden = YES;
-    self.searchButton.hidden = YES;
     
     // Reload benchtop.
     [self clearDashCompletion:^{
@@ -2092,7 +2091,11 @@
 }
 
 - (void)searchTapped:(id)sender {
-    [self showSearchOverlay:YES];
+    if ([self.currentUser isSignedIn]) {
+        [self showSearchOverlay:YES];
+    } else {
+        [self showLoginView];
+    }
 }
 
 - (void)showSearchOverlay:(BOOL)show {
@@ -2154,6 +2157,21 @@
 
 - (UIImage *)darkDashBlurredImage {
     return [ImageHelper blurredOverlayImageFromView:self.view alpha:0.8];
+}
+
+- (void)scrollToFrontCompletion:(void (^)())completion {
+    CGPoint currentOffset = self.collectionView.contentOffset;
+    
+    // Scroll to front.
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    
+    // Duration
+    CGFloat duration = CGPointEqualToPoint(currentOffset, CGPointZero) ? 0.0 : 0.5;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        if (completion) {
+            completion();
+        }
+    });
 }
 
 @end
