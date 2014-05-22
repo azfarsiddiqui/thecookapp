@@ -394,6 +394,7 @@
         wholeNumber = firstNumber;
         BOOL foundNumerator = [self.scanner scanFloat:&numerator];
         if (!foundNumerator) { //Didn't find a numerator
+            self.scanner.scanLocation = firstNumberLocation;
             return wholeNumber;
         }
     } else { //Didn't find a space, this must be the numerator
