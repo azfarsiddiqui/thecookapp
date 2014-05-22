@@ -14,6 +14,7 @@
 #import "ViewHelper.h"
 #import "DataHelper.h"
 #import "UIView+CutOut.h"
+#import "AppHelper.h"
 
 @interface CKNotificationView ()
 
@@ -29,7 +30,7 @@
 
 @implementation CKNotificationView
 
-#define kFont               [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0]
+#define kFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0]
 #define kLabelInsets        (UIEdgeInsets) { 9.0, 14.0, 0.0, 12.0 }
 
 - (void)dealloc {
@@ -154,9 +155,10 @@
         self.onButtonIcon.hidden = NO;
         self.on = YES;
         
+        UIOffset offset = (UIOffset){ 2.0, [[AppHelper sharedInstance] isRetina] ? -2.5 : -3.0 };
         [self.containerView setMaskWithText:[DataHelper formattedDisplayForInteger:self.badgeCount]
                                        font:[self fontForBadgeCount]
-                                     offset:(UIOffset){ 2.0, -3.0 }];
+                                     offset:offset];
         
     } else {
         

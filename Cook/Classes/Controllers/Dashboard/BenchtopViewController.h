@@ -22,6 +22,7 @@
 - (void)showVisibleBooks:(BOOL)show;
 - (void)bookWillOpen:(BOOL)open;
 - (void)bookDidOpen:(BOOL)open;
+- (void)showLoginView;
 - (void)showLoginViewSignUp:(BOOL)signUp;
 - (void)hideLoginViewCompletion:(void (^)())completion;
 - (void)refreshBook:(CKBook *)book;
