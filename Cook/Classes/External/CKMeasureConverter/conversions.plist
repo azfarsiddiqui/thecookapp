@@ -175,11 +175,11 @@
 			<key>newType</key>
 			<string>Metric</string>
 			<key>name</key>
-			<string>kg</string>
+			<string>g</string>
 			<key>conversion</key>
-			<real>0.4536</real>
+			<real>0.002204</real>
 			<key>fraction</key>
-			<integer>10</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 </dict>
