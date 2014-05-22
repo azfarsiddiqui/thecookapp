@@ -226,6 +226,15 @@
     return self.recipeDetails;
 }
 
+- (void)dismissEditView {
+    [super dismissEditView];
+    //Revert all the values editable in this control to original values
+    self.recipeDetails.numServes = self.recipeDetails.originalRecipe.numServes;
+    self.recipeDetails.prepTimeInMinutes = self.recipeDetails.originalRecipe.prepTimeInMinutes;
+    self.recipeDetails.cookingTimeInMinutes = self.recipeDetails.originalRecipe.cookingTimeInMinutes;
+    self.recipeDetails.quantityType = self.recipeDetails.originalRecipe.quantityType;
+}
+
 #pragma mark - Lifecycle events
 
 - (void)targetTextEditingViewDidAppear:(BOOL)appear {
