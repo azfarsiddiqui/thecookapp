@@ -30,7 +30,7 @@
         self.quantity = quantity;
         [self.buttons enumerateObjectsUsingBlock:^(UIButton *obj, NSUInteger idx, BOOL *stop) {
             [obj setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-            NSInteger shadowOffset = 7;
+            NSInteger shadowOffset = 8;
             if (idx == 0) {
                 obj.frame = CGRectMake(obj.frame.origin.x,
                                        obj.frame.origin.y,
@@ -86,7 +86,8 @@
             [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, buttonIndex == 0 ? 25.0f : 20.0f, 8.0f, buttonIndex == 0 ? 10.0f : 25.0f)];
         } else {
             [button setBackgroundImage:[self deselectedImageForOptionIndex:buttonIndex] forState:UIControlStateNormal];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, buttonIndex == 0 ? 20.0f : 10.0f, 5.0f, buttonIndex == 0 ? 10.0f : 25.0f)];
+            [button setBackgroundImage:[self highlightedImageForOptionIndex:buttonIndex] forState:UIControlStateHighlighted];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, buttonIndex == 0 ? 20.0f : 10.0f, 5.0f, buttonIndex == 0 ? 10.0f : 22.0f)];
         }
     }
     
@@ -94,10 +95,9 @@
 }
 
 - (UIImage *)backgroundImage {
-    return [ImageHelper stretchableXImageWithName:@"cook_customise_toggle_bg"];
-//    [[UIImage imageNamed:@"cook_dash_settings_tab_bg.png"] resizableImageWithCapInsets:(UIEdgeInsets){
-//        0.0, 17.0, 0.0, 17.0
-//    }];
+    return [[UIImage imageNamed:@"cook_customise_toggle_bg.png.png"] resizableImageWithCapInsets:(UIEdgeInsets){
+        0.0, 17.0, 0.0, 17.0
+    } resizingMode:UIImageResizingModeStretch];
 }
 
 - (UIImage *)deselectedImageForOptionIndex:(NSInteger)optionIndex {
@@ -118,8 +118,40 @@
     return image;
 }
 
+- (UIImage *)highlightedImageForOptionIndex:(NSInteger)optionIndex {
+    UIImage *image = nil;
+    if (optionIndex == 0) {
+        image = [[UIImage imageNamed:@"cook_customise_toggle_left_onpress"] resizableImageWithCapInsets:(UIEdgeInsets){
+            0.0, 45.0, 0.0, 15.0
+        }];
+    } else if (optionIndex == [self.options count] - 1) {
+        image = [[UIImage imageNamed:@"cook_customise_toggle_right_onpress"] resizableImageWithCapInsets:(UIEdgeInsets){
+            0.0, 15.0, 0.0, 45.0
+        }];
+    } else {
+        image = [[UIImage imageNamed:@"cook_dash_settings_tab_selected_mid.png"] resizableImageWithCapInsets:(UIEdgeInsets){
+            0.0, 17.0, 0.0, 17.0
+        }];
+    }
+    return image;
+}
+
 - (UIImage *)selectedImageForOptionIndex:(NSInteger)optionIndex {
-    return nil;
+    UIImage *image = nil;
+    if (optionIndex == 0) {
+        image = [[UIImage imageNamed:@"cook_customise_toggle_left_on"] resizableImageWithCapInsets:(UIEdgeInsets){
+            0.0, 45.0, 0.0, 15.0
+        }];
+    } else if (optionIndex == [self.options count] - 1) {
+        image = [[UIImage imageNamed:@"cook_customise_toggle_right_on"] resizableImageWithCapInsets:(UIEdgeInsets){
+            0.0, 15.0, 0.0, 45.0
+        }];
+    } else {
+        image = [[UIImage imageNamed:@"cook_dash_settings_tab_selected_mid.png"] resizableImageWithCapInsets:(UIEdgeInsets){
+            0.0, 17.0, 0.0, 17.0
+        }];
+    }
+    return image;
 }
 
 - (void)updateQuantity:(NSString *)quantity {
