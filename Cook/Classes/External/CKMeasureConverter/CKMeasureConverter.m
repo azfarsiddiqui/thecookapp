@@ -134,7 +134,11 @@
         //Scan for strings
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
-        if (parsedString.length > 0) {
+        // Need to see if parsed string is a temperature, ignore if so
+        NSDictionary *checkDict = [ConversionHelper sharedInstance].unitRecognitionDict;
+        if (parsedString.length > 0
+            && ![[checkDict objectForKey:[parsedString uppercaseString]] isEqualToString:@"°F"]
+            && ![[checkDict objectForKey:[parsedString uppercaseString]] isEqualToString:@"°C"]) {
             self.scanner = nil;
             return YES; //Found a number-string combo! This text block is convertible
         } else {
