@@ -409,7 +409,7 @@
     // Friends button.
     self.friendsButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
     self.friendsButton.frame = (CGRect){
-        30.0,
+        27.0,
         self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.friendsButton.frame.size.height) / 2.0),
         self.friendsButton.frame.size.width,
         self.friendsButton.frame.size.height
@@ -634,7 +634,7 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return (self.view.bounds.size.width - self.searchFieldView.frame.size.width) + 15.0;
+    return (self.view.bounds.size.width - self.searchFieldView.frame.size.width) + 18.0;
 }
 
 - (void)backTapped {
