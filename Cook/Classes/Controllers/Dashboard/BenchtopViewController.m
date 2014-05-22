@@ -167,7 +167,7 @@
 - (void)loadBenchtopBackgroundFetch:(BOOL)isBackground {
     
     // Re-enable if it's not background.
-    if (!isBackground) {
+    if (!isBackground && ![self.delegate benchtopInSettings] && ![self.delegate benchtopInLibrary]) {
         [self enable:YES];
     }
 
