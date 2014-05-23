@@ -28,6 +28,7 @@
 
 #define kRowGap         12.0
 #define kCompactRowGap  0.0
+#define kMinIngredientHeight 15.0
 
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth measureLocale:(CKMeasurementType)measureType isConvertible:(BOOL)isConvertible {
     return [self initWithIngredients:ingredients book:book maxSize:(CGSize){ maxWidth, MAXFLOAT } textAlignment:NSTextAlignmentLeft compact:NO measureLocale:measureType isConvertible:isConvertible];
@@ -88,7 +89,6 @@
                 [ingredientsLabel removeFromSuperview];
                 break;
             }
-            
             ingredientsLabel.frame = CGRectIntegral((CGRect){ 0.0, self.layoutOffset, self.maxSize.width, size.height });
             self.layoutOffset += ingredientsLabel.frame.size.height;
             if (ingredientIndex < [ingredients count] - 1) {
@@ -114,6 +114,7 @@
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         paragraphStyle.lineSpacing = self.compact ? 0.0 : 4.0;
+//        paragraphStyle.minimumLineHeight = 12.0f;
         paragraphStyle.alignment = self.textAlignment;
         _paragraphAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [Theme ingredientsListFont], NSFontAttributeName,
