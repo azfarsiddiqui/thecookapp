@@ -42,6 +42,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 
 // Cover photos.
 @property (nonatomic, strong) PFFile *profilePhoto;
+@property (nonatomic, strong) NSURL *profilePhotoUrl;
 
 + (CKUser *)currentUser;
 + (void)refreshCurrentUser;
@@ -75,7 +76,6 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 - (BOOL)isFacebookUser;
 - (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
-- (NSURL *)profilePhotoUrl;
 - (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (void)numFriendsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

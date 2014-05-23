@@ -72,6 +72,12 @@
     return CGSizeMake(kBorder + size.width + kBorder, kBorder + size.height + kBorder);
 }
 
+- (void)dealloc {
+    self.profileImageView.image = nil;
+    self.profileOverlay.image = nil;
+    self.placeholderImage = nil;
+}
+
 - (id)initWithProfileSize:(ProfileViewSize)profileSize {
     return [self initWithUser:nil profileSize:profileSize];
 }
@@ -235,20 +241,29 @@
         }
         
         self.profileImageView.image = nil;
+        
+        __weak typeof(self) weakSelf = self;
+        
+        // Ask for the profile image in a separate queue.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl size:[ImageHelper profileSize] completion:^(UIImage *image, NSString *name) {
-                NSString *compareURL = [profileUrl absoluteString];
-                if (self.delegate && [self.delegate respondsToSelector:@selector(userProfileURL)]) {
-                    compareURL = [self.delegate userProfileURL];
-                }
-                if ([name isEqualToString:compareURL]) {
+            
+            [[CKPhotoManager sharedInstance] thumbImageForURL:profileUrl
+                                                         size:[ImageHelper profileSize]
+                                                   completion:^(UIImage *image, NSString *name) {
+                                                       
+                if ([name isEqualToString:[weakSelf.profilePhotoUrl absoluteString]]) {
+                    
+                    // Now load the image on the main thread.
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        
                         // Cross-fade the image.
                         [UIView transitionWithView:self.profileImageView
                                           duration:0.2
                                            options:UIViewAnimationOptionCurveEaseIn|UIViewAnimationOptionTransitionCrossDissolve
                                         animations:^{
-                                            [self loadProfileImage:image];
+                                            if ([name isEqualToString:[weakSelf.profilePhotoUrl absoluteString]]) {
+                                                [weakSelf loadProfileImage:image];
+                                            }
                                         } completion:nil];
                     });
                 }
