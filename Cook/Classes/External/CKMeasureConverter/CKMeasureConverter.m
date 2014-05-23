@@ -99,10 +99,12 @@
         //Scan for strings
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
+        NSRange originalRange = NSMakeRange(startPos, endPos - startPos);
+        NSString *originalString = [self.inputString.string substringWithRange:originalRange];
         if (parsedString.length > 0) {
             CKReplaceConvert *replaceObj = [[CKReplaceConvert alloc] init];
-            replaceObj.string = [self convertFromNumber:foundNums unit:parsedString rangeString:rangeString];
-            replaceObj.range = NSMakeRange(startPos, endPos - startPos);
+            replaceObj.string = [self convertFromNumber:foundNums unit:parsedString rangeString:rangeString originalString:originalString];
+            replaceObj.range = originalRange;
             if (replaceObj.string) {
                 [self.replaceArray addObject:replaceObj];
             }
@@ -168,9 +170,18 @@
 #pragma mark - Utility methods
 
 //Grabs values from conversion plist based on inputs and calculates conversion
-- (NSAttributedString *)convertFromNumber:(NSArray *)fromNumbers unit:(NSString *)unitString rangeString:(NSString *)rangeString {
+- (NSAttributedString *)convertFromNumber:(NSArray *)fromNumbers
+                                     unit:(NSString *)unitString
+                              rangeString:(NSString *)rangeString
+                           originalString: (NSString *)originalString
+{
     NSArray *convertToArray = [[self unitTypes] objectForKey:[unitString uppercaseString]];
     NSDictionary *convertDict;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraphStyle.lineSpacing = 4.0;
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
     //If more than 1 conversion type is available, need to assume it's the user's type and go from there
     if ([convertToArray count] > 1) {
         // If guessing that convertTo type matches current type, cancel out
@@ -189,7 +200,12 @@
     if ([self typeFromString:[convertDict objectForKey:@"newType"]] != self.toType
         && ![unitString isEqualToString:@"°F"]
         && ![unitString isEqualToString:@"°C"]) {
-        return nil;
+        //Don't need to convert but do need to replace with highlighted version
+        NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:originalString
+                                                                           attributes:@{NSForegroundColorAttributeName: self.highlightColor,
+                                                                                        NSFontAttributeName: [Theme ingredientsListFont],
+                                                                                        NSParagraphStyleAttributeName: paragraphStyle}];
+        return returnString;
     }
     NSString *convertString;
     
@@ -283,10 +299,6 @@
 //        convertString = isParenthesesConvert ? [NSString stringWithFormat:@"%@ %@ (%.2f %@)", convertedNumString, convertedString, fromNumber, unitString] :
 //        [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
     
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    paragraphStyle.lineSpacing = 4.0;
-    paragraphStyle.alignment = NSTextAlignmentLeft;
     NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:convertString
                                                                        attributes:@{NSForegroundColorAttributeName: self.highlightColor,
                                                                                     NSFontAttributeName: [Theme ingredientsListFont],
