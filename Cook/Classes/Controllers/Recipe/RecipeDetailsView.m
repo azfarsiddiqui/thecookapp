@@ -1571,7 +1571,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     //Need to call a preconversion thing to check if convertible values exist
     [self.recipeDetails.ingredients enumerateObjectsUsingBlock:^(Ingredient *ingred, NSUInteger idx, BOOL *stop) {
         CKMeasureConverter *measureConverter = [[CKMeasureConverter alloc] initForCheckWithInputString:ingred.measurement];
-        isValidConvert = [measureConverter findConvertibleElements];
+        CKMeasureConverter *ingredientConverter = [[CKMeasureConverter alloc] initForCheckWithInputString:ingred.name];
+        isValidConvert = [measureConverter findConvertibleElements] || [ingredientConverter findConvertibleElements];
         if (isValidConvert == YES) {
             *stop = YES;
             return;

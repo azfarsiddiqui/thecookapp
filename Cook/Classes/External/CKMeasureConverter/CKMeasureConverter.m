@@ -16,6 +16,7 @@
 
 @property (nonatomic, assign) NSRange range;
 @property (nonatomic, copy) NSAttributedString *string;
+@property (nonatomic, strong) NSString *rangeString;
 
 @end
 
@@ -87,7 +88,8 @@
     } else {
         NSMutableArray *foundNums = [NSMutableArray arrayWithObject:@(currentNum)];
         //Scan for ranges
-        if ([self scanRange]) {
+        NSString *rangeString = [self scanRange];
+        if ([rangeString length] > 0) {
             CGFloat endNum = [self scanNumber];
             if (endNum > 0) {
                 [foundNums addObject:@(endNum)];
@@ -97,10 +99,12 @@
         //Scan for strings
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
+        NSRange originalRange = NSMakeRange(startPos, endPos - startPos);
+        NSString *originalString = [self.inputString.string substringWithRange:originalRange];
         if (parsedString.length > 0) {
             CKReplaceConvert *replaceObj = [[CKReplaceConvert alloc] init];
-            replaceObj.string = [self convertFromNumber:foundNums unit:parsedString];
-            replaceObj.range = NSMakeRange(startPos, endPos - startPos);
+            replaceObj.string = [self convertFromNumber:foundNums unit:parsedString rangeString:rangeString originalString:originalString];
+            replaceObj.range = originalRange;
             if (replaceObj.string) {
                 [self.replaceArray addObject:replaceObj];
             }
@@ -129,12 +133,19 @@
         self.scanner.scanLocation++;
         return [self findConvertibleElements];
     } else {
-        // Can ignore scanning for ranges since all we're doing is detecting if convertible
-        
+        NSString *rangeString = [self scanRange];
+        if ([rangeString length] > 0) {
+            // Found a range, just try and advance the scanner past the number to the string
+            [self scanNumber];
+        }
         //Scan for strings
         NSString *parsedString = [self scanString];
         endPos = self.scanner.scanLocation;
-        if (parsedString.length > 0) {
+        // Need to see if parsed string is a temperature, ignore if so
+        NSDictionary *checkDict = [ConversionHelper sharedInstance].unitRecognitionDict;
+        if (parsedString.length > 0
+            && ![[checkDict objectForKey:[parsedString uppercaseString]] isEqualToString:@"°F"]
+            && ![[checkDict objectForKey:[parsedString uppercaseString]] isEqualToString:@"°C"]) {
             self.scanner = nil;
             return YES; //Found a number-string combo! This text block is convertible
         } else {
@@ -159,9 +170,18 @@
 #pragma mark - Utility methods
 
 //Grabs values from conversion plist based on inputs and calculates conversion
-- (NSAttributedString *)convertFromNumber:(NSArray *)fromNumbers unit:(NSString *)unitString {
+- (NSAttributedString *)convertFromNumber:(NSArray *)fromNumbers
+                                     unit:(NSString *)unitString
+                              rangeString:(NSString *)rangeString
+                           originalString: (NSString *)originalString
+{
     NSArray *convertToArray = [[self unitTypes] objectForKey:[unitString uppercaseString]];
     NSDictionary *convertDict;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraphStyle.lineSpacing = 4.0;
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
     //If more than 1 conversion type is available, need to assume it's the user's type and go from there
     if ([convertToArray count] > 1) {
         // If guessing that convertTo type matches current type, cancel out
@@ -180,7 +200,12 @@
     if ([self typeFromString:[convertDict objectForKey:@"newType"]] != self.toType
         && ![unitString isEqualToString:@"°F"]
         && ![unitString isEqualToString:@"°C"]) {
-        return nil;
+        //Don't need to convert but do need to replace with highlighted version
+        NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:originalString
+                                                                           attributes:@{NSForegroundColorAttributeName: self.highlightColor,
+                                                                                        NSFontAttributeName: [Theme ingredientsListFont],
+                                                                                        NSParagraphStyleAttributeName: paragraphStyle}];
+        return returnString;
     }
     NSString *convertString;
     
@@ -252,7 +277,7 @@
         //Add built-up string to converted string if range
         if ([convertedNumString length] > 0) {
             // Need to check if the new incoming converted string isn't just the same number after upconversion
-            [convertedNumString appendString:@" - "];
+            [convertedNumString appendString:[NSString stringWithFormat:@" %@ ", rangeString]];
         }
         [convertedNumString appendString:tempNumString];
     }];
@@ -274,10 +299,6 @@
 //        convertString = isParenthesesConvert ? [NSString stringWithFormat:@"%@ %@ (%.2f %@)", convertedNumString, convertedString, fromNumber, unitString] :
 //        [NSString stringWithFormat:@"%@ %@", convertedNumString, convertedString];
     
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    paragraphStyle.lineSpacing = 4.0;
-    paragraphStyle.alignment = NSTextAlignmentLeft;
     NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:convertString
                                                                        attributes:@{NSForegroundColorAttributeName: self.highlightColor,
                                                                                     NSFontAttributeName: [Theme ingredientsListFont],
@@ -394,6 +415,7 @@
         wholeNumber = firstNumber;
         BOOL foundNumerator = [self.scanner scanFloat:&numerator];
         if (!foundNumerator) { //Didn't find a numerator
+            self.scanner.scanLocation = firstNumberLocation;
             return wholeNumber;
         }
     } else { //Didn't find a space, this must be the numerator
@@ -433,7 +455,7 @@
     return firstNumber;
 }
 
-- (BOOL)scanRange {
+- (NSString *)scanRange {
     NSInteger currentLocation = self.scanner.scanLocation;
     NSString *foundString;
     //Scanning ahead to next number
@@ -444,12 +466,15 @@
     // - Can't be too big, max should be "%i to %i"
     // - Should have valid range strings in it like '-' or 'to'
     if (foundString && [foundString length] < 6 &&
-        ([foundString rangeOfString:@"to"].location != NSNotFound || [foundString rangeOfString:@"-"].location != NSNotFound))
+        ([foundString rangeOfString:@"to"].location != NSNotFound ||
+         [foundString rangeOfString:@"-"].location != NSNotFound ||
+         [foundString rangeOfString:@"by"].location != NSNotFound ||
+         [foundString rangeOfString:@"x"].location != NSNotFound))
     {
-        return YES;
+        return foundString;
     } else {
         [self.scanner setScanLocation:currentLocation];
-        return NO;
+        return @"";
     }
 }
 

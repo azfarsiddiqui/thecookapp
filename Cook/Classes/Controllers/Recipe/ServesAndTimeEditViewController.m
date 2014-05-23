@@ -145,7 +145,7 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(>=10)-[cookView(controlHeight)]-(10)-[cookSlider(controlHeight)]-(85)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(>=40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(30)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(72)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(9)-[servesSlider(sliderWidth)]-(10)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
@@ -237,20 +237,29 @@
 
 #pragma mark - Lifecycle events
 
+- (void)targetTextEditingViewWillAppear:(BOOL)appear {
+    if (appear) {
+        if (self.recipeDetails.quantityType == CKQuantityMakes) {
+            [self setMakesLabelForNumberOfMakes:self.originalNumServes];
+        } else {
+            [self setServesLabelForNumberOfServes:self.originalNumServes];
+        }
+        [self setPrepLabelForNumberOfMinutes:[self.recipeDetails.prepTimeInMinutes integerValue]];
+        [self setCookLabelForNumberOfMinutes:[self.recipeDetails.cookingTimeInMinutes integerValue]];
+    }
+}
+
 - (void)targetTextEditingViewDidAppear:(BOOL)appear {
     [super targetTextEditingViewDidAppear:appear];
     
     if (appear) {
         if (self.recipeDetails.quantityType == CKQuantityServes) {
-            [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:YES];
+            [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:NO];
         } else {
-            [self.makesSlider setValue:[self sliderIndexForNumberOfMakes:self.originalNumServes] animated:YES];
-            [self makesSliderValueChanged];
+            [self.makesSlider setValue:[self sliderIndexForNumberOfMakes:self.originalNumServes] animated:NO];
         }
         self.prepSlider.value = [self prepIndex];
-        [self prepSliderValueChanged];
         self.cookSlider.value = [self cookIndex];
-        [self cookSliderValueChanged];
     }
     
     // Disable scrolling on appear.
@@ -380,18 +389,21 @@
     
     if (sliderView == self.servesSlider) {
         NSInteger serves = [self numServesForIndex:notchIndex];
-        
-        // Nil out if num serves was zero.
-        self.recipeDetails.numServes = [NSNumber numberWithInteger:serves];
-        
-        NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
-        if (serves > [CKRecipe maxServes]) {
-            [servesDisplay appendFormat:@"%i+", [CKRecipe maxServes]];
-        } else {
-            [servesDisplay appendFormat:@"%i", serves];
-        }
-        [self.servesTabButton updateQuantity:servesDisplay];
+        [self setServesLabelForNumberOfServes:serves];
     }
+}
+
+- (void)setServesLabelForNumberOfServes:(NSInteger)serves {
+    // Nil out if num serves was zero.
+    self.recipeDetails.numServes = [NSNumber numberWithInteger:serves];
+    
+    NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
+    if (serves > [CKRecipe maxServes]) {
+        [servesDisplay appendFormat:@"%i+", [CKRecipe maxServes]];
+    } else {
+        [servesDisplay appendFormat:@"%i", serves];
+    }
+    [self.servesTabButton updateQuantity:servesDisplay];
 }
 
 #pragma mark - ServesTabViewDelegate methods
@@ -587,6 +599,10 @@
 - (void)cookSliderValueChanged {
     NSInteger notchIndex = self.cookSlider.value;
     NSInteger minutes = [self minutesForSliderIndex:notchIndex];
+    [self setCookLabelForNumberOfMinutes:minutes];
+}
+
+- (void)setCookLabelForNumberOfMinutes:(NSInteger)minutes {
     NSMutableString *minutesDisplay = [NSMutableString string];
     if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
         [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes isHourOnly:YES]];
@@ -611,6 +627,10 @@
 - (void)prepSliderValueChanged {
     NSInteger notchIndex = self.prepSlider.value;
     NSInteger minutes = [self minutesForSliderIndex:notchIndex];
+    [self setPrepLabelForNumberOfMinutes:minutes];
+}
+
+- (void)setPrepLabelForNumberOfMinutes:(NSInteger)minutes {
     NSMutableString *minutesDisplay = [NSMutableString stringWithString:@""];
     if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
         [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes isHourOnly:YES]];
@@ -635,6 +655,10 @@
 - (void)makesSliderValueChanged {
     NSInteger notchIndex = self.makesSlider.value;
     NSInteger makes = [self makesForSliderIndex:notchIndex];
+    [self setMakesLabelForNumberOfMakes:makes];
+}
+
+- (void)setMakesLabelForNumberOfMakes:(NSInteger)makes {
     NSMutableString *makesDisplay = [NSMutableString stringWithString:@""];
     [makesDisplay appendString:[@(makes) stringValue]];
     if (makes > [RecipeDetails maxMakes]) {
@@ -644,6 +668,7 @@
     // Nil out if num is zero.
     self.recipeDetails.numServes = (makes == 0) ? nil : @(makes);
     [self.servesTabButton updateQuantity:makesDisplay];
+
 }
 
 @end
