@@ -315,7 +315,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 #pragma mark - CKUser
 
 - (BOOL)isSignedIn {
-    return [self.parseUser isAuthenticated];
+    return (self.parseUser != nil);
 }
 
 - (BOOL)isFacebookUser {
@@ -350,20 +350,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (NSURL *)profilePhotoUrl {
-    NSURL *pictureUrl = nil;
-    
-    // CHeck profilePhoto first before falling back to FB photo.
-    PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
-//    DLog(@"##### profilePhoto: %@", [NSString CK_stringForBoolean:profilePhoto.isDataAvailable]);
-    if (profilePhoto != nil) {
-        pictureUrl = [NSURL URLWithString:profilePhoto.url];
-    } else if ([self.facebookId length] > 0) {
-        pictureUrl = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.facebookId]];
-    } else {
-        pictureUrl = [CKUser defaultBlankProfileUrl];
-    }
-    return pictureUrl;
+    return [self constructProfilePhotoUrl];
 }
 
 - (void)setFirstName:(NSString *)firstName {
@@ -810,6 +797,22 @@ static ObjectFailureBlock loginFailureBlock = nil;
         return YES;
     
     return [self.objectId isEqualToString:user.objectId];
+}
+
+- (NSURL *)constructProfilePhotoUrl {
+    NSURL *pictureUrl = nil;
+    
+    // CHeck profilePhoto first before falling back to FB photo.
+    PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
+    if (profilePhoto != nil) {
+        pictureUrl = [NSURL URLWithString:profilePhoto.url];
+    } else if ([self.facebookId length] > 0) {
+        pictureUrl = [NSURL URLWithString:
+                      [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.facebookId]];
+    } else {
+        pictureUrl = [CKUser defaultBlankProfileUrl];
+    }
+    return pictureUrl;
 }
 
 @end
