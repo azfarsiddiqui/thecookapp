@@ -145,7 +145,7 @@
         self.cookLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(>=10)-[cookView(controlHeight)]-(10)-[cookSlider(controlHeight)]-(85)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(>=10)-[cookView(controlHeight)]-(10)-[cookSlider(controlHeight)]-(73)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(9)-[servesSlider(sliderWidth)]-(10)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
