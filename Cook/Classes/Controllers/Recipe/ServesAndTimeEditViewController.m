@@ -239,6 +239,7 @@
 
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
     if (appear) {
+        [self.servesTabButton updateQuantity:@"0"];
         if (self.recipeDetails.quantityType == CKQuantityMakes) {
             [self setMakesLabelForNumberOfMakes:self.originalNumServes];
         } else {
