@@ -351,13 +351,19 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)editViewControllerDidAppear:(BOOL)appear {
     if (!appear) {
+        if ([self.editViewController isKindOfClass:[ServesAndTimeEditViewController class]]) {
+            [self.servesCookView updateWithRecipeDetails:self.recipeDetails editMode:self.editMode];
+            [self layoutComponents];
+        }
         [self.editViewController.view removeFromSuperview];
         self.editViewController = nil;
     }
 }
 
 - (void)editViewControllerDismissRequested {
+    
     [self.editViewController performEditing:NO];
+
 }
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
