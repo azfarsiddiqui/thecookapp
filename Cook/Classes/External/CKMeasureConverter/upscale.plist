@@ -38,11 +38,11 @@
 	<key>fl oz</key>
 	<dict>
 		<key>limit</key>
-		<real>8</real>
+		<real>67</real>
 		<key>name</key>
-		<string>cup</string>
+		<string>gal</string>
 		<key>conversion</key>
-		<real>0.125</real>
+		<real>0.0078125</real>
 		<key>fraction</key>
 		<integer>8</integer>
 	</dict>

@@ -20,6 +20,7 @@
 @interface ServesAndTimeEditViewController () <CKNotchSliderViewDelegate, ServesTabViewDelegate>
 
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
+@property (nonatomic, strong) RecipeDetails *originalDetails;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, assign) NSInteger originalNumServes;
 @property (nonatomic, strong) ServesNotchSliderView *servesSlider;
@@ -60,6 +61,7 @@
     
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white]) {
         self.recipeDetails = recipeDetails;
+        self.originalDetails = [recipeDetails copy];
         self.originalNumServes = [recipeDetails.numServes integerValue];
     }
     return self;
@@ -229,21 +231,26 @@
 - (void)dismissEditView {
     [super dismissEditView];
     //Revert all the values editable in this control to original values
-    self.recipeDetails.numServes = self.recipeDetails.originalRecipe.numServes;
-    self.recipeDetails.prepTimeInMinutes = self.recipeDetails.originalRecipe.prepTimeInMinutes;
-    self.recipeDetails.cookingTimeInMinutes = self.recipeDetails.originalRecipe.cookingTimeInMinutes;
-    self.recipeDetails.quantityType = self.recipeDetails.originalRecipe.quantityType;
+    self.recipeDetails.numServes = self.originalDetails.numServes;
+    self.recipeDetails.prepTimeInMinutes = self.originalDetails.prepTimeInMinutes;
+    self.recipeDetails.cookingTimeInMinutes = self.originalDetails.cookingTimeInMinutes;
+    self.recipeDetails.quantityType = self.originalDetails.quantityType;
 }
 
 #pragma mark - Lifecycle events
 
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
     if (appear) {
+        [self.servesTabButton updateQuantity:@"0"];
         if (self.recipeDetails.quantityType == CKQuantityMakes) {
+            [self.makesSlider setValue:[self sliderIndexForNumberOfMakes:self.originalNumServes] animated:NO];
             [self setMakesLabelForNumberOfMakes:self.originalNumServes];
         } else {
+            [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:NO];
             [self setServesLabelForNumberOfServes:self.originalNumServes];
         }
+        self.prepSlider.value = [self prepIndex];
+        self.cookSlider.value = [self cookIndex];
         [self setPrepLabelForNumberOfMinutes:[self.recipeDetails.prepTimeInMinutes integerValue]];
         [self setCookLabelForNumberOfMinutes:[self.recipeDetails.cookingTimeInMinutes integerValue]];
     }
@@ -251,16 +258,6 @@
 
 - (void)targetTextEditingViewDidAppear:(BOOL)appear {
     [super targetTextEditingViewDidAppear:appear];
-    
-    if (appear) {
-        if (self.recipeDetails.quantityType == CKQuantityServes) {
-            [self.servesSlider selectNotch:[self servesIndexForNumServes:self.originalNumServes] animated:NO];
-        } else {
-            [self.makesSlider setValue:[self sliderIndexForNumberOfMakes:self.originalNumServes] animated:NO];
-        }
-        self.prepSlider.value = [self prepIndex];
-        self.cookSlider.value = [self cookIndex];
-    }
     
     // Disable scrolling on appear.
     self.scrollView.scrollEnabled = !appear;

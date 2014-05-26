@@ -813,6 +813,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (save && self.editingIndexPath) {
         CKListCell *cell = [self listCellAtIndexPath:self.editingIndexPath];
         id currentValue = [cell currentValue];
+        DLog(@"Current Editing Index Path is: %i", self.editingIndexPath.item);
         [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:currentValue];
     }
     
@@ -1088,7 +1089,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                          [self.swipeToDeleteView removeFromSuperview];
                          
                          [self.collectionView performBatchUpdates:^{
-                             
                              // Delete the cell.
                              [self.collectionView deleteItemsAtIndexPaths:@[deleteIndexPath]];
                              
@@ -1105,6 +1105,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                              if (addNew) {
                                  [self createNewCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
                              }
+                             if ([self.items count] > 1 && self.editingIndexPath > 0) {
+                                 self.editingIndexPath = [NSIndexPath indexPathForItem:self.editingIndexPath.item - 1 inSection:0];
+                             }
+
                          }];
                          
                      }];
@@ -1143,7 +1147,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
-    DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
+    DLog(@"Deleting item [%ld] items %@", indexPath.item, self.items);
     
     if (!self.swipeDeleteActivated && indexPath && !self.saveRequired) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
