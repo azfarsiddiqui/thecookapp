@@ -13,7 +13,7 @@
 #import "CKLocation.h"
 #import "CKRecipeTag.h"
 
-@interface RecipeDetails ()
+@interface RecipeDetails () <NSCopying>
 
 @end
 
@@ -70,6 +70,30 @@
         _quantityType = recipe.quantityType;
     }
     return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    RecipeDetails *anotherDetails = [[RecipeDetails alloc] initWithRecipe:self.originalRecipe];
+    if (!anotherDetails)
+        return nil;
+    anotherDetails.book = self.book;
+    anotherDetails.originalRecipe = self.originalRecipe;
+    anotherDetails.page = [self.page copy];
+    anotherDetails.availablePages = [self.availablePages copy];
+    anotherDetails.user = self.user;
+    anotherDetails.name = [self.name copy];
+    anotherDetails.story = [self.story copy];
+    anotherDetails.tags = [self.tags copy];
+    anotherDetails.method = [self.method copy];
+    anotherDetails.numServes = [self.numServes copy];
+    anotherDetails.prepTimeInMinutes = [self.prepTimeInMinutes copy];
+    anotherDetails.cookingTimeInMinutes = [self.cookingTimeInMinutes copy];
+    anotherDetails.ingredients = [self.ingredients copy];
+    anotherDetails.image = self.image;
+    anotherDetails.privacy = self.privacy;
+    anotherDetails.userPhotoUrl = [self.userPhotoUrl copy];
+    anotherDetails.quantityType = self.quantityType;
+    return anotherDetails;
 }
 
 - (void)updateToRecipe:(CKRecipe *)recipe {
