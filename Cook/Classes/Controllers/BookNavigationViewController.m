@@ -49,6 +49,7 @@
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageBatches;
 @property (nonatomic, strong) NSMutableDictionary *pageRankings;
+@property (nonatomic, strong) NSMutableDictionary *pagePhotos;
 @property (nonatomic, strong) NSMutableDictionary *pageCurrentBatches;
 @property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
@@ -451,6 +452,7 @@
     [self.pageBatches removeObjectForKey:page];
     [self.pageRecipeCount removeObjectForKey:page];
     [self.pageCurrentBatches removeObjectForKey:page];
+    [self.pagePhotos removeObjectForKey:page];
     
     // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
     self.bookUpdatedBlock = completion;
@@ -468,7 +470,7 @@
     NSMutableArray *recipesToRename = [self.pageRecipes objectForKey:fromPage];
     
     // Renaming the recipes locally, as server-side has already occured.
-    DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
+    DLog(@"Renaming [%ld] recipes to [%@]", (unsigned long)[recipesToRename count], page);
     [recipesToRename each:^(CKModel *recipeOrPin) {
         
         if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
@@ -492,6 +494,8 @@
     [self.pageRecipeCount removeObjectForKey:fromPage];
     [self.pageCurrentBatches setObject:[self.pageCurrentBatches objectForKey:fromPage] forKey:page];
     [self.pageCurrentBatches removeObjectForKey:fromPage];
+    [self.pagePhotos setObject:[self.pageRecipeCount objectForKey:fromPage] forKey:page];
+    [self.pagePhotos removeObjectForKey:fromPage];
     
     // Remember the recipe that was actioned.
     self.saveOrUpdatedPage = page;
@@ -1283,7 +1287,8 @@
     
     // Fetch all recipes for the book, and categorise them.
     [self.book bookRecipesSuccess:^(PFObject *parseBook, NSDictionary *pageRecipes, NSDictionary *pageBatches,
-                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings, NSDate *lastAccessedDate) {
+                                    NSDictionary *pageRecipeCount, NSDictionary *pageRankings,
+                                    NSDictionary *pagePhotos, NSDate *lastAccessedDate) {
         
         if (parseBook && self.book) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
@@ -1297,7 +1302,8 @@
         }
         self.bookLastAccessedDate = lastAccessedDate;
         
-        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings];
+        [self processRecipes:pageRecipes pageBatches:pageBatches pageCounts:pageRecipeCount pageRankings:pageRankings
+                  pagePhotos:pagePhotos];
         
         // Book load completed.
         [AnalyticsHelper endTrackEventName:kEventBookLoad params:@{ @"success" : @(YES),
@@ -1329,13 +1335,15 @@
 }
 
 - (void)processRecipes:(NSDictionary *)pageRecipes pageBatches:(NSDictionary *)pageBatches
-            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings {
+            pageCounts:(NSDictionary *)pageCounts pageRankings:(NSDictionary *)pageRankings
+            pagePhotos:(NSDictionary *)pagePhotos {
 
     // Loop through to initialise each recipe.
     self.pageRecipes = [NSMutableDictionary new];
     self.pageBatches = [NSMutableDictionary dictionaryWithDictionary:pageBatches];
     self.pageRecipeCount = [NSMutableDictionary dictionaryWithDictionary:pageCounts];
     self.pageRankings = [NSMutableDictionary dictionaryWithDictionary:pageRankings];
+    self.pagePhotos = [NSMutableDictionary dictionaryWithDictionary:pagePhotos];
     self.pageCurrentBatches = [NSMutableDictionary new];
     
     for (NSString *page in pageRecipes) {
@@ -1374,6 +1382,12 @@
             NSInteger likesCurrentBatch = [[self.pageCurrentBatches objectForKey:serverLikesKey] integerValue];
             [self.pageCurrentBatches setObject:@(likesCurrentBatch) forKey:self.likesPageName];
             [self.pageCurrentBatches setObject:@(likesCount) forKey:serverLikesKey];
+            
+            CKRecipe *pageTitleRecipe = [self.pagePhotos objectForKey:serverLikesKey];
+            if (pageTitleRecipe) {
+                [self.pagePhotos setObject:pageTitleRecipe forKey:self.likesPageName];
+                [self.pagePhotos removeObjectForKey:serverLikesKey];
+            }
         }
         
     }
@@ -1952,21 +1966,30 @@
 
 - (void)processRanksForPage:(NSString *)page {
     NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
-    if ([pageRecipes count] > 0) {
+    
+    // Check if we have server-assigned cover photo.
+    CKRecipe *titleRecipe = [self.pagePhotos objectForKey:page];
+    if (titleRecipe && [titleRecipe hasPhotos]) {
+        [self.pageCoverRecipes setObject:titleRecipe forKey:page];
+    } else {
         
-        // Get the highest ranked recipe.
-        CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
-        
-        // If none found, then include pins.
-        if (!highestRankedRecipe) {
-            highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
-        }
-        
-        // Set only if found.
-        if (highestRankedRecipe) {
-            [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+        if ([pageRecipes count] > 0) {
+            
+            // Get the highest ranked recipe.
+            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:YES];
+            
+            // If none found, then include pins.
+            if (!highestRankedRecipe) {
+                highestRankedRecipe = [self highestRankedRecipeForPage:page excludeOthers:NO];
+            }
+            
+            // Set only if found.
+            if (highestRankedRecipe) {
+                [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+            }
         }
     }
+    
 }
 
 - (void)processRanksForBook {

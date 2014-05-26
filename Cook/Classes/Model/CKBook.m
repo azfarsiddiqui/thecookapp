@@ -464,6 +464,7 @@
                                         NSDictionary *pageRecipeCount = [recipeResults objectForKey:@"pageRecipeCount"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
                                         NSDictionary *pageRankings = [recipeResults objectForKey:@"pageRankings"];
+                                        NSDictionary *parsePagePhotos = [recipeResults objectForKey:@"pagePhotos"];
                                         
                                         // Grab tags.
                                         NSArray *parseTags = [recipeResults objectForKey:@"tags"];
@@ -486,7 +487,16 @@
                                             
                                         }];
                                         
-                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, pageRankings, accessDate);
+                                        // Wrap parse objects into our model.
+                                        NSMutableDictionary *pagePhotos = [NSMutableDictionary dictionary];
+                                        [parsePagePhotos each:^(NSString *page, PFObject *parseRecipeOrPin) {
+                                            [pagePhotos setObject:[self modelRecipeOrPinForParseObject:parseRecipeOrPin]
+                                                           forKey:page];
+                                        }];
+                                        
+                                        
+                                        success(parseBook, pageRecipes, pageBatches, pageRecipeCount, pageRankings,
+                                                pagePhotos, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);
