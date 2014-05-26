@@ -697,6 +697,7 @@
                     recipeImage.imageUuid = nil;
                     recipeImage.imageHeight = image.size.height;
                     recipeImage.imageWidth = image.size.width;
+                    recipeImage.imageMemory = [imageData length];
                     
                     // Save the recipe image to Parse.
                     [recipeImage saveInBackground:^{

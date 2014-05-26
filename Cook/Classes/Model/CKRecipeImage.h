@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSString *thumbImageUuid;
 @property (nonatomic, assign) NSInteger imageWidth;
 @property (nonatomic, assign) NSInteger imageHeight;
+@property (nonatomic, assign) CGFloat imageMemory;
 
 + (CKRecipeImage *)recipeImage;
 + (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe;

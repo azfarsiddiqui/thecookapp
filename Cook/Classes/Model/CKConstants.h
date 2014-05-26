@@ -126,6 +126,7 @@ extern NSString *const kRecipeImageAttrThumnImageUUID;
 extern NSString *const kRecipeImageAttrImageName;
 extern NSString *const kRecipeImageAttrWidth;
 extern NSString *const kRecipeImageAttrHeight;
+extern NSString *const kRecipeImageMemorySize;
 
 #pragma mark - Location class
 

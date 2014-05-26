@@ -103,4 +103,8 @@
     [self.parseObject setObject:@(imageHeight) forKey:kRecipeImageAttrHeight];
 }
 
+- (void)setImageMemory:(CGFloat)imageMemory {
+    [self.parseObject setObject:@(imageMemory) forKey:kRecipeImageMemorySize];
+}
+
 @end

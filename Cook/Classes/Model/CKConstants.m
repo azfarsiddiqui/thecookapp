@@ -127,6 +127,7 @@ NSString *const kRecipeImageAttrThumnImageUUID  = @"thumbImageUuid";
 NSString *const kRecipeImageAttrImageName       = @"imageName";
 NSString *const kRecipeImageAttrWidth           = @"recipeImageWidth";
 NSString *const kRecipeImageAttrHeight          = @"recipeImageHeight";
+NSString *const kRecipeImageMemorySize          = @"recipeImageMemory";
 
 #pragma mark - Location class
 
