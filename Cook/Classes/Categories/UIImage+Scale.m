@@ -93,7 +93,7 @@
         
     }
     
-    UIGraphicsBeginImageContextWithOptions(bounds.size, YES, 0.f);
+    UIGraphicsBeginImageContextWithOptions(bounds.size, YES, 1.f);
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(context, kCGInterpolationLow);
