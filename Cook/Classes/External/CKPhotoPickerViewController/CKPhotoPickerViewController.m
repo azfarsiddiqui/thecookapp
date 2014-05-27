@@ -512,6 +512,7 @@
     CGFloat imageScale = self.selectedImage.size.width / self.previewScrollView.bounds.size.width;
     CGFloat deviceScale = [self deviceScale];
     CGFloat scale = (deviceScale / self.previewScrollView.zoomScale) * imageScale;
+    scale = scale > 2.0 ? 2.0 : scale;
     CGRect visibleRect = CGRectZero;
     if (self.type == CKPhotoPickerImageTypeSquare)
     {
