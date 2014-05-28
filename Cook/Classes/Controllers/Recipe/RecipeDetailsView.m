@@ -747,7 +747,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                 if (stringSize.size.width < kWidth) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
-                        [tagsString appendString:@" • "];
+                        [tagsString appendString:@" ･ "];
                     [tagsString appendString:[tag displayName]];
                 }
             }
@@ -763,7 +763,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                 if (stringSize.size.width < kWidth) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
-                        [tagsString appendString:@" • "];
+                        [tagsString appendString:@" ･ "];
                     [tagsString appendString:[tag displayName]];
                 }
             }
@@ -779,7 +779,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                 if (stringSize.size.width < kWidth) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
-                        [tagsString appendString:@" • "];
+                        [tagsString appendString:@" ･ "];
                     [tagsString appendString:[tag displayName]];
                 }
             }
