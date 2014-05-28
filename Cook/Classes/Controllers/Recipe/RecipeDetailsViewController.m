@@ -137,6 +137,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kDragRatio          0.9
 #define kIconGap            18.0
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
+#define kMinZoomImage       0.95
 
 - (void)dealloc {
     self.imageView.image = nil;
@@ -622,6 +623,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     subView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX,
                                  scrollView.contentSize.height * 0.5 + offsetY);
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    if (scrollView == self.imageScrollView && scale <= kMinZoomImage && !self.zoomedLevel) {
+        [self toggleImage];
+    }
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -1452,7 +1459,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Zoomable only in fullscreen mode.
     self.imageScrollView.maximumZoomScale = fullscreen ? 2.0 : 1.0;
-    self.imageScrollView.minimumZoomScale = 0.95;
+    self.imageScrollView.minimumZoomScale = kMinZoomImage;
+    
+    if (!fullscreen) {
+        [self.imageScrollView setZoomScale:1.0 animated:YES];
+    }
     
     [self snapToViewport:toggleViewport animated:YES completion:^{
         
@@ -1472,9 +1483,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             if (!fullscreen) {
-                                 [self.imageScrollView setZoomScale:1.0 animated:NO];
-                             }
                              if (!self.imageView.placeholder) {
                                  self.topShadowView.alpha =  fullscreen ? 0.0 : 1.0;
                              }
