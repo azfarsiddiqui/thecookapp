@@ -50,7 +50,7 @@
         [EventHelper registerAppActive:self selector:@selector(appActive:)];
         [EventHelper registerUserNotifications:self selector:@selector(notificationsReceived:)];
         [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
-        [EventHelper registerLoginSucessful:self selector:@selector(loggedOut:)];
+        [EventHelper registerLogout:self selector:@selector(loggedOut:)];
         
     }
     return self;
@@ -113,7 +113,7 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    [self loadData];
+    [self clearBadge];
 }
 
 - (void)appActive:(NSNotification *)notification {
