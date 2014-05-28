@@ -199,7 +199,8 @@
     //Check if conversion is even needed
     if ([self typeFromString:[convertDict objectForKey:@"newType"]] != self.toType
         && ![unitString isEqualToString:@"°F"]
-        && ![unitString isEqualToString:@"°C"]) {
+        && ![unitString isEqualToString:@"°C"]
+        && !self.isTokenOnly) {
         //Don't need to convert but do need to replace with highlighted version
         NSAttributedString *returnString = [[NSAttributedString alloc] initWithString:originalString
                                                                            attributes:@{NSForegroundColorAttributeName: self.highlightColor,
