@@ -528,32 +528,50 @@
 
 //For large metric measures, keep decimal but round to tenth
 - (NSString *)convertTenths:(CGFloat)input {
+    if (input < 0.1) {
+        return @"< 0.1";
+    }
     CGFloat rounded = roundf(input * 100)/ 100;
     return [self.tenthConverterFormatter stringFromNumber:@(rounded)];
 }
 
 - (NSString *)convertEights:(CGFloat)input {
+    if (input < 0.125) {
+        return @"< 1/8";
+    }
     NSArray *array = @[@"",@"1/8",@"1/4",@"3/8",@"1/2",@"5/8",@"3/4",@"7/8",@""];
     return [self convertToFraction:input keyArray:array];
 }
 
 //For extra nice fuzzy eigths?
 - (NSString *)convertSixteenths:(CGFloat)input {
+    if (input < 0.125) {
+        return @"< 1/8";
+    }
     NSArray *array = @[@"",@"1/8",@"1/8",@"1/4",@"1/4",@"1/3",@"3/8",@"1/2",@"1/2",@"1/2",@"5/8",@"2/3",@"3/4",@"3/4",@"7/8",@"7/8",@""];
     return [self convertToFraction:input keyArray:array];
 }
 
 - (NSString *)convertFourths:(CGFloat)input {
+    if (input < 0.25) {
+        return @"< 1/4";
+    }
     NSArray *array = @[@"", @"1/4", @"1/2", @"3/4", @""];
     return [self convertToFraction:input keyArray:array];
 }
 
 - (NSString *)convertHalf:(CGFloat)input {
+    if (input < 0.5) {
+        return @"< 1/2";
+    }
     NSArray *array = @[@"", @"1/2", @""];
     return [self convertToFraction:input keyArray:array];
 }
 
 - (NSString *)convertWhole:(CGFloat)input {
+    if (input < 1) {
+        return @"< 1";
+    }
     NSInteger outputInt = input + 0.5f;
     return [@(outputInt) stringValue];
 }
