@@ -328,8 +328,7 @@
     return self.canReorderItems;
 }
 
-- (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
-           toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
     
     [self currentLayout].dragging = NO;
     
@@ -574,8 +573,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
         if (![cell isEmpty]) {
             cell.allowReorder = self.canReorderItems;
-            // Save current value if it was not empty.
-            [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
+            if ([self.items objectAtIndex:self.editingIndexPath.item]) {
+                // Save current value if it was not empty.
+                [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:[cell currentValue]];
+            }
         } else {
             //Remove resigning cell if it's blank
             if ([self.items count] > 1 && !self.processing && !self.isAutoDeleting) {
@@ -808,14 +809,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)saveAndDismissItems:(BOOL)save {
     self.saveRequired = save;
-    
-    // If save, replace the current edited values. This handles the case when save is tapped while the field in focus.
-    if (save && self.editingIndexPath) {
-        CKListCell *cell = [self listCellAtIndexPath:self.editingIndexPath];
-        id currentValue = [cell currentValue];
-        DLog(@"Current Editing Index Path is: %i", self.editingIndexPath.item);
-        [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:currentValue];
-    }
+
     
     // Hide items, which will trigger itemsDidShow.
     [self hideItems];
