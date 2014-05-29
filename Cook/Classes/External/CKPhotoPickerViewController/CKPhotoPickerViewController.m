@@ -508,9 +508,8 @@
 }
 
 - (void)savePhoto {
-//    CGFloat imageScale = self.selectedImage.size.width / self.previewScrollView.bounds.size.width;
-    CGFloat deviceScale = [self deviceScale];
-    CGFloat scale = (deviceScale / self.previewScrollView.zoomScale);
+    CGFloat imageScale = self.selectedImage.size.width / self.previewScrollView.bounds.size.width;
+    CGFloat scale = imageScale/self.previewScrollView.zoomScale;
     CGRect visibleRect = CGRectZero;
     if (self.type == CKPhotoPickerImageTypeSquare)
     {
