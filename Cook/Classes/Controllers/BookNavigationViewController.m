@@ -1436,12 +1436,23 @@
             // Update social cache.
             [[CKSocialManager sharedInstance] configureRecipe:recipe];
             
-            // Is this a new recipe?
+            // Start with recipe's updated datetime.
+            NSDate *recipeOrPinUpdatedDate = recipe.recipeUpdatedDateTime;
+            
+            // If this was a pin, then get the pin's creation date.
+            if ([recipeOrPin isKindOfClass:[CKRecipePin class]]) {
+                recipeOrPinUpdatedDate = recipeOrPin.createdDateTime;
+            }
+            
+            // Is this a new recipe or pin.
             if (self.bookLastAccessedDate
-                && ([recipe.recipeUpdatedDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+                && ([recipeOrPinUpdatedDate compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
                 
                 // Mark the page as new.
                 [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
+                
+                // Skip current processing for this page.
+                break;
             }
         }
     }

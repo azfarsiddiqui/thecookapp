@@ -153,7 +153,8 @@
 }
 
 - (void)loadMoreRecipes:(NSArray *)recipes {
-    //If callback happens after colletionView has been deactivated and purged, cancel
+    
+    // If callback happens after colletionView has been deactivated and purged, cancel
     if (self.collectionView && [self.collectionView numberOfItemsInSection:0] == 0) {
         return;
     }
@@ -180,7 +181,11 @@
     [((RecipeGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:@[activityDeleteIndexPath]];
-        [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+        
+        if ([indexPathsToInsert count] > 0) {
+            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+        }
+        
     } completion:^(BOOL finished) {
     }];
     
