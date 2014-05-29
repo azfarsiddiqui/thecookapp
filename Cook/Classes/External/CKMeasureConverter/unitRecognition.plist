@@ -36,6 +36,16 @@
 	<string>MM</string>
 	<key>MILLIMETRES</key>
 	<string>MM</string>
+	<key>CM</key>
+	<string>CM</string>
+	<key>CENTIMETER</key>
+	<string>CM</string>
+	<key>CENTIMETERS</key>
+	<string>CM</string>
+	<key>CENTIMETRE</key>
+	<string>CM</string>
+	<key>CENTIMETRES</key>
+	<string>CM</string>
 	<key>ML</key>
 	<string>ML</string>
 	<key>MILLILITER</key>

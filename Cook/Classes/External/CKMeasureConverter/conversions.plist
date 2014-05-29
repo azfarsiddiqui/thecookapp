@@ -47,6 +47,21 @@
 			<integer>8</integer>
 		</dict>
 	</array>
+    <key>CM</key>
+	<array>
+		<dict>
+			<key>originalType</key>
+			<string>Metric</string>
+			<key>newType</key>
+			<string>Imperial</string>
+			<key>name</key>
+			<string>in</string>
+			<key>conversion</key>
+			<real>0.393701</real>
+			<key>fraction</key>
+			<integer>8</integer>
+		</dict>
+	</array>
 	<key>ML</key>
 	<array>
 		<dict>
