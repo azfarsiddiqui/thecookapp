@@ -710,6 +710,10 @@
                         // Clear in-memory cache, but retain the disk one.
                         [weakSelf clearCachedImageForKey:cacheKey fromDisk:NO];
                         
+                        // Clear blurred image for old image so new one can get generated on load
+                        NSString *blurredCacheKey = [self cacheKeyForName:[self photoNameForBlurredRecipe:recipe] size:[ImageHelper blurredSize]];
+                        [weakSelf removeImageForKey:blurredCacheKey];
+                        
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
                         
