@@ -195,6 +195,7 @@
 
 - (void)addCellToBottom {
     NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:[self.items count] inSection:0];
+    
     [self createNewCellAtIndexPath:nextIndexPath];
 //    if ([self.items count] > 1) {
 //        [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
@@ -554,8 +555,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)listItemFocused:(BOOL)focused cell:(CKListCell *)cell {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-    DLog(@"focus[%@] item[%d]", focused ? @"YES" : @"NO", indexPath.item);
-    
+
     if (focused) {
         self.editingIndexPath = indexPath;
         self.editingCell = cell;
@@ -573,9 +573,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
         if (![cell isEmpty]) {
             cell.allowReorder = self.canReorderItems;
-            if ([self.items objectAtIndex:self.editingIndexPath.item]) {
+            if (!indexPath) indexPath = self.editingIndexPath;
+            if (indexPath.item < [self.items count] && [self.items objectAtIndex:indexPath.item]) {
                 // Save current value if it was not empty.
-                [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:[cell currentValue]];
+                [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
             }
         } else {
             //Remove resigning cell if it's blank
@@ -809,7 +810,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)saveAndDismissItems:(BOOL)save {
     self.saveRequired = save;
-
     
     // Hide items, which will trigger itemsDidShow.
     [self hideItems];
@@ -1172,7 +1172,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Index path of new item at top.
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    
+    self.editingIndexPath = indexPath;
     [self.collectionView performBatchUpdates:^{
         
         [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
@@ -1201,6 +1201,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)createNewCellAtIndexPath:(NSIndexPath *)indexPath {
     
     // Insert an empty item at the requested position.
+    DLog(@"Inserting item at index: %i", indexPath.item);
     [self.items insertObject:[self createNewItem] atIndex:indexPath.item];
     
     [self.collectionView performBatchUpdates:^{
@@ -1211,8 +1212,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
         CKListCell *cell = [self listCellAtIndexPath:indexPath];
         self.editingCell = cell;
-        self.editingIndexPath = indexPath;
         [self setEditing:YES cell:cell];
+        self.editingIndexPath = indexPath;
         [self updateAddState];
         
     }];
