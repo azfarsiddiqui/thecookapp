@@ -65,6 +65,11 @@
 #define pixelsPerMB ( bytesPerMB / bytesPerPixel ) // 262144 pixels, for 4 bytes per pixel.
 #define destTotalPixels kDestImageSizeMB * pixelsPerMB
 
+- (void)dealloc {
+    self.selectedImage = nil;
+    self.previewImageView.image = nil;
+}
+
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
 }
