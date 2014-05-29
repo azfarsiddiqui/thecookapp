@@ -13,6 +13,17 @@
 		<key>fraction</key>
 		<real>10</real>
 	</dict>
+    <key>cm</key>
+	<dict>
+		<key>limit</key>
+		<integer>100</integer>
+		<key>name</key>
+		<string>m</string>
+		<key>conversion</key>
+		<real>0.01</real>
+		<key>fraction</key>
+		<real>10</real>
+	</dict>
 	<key>ml</key>
 	<dict>
 		<key>limit</key>
