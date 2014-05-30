@@ -360,17 +360,21 @@
             
             BookStatus bookStatus = follow ? kBookStatusFollowed : [self unfollowedBookStatus];
             
-            // Update the underlying book status.
+            // Update the underlying book status if it doesn't match.
             CKBook *existingBook = [self.books objectAtIndex:bookIndex];
-            existingBook.status = bookStatus;
-            
-            // Mark cell with follow status.
-            StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
-                                                                      [NSIndexPath indexPathForItem:bookIndex inSection:kStoreSection]];
-            if (cell) {
+            if (existingBook.status != bookStatus) {
                 
-                // Set back to unfollowed status. Subclasses can override like provide (F) for suggestions.
-                [cell updateBookStatus:bookStatus];
+                existingBook.status = bookStatus;
+                
+                // Mark cell with follow status.
+                StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
+                                                                          [NSIndexPath indexPathForItem:bookIndex inSection:kStoreSection]];
+                if (cell) {
+                    
+                    // Set back to unfollowed status. Subclasses can override like provide (F) for suggestions.
+                    [cell updateBookStatus:bookStatus];
+                }
+                
             }
         }
         
