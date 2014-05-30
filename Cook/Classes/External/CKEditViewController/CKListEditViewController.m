@@ -573,7 +573,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
         if (![cell isEmpty]) {
             cell.allowReorder = self.canReorderItems;
-            if (!indexPath) indexPath = self.editingIndexPath;
+            if (!indexPath) {
+                indexPath = self.editingIndexPath;
+                cell = self.editingCell;
+            }
             if (indexPath.item < [self.items count] && [self.items objectAtIndex:indexPath.item]) {
                 // Save current value if it was not empty.
                 [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
@@ -1166,6 +1169,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Mark as adding mode and turn off activation mode.
     self.topAddActivated = NO;
+    
+    [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:[self.editingCell currentValue]];
     
     // Insert an empty item at front.
     [self.items insertObject:[self createNewItem] atIndex:0];
