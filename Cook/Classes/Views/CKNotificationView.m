@@ -30,7 +30,7 @@
 
 @implementation CKNotificationView
 
-#define kFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0]
+#define kFont               [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0]
 #define kLabelInsets        (UIEdgeInsets) { 9.0, 14.0, 0.0, 12.0 }
 
 - (void)dealloc {
