@@ -51,8 +51,11 @@
     NSString *countryName = nil;
     NSLocale *currentLocale = [NSLocale currentLocale];
     NSString *countryCode = [self.parseObject objectForKey:kLocationCountryCode];
-    NSString *identifier = [NSLocale localeIdentifierFromComponents:[NSDictionary dictionaryWithObject:countryCode forKey:NSLocaleCountryCode]];
-    countryName = [currentLocale displayNameForKey:NSLocaleIdentifier value:identifier];
+    if (countryCode && [countryCode length] > 0) {
+        NSString *identifier = [NSLocale localeIdentifierFromComponents:[NSDictionary dictionaryWithObject:countryCode forKey:NSLocaleCountryCode]];
+        countryName = [currentLocale displayNameForKey:NSLocaleIdentifier value:identifier];
+    }
+    
     return countryName;
 }
 
