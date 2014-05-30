@@ -349,31 +349,32 @@
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
     
-    // Ignore follow requests.
-    if (follow) {
-        return;
-    }
-    
-    CKBook *unfollowedBook = [EventHelper bookFollowForNotification:notification];
+    CKBook *book = [EventHelper bookFollowForNotification:notification];
     if ([self.books count] > 0) {
         
         NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *followBook) {
-            return [followBook.objectId isEqualToString:unfollowedBook.objectId];
+            return [followBook.objectId isEqualToString:book.objectId];
         }];
         
         if (bookIndex != -1) {
             
-            // Update the underlying book status.
-            CKBook *existingBook = [self.books objectAtIndex:bookIndex];
-            existingBook.status = [self unfollowedBookStatus];
+            BookStatus bookStatus = follow ? kBookStatusFollowed : [self unfollowedBookStatus];
             
-            // Mark cell as unfollowed.
-            StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
-                                                                      [NSIndexPath indexPathForItem:bookIndex inSection:kStoreSection]];
-            if (cell) {
+            // Update the underlying book status if it doesn't match.
+            CKBook *existingBook = [self.books objectAtIndex:bookIndex];
+            if (existingBook.status != bookStatus) {
                 
-                // Set back to unfollowed status. Subclasses can override like provide (F) for suggestions.
-                [cell updateBookStatus:[self unfollowedBookStatus]];
+                existingBook.status = bookStatus;
+                
+                // Mark cell with follow status.
+                StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:
+                                                                          [NSIndexPath indexPathForItem:bookIndex inSection:kStoreSection]];
+                if (cell) {
+                    
+                    // Set back to unfollowed status. Subclasses can override like provide (F) for suggestions.
+                    [cell updateBookStatus:bookStatus];
+                }
+                
             }
         }
         
