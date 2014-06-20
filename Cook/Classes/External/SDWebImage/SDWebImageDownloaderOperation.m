@@ -29,6 +29,8 @@
 {
     size_t width, height;
     BOOL responseFromCached;
+    BOOL _executing;
+    BOOL _finished;
 }
 
 - (id)initWithRequest:(NSURLRequest *)request options:(SDWebImageDownloaderOptions)options progress:(void (^)(NSUInteger, long long))progressBlock completed:(void (^)(UIImage *, NSData *, NSError *, BOOL))completedBlock cancelled:(void (^)())cancelBlock
@@ -125,6 +127,11 @@
     self.imageData = nil;
 }
 
+- (BOOL)finished
+{
+    return _finished;
+}
+
 - (void)setFinished:(BOOL)finished
 {
     [self willChangeValueForKey:@"isFinished"];
@@ -137,6 +144,11 @@
     [self willChangeValueForKey:@"isExecuting"];
     _executing = executing;
     [self didChangeValueForKey:@"isExecuting"];
+}
+
+- (BOOL)executing
+{
+    return _executing;
 }
 
 - (BOOL)isConcurrent

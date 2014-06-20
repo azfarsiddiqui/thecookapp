@@ -16,6 +16,10 @@
 #import "UIColor+Expanded.h"
 #import "CKListHeaderView.h"
 
+// Fixes the missing action method when the keyboard is visible
+#import <objc/runtime.h>
+#import <objc/message.h>
+
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UICollectionViewDataSource_Draggable, CKListCellDelegate, UIGestureRecognizerDelegate>
 
@@ -1327,9 +1331,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
 }
 
-// Fixes the missing action method when the keyboard is visible
-#import <objc/runtime.h>
-#import <objc/message.h>
 __attribute__((constructor)) static void PSPDFFixCollectionViewUpdateItemWhenKeyboardIsDisplayed(void) {
     @autoreleasepool {
         if ([UICollectionViewUpdateItem class] == nil) return; // pre-iOS6.
