@@ -1143,6 +1143,7 @@
 		76EBE63F179549C10099E2CB /* cook_book_inner_icon_like_dark_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE637179549C10099E2CB /* cook_book_inner_icon_like_dark_on@2x.png */; };
 		76EBE640179549C10099E2CB /* cook_book_inner_icon_like_light_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE638179549C10099E2CB /* cook_book_inner_icon_like_light_on.png */; };
 		76EBE641179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */; };
+		76EC026F1964F436004B1296 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 76EC02711964F436004B1296 /* Localizable.strings */; };
 		76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556017C3030D000DEA08 /* RecipeCommentCell.m */; };
 		76EC556417C3069C000DEA08 /* ModalOverlayHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
@@ -2996,6 +2997,9 @@
 		76EBE637179549C10099E2CB /* cook_book_inner_icon_like_dark_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_like_dark_on@2x.png"; sourceTree = "<group>"; };
 		76EBE638179549C10099E2CB /* cook_book_inner_icon_like_light_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_like_light_on.png; sourceTree = "<group>"; };
 		76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_like_light_on@2x.png"; sourceTree = "<group>"; };
+		76EC026E1964F3BF004B1296 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		76EC02701964F436004B1296 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		76EC02721964F454004B1296 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		76EC555F17C3030D000DEA08 /* RecipeCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeCommentCell.h; sourceTree = "<group>"; };
 		76EC556017C3030D000DEA08 /* RecipeCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeCommentCell.m; sourceTree = "<group>"; };
 		76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalOverlayHeaderView.h; sourceTree = "<group>"; };
@@ -5973,6 +5977,7 @@
 				76ED274A1612DC180012E479 /* InfoPlist.strings */,
 				76ED274D1612DC180012E479 /* main.m */,
 				76ED274F1612DC180012E479 /* Cook-Prefix.pch */,
+				76EC02711964F436004B1296 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -7568,6 +7573,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				es,
 			);
 			mainGroup = 76ED27321612DC180012E479;
 			productRefGroup = 76ED273E1612DC180012E479 /* Products */;
@@ -7609,6 +7615,7 @@
 				7689A1A617BBDADF0093C56F /* cook_customise_photo_btn_cameratoggle@2x.png in Resources */,
 				762CB79217B87A22000197E8 /* cook_book_inner_icon_small_serves@2x.png in Resources */,
 				F613C66217DF4F7E00A5962A /* cook_customise_photo_filter_icon_auto.png in Resources */,
+				76EC026F1964F436004B1296 /* Localizable.strings in Resources */,
 				76CD9FEA17DF3E71004409E1 /* cook_customise_icon_documents@2x.png in Resources */,
 				768CD96E18C58B230047C555 /* cook_book_inner_icon_add_blue_onpress@2x.png in Resources */,
 				76182B6517B1117300B64648 /* cook_book_inner_titlebar_dark@2x.png in Resources */,
@@ -9248,10 +9255,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		76EC02711964F436004B1296 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				76EC02701964F436004B1296 /* en */,
+				76EC02721964F454004B1296 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		76ED274A1612DC180012E479 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				76ED274B1612DC180012E479 /* en */,
+				76EC026E1964F3BF004B1296 /* es */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

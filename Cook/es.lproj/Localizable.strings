@@ -1,0 +1,9 @@
+/* 
+  Localizable.strings
+  Cook
+
+  Created by Jeff Tan-Ang on 3/07/2014.
+  Copyright (c) 2014 Cook Apps Pty Ltd. All rights reserved.
+*/
+"WELCOME" = "Bienvenido";
+"Cook is the place to create and share %@your recipes with the world." = "Cook es el lugar para crear y compartir %@sus recetas con el mundo.";

@@ -156,7 +156,7 @@
         
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Thin" size:80.0]
-                                                   text:@"WELCOME" textAlignment:NSTextAlignmentCenter
+                                                   text:[NSLocalizedString(@"WELCOME", nil) uppercaseString] textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       148.0,
@@ -165,7 +165,7 @@
         [_welcomePageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Cook is the place to create and share %@your recipes with the world.", [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:NSLocalizedString(@"Cook is the place to create and share %@your recipes with the world.", nil), [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height - 8.0,
