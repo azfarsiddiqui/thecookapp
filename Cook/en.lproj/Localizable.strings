@@ -100,7 +100,7 @@
 "USE SEARCH TO FIND PEOPLE YOU KNOW" = "USE SEARCH TO FIND PEOPLE YOU KNOW";
 "Permission Required" = "Permission Required";
 "Couldn't Connect" = "Couldn't Connect";
-"NO WORLD BOOKS" = "NO WORLD BOOKS";
+"NO WORLD BOOKS" = "COULDN'T LOAD WORLD BOOKS";
 "UNABLE TO LOAD USER" = "UNABLE TO LOAD USER";
 
 // Likes
@@ -205,17 +205,17 @@
 "The Facebook account is already used by another Cook account" = "The Facebook account is already used by another Cook account";
 "Go to iPad Settings > Facebook and turn on for Cook" = "Go to iPad Settings > Facebook and turn on for Cook";
 "Mail" = "Mail";
-"Please set up a mail account in Settings" = "Please set up a mail account in Settings";
+"Please set up a mail account in Settings" = "Please set up a mail account in your iPad Settings";
 "Message" = "Message";
-"Please set up iMessage in Settings" = "Please set up iMessage in Settings";
+"Please set up iMessage in Settings" = "Please set up iMessage in your iPad Settings";
 "%@ shared a recipe from Cook" = "%@ shared a recipe from Cook";
 "A recipe from Cook" = "A recipe from Cook";
-"Error in posting to Facebook" = "Error in posting to Facebook";
-"Please set up a Twitter account in the Settings app" = "Please set up a Twitter account in the Settings app";
-"Error in posting to Mail" = "Error in posting to Mail";
-"Error in posting to Message" = "Error in posting to Message";
+"Error in posting to Facebook" = "Couldn't post to Facebook";
+"Please set up a Twitter account in the Settings app" = "Please set up a Twitter account in your iPad Settings";
+"Error in posting to Mail" = "Couldn't share to Mail";
+"Error in posting to Message" = "Couldn't share to iMessage";
 "Error" = "Error";
-"Error in sharing" = "Error in sharing";
+"Error in sharing" = "Couldn't Share Recipe";
 "Check out my recipe" = "Check out my recipe";
 "via @thecookapp" = "via @thecookapp";
 
@@ -230,3 +230,8 @@
 "Pull down on your bench to reveal the Library with Cookbooks and recipes from all over the world." = "Pull down on your bench to reveal the Library with Cookbooks and recipes from all over the world.";
 "LET'S GET STARTED..." = "LET'S GET STARTED...";
 
+// Ingredients
+"TAP BELOW TO ADD" = "TAP BELOW TO ADD";
+"PULL DOWN TO ADD ABOVE" = "PULL DOWN TO ADD ABOVE";
+"SWIPE RIGHT TO DELETE" = "SWIPE RIGHT TO DELETE";
+"PRESS AND DRAG TO REORDER" = "PRESS AND DRAG TO REORDER";
