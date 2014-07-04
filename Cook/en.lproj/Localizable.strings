@@ -1,7 +1,232 @@
-/* 
-  Localizable.strings
-  Cook
+// Pages
+"PAGE ALREADY EXISTS" = "PAGE ALREADY EXISTS";
+"ADD PAGE" = "ADD PAGE";
+"This will also delete the recipes on this page." = "This will also delete the recipes on this page.";
+"Delete Page?" = "Delete Page?";
+"RENAMING PAGE" = "RENAMING PAGE";
+"Unable to Rename" = "Unable to Rename";
+"Sorry, this page contains too many recipes to rename." = "Sorry, this page contains too many recipes to rename.";
+"Page Name" = "Page Name";
 
-  Created by Jeff Tan-Ang on 3/07/2014.
-  Copyright (c) 2014 Cook Apps Pty Ltd. All rights reserved.
-*/
+// General
+"OK" = "OK";
+"Cancel" = "Cancel";
+
+// Add Pin
+"ADDING TO PAGE" = "ADDING TO PAGE";
+"ADD TO BOOK" = "ADD TO BOOK";
+"NO PAGES" = "NO PAGES";
+
+// Dash
+"NEW" =  "NEW";
+"CANNOT CONNECT" = "CANNOT CONNECT";
+"CHECK YOUR WI-FI OR CELLULAR DATA" = "CHECK YOUR WI-FI OR CELLULAR DATA";
+
+// Help Cards
+"ADD A RECIPE" = "ADD A RECIPE";
+"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!" = "OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!";
+"EDIT PROFILE" = "EDIT PROFILE";
+"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO" = "CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO";
+"GET STARTED" = "GET STARTED";
+"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE...";
+"YOUR PROFILE" = "YOUR PROFILE";
+"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE" = "SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE";
+
+// Book Profile
+"RECIPE" = "RECIPE";
+"RECIPES" = "RECIPES";
+
+// Book Summary
+"FRIEND" = "FRIEND";
+"FRIENDS" = "FRIENDS";
+"ADD FRIEND" = "ADD FRIEND";
+"%@ WANTS TO BE FRIENDS" = "%@ WANTS TO BE FRIENDS";
+"REQUESTED" = "REQUESTED";
+"SIGN IN TO VIEW THIS BOOK" = "SIGN IN TO VIEW THIS BOOK";
+"Send Friend Request?" = "Send Friend Request?";
+"Remove Friend" = "Remove Friend";
+"Remove" = "Remove";
+"ADD TO BENCH" = "ADD TO BENCH";
+"BOOK ON BENCH" = "BOOK ON BENCH";
+"UNABLE TO ADD" = "UNABLE TO ADD";
+"ACCEPTING" = "ACCEPTING";
+"UNABLE TO SEND" = "UNABLE TO SEND";
+"UNABLE TO REMOVE" = "UNABLE TO REMOVE";
+
+// Camera
+"NONE" = "NONE";
+"AUTO" = "AUTO";
+"OUTDOORS" = "OUTDOORS";
+"INDOOR" = "INDOOR";
+"VIBRANT" = "VIBRANT";
+"WARM" = "WARM";
+"COOL" = "COOL";
+"TEXT" = "TEXT";
+"Unable to Load Photo" = "Unable to Load Photo";
+"The image you selected is too large" = "The image you selected is too large";
+"Delete Photo?" = "Delete Photo?";
+
+// Comments
+"Comment" = "Comment";
+"COMMENTS" = "COMMENTS";
+"NO COMMENTS" = "NO COMMENTS";
+"ADD COMMENT" = "ADD COMMENT";
+
+// Ingredients
+"INGREDIENT" = "INGREDIENT";
+"QTY" = "QTY";
+"Release to add" = "Release to add";
+"Pull to add" = "Pull to add";
+"Release to delete" = "Release to delete";
+"Swipe to delete" = "Swipe to delete";
+"ADD ITEM" = "ADD ITEM";
+
+// Library
+"NO COLLECTIONS BOOKS" = "NO COLLECTIONS BOOKS";
+"NO FEATURED BOOKS" = "NO FEATURED BOOKS";
+"PLEASE CHECK BACK SOON" = "PLEASE CHECK BACK SOON";
+"NO FRIENDS" = "NO FRIENDS";
+"SIGN IN TO ADD FRIENDS" = "SIGN IN TO ADD FRIENDS";
+"NO RESULTS" = "NO RESULTS";
+"TRY SEARCHING FOR ANOTHER NAME" = "TRY SEARCHING FOR ANOTHER NAME";
+"GET SUGGESTIONS" = "GET SUGGESTIONS";
+"UNABLE TO FETCH BOOKS" = "UNABLE TO FETCH BOOKS";
+"PLEASE TRY AGAIN LATER" = "PLEASE TRY AGAIN LATER";
+"SEARCH BY NAME" = "SEARCH BY NAME";
+"COLLECTIONS" = "COLLECTIONS";
+"FEATURED" = "FEATURED";
+"WORLD" = "WORLD";
+"SUGGESTIONS" = "SUGGESTIONS";
+"USE SEARCH TO FIND PEOPLE YOU KNOW" = "USE SEARCH TO FIND PEOPLE YOU KNOW";
+"Permission Required" = "Permission Required";
+"Couldn't Connect" = "Couldn't Connect";
+"NO WORLD BOOKS" = "NO WORLD BOOKS";
+"UNABLE TO LOAD USER" = "UNABLE TO LOAD USER";
+
+// Likes
+"LIKES" = "LIKES";
+"LIKED" = "LIKED";
+
+// Signin
+"SIGN IN" = "SIGN IN";
+"REGISTER" = "REGISTER";
+"RESET PASSWORD" = "RESET PASSWORD";
+"FORGOT PASSWORD" = "FORGOT PASSWORD";
+"ALREADY HAVE AN ACCOUNT?" = "ALREADY HAVE AN ACCOUNT?";
+"DON'T HAVE AN ACCOUNT?" = "DON'T HAVE AN ACCOUNT?";
+"SIGN UP" = "SIGN UP";
+"REGISTER WITH EMAIL" = "REGISTER WITH EMAIL";
+"REGISTER WITH FACEBOOK" = "REGISTER WITH FACEBOOK";
+"SIGN IN WITH FACEBOOK" = "SIGN IN WITH FACEBOOK";
+"SEND" = "SEND";
+"SIGNING UP" = "SIGNING UP";
+"SIGNING IN" = "SIGNING IN";
+"SENDING" = "SENDING";
+"PLEASE CHECK YOUR EMAIL" = "PLEASE CHECK YOUR EMAIL";
+"EMAIL ADDRESS IS NOT REGISTERED" = "EMAIL ADDRESS IS NOT REGISTERED";
+"EMAIL IS ALREADY REGISTERED" = "EMAIL IS ALREADY REGISTERED";
+"COULDN'T CONNECT" = "COULDN'T CONNECT";
+"INCORRECT EMAIL OR PASSWORD" = "INCORRECT EMAIL OR PASSWORD";
+"CHATTING WITH FACEBOOK" = "CHATTING WITH FACEBOOK";
+"Create Account" = "Create Account";
+"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Your Facebook Account isn’t registered. Would you like to create a new Cook Account?";
+"Create" = "Create";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+
+// Measurements
+"METRIC" = "METRIC";
+"US IMPERIAL" = "US IMPERIAL";
+
+// Notifications
+"You are now friends with %@." = "You are now friends with %@.";
+"%@ wants to be friends." = "%@ wants to be friends.";
+"%@ commented on %@." = "%@ commented on %@.";
+"%@ liked %@." = "%@ liked %@.";
+"%@ added %@." = "%@ added %@.";
+"%@ is now featured in %@ in %@." = "%@ is now featured in %@ in %@.";
+"%@ and %@" = "%@ and %@";
+"NOTIFICATIONS" = "NOTIFICATIONS";
+"NO NOTIFICATIONS" = "NO NOTIFICATIONS";
+
+// Recipe
+"TYPE UP THE RECIPE" = "TYPE UP THE RECIPE";
+"TITLE" = "TITLE";
+"TAGS" = "TAGS";
+"WRITE SOMETHING" = "WRITE SOMETHING";
+"INGREDIENTS" = "INGREDIENTS";
+"METHOD OR STEPS" = "METHOD OR STEPS";
+"PHOTO" = "PHOTO";
+"No" = "No";
+"Remove Recipe?" = "Remove Recipe?";
+"Already Added to %@" = "Already Added to %@";
+"Close" = "Close";
+"Delete Recipe?" = "Delete Recipe?";
+"Sorry, you can't save an empty recipe" = "Sorry, you can't save an empty recipe";
+"Unable to Save" = "Unable to Save";
+"Please try again soon" = "Please try again soon";
+"DELETING" = "DELETING";
+"REMOVING" = "REMOVING";
+"SAVING" = "SAVING";
+"SECRET" = "SECRET";
+"PUBLIC" = "PUBLIC";
+"SECRET RECIPE" = "SECRET RECIPE";
+"VISIBLE TO FRIENDS" = "VISIBLE TO FRIENDS";
+
+// Search
+"RECIPE, INGREDIENT OR TAG" = "RECIPE, INGREDIENT OR TAG";
+"COULDN'T CONNECT, PLEASE TRY AGAIN" = "COULDN'T CONNECT, PLEASE TRY AGAIN";
+"POPULAR" = "POPULAR";
+"LATEST" = "LATEST";
+
+// Serves
+"Makes" = "Makes";
+"Serves" = "Serves";
+"Prep" = "Prep";
+"Cook" = "Cook";
+
+// Settings
+"LOGOUT" = "LOGOUT";
+"MEASUREMENTS" = "MEASUREMENTS";
+"TERMS & CONDITIONS" = "TERMS & CONDITIONS";
+"PRIVACY" = "PRIVACY";
+"ABOUT" = "ABOUT";
+"SUPPORT" = "SUPPORT";
+"FACEBOOK" = "FACEBOOK";
+"TWITTER" = "TWITTER";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+
+// Share
+"Check out this recipe" = "Check out this recipe";
+"Shared from Cook" = "Shared from Cook";
+"SHARE RECIPE" = "SHARE RECIPE";
+"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB";
+"REPORT" = "REPORT";
+"Couldn’t Add Facebook" = "Couldn’t Add Facebook";
+"The Facebook account is already used by another Cook account" = "The Facebook account is already used by another Cook account";
+"Go to iPad Settings > Facebook and turn on for Cook" = "Go to iPad Settings > Facebook and turn on for Cook";
+"Mail" = "Mail";
+"Please set up a mail account in Settings" = "Please set up a mail account in Settings";
+"Message" = "Message";
+"Please set up iMessage in Settings" = "Please set up iMessage in Settings";
+"%@ shared a recipe from Cook" = "%@ shared a recipe from Cook";
+"A recipe from Cook" = "A recipe from Cook";
+"Error in posting to Facebook" = "Error in posting to Facebook";
+"Please set up a Twitter account in the Settings app" = "Please set up a Twitter account in the Settings app";
+"Error in posting to Mail" = "Error in posting to Mail";
+"Error in posting to Message" = "Error in posting to Message";
+"Error" = "Error";
+"Error in sharing" = "Error in sharing";
+"Check out my recipe" = "Check out my recipe";
+"via @thecookapp" = "via @thecookapp";
+
+// Welcome
+"WELCOME" = "WELCOME";
+"Cook is the place to create and share your recipes with the world." = "Cook is the place to create and share your recipes with the world.";
+"YOUR COOKBOOK" = "YOUR COOKBOOK";
+"Customize the cover of your book then add your cherished family recipes, the meals you cook regularly, tips, tricks, anything food related." = "Customize the cover of your book then add your cherished family recipes, the meals you cook regularly, tips, tricks, anything food related.";
+"SHARE YOUR RECIPES" = "SHARE YOUR RECIPES";
+"Make your recipes public and share them with everyone or keep them just for close friends, the choice is yours." = "Make your recipes public and share them with everyone or keep them just for close friends, the choice is yours.";
+"A WORLD OF RECIPES" = "A WORLD OF RECIPES";
+"Pull down on your bench to reveal the Library with Cookbooks and recipes from all over the world." = "Pull down on your bench to reveal the Library with Cookbooks and recipes from all over the world.";
+"LET'S GET STARTED..." = "LET'S GET STARTED...";
+
