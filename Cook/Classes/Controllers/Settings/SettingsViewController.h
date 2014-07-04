@@ -10,6 +10,7 @@
 
 @protocol SettingsViewControllerDelegate <NSObject>
 
+- (void)settingsViewControllerAccountRequested;
 - (void)settingsViewControllerSignInRequested;
 - (void)settingsViewControllerModalOpened:(BOOL)isOpen;
 

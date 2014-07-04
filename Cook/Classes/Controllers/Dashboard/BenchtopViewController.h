@@ -26,5 +26,6 @@
 - (void)showLoginViewSignUp:(BOOL)signUp;
 - (void)hideLoginViewCompletion:(void (^)())completion;
 - (void)refreshBook:(CKBook *)book;
+- (void)showAccountView;
 
 @end

@@ -501,6 +501,12 @@
 
 #pragma mark - SettingsViewControllerDelegate methods
 
+- (void)settingsViewControllerAccountRequested {
+    [self snapToLevel:kBenchtopLevel completion:^{
+        [self.benchtopViewController showAccountView];
+    }];
+}
+
 - (void)settingsViewControllerSignInRequested {
     [self snapToLevel:kBenchtopLevel completion:^{
         [self.benchtopViewController showLoginView];

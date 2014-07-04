@@ -33,12 +33,13 @@
 #import "AnalyticsHelper.h"
 #import "Theme.h"
 #import "RecipeSearchViewController.h"
+#import "AccountViewController.h"
 
 @interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate,
-    FollowReloadButtonViewDelegate, RecipeSearchViewControllerDelegate>
+    FollowReloadButtonViewDelegate, RecipeSearchViewControllerDelegate, AccountViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -56,6 +57,7 @@
 @property (nonatomic, strong) SignupViewController *signUpViewController;
 @property (nonatomic, strong) NotificationsViewController *notificationsViewController;
 @property (nonatomic, strong) RecipeSearchViewController *searchViewController;
+@property (nonatomic, strong) AccountViewController *accountViewController;
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -178,6 +180,13 @@
     __weak typeof(self) weakSelf = self;
     [self scrollToFrontCompletion:^{
         [weakSelf showLoginViewSignUp:NO];
+    }];
+}
+
+- (void)showAccountView {
+    __weak typeof(self) weakSelf = self;
+    [self scrollToFrontCompletion:^{
+        [weakSelf showAccountOverlay:YES];
     }];
 }
 
@@ -643,10 +652,25 @@
 - (void)recipeSearchViewControllerDismissRequested {
     if (self.searchViewController) {
         __weak typeof(self) weakSelf = self;
-        [self hideOverlayForViewController:self.searchViewController completion:^{
+        [self hideOverlayForViewController:weakSelf.searchViewController completion:^{
             weakSelf.searchViewController = nil;
         }];
     }
+}
+
+#pragma mark - AccountViewControllerDelegate methods
+
+- (void)accountViewControllerDismissRequested {
+    if (self.accountViewController) {
+        __weak typeof(self) weakSelf = self;
+        [self hideOverlayForViewController:self.accountViewController completion:^{
+            weakSelf.accountViewController = nil;
+        }];
+    }
+}
+
+- (UIImage *)accountViewControllerBlurredImageForDash {
+    return [self darkDashBlurredImage];
 }
 
 #pragma mark - Properties
@@ -2112,6 +2136,20 @@
     } else {
         [self hideOverlayForViewController:self.searchViewController completion:^{
             weakSelf.searchViewController = nil;
+        }];
+    }
+}
+
+- (void)showAccountOverlay:(BOOL)show {
+    
+    __weak typeof(self) weakSelf = self;
+    if (show) {
+        AccountViewController *accountViewController = [[AccountViewController alloc] initWithUser:self.currentUser delegate:self];
+        [self showOverlayForViewController:accountViewController completion:nil];
+        self.accountViewController = accountViewController;
+    } else {
+        [self hideOverlayForViewController:self.accountViewController completion:^{
+            weakSelf.accountViewController = nil;
         }];
     }
 }
