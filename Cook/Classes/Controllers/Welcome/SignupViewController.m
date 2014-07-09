@@ -19,6 +19,7 @@
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 #import "ModalOverlayHelper.h"
+#import "ForgotPasswordViewController.h"
 
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate, UIScrollViewDelegate>
 
@@ -38,15 +39,13 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) BOOL signUpMode;
 @property (nonatomic, assign) BOOL animating;
-
-// Forgot password.
-@property (nonatomic, strong) UILabel *forgotLabel;
-@property (nonatomic, strong) CKTextFieldView *forgotEmailView;
-@property (nonatomic, strong) CKSignInButtonView *forgotButton;
 @property (nonatomic, strong) UIButton *leftArrowButton;
 
 // Facebook new user alert.
 @property (nonatomic, strong) UIAlertView *facebookNewUserAlert;
+
+// Forgot VC
+@property (nonatomic, strong) ForgotPasswordViewController *forgotPasswordViewController;
 
 @end
 
@@ -242,8 +241,6 @@
             [self.emailPasswordView becomeFirstResponder];
         } else if (textFieldView == self.emailPasswordView) {
             [self emailButtonTapped];
-        } else if (textFieldView == self.forgotEmailView) {
-            [self forgotButtonTapped];
         }
     }
 }
@@ -266,7 +263,7 @@
     
     // Re-enable the forgot button.
     if (!decelerate && self.scrollView.contentOffset.x == 0) {
-        [self.forgotButton setText:[self forgotButtonText] activity:NO animated:NO enabled:YES];
+        [self.forgotPasswordViewController reset];
     }
     
     // Fade in the arrow if we're on the forgot page.
@@ -279,7 +276,7 @@
     
     // Re-enable the forgot button.
     if (self.scrollView.contentOffset.x == 0) {
-        [self.forgotButton setText:[self forgotButtonText] activity:NO animated:NO enabled:YES];
+        [self.forgotPasswordViewController reset];
     }
     
     // Fade in the arrow if we're on the forgot page.
@@ -323,15 +320,6 @@
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     }
     return _titleLabel;
-}
-
-- (UILabel *)forgotLabel {
-    if (!_forgotLabel) {
-        _forgotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _forgotLabel.attributedText = [self attributedTextForTitleLabelWithText:@"RESET PASSWORD"];
-        [_forgotLabel sizeToFit];
-    }
-    return _forgotLabel;
 }
 
 - (UIImageView *)dividerView {
@@ -431,8 +419,6 @@
         [self facebookButtonTapped];
     } else if (buttonView == self.emailButton) {
         [self emailButtonTapped];
-    } else if (buttonView == self.forgotButton) {
-        [self forgotButtonTapped];
     }
 }
 
@@ -531,39 +517,11 @@
 
 - (void)initForgotView {
     
-    CGFloat labelFieldGap = 26.0;
-    CGFloat fieldButtonGap = 14.0;
-    
-    // Forgot label.
-    CGRect forgotLabelFrame = self.forgotLabel.frame;
-    
-    // Forgot email.
-    self.forgotEmailView = [[CKTextFieldView alloc] initWithWidth:self.emailAddressView.frame.size.width delegate:self
-                                                      placeholder:@"Email Address" password:NO submit:YES];
-    CGRect forgotEmailFrame = self.forgotEmailView.frame;
-    forgotEmailFrame.origin.y = forgotLabelFrame.origin.y + forgotLabelFrame.size.height + labelFieldGap;
-    [self.scrollView addSubview:self.forgotEmailView];
-    
-    // Send button.
-    self.forgotButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ self.emailButton.frame.size.width, 83.0 }
-                                                            text:[self forgotButtonText] activity:NO delegate:self];
-    CGRect forgotButtonFrame = self.forgotButton.frame;
-    forgotButtonFrame.origin.y = forgotEmailFrame.origin.y + fieldButtonGap;
-    
-    // Update positioning.
-    CGRect combinedFrame = CGRectUnion(forgotLabelFrame, CGRectUnion(forgotEmailFrame, forgotButtonFrame));
-    forgotLabelFrame.origin.x = self.scrollView.bounds.size.width + floorf((self.scrollView.bounds.size.width - forgotLabelFrame.size.width) / 2.0);
-    forgotLabelFrame.origin.y = floorf((self.scrollView.bounds.size.height - combinedFrame.size.height) / 2.0) - 25.0;
-    self.forgotLabel.frame = forgotLabelFrame;
-    forgotEmailFrame.origin.x = self.scrollView.bounds.size.width + floorf((self.scrollView.bounds.size.width - forgotEmailFrame.size.width) / 2.0);
-    forgotEmailFrame.origin.y = forgotLabelFrame.origin.y + forgotLabelFrame.size.height + labelFieldGap;
-    self.forgotEmailView.frame = forgotEmailFrame;
-    forgotButtonFrame.origin.x = self.scrollView.bounds.size.width + floorf((self.scrollView.bounds.size.width - forgotButtonFrame.size.width) / 2.0);
-    forgotButtonFrame.origin.y = forgotEmailFrame.origin.y + forgotEmailFrame.size.height + fieldButtonGap;
-    self.forgotButton.frame = forgotButtonFrame;
-    [self.scrollView addSubview:self.forgotLabel];
-    [self.scrollView addSubview:self.forgotEmailView];
-    [self.scrollView addSubview:self.forgotButton];
+    self.forgotPasswordViewController = [[ForgotPasswordViewController alloc] init];
+    CGRect forgotFrame = self.forgotPasswordViewController.view.frame;
+    forgotFrame.origin.x = self.scrollView.bounds.size.width;
+    self.forgotPasswordViewController.view.frame = forgotFrame;
+    [self.scrollView addSubview:self.forgotPasswordViewController.view];
     
     // Left arrow.
     UIButton *leftArrowButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_login_leftarrow.png"]
@@ -759,42 +717,6 @@
         }];
     }
     
-}
-
-- (void)forgotButtonTapped {
-    
-    // Make sure all fields are validated before proceeding.
-    BOOL validated = [self validateFields:@[self.forgotEmailView]];
-    if (!validated) {
-        return;
-    }
-    
-    // Inform for modal.
-    [self.delegate signUpViewControllerModalRequested:YES];
-    
-    [self.forgotButton setText:@"SENDING" activity:YES animated:NO enabled:NO];
-    [self sendForgotPassword];
-}
-
-- (void)sendForgotPassword {
-    DLog();
-    NSString *email = [self.forgotEmailView inputText];
-    [CKUser requestPasswordResetForEmail:email completion:^{
-        
-        [self.forgotButton setText:@"PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
-        [self.forgotEmailView focusTextFieldView:NO];
-        
-    } failure:^(NSError *error) {
-        
-        [self.forgotButton setText:@"EMAIL ADDRESS IS NOT REGISTERED" activity:NO animated:NO enabled:NO];
-        
-        // Re-enable the forgot button.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self.forgotButton setText:[self forgotButtonText] activity:NO
-                              animated:NO enabled:YES];
-        });
-        
-    }];
 }
 
 - (void)registerViaEmail {
@@ -1023,16 +945,6 @@
                 [self.emailPasswordView setValidated:NO showIcon:YES];
                 validated = NO;
             }
-            
-        } else if (textFieldView == self.forgotEmailView) {
-            
-            if ([CKTextFieldViewHelper isValidEmailForString:text]) {
-                [self.forgotEmailView setValidated:YES showIcon:YES];
-            } else {
-                [self.forgotEmailView setValidated:NO showIcon:YES];
-                validated = NO;
-            }
-            
         }
     }
     return validated;

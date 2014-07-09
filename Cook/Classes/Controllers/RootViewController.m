@@ -256,12 +256,6 @@
     }
 }
 
-- (void)benchtopLoggedOutCompletion:(void (^)())completion {
-    if (self.benchtopLevel != kBenchtopLevel) {
-        [self snapToLevel:kBenchtopLevel bounce:NO completion:completion];
-    }
-}
-
 - (void)backgroundFetchEnabled {
     if (self.benchtopLevel != kBenchtopLevel) {
         [self snapToLevel:kBenchtopLevel bounce:NO completion:nil];

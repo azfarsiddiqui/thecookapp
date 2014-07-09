@@ -853,6 +853,7 @@
 		76B3AEBE174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B3AEAC174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png */; };
 		76B5553319094C5600430A71 /* StoreCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B5553219094C5600430A71 /* StoreCollectionViewLayout.m */; };
 		76B55CBB17E3EFE400965BD0 /* Application License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 76B55CBA17E3EFE400965BD0 /* Application License.txt */; };
+		76B64AD6196CDB5F004899D5 /* ForgotPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B64AD5196CDB5F004899D5 /* ForgotPasswordViewController.m */; };
 		76B78A3A1810B3960074068A /* cook_dash_book_notifications_red.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A381810B3960074068A /* cook_dash_book_notifications_red.png */; };
 		76B78A3B1810B3960074068A /* cook_dash_book_notifications_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A391810B3960074068A /* cook_dash_book_notifications_red@2x.png */; };
 		76B78A4C18110A7C0074068A /* cook_dash_icons_customise_green.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B78A3C18110A7B0074068A /* cook_dash_icons_customise_green.png */; };
@@ -2655,6 +2656,8 @@
 		76B5553119094C5600430A71 /* StoreCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreCollectionViewLayout.h; sourceTree = "<group>"; };
 		76B5553219094C5600430A71 /* StoreCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreCollectionViewLayout.m; sourceTree = "<group>"; };
 		76B55CBA17E3EFE400965BD0 /* Application License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Application License.txt"; sourceTree = "<group>"; };
+		76B64AD4196CDB5F004899D5 /* ForgotPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgotPasswordViewController.h; sourceTree = "<group>"; };
+		76B64AD5196CDB5F004899D5 /* ForgotPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgotPasswordViewController.m; sourceTree = "<group>"; };
 		76B78A381810B3960074068A /* cook_dash_book_notifications_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_book_notifications_red.png; sourceTree = "<group>"; };
 		76B78A391810B3960074068A /* cook_dash_book_notifications_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_book_notifications_red@2x.png"; sourceTree = "<group>"; };
 		76B78A3C18110A7B0074068A /* cook_dash_icons_customise_green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise_green.png; sourceTree = "<group>"; };
@@ -5603,6 +5606,8 @@
 				76BF202317544140000F0798 /* SignupViewController.m */,
 				76BF202B17546D31000F0798 /* PageHeaderView.h */,
 				76BF202C17546D31000F0798 /* PageHeaderView.m */,
+				76B64AD4196CDB5F004899D5 /* ForgotPasswordViewController.h */,
+				76B64AD5196CDB5F004899D5 /* ForgotPasswordViewController.m */,
 			);
 			path = Welcome;
 			sourceTree = "<group>";
@@ -9046,6 +9051,7 @@
 				764F4D07179CE85A00821221 /* UICollectionView+Draggable.m in Sources */,
 				F60C570E17E3CB2600912544 /* UIDevice+Hardware.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
+				76B64AD6196CDB5F004899D5 /* ForgotPasswordViewController.m in Sources */,
 				F695F4DC1883B52700A63D8E /* CKGrowingTextViewEditViewController.m in Sources */,
 				764F4D04179CE85A00821221 /* LSCollectionViewHelper.m in Sources */,
 				768A1C5B18E9226F00B192EF /* SearchRecipeGridLayout.m in Sources */,

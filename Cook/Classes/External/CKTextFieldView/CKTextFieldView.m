@@ -160,7 +160,10 @@
 }
 
 - (void)setText:(NSString *)text {
-    self.textField.text = text;
+    if ([text length] > 0) {
+        [self showPlaceholder:NO animated:NO];
+        self.textField.text = text;
+    }
 }
 
 - (BOOL)becomeFirstResponder {

@@ -432,17 +432,7 @@
 - (void)processLoginLogout {
     
     if ([self.currentUser isSignedIn]) {
-        
-//        [self.delegate settingsViewControllerAccountRequested];
-        
-        [CKUser logoutWithCompletion:^{
-            
-            // Post logout.
-            [EventHelper postLogout];
-        } failure:^(NSError *error) {
-        }];
-        
-        
+        [self.delegate settingsViewControllerAccountRequested];
     } else {
         [self.delegate settingsViewControllerSignInRequested];
     }

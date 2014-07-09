@@ -670,7 +670,7 @@
 }
 
 - (UIImage *)accountViewControllerBlurredImageForDash {
-    return [self darkDashBlurredImage];
+    return [self dashBlurredImage];
 }
 
 #pragma mark - Properties
@@ -1439,20 +1439,28 @@
     self.currentUser = nil;
     self.newUser = NO;
     
+    if (self.accountViewController) {
+        __weak typeof(self) weakSelf = self;
+        [self hideOverlayForViewController:self.accountViewController completion:^{
+            weakSelf.accountViewController = nil;
+            [weakSelf performLogout];
+        }];
+    } else {
+        [self performLogout];
+    }
+    
+}
+
+- (void)performLogout {
+    
     // Reload benchtop.
     [self clearDashCompletion:^{
-        
-        [self.delegate benchtopLoggedOutCompletion:^{
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.collectionView setContentOffset:CGPointZero animated:NO];
-                [self loadBooks];
-            });
-                
-        }];
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.collectionView setContentOffset:CGPointZero animated:NO];
+            [self loadBooks];
+        });
     }];
-        
+    
 }
 
 - (void)themeChanged:(NSNotification *)notification {

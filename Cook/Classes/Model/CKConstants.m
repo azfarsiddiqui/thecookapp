@@ -31,8 +31,8 @@ NSString *const kUserAttrFirstName              = @"firstName";
 NSString *const kUserAttrLastName               = @"lastName";
 NSString *const kUserAttrProfilePhoto           = @"profilePhoto";
 NSString *const kUserAttrCoverPhoto             = @"coverPhoto";
-NSString *const kUserAttrEmail                  = @"password";
-NSString *const kUserAttrPassword               = @"email";
+NSString *const kUserAttrEmail                  = @"email";
+NSString *const kUserAttrPassword               = @"password";
 NSString *const kUserAttrTheme                  = @"theme";
 NSString *const kUserAttrMeasureType            = @"measureType";
 
