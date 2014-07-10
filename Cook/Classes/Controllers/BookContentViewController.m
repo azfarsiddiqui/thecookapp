@@ -420,7 +420,7 @@
         return ([page CK_equalsIgnoreCase:text]);
     }] && ![text CK_equalsIgnoreCase:self.page]) {
         canSave = NO;
-        [editViewController updateTitle:@"PAGE ALREADY EXISTS" toast:YES];
+        [editViewController updateTitle:NSLocalizedString(@"PAGE ALREADY EXISTS", nil) toast:YES];
     }
         
     return canSave;
@@ -663,12 +663,12 @@
 - (void)deleteTapped:(id)sender {
     NSString *message = nil;
     if ([self.recipes count] > 0) {
-        message = @"This will also delete the recipes on this page.";
+        message = NSLocalizedString(@"This will also delete the recipes on this page.", nil);
     }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Page?"
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Delete Page?", nil)
                                                         message:message
                                                        delegate:self
-                                              cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
     [alertView show];
 }
 
@@ -712,7 +712,7 @@
 }
 
 - (void)renamePage {
-    self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"RENAMING PAGE"];
+    self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:NSLocalizedString(@"RENAMING PAGE", nil)];
     [ModalOverlayHelper showModalOverlayForViewController:self.progressOverlayViewController
                                                      show:YES
                                                completion:^{
@@ -746,13 +746,13 @@
                                                                  }
                                                                  failure:^(NSError *error) {
                                                                      
-                                                                     [weakSelf.progressOverlayViewController updateWithTitle:@"Unable to Rename" delay:1.5 completion:^{
+                                                                     [weakSelf.progressOverlayViewController updateWithTitle:NSLocalizedString(@"Unable to Rename", nil) delay:1.5 completion:^{
                                                                          
                                                                          // Unable to rename error.
                                                                          if ([CKError bookPageRenameBlockedError:error]) {
                                                                              [[[UIAlertView alloc] initWithTitle:nil
-                                                                                                         message:@"Sorry, this page contains too many recipes to rename."
-                                                                                                        delegate:nil cancelButtonTitle:@"OK"
+                                                                                                         message:NSLocalizedString(@"Sorry, this page contains too many recipes to rename.", nil)
+                                                                                                        delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                                                                                otherButtonTitles:nil] show];
                                                                          }
                                                                          
@@ -768,7 +768,7 @@
                                                                                                        delegate:self
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
-                                                                                                          title:@"Page Name"
+                                                                                                          title:NSLocalizedString(@"Page Name", nil)
                                                                                                  characterLimit:16];
     editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;

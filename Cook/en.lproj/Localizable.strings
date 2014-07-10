@@ -18,7 +18,7 @@
 "NO PAGES" = "NO PAGES";
 
 // Dash
-"NEW" =  "NEW";
+"NEW" = "NEW";
 "CANNOT CONNECT" = "CANNOT CONNECT";
 "CHECK YOUR WI-FI OR CELLULAR DATA" = "CHECK YOUR WI-FI OR CELLULAR DATA";
 
@@ -28,7 +28,7 @@
 "EDIT PROFILE" = "EDIT PROFILE";
 "CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO" = "CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO";
 "GET STARTED" = "GET STARTED";
-"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE...";
+"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE…";
 "YOUR PROFILE" = "YOUR PROFILE";
 "SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE" = "SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE";
 
@@ -99,8 +99,8 @@
 "SUGGESTIONS" = "SUGGESTIONS";
 "USE SEARCH TO FIND PEOPLE YOU KNOW" = "USE SEARCH TO FIND PEOPLE YOU KNOW";
 "Permission Required" = "Permission Required";
-"Couldn't Connect" = "Couldn't Connect";
-"NO WORLD BOOKS" = "COULDN'T LOAD WORLD BOOKS";
+"Couldn't Connect" = "Couldn’t Connect";
+"NO WORLD BOOKS" = "COULDN’T LOAD WORLD BOOKS";
 "UNABLE TO LOAD USER" = "UNABLE TO LOAD USER";
 
 // Likes
@@ -113,7 +113,7 @@
 "RESET PASSWORD" = "RESET PASSWORD";
 "FORGOT PASSWORD" = "FORGOT PASSWORD";
 "ALREADY HAVE AN ACCOUNT?" = "ALREADY HAVE AN ACCOUNT?";
-"DON'T HAVE AN ACCOUNT?" = "DON'T HAVE AN ACCOUNT?";
+"DON'T HAVE AN ACCOUNT?" = "DON’T HAVE AN ACCOUNT?";
 "SIGN UP" = "SIGN UP";
 "REGISTER WITH EMAIL" = "REGISTER WITH EMAIL";
 "REGISTER WITH FACEBOOK" = "REGISTER WITH FACEBOOK";
@@ -125,7 +125,7 @@
 "PLEASE CHECK YOUR EMAIL" = "PLEASE CHECK YOUR EMAIL";
 "EMAIL ADDRESS IS NOT REGISTERED" = "EMAIL ADDRESS IS NOT REGISTERED";
 "EMAIL IS ALREADY REGISTERED" = "EMAIL IS ALREADY REGISTERED";
-"COULDN'T CONNECT" = "COULDN'T CONNECT";
+"COULDN'T CONNECT" = "COULDN’T CONNECT";
 "INCORRECT EMAIL OR PASSWORD" = "INCORRECT EMAIL OR PASSWORD";
 "CHATTING WITH FACEBOOK" = "CHATTING WITH FACEBOOK";
 "Create Account" = "Create Account";
@@ -161,7 +161,7 @@
 "Already Added to %@" = "Already Added to %@";
 "Close" = "Close";
 "Delete Recipe?" = "Delete Recipe?";
-"Sorry, you can't save an empty recipe" = "Sorry, you can't save an empty recipe";
+"Sorry, you can't save an empty recipe" = "Sorry, you can’t save an empty recipe";
 "Unable to Save" = "Unable to Save";
 "Please try again soon" = "Please try again soon";
 "DELETING" = "DELETING";
@@ -174,7 +174,7 @@
 
 // Search
 "RECIPE, INGREDIENT OR TAG" = "RECIPE, INGREDIENT OR TAG";
-"COULDN'T CONNECT, PLEASE TRY AGAIN" = "COULDN'T CONNECT, PLEASE TRY AGAIN";
+"COULDN'T CONNECT, PLEASE TRY AGAIN" = "COULDN’T CONNECT, PLEASE TRY AGAIN";
 "POPULAR" = "POPULAR";
 "LATEST" = "LATEST";
 
@@ -193,7 +193,7 @@
 "SUPPORT" = "SUPPORT";
 "FACEBOOK" = "FACEBOOK";
 "TWITTER" = "TWITTER";
-"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN’T CONNECT TO FACEBOOK";
 
 // Share
 "Check out this recipe" = "Check out this recipe";
@@ -210,25 +210,25 @@
 "Please set up iMessage in Settings" = "Please set up iMessage in your iPad Settings";
 "%@ shared a recipe from Cook" = "%@ shared a recipe from Cook";
 "A recipe from Cook" = "A recipe from Cook";
-"Error in posting to Facebook" = "Couldn't post to Facebook";
+"Error in posting to Facebook" = "Couldn’t post to Facebook";
 "Please set up a Twitter account in the Settings app" = "Please set up a Twitter account in your iPad Settings";
-"Error in posting to Mail" = "Couldn't share to Mail";
-"Error in posting to Message" = "Couldn't share to iMessage";
+"Error in posting to Mail" = "Couldn’t share to Mail";
+"Error in posting to Message" = "Couldn’t share to iMessage";
 "Error" = "Error";
-"Error in sharing" = "Couldn't Share Recipe";
+"Error in sharing" = "Couldn’t Share Recipe";
 "Check out my recipe" = "Check out my recipe";
 "via @thecookapp" = "via @thecookapp";
 
 // Welcome
 "WELCOME" = "WELCOME";
-"Cook is the place to create and share your recipes with the world." = "Cook is the place to create and share your recipes with the world.";
-"YOUR COOKBOOK" = "YOUR COOKBOOK";
-"Customize the cover of your book then add your cherished family recipes, the meals you cook regularly, tips, tricks, anything food related." = "Customize the cover of your book then add your cherished family recipes, the meals you cook regularly, tips, tricks, anything food related.";
+"Cook is the place to create and share %@your recipes with the world." = "Cook is the place to create and share %@your recipes with the world.";
+"YOUR%@COOKBOOK" = "YOUR%@COOKBOOK";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related.";
 "SHARE YOUR RECIPES" = "SHARE YOUR RECIPES";
-"Make your recipes public and share them with everyone or keep them just for close friends, the choice is yours." = "Make your recipes public and share them with everyone or keep them just for close friends, the choice is yours.";
+"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours.";
 "A WORLD OF RECIPES" = "A WORLD OF RECIPES";
-"Pull down on your bench to reveal the Library with Cookbooks and recipes from all over the world." = "Pull down on your bench to reveal the Library with Cookbooks and recipes from all over the world.";
-"LET'S GET STARTED..." = "LET'S GET STARTED...";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world.";
+"LET'S GET STARTED..." = "LET’S GET STARTED…";
 
 // Ingredients
 "TAP BELOW TO ADD" = "TAP BELOW TO ADD";

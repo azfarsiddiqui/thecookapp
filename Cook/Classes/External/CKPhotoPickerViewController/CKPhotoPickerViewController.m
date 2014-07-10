@@ -182,7 +182,7 @@
     DLog (@"Free memory: %f, Image Memory: %f", ([[UIDevice currentDevice] userMemory]/bytesPerMB)/4, totalMB);
     if (totalMB > ([[UIDevice currentDevice] userMemory]/bytesPerMB)/4)
     {
-        UIAlertView *sizeAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Load Photo" message:@"The image you selected is too large" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *sizeAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Load Photo" message:@"The image you selected is too large" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [sizeAlert show];
     }
     else

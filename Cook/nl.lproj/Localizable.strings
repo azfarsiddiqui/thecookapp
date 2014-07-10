@@ -1,0 +1,237 @@
+// Pages
+"PAGE ALREADY EXISTS" = "PAGINA BESTAAT AL";
+"ADD PAGE" = "PAGINA TOEVOEGEN";
+"This will also delete the recipes on this page." = "Hiermee worden ook de recepten op deze pagina verwijderd.";
+"Delete Page?" = "Pagina verwijderen?";
+"RENAMING PAGE" = "NAAM PAGINA WIJZIGEN";
+"Unable to Rename" = "Kan naam niet wijzigen";
+"Sorry, this page contains too many recipes to rename." = "Deze pagina bevat teveel recepten om de naam te kunnen wijzigen.";
+"Page Name" = "Naam pagina";
+
+// General
+"OK" = "OK";
+"Cancel" = "Annuleren";
+
+// Add Pin
+"ADDING TO PAGE" = "TOEVOEGEN AAN PAGINA";
+"ADD TO BOOK" = "TOEVOEGEN AAN BOEK";
+"NO PAGES" = "GEEN PAGINA’S";
+
+// Dash
+"NEW" = "NIEUW";
+"CANNOT CONNECT" = "KAN GEEN VERBINDING MAKEN";
+"CHECK YOUR WI-FI OR CELLULAR DATA" = "CONTROLEER UW WI-FI OF MOBIELE GEGEVENS";
+
+// Help Cards
+"ADD A RECIPE" = "VOEG EEN RECEPT TOE";
+"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!" = "OF FOTO’S, TIPS, NOTITIES, ALLES OVER VOEDING!";
+"EDIT PROFILE" = "BEWERK PROFIEL";
+"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO" = "WIJZIG UW ACHTERGROND, PROFIELFOTO EN BIOGRAFIE";
+"GET STARTED" = "AAN DE SLAG";
+"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "MAAK EEN NIEUWE PAGINA VOOR UW RECEPTEN EN GEEF DEZE EEN NAAM NAAR UW KEUZE…";
+"YOUR PROFILE" = "UW PROFIEL";
+"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE" = "VEEG NAAR RECHTS OM UW PROFIEL WEER TE GEVEN EN TE BEWERKEN";
+
+// Book Profile
+"RECIPE" = "RECEPT";
+"RECIPES" = "RECEPTEN";
+
+// Book Summary
+"FRIEND" = "VRIEND";
+"FRIENDS" = "VRIENDEN";
+"ADD FRIEND" = "VRIEND TOEVOEGEN";
+"%@ WANTS TO BE FRIENDS" = "%@ HEEFT U EEN VRIENDSCHAPSVERZOEK VERSTUURD";
+"REQUESTED" = "AANGEVRAAGD";
+"SIGN IN TO VIEW THIS BOOK" = "MELD AAN OM DIT BOEK WEER TE GEVEN";
+"Send Friend Request?" = "Vriendenverzoek verzenden?";
+"Remove Friend" = "Vriend verwijderen";
+"Remove" = "Verwijderen";
+"ADD TO BENCH" = "TOEVOEGEN AAN BANK";
+"BOOK ON BENCH" = "BOEK OP BANK";
+"UNABLE TO ADD" = "KAN NIET TOEVOEGEN";
+"ACCEPTING" = "ACCEPTEREN";
+"UNABLE TO SEND" = "KAN NIET VERZENDEN";
+"UNABLE TO REMOVE" = "KAN NIET VERWIJDEREN";
+
+// Camera
+"NONE" = "GEEN";
+"AUTO" = "AUTO";
+"OUTDOORS" = "BUITENSHUIS";
+"INDOOR" = "BINNENSHUIS";
+"VIBRANT" = "LEVENDIG";
+"WARM" = "WARM";
+"COOL" = "KOEL";
+"TEXT" = "TEKST";
+"Unable to Load Photo" = "Kan foto niet laden";
+"The image you selected is too large" = "De door u geselecteerde afbeelding is te groot";
+"Delete Photo?" = "Foto verwijderen?";
+
+// Comments
+"Comment" = "Opmerking";
+"COMMENTS" = "OPMERKINGEN";
+"NO COMMENTS" = "GEEN OPMERKINGEN";
+"ADD COMMENT" = "OPMERKING TOEVOEGEN";
+
+// Ingredients
+"INGREDIENT" = "INGREDIËNT";
+"QTY" = "HOEVEELHEID";
+"Release to add" = "Loslaten om toe te voegen";
+"Pull to add" = "Trekken om toe te voegen";
+"Release to delete" = "Loslaten om te verwijderen";
+"Swipe to delete" = "Vegen om te verwijderen";
+"ADD ITEM" = "ITEM TOEVOEGEN";
+
+// Library
+"NO COLLECTIONS BOOKS" = "GEEN COLLECTIEBOEKEN";
+"NO FEATURED BOOKS" = "GEEN AANBEVOLEN BOEKEN";
+"PLEASE CHECK BACK SOON" = "KOM SNEL TERUG";
+"NO FRIENDS" = "GEEN VRIENDEN";
+"SIGN IN TO ADD FRIENDS" = "MELD AAN OM VRIENDEN TOE TE VOEGEN";
+"NO RESULTS" = "GEEN RESULTATEN";
+"TRY SEARCHING FOR ANOTHER NAME" = "PROBEER EEN ANDERE NAAM TE ZOEKEN";
+"GET SUGGESTIONS" = "VRAAG SUGGESTIES";
+"UNABLE TO FETCH BOOKS" = "KAN BOEKEN NIET OPHALEN";
+"PLEASE TRY AGAIN LATER" = "PROBEER HET LATER OPNIEUW";
+"SEARCH BY NAME" = "ZOEKEN OP NAAM";
+"COLLECTIONS" = "COLLECTIES";
+"FEATURED" = "AANBEVOLEN";
+"WORLD" = "WERELD";
+"SUGGESTIONS" = "SUGGESTIES";
+"USE SEARCH TO FIND PEOPLE YOU KNOW" = "GEBRUIK ZOEKEN OM MENSEN DIE U KENT, TE ZOEKEN";
+"Permission Required" = "Toestemming vereist";
+"Couldn't Connect" = "Kan geen verbinding maken";
+"NO WORLD BOOKS" = "KAN GEEN WERELDBOEKEN LADEN";
+"UNABLE TO LOAD USER" = "KAN GEBRUIKER NIET LADEN";
+
+// Likes
+"LIKES" = "VIND IK LEUKS";
+"LIKED" = "LEUK GEVONDEN";
+
+// Signin
+"SIGN IN" = "AANMELDEN";
+"REGISTER" = "REGISTREREN";
+"RESET PASSWORD" = "WACHTWOORD RESETTEN";
+"FORGOT PASSWORD" = "WACHTWOORD VERGETEN";
+"ALREADY HAVE AN ACCOUNT?" = "HEBT U AL EEN ACCOUNT?";
+"DON'T HAVE AN ACCOUNT?" = "NOG GEEN ACCOUNT?";
+"SIGN UP" = "INSCHRIJVEN";
+"REGISTER WITH EMAIL" = "REGISTREREN MET E-MAIL";
+"REGISTER WITH FACEBOOK" = "REGISTREREN MET FACEBOOK";
+"SIGN IN WITH FACEBOOK" = "AANMELDEN MET FACEBOOK";
+"SEND" = "VERZENDE";
+"SIGNING UP" = "INSCHRIJVEN";
+"SIGNING IN" = "AANMELDEN";
+"SENDING" = "VERZENDEN";
+"PLEASE CHECK YOUR EMAIL" = "CONTROLEER UW E-MAIL";
+"EMAIL ADDRESS IS NOT REGISTERED" = "E-MAILADRES IS NIET GEREGISTREERD";
+"EMAIL IS ALREADY REGISTERED" = "E-MAIL IS AL GEREGISTREERD";
+"COULDN'T CONNECT" = "KAN GEEN VERBINDING MAKEN";
+"INCORRECT EMAIL OR PASSWORD" = "ONJUISTE E-MAIL OF WACHTWOORD";
+"CHATTING WITH FACEBOOK" = "CHATTEN VIA FACEBOOK";
+"Create Account" = "Account maken";
+"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Uw Facebook-account is niet geregistreerd. Wilt u een nieuwe Cook-account maken?";
+"Create" = "Maken";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+
+// Measurements
+"METRIC" = "METRISCH";
+"US IMPERIAL" = "US IMPERIAL";
+
+// Notifications
+"You are now friends with %@." = "U bent nu bevriend met %@.";
+"%@ wants to be friends." = "%@ heeft u een vriendschapsverzoek gestuurd.";
+"%@ commented on %@." = "%@ heeft gereageerd op %@.";
+"%@ liked %@." = "%@ vind %@ leuk.";
+"%@ added %@." = "%@ heeft %@ toegevoegd.";
+"%@ is now featured in %@ in %@." = "%@ is nu aanbevolen in %@ in %@.";
+"%@ and %@" = "%@ en %@";
+"NOTIFICATIONS" = "MELDINGEN";
+"NO NOTIFICATIONS" = "GEEN MELDINGEN";
+
+// Recipe
+"TYPE UP THE RECIPE" = "TYP HET RECEPT";
+"TITLE" = "TITEL";
+"TAGS" = "LABELS";
+"WRITE SOMETHING" = "SCHRIJF IETS";
+"INGREDIENTS" = "INGREDIËNTEN";
+"METHOD OR STEPS" = "METHODE OF STAPPEN";
+"PHOTO" = "FOTO";
+"No" = "Nee";
+"Remove Recipe?" = "Recept verwijderen?";
+"Already Added to %@" = "Al toegevoegd aan %@";
+"Close" = "Sluiten";
+"Delete Recipe?" = "Recept verwijderen?";
+"Sorry, you can't save an empty recipe" = "U kunt geen leeg recept opslaan";
+"Unable to Save" = "Kan niet opslaan";
+"Please try again soon" = "Probeer het binnenkort opnieuw";
+"DELETING" = "VERWIJDEREN BEZIG";
+"REMOVING" = "WISSEN BEZIG";
+"SAVING" = "OPSLAAN BEZIG";
+"SECRET" = "GEHEIM";
+"PUBLIC" = "OPENBAAR";
+"SECRET RECIPE" = "GEHEIM RECEPT";
+"VISIBLE TO FRIENDS" = "ZICHTBAAR VOOR VRIENDEN";
+
+// Search
+"RECIPE, INGREDIENT OR TAG" = "RECEPT, INGREDIËNT OF LABEL";
+"COULDN'T CONNECT, PLEASE TRY AGAIN" = "KAN GEEN VERBINDING MAKEN. PROBEER HET OPNIEUW";
+"POPULAR" = "POPULAIR";
+"LATEST" = "NIEUWSTE";
+
+// Serves
+"Makes" = "Bereidingen";
+"Serves" = "Serveringen";
+"Prep" = "Voorbereiden";
+"Cook" = "Koken";
+
+// Settings
+"LOGOUT" = "AFMELDEN";
+"MEASUREMENTS" = "MATEN";
+"TERMS & CONDITIONS" = "VOORWAARDEN & BEPALINGEN";
+"PRIVACY" = "PRIVACY";
+"ABOUT" = "INFO";
+"SUPPORT" = "ONDERSTEUNING";
+"FACEBOOK" = "FACEBOOK";
+"TWITTER" = "TWITTER";
+"COULDN'T CONNECT TO FACEBOOK" = "KAN GEEN VERBINDING MAKEN MET FACEBOOK";
+
+// Share
+"Check out this recipe" = "Probeer dit recept";
+"Shared from Cook" = "Gedeeld van Cook";
+"SHARE RECIPE" = "RECEPT DELEN";
+"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "GEDEELDE RECEPTEN ZIJN OPENBAAR ZICHTBAAR OP HET WEB";
+"REPORT" = "RAPPORT";
+"Couldn’t Add Facebook" = "Kan Facebook niet toevoegen";
+"The Facebook account is already used by another Cook account" = "De Facebook-account wordt al gebruikt door een andere Cook-account";
+"Go to iPad Settings > Facebook and turn on for Cook" = "Ga naar iPad-instellingen  > Facebook en schakel in voor Cook";
+"Mail" = "E-mail";
+"Please set up a mail account in Settings" = "Maak een e-mailaccount aan in uw iPad-instellingen";
+"Message" = "Bericht";
+"Please set up iMessage in Settings" = "Stel iMessage in uw iPad-instellingen in";
+"%@ shared a recipe from Cook" = "%@ heeft een recept van Cook gedeeld";
+"A recipe from Cook" = "Een recept van Cook";
+"Error in posting to Facebook" = "Kan niet publiceren op Facebook";
+"Please set up a Twitter account in the Settings app" = "Stel een Twitter-account in uw iPad-instellingen in";
+"Error in posting to Mail" = "Kan niet delen met Mail";
+"Error in posting to Message" = "Kan niet delen met iMessage";
+"Error" = "Fout";
+"Error in sharing" = "Kan recept niet delen";
+"Check out my recipe" = "Bekijk mijn recept";
+"via @thecookapp" = "via @thecookapp";
+
+// Welcome
+"WELCOME" = "WELKOM";
+"Cook is the place to create and share %@your recipes with the world." = "Cook is de plaats waar u uw recepten %@kunt creëren en delen met de wereld.";
+"YOUR%@COOKBOOK" = "UW%@KOOKBOEK";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Pas de omslag van uw boek aan en%@voeg dan uw gekoesterde familierecepten toe, %@maar ook de maaltijden die u regelmatig bereidt, %@tips, trucs en alles wat met eten te maken heeft.";
+"SHARE YOUR RECIPES" = "UW RECEPTEN DELEN";
+"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "U kunt uw recepten openbaar maken %@of ze alleen met uw beste %@vrienden delen. De keuze is aan u.";
+"A WORLD OF RECIPES" = "EEN WERELD VAN RECEPTEN";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Trek omlaag op uw bank om de bibliotheek %@met kookboeken en recepten uit de %@hele wereld te onthullen.";
+"LET'S GET STARTED..." = "LATEN WE ERAAN BEGINNEN…";
+
+// Ingredients
+"TAP BELOW TO ADD" = "HIERONDER TIKKEN OM TOE TE VOEGEN";
+"PULL DOWN TO ADD ABOVE" = "OMLAAG TREKKEN OM BOVENAAN TOE TE VOEGEN";
+"SWIPE RIGHT TO DELETE" = "NAAR RECHTS VEGEN OM TE VERWIJDEREN";
+"PRESS AND DRAG TO REORDER" = "DRUKKEN EN SLEPEN OM OPNIEUW TE ORDENEN";

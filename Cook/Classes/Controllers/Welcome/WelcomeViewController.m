@@ -187,7 +187,7 @@
 
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Thin" size:70.0]
-                                                   text:[NSString stringWithFormat:@"YOUR%@COOKBOOK", [NSString CK_lineBreakString]]
+                                                   text:[NSString stringWithFormat:NSLocalizedString(@"YOUR%@COOKBOOK", nil), [NSString CK_lineBreakString]]
                                           textAlignment:NSTextAlignmentLeft
                                           availableSize:size paragraphBefore:-22.0];
         titleLabel.frame = CGRectMake(0.0,
@@ -197,7 +197,7 @@
         [_createPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related.", [NSString CK_lineBreakString], [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:NSLocalizedString(@"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related.", nil), [NSString CK_lineBreakString], [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentLeft availableSize:size];
         subtitleLabel.frame = CGRectMake(0.0,
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 2.0,
@@ -218,7 +218,7 @@
         
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Thin" size:70.0]
-                                                   text:@"SHARE YOUR RECIPES"
+                                                   text:NSLocalizedString(@"SHARE YOUR RECIPES", nil)
                                           textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-22.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
@@ -228,7 +228,7 @@
         [_collectPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours.", [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:NSLocalizedString(@"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours.", nil), [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 2.0,
@@ -251,7 +251,7 @@
         
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Thin" size:70.0]
-                                                   text:@"A WORLD OF RECIPES" textAlignment:NSTextAlignmentCenter
+                                                   text:NSLocalizedString(@"A WORLD OF RECIPES", nil) textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-22.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       334.0,
@@ -260,7 +260,7 @@
         [_libraryPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world.", [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:NSLocalizedString(@"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world.", nil), [NSString CK_lineBreakString], [NSString CK_lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height - 9.0,
@@ -277,7 +277,7 @@
         
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Thin" size:70.0]
-                                                   text:@"LET'S GET STARTED..." textAlignment:NSTextAlignmentCenter
+                                                   text:NSLocalizedString(@"LET'S GET STARTED...", nil) textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-22.0];
         _signUpPageView = titleLabel;
     }

@@ -1,0 +1,237 @@
+// Pages
+"PAGE ALREADY EXISTS" = "SEITE EXISTIERT BEREITS";
+"ADD PAGE" = "SEITE HINZUFÜGEN";
+"This will also delete the recipes on this page." = "Dies löscht auch die Rezepte auf dieser Seite.";
+"Delete Page?" = "Seite löschen?";
+"RENAMING PAGE" = "SEITE UMBENENNEN";
+"Unable to Rename" = "Kann nicht umbenennen";
+"Sorry, this page contains too many recipes to rename." = "Sorry, diese Seite enthält zu viele Rezepte, um sie umzubenennen.";
+"Page Name" = "Seitenname";
+
+// General
+"OK" = "OK";
+"Cancel" = "Abbrechen";
+
+// Add Pin
+"ADDING TO PAGE" = "ZU SEITE HINZUFÜGEN";
+"ADD TO BOOK" = "ZU BUCH HINZUFÜGEN";
+"NO PAGES" = "KEINE SEITEN";
+
+// Dash
+"NEW" = "NEU";
+"CANNOT CONNECT" = "KANN NICHT VERBINDEN";
+"CHECK YOUR WI-FI OR CELLULAR DATA" = "ÜBERPRÜFEN SIE IHR WI-FI ODER DATENVERBINDUNG";
+
+// Help Cards
+"ADD A RECIPE" = "EIN REZEPT HINZUFÜGEN";
+"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!" = "ODER FOTOS, TIPPS, NOTIZEN, ALLES WAS MIT ESSEN ZU TUN HAT!";
+"EDIT PROFILE" = "PROFIL BEARBEITEN";
+"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO" = "ÄNDERN SIE IHREN HINTERGRUND, PROFIL UND BIO";
+"GET STARTED" = "LOSLEGEN";
+"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "ERSTELLEN SIE EINE NEUE SEITE FÜR IHRE REZEPTE, BENENNEN SIE SIE, WIE SIE MÖCHTEN…";
+"YOUR PROFILE" = "IHR PROFIL";
+"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE" = "WISCHEN SIE NACH RECHTS, UM IHR PROFIL ANZUSEHEN UND ZU BEARBEITEN";
+
+// Book Profile
+"RECIPE" = "REZEPT";
+"RECIPES" = "REZEPTE";
+
+// Book Summary
+"FRIEND" = "FREUND";
+"FRIENDS" = "FREUNDE";
+"ADD FRIEND" = "FREUND HINZUFÜGEN";
+"%@ WANTS TO BE FRIENDS" = "%@ MÖCHTE MIT IHNEN BEFREUNDET SEIN";
+"REQUESTED" = "ANGEFORDERT";
+"SIGN IN TO VIEW THIS BOOK" = "EINLOGGEN, UM DIESES BUCH ANZUSEHEN";
+"Send Friend Request?" = "Freundschaftsanfrage senden?";
+"Remove Friend" = "Freund entfernen";
+"Remove" = "Entfernen";
+"ADD TO BENCH" = "ZU BANK HINZUFÜGEN";
+"BOOK ON BENCH" = "BUCH AUF BANK";
+"UNABLE TO ADD" = "KANN NICHT HINZUFÜGEN";
+"ACCEPTING" = "AKZEPTIEREN";
+"UNABLE TO SEND" = "KANN NICHT SENDEN";
+"UNABLE TO REMOVE" = "KANN NICHT ENTFERNEN";
+
+// Camera
+"NONE" = "KEINE";
+"AUTO" = "AUTO";
+"OUTDOORS" = "DRAUSSEN";
+"INDOOR" = "DRINNEN";
+"VIBRANT" = "VIBRIEREND";
+"WARM" = "WARM";
+"COOL" = "KÜHL";
+"TEXT" = "TEXT";
+"Unable to Load Photo" = "Kann Foto nicht";
+"The image you selected is too large" = "Das von Ihnen gewählte Bild ist zu groß";
+"Delete Photo?" = "Foto löschen?";
+
+// Comments
+"Comment" = "Kommentar";
+"COMMENTS" = "KOMMENTARE";
+"NO COMMENTS" = "KEINE KOMMENTARE";
+"ADD COMMENT" = "KOMMENTAR HINZUFÜGEN";
+
+// Ingredients
+"INGREDIENT" = "ZUTAT";
+"QTY" = "Menge";
+"Release to add" = "Zum Hinzufügen loslassen";
+"Pull to add" = "Zum Hinzufügen ziehen";
+"Release to delete" = "Zum Löschen loslassen";
+"Swipe to delete" = "Zum Löschen wischen";
+"ADD ITEM" = "OBJEKT HINZUFÜGEN";
+
+// Library
+"NO COLLECTIONS BOOKS" = "KEINE SAMMLUNGSBÜCHER";
+"NO FEATURED BOOKS" = "KEINE VORGESTELLTEN BÜCHER";
+"PLEASE CHECK BACK SOON" = "BITTE SCHAUEN SIE BALD WIEDER VORBEI";
+"NO FRIENDS" = "KEINE FREUNDE";
+"SIGN IN TO ADD FRIENDS" = "EINLOGGEN, UM FREUNDE HINZUZUFÜGEN";
+"NO RESULTS" = "KEINE ERGEBNISSE";
+"TRY SEARCHING FOR ANOTHER NAME" = "VERSUCHEN SIE, NACH EINEM ANDEREN NAMEN ZU SUCHEN";
+"GET SUGGESTIONS" = "VORSCHLÄGE EINHOLEN";
+"UNABLE TO FETCH BOOKS" = "KANN BÜCHER NICHT EINHOLEN";
+"PLEASE TRY AGAIN LATER" = "BITTE VERSUCHEN SIE ES SPÄTER ERNEUT";
+"SEARCH BY NAME" = "NACH NAMEN SUCHEN";
+"COLLECTIONS" = "SAMMLUNGEN";
+"FEATURED" = "VORGESTELLT";
+"WORLD" = "WELT";
+"SUGGESTIONS" = "VORSCHLÄGE";
+"USE SEARCH TO FIND PEOPLE YOU KNOW" = "VERWENDEN SIE DIE SUCHE, UM LEUTE, DIE SIE KENNEN, ZU FINDEN";
+"Permission Required" = "Erlaubnis erforderlich";
+"Couldn't Connect" = "Konnte nicht verbinden";
+"NO WORLD BOOKS" = "Konnte WELTBÜCHER NICHT LADEN";
+"UNABLE TO LOAD USER" = "KANN BENUTZER NICHT LADEN";
+
+// Likes
+"LIKES" = "GEFÄLLT MIR";
+"LIKED" = "GELIKED";
+
+// Signin
+"SIGN IN" = "EINLOGGEN";
+"REGISTER" = "REGISTRIEREN";
+"RESET PASSWORD" = "PASSWORT ZURÜCKSETZEN";
+"FORGOT PASSWORD" = "PASSWORT VERGESSEN";
+"ALREADY HAVE AN ACCOUNT?" = "HABEN SIE BEREITS EIN KONTO?";
+"DON'T HAVE AN ACCOUNT?" = "HABEN SIE KEIN KONTO?";
+"SIGN UP" = "REGISTRIEREN";
+"REGISTER WITH EMAIL" = "MIT EMAIL REGISTRIEREN";
+"REGISTER WITH FACEBOOK" = "MIT FACEBOOK REGISTRIEREN";
+"SIGN IN WITH FACEBOOK" = "MIT FACEBOOK EINLOGGEN";
+"SEND" = "SENDEN";
+"SIGNING UP" = "REGISTRIERE";
+"SIGNING IN" = "SLOGGE EIN";
+"SENDING" = "SENDEN";
+"PLEASE CHECK YOUR EMAIL" = "BITTE ÜBERPRÜFEN SIE IHRE EMAILS";
+"EMAIL ADDRESS IS NOT REGISTERED" = "EMAIL-ADRESSE IST NICHT REGISTRIERT";
+"EMAIL IS ALREADY REGISTERED" = "EMAIL IST BEREITS REGISTRIERT";
+"COULDN'T CONNECT" = "KONNTE NICHT VERBINDEN";
+"INCORRECT EMAIL OR PASSWORD" = "INKORREKTE EMAIL ODER PASSWORT";
+"CHATTING WITH FACEBOOK" = "CHATTE MIT FACEBOOK";
+"Create Account" = "Konto erstellen";
+"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Ihr Facebook-Konto ist nicht registriert. Möchten Sie ein neues Cook-Konto erstellen?";
+"Create" = "Erstellen";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+
+// Measurements
+"METRIC" = "METRISCH ";
+"US IMPERIAL" = "US IMPERIAL";
+
+// Notifications
+"You are now friends with %@." = "Sie sind nun mit %@ befreundet.";
+"%@ wants to be friends." = "%@ möchte mit Ihnen befreundet sein.";
+"%@ commented on %@." = "%@ hat %@ kommentiert.";
+"%@ liked %@." = "%@ gefällt %@.";
+"%@ added %@." = "%@ hat %@ hinzugefügt.";
+"%@ is now featured in %@ in %@." = "%@ ist nun in %@ in %@ vorgestellt.";
+"%@ and %@" = "%@ und %@";
+"NOTIFICATIONS" = "BENACHRICHTIGUNGEN";
+"NO NOTIFICATIONS" = "KEINE BENACHRICHTIGUNGEN";
+
+// Recipe
+"TYPE UP THE RECIPE" = "SCHREIBEN SIE DAS REZEPT NIEDER";
+"TITLE" = "TITEL";
+"TAGS" = "TAGS";
+"WRITE SOMETHING" = "SCHREIBEN SIE ETWAS";
+"INGREDIENTS" = "ZUTATEN";
+"METHOD OR STEPS" = "METHODE ODER SCHRITTE";
+"PHOTO" = "FOTO";
+"No" = "Nein";
+"Remove Recipe?" = "Rezept entfernen?";
+"Already Added to %@" = "Bereits zu %@ hinzugefügt";
+"Close" = "Schließen";
+"Delete Recipe?" = "Rezept löschen?";
+"Sorry, you can't save an empty recipe" = "Sorry, Sie können kein leeres Rezept sichern";
+"Unable to Save" = "Kann nicht sichern";
+"Please try again soon" = "Bitte versuchen Sie es bald erneut";
+"DELETING" = "LÖSCHEN";
+"REMOVING" = "ENTFERNEN";
+"SAVING" = "SICHERN";
+"SECRET" = "GEHEIM";
+"PUBLIC" = "ÖFFENTLICH";
+"SECRET RECIPE" = "GEHEIMREZEPT";
+"VISIBLE TO FRIENDS" = "FÜR FREUNDE SICHTBAR";
+
+// Search
+"RECIPE, INGREDIENT OR TAG" = "REZEPT, ZUTAT ODER TAG";
+"COULDN'T CONNECT, PLEASE TRY AGAIN" = "KONNTE NICHT VERBINDEN, BITTE ERNEUT VERSUCHEN";
+"POPULAR" = "BELIEBT";
+"LATEST" = "NEUESTE";
+
+// Serves
+"Makes" = "Macht";
+"Serves" = "Portionen";
+"Prep" = "Vorbereitung";
+"Cook" = "Kochen";
+
+// Settings
+"LOGOUT" = "AUSLOGGEN";
+"MEASUREMENTS" = "Maße";
+"TERMS & CONDITIONS" = "GESCHÄFTSBEDINGUNGEN";
+"PRIVACY" = "DATENSCHUTZ";
+"ABOUT" = "ÜBER";
+"SUPPORT" = "SUPPORT";
+"FACEBOOK" = "FACEBOOK";
+"TWITTER" = "TWITTER";
+"COULDN'T CONNECT TO FACEBOOK" = "KONNTE NICHT MIT FACEBOOK VERBINDEN";
+
+// Share
+"Check out this recipe" = "Sieh dir dieses Rezept an";
+"Shared from Cook" = "Geteilt mit Cook";
+"SHARE RECIPE" = "REZEPT TEILEN";
+"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "GETEILTE REZEPTE SIND ÖFFENTLICH IM WEB EINZUSEHEN";
+"REPORT" = "MELDEN";
+"Couldn’t Add Facebook" = "Konnte Facebook nicht hinzufügen";
+"The Facebook account is already used by another Cook account" = "Das Facebook-Konto wird bereits von einem anderen Cook-Konto benutzt";
+"Go to iPad Settings > Facebook and turn on for Cook" = "Gehen Sie in die iPad Einstellungen > Facebook und schalten Sie Cook ein";
+"Mail" = "Mail";
+"Please set up a mail account in Settings" = "Bitte richten Sie ein Email-Konto in Ihren iPad-Einstellungen ein";
+"Message" = "Nachricht";
+"Please set up iMessage in Settings" = "Bitte richten Sie iMessage in Ihren iPad-Einstellungen ein";
+"%@ shared a recipe from Cook" = "%@ hat ein Rezept von Cook geteilt";
+"A recipe from Cook" = "Ein Rezept von Cook";
+"Error in posting to Facebook" = "Konnte nicht auf Facebook posten";
+"Please set up a Twitter account in the Settings app" = "Bitte richten Sie ein Twitter-Konto in Ihren iPad-Einstellungen ein";
+"Error in posting to Mail" = "Konnte nicht via Mail teilen";
+"Error in posting to Message" = "Konnte nicht via iMessage teilen";
+"Error" = "Fehler";
+"Error in sharing" = "Konnte Rezept nicht teilen";
+"Check out my recipe" = "Sieh dir mein Rezept an";
+"via @thecookapp" = "via @thecookapp";
+
+// Welcome
+"WELCOME" = "WILLKOMMEN";
+"Cook is the place to create and share %@your recipes with the world." = "Cook ist der Ort, an dem Sie Ihre %@Rezepte erstellen und mit der Welt teilen.";
+"YOUR%@COOKBOOK" = "IHR%@KOCHBUCH";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personalisieren Sie das Cover Ihres Buchs,%@und fügen Sie dann Ihre wertvollen Familienrezepte%@, Gerichte, die Sie regelmäßig kochen, Tipps, Tricks,%@alles, was mit Essen zu tun hat, hinzu.";
+"SHARE YOUR RECIPES" = "TEILEN SIE IHRE REZEPTE";
+"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Veröffentlichen Sie Ihre Rezepte %@und teilen Sie sie mit jedermann, oder behalten %@Sie sie für enge Freunde, die Wahl liegt bei Ihnen.";
+"A WORLD OF RECIPES" = "EIEN WELT DER REZEPTE";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Ziehen Sie auf Ihrer Bank nach unten, %@um die Bibliothek mit Kochbüchern und Rezepten %@aus aller Welt zu enthüllen.";
+"LET'S GET STARTED..." = "LASSEN SIE UNS LOSLEGEN…";
+
+// Ingredients
+"TAP BELOW TO ADD" = "UNTEN TAPPEN, UM HINZUZUFÜGEN";
+"PULL DOWN TO ADD ABOVE" = "HERUNTERZIEHEN, UM OBEN HINZUZUFÜGEN";
+"SWIPE RIGHT TO DELETE" = "ZUM LÖSCHEN NACH RECHTS WISCHEN";
+"PRESS AND DRAG TO REORDER" = "ZUM NEU ANORDNEN DRÜCKEN UND ZIEHEN";

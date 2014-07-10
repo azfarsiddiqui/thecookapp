@@ -1,9 +1,237 @@
-/* 
-  Localizable.strings
-  Cook
+// Pages
+"PAGE ALREADY EXISTS" = "LA PÁGINA YA EXISTE";
+"ADD PAGE" = "AÑADIR PÁGINA";
+"This will also delete the recipes on this page." = "También se eliminarán las recetas de esta página.";
+"Delete Page?" = "¿Eliminar página?";
+"RENAMING PAGE" = "RENOMBRANDO PÁGINA";
+"Unable to Rename" = "Error al renombrar";
+"Sorry, this page contains too many recipes to rename." = "Esta página contiene demasiadas recetas para renombrarse.";
+"Page Name" = "Nombre de la página";
 
-  Created by Jeff Tan-Ang on 3/07/2014.
-  Copyright (c) 2014 Cook Apps Pty Ltd. All rights reserved.
-*/
-"WELCOME" = "Bienvenido";
-"Cook is the place to create and share %@your recipes with the world." = "Cook es el lugar para crear y compartir %@sus recetas con el mundo.";
+// General
+"OK" = "Aceptar";
+"Cancel" = "Cancelar";
+
+// Add Pin
+"ADDING TO PAGE" = "AÑADIENDO A LA PÁGINA";
+"ADD TO BOOK" = "AÑADIR AL LIBRO";
+"NO PAGES" = "NO HAY PÁGINAS";
+
+// Dash
+"NEW" = "NUEVO";
+"CANNOT CONNECT" = "ERROR AL CONECTAR";
+"CHECK YOUR WI-FI OR CELLULAR DATA" = "COMPRUEBA TU CONEXIÓN WI-FI O DE DATOS MÓVILES";
+
+// Help Cards
+"ADD A RECIPE" = "AÑADE UNA RECETA";
+"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!" = "O FOTOS, TRUCOS, NOTAS, ¡CUALQUIER COSA RELACIONADA CON LA COMIDA!";
+"EDIT PROFILE" = "EDITA TU PERFIL";
+"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO" = "MODIFICA EL FONDO, TU IMAGEN DE PERFIL Y TU BIOGRAFÍA";
+"GET STARTED" = "EMPEZAR";
+"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "CREA UNA NUEVA PÁGINA PARA TUS RECETAS, LLÁMALA COMO QUIERAS…";
+"YOUR PROFILE" = "TU PERFIL";
+"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE" = "DESLIZA A LA DERECHA PARA VER Y EDITAR TU PERFIL";
+
+// Book Profile
+"RECIPE" = "RECETA";
+"RECIPES" = "RECETAS";
+
+// Book Summary
+"FRIEND" = "AMIGO";
+"FRIENDS" = "AMIGOS";
+"ADD FRIEND" = "AGREGAR A AMIGOS";
+"%@ WANTS TO BE FRIENDS" = "%@ TE HA ENVIADO UNA SOLICITUD DE AMISTAD";
+"REQUESTED" = "SOLICITUD ENVIADA";
+"SIGN IN TO VIEW THIS BOOK" = "INICIA SESIÓN PARA VER ESTE LIBRO";
+"Send Friend Request?" = "¿Enviar solicitud de amistad?";
+"Remove Friend" = "Eliminar de mis amigos";
+"Remove" = "Eliminar";
+"ADD TO BENCH" = "AÑADIR AL ESTANTE";
+"BOOK ON BENCH" = "LIBRO DEL ESTANTE";
+"UNABLE TO ADD" = "ERROR AL AÑADIR";
+"ACCEPTING" = "ACEPTANDO";
+"UNABLE TO SEND" = "ERROR AL ENVIAR";
+"UNABLE TO REMOVE" = "ERROR AL ELIMINAR";
+
+// Camera
+"NONE" = "NINGUNO";
+"AUTO" = "AUTOMÁTICO";
+"OUTDOORS" = "EXTERIOR";
+"INDOOR" = "INTERIOR";
+"VIBRANT" = "DINÁMICO";
+"WARM" = "CÁLIDO";
+"COOL" = "FRÍO";
+"TEXT" = "TEXTO";
+"Unable to Load Photo" = "Error al cargar foto";
+"The image you selected is too large" = "La imagen seleccionada es demasiado grande";
+"Delete Photo?" = "¿Eliminar foto?";
+
+// Comments
+"Comment" = "Comentario";
+"COMMENTS" = "COMENTARIOS";
+"NO COMMENTS" = "SIN COMENTARIOS";
+"ADD COMMENT" = "AÑADIR COMENTARIO";
+
+// Ingredients
+"INGREDIENT" = "INGREDIENTE";
+"QTY" = "CANTIDAD";
+"Release to add" = "Suelta para añadir";
+"Pull to add" = "Estira para añadir";
+"Release to delete" = "Suelta para eliminar";
+"Swipe to delete" = "Desliza para eliminar";
+"ADD ITEM" = "AÑADIR ELEMENTO";
+
+// Library
+"NO COLLECTIONS BOOKS" = "NO HAY COLECCIONES";
+"NO FEATURED BOOKS" = "NO HAY LIBROS DESTACADOS";
+"PLEASE CHECK BACK SOON" = "CONSULTA DE NUEVO MÁS TARDE";
+"NO FRIENDS" = "NINGÚN AMIGO";
+"SIGN IN TO ADD FRIENDS" = "INICIA SESIÓN PARA AGREGAR AMIGOS";
+"NO RESULTS" = "NO HAY RESULTADOS";
+"TRY SEARCHING FOR ANOTHER NAME" = "PRUEBA A BUSCAR OTRO NOMBRE";
+"GET SUGGESTIONS" = "RECIBIR SUGERENCIAS";
+"UNABLE TO FETCH BOOKS" = "ERROR AL RECUPERAR LIBROS";
+"PLEASE TRY AGAIN LATER" = "INTÉNTALO DE NUEVO MÁS TARDE";
+"SEARCH BY NAME" = "BUSCAR POR NOMBRE";
+"COLLECTIONS" = "COLECCIONES";
+"FEATURED" = "DESTACADOS";
+"WORLD" = "MUNDIALES";
+"SUGGESTIONS" = "SUGERENCIAS";
+"USE SEARCH TO FIND PEOPLE YOU KNOW" = "UTILIZA LA BÚSQUEDA PARA ENCONTRAR A PERSONAS QUE CONOCES";
+"Permission Required" = "Permiso requerido";
+"Couldn't Connect" = "Error al conectar";
+"NO WORLD BOOKS" = "ERROR AL CARGAR LIBROS MUNDIALES";
+"UNABLE TO LOAD USER" = "ERROR AL CARGAR USUARIO";
+
+// Likes
+"LIKES" = "LE GUSTA";
+"LIKED" = "LE GUSTÓ";
+
+// Signin
+"SIGN IN" = "INICIAR SESIÓN";
+"REGISTER" = "REGISTRO";
+"RESET PASSWORD" = "RESTAURAR CONTRASEÑA";
+"FORGOT PASSWORD" = "CONTRASEÑA OLVIDADA";
+"ALREADY HAVE AN ACCOUNT?" = "¿YA TIENES CUENTA?";
+"DON'T HAVE AN ACCOUNT?" = "¿NO TIENES CUENTA?";
+"SIGN UP" = "REGISTRO";
+"REGISTER WITH EMAIL" = "REGISTRO CON CORREO ELECTRÓNICO";
+"REGISTER WITH FACEBOOK" = "REGISTRO CON FACEBOOK";
+"SIGN IN WITH FACEBOOK" = "INICIAR SESIÓN CON FACEBOOK";
+"SEND" = "ENVIAR";
+"SIGNING UP" = "REGISTRANDO";
+"SIGNING IN" = "INICIANDO SESIÓN";
+"SENDING" = "ENVIANDO";
+"PLEASE CHECK YOUR EMAIL" = "CONSULTA TU CORREO ELECTRÓNICO";
+"EMAIL ADDRESS IS NOT REGISTERED" = "DIRECCIÓN DE CORREO ELECTRÓNICO NO REGISTRADA";
+"EMAIL IS ALREADY REGISTERED" = "DIRECCIÓN DE CORREO ELECTRÓNICO YA REGISTRADA";
+"COULDN'T CONNECT" = "ERROR AL CONECTAR";
+"INCORRECT EMAIL OR PASSWORD" = "CORREO ELECTRÓNICO O CONTRASEÑA INCORRECTOS";
+"CHATTING WITH FACEBOOK" = "CHATEANDO CON FACEBOOK";
+"Create Account" = "Crear cuenta";
+"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Tu cuenta de Facebook no está registrada. ¿Deseas crear una nueva cuenta de Cook?";
+"Create" = "Crear";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+
+// Measurements
+"METRIC" = "MÉTRICO";
+"US IMPERIAL" = "ANGLOSAJÓN";
+
+// Notifications
+"You are now friends with %@." = "Ahora %@ y tú sois amigos.";
+"%@ wants to be friends." = "%@ te ha enviado una solicitud de amistad.";
+"%@ commented on %@." = "%@ ha comentado %@.";
+"%@ liked %@." = "A %@ le gusta %@.";
+"%@ added %@." = "%@ ha añadido %@.";
+"%@ is now featured in %@ in %@." = "%@ está ahora destacado en %@ en %@.";
+"%@ and %@" = "%@ y %@";
+"NOTIFICATIONS" = "NOTIFICACIONES";
+"NO NOTIFICATIONS" = "NO HAY NOTIFICACIONES";
+
+// Recipe
+"TYPE UP THE RECIPE" = "REDACTA LA RECETA";
+"TITLE" = "TÍTULO";
+"TAGS" = "ETIQUETAS";
+"WRITE SOMETHING" = "ESCRIBE ALGO";
+"INGREDIENTS" = "INGREDIENTES";
+"METHOD OR STEPS" = "MÉTODO O PASOS";
+"PHOTO" = "FOTO";
+"No" = "No";
+"Remove Recipe?" = "¿Eliminar receta?";
+"Already Added to %@" = "Ya añadida a %@";
+"Close" = "Cerrar";
+"Delete Recipe?" = "¿Eliminar receta?";
+"Sorry, you can't save an empty recipe" = "No puedes guardar una receta vacía";
+"Unable to Save" = "Error al guardar";
+"Please try again soon" = "Inténtalo de nuevo más tarde";
+"DELETING" = "ELIMINANDO";
+"REMOVING" = "ELIMINANDO";
+"SAVING" = "GUARDANDO";
+"SECRET" = "SECRETA";
+"PUBLIC" = "PÚBLICA";
+"SECRET RECIPE" = "RECETA SECRETA";
+"VISIBLE TO FRIENDS" = "VISIBLE PARA TUS AMIGOS";
+
+// Search
+"RECIPE, INGREDIENT OR TAG" = "RECETA, INGREDIENTE O ETIQUETA";
+"COULDN'T CONNECT, PLEASE TRY AGAIN" = "ERROR AL CONECTAR, INTÉNTALO DE NUEVO";
+"POPULAR" = "POPULARES";
+"LATEST" = "ÚLTIMAS";
+
+// Serves
+"Makes" = "Para";
+"Serves" = "Para";
+"Prep" = "Preparación";
+"Cook" = "Tiempo de cocción";
+
+// Settings
+"LOGOUT" = "CERRAR SESIÓN";
+"MEASUREMENTS" = "SISTEMA DE UNIDADES";
+"TERMS & CONDITIONS" = "TÉRMINOS Y CONDICIONES";
+"PRIVACY" = "PRIVACIDAD";
+"ABOUT" = "ACERCA DE";
+"SUPPORT" = "SOPORTE";
+"FACEBOOK" = "FACEBOOK";
+"TWITTER" = "TWITTER";
+"COULDN'T CONNECT TO FACEBOOK" = "ERROR AL CONECTAR CON FACEBOOK";
+
+// Share
+"Check out this recipe" = "Echa un vistazo a esta receta";
+"Shared from Cook" = "Compartido con Cook";
+"SHARE RECIPE" = "COMPARTIR RECETA";
+"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "LAS RECETAS COMPARTIDAS SON VISIBLES PÚBLICAMENTE EN LA WEB";
+"REPORT" = "DENUNCIAR";
+"Couldn’t Add Facebook" = "Error al añadir cuenta de Facebook";
+"The Facebook account is already used by another Cook account" = "La cuenta de Facebook está vinculada a otra cuenta de Cook";
+"Go to iPad Settings > Facebook and turn on for Cook" = "Accede a los ajustes de tu iPad > Facebook y permite el acceso a Cook";
+"Mail" = "Correo";
+"Please set up a mail account in Settings" = "Configura una cuenta de correo en los ajustes de tu iPad";
+"Message" = "Mensaje";
+"Please set up iMessage in Settings" = "Configura iMessage en los ajustes de tu iPad";
+"%@ shared a recipe from Cook" = "%@ ha compartido una receta de Cook";
+"A recipe from Cook" = "Una receta de Cook";
+"Error in posting to Facebook" = "Error al publicar en Facebook";
+"Please set up a Twitter account in the Settings app" = "Configura una cuenta de Twitter en los ajustes de tu iPad";
+"Error in posting to Mail" = "Error al compartir por correo";
+"Error in posting to Message" = "Error al compartir con iMessage";
+"Error" = "Error";
+"Error in sharing" = "Error al compartir la receta";
+"Check out my recipe" = "Echa un vistazo a mi receta";
+"via @thecookapp" = "a través de @thecookapp";
+
+// Welcome
+"WELCOME" = "BIENVENIDO";
+"Cook is the place to create and share %@your recipes with the world." = "Cook es el lugar donde podrás crear y compartir %@tus recetas con todo el mundo.";
+"YOUR%@COOKBOOK" = "TU LIBRO%@DE COCINA";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personaliza la portada de tu libro y añade %@tus entrañables recetas familiares, los platos%@que preparas habitualmente, consejos, %@trucos y cualquier cosa relacionada con la comida.";
+"SHARE YOUR RECIPES" = "COMPARTE TUS RECETAS";
+"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Publica tus recetas y compártelas con todo %@el mundo o solo con tus amigos %@cercanos, la elección es tuya.";
+"A WORLD OF RECIPES" = "UN MUNDO DE RECETAS";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Desplaza hacia abajo tu estante para acceder %@a la biblioteca repleta de libros de cocina %@y recetas de todo el mundo.";
+"LET'S GET STARTED..." = "EMPECEMOS…";
+
+// Ingredients
+"TAP BELOW TO ADD" = "PULSA ABAJO PARA AÑADIR";
+"PULL DOWN TO ADD ABOVE" = "DESPLAZA HACIA ABAJO PARA AÑADIR ENCIMA";
+"SWIPE RIGHT TO DELETE" = "DESLIZA HACIA LA DERECHA PARA ELIMINAR";
+"PRESS AND DRAG TO REORDER" = "PULSA Y ARRASTRA PARA REORGANIZAR";

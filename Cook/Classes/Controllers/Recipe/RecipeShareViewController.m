@@ -286,14 +286,14 @@
     if ([MFMailComposeViewController canSendMail])
         [self shareEmail];
     else
-        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 - (void)messageShareTapped:(id)sender {
     if ([MFMessageComposeViewController canSendText])
         [self shareMessage];
     else
-        [[[UIAlertView alloc] initWithTitle:@"Message" message:@"Please set up iMessage in Settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:@"Message" message:@"Please set up iMessage in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 #pragma mark - Social Sharers
@@ -426,7 +426,7 @@
             errorString = @"Error";
             break;
     }
-    [[[UIAlertView alloc] initWithTitle:@"Error in sharing" message:errorString delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    [[[UIAlertView alloc] initWithTitle:@"Error in sharing" message:errorString delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 - (void)successWithType:(CKShareType)shareType
@@ -550,7 +550,7 @@
         [self presentViewController:mailDialog animated:YES completion:nil];
     }
     else
-        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 @end

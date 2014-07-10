@@ -1,0 +1,237 @@
+// Pages
+"PAGE ALREADY EXISTS" = "ESISTE GIÀ QUESTA PAGINA";
+"ADD PAGE" = "AGGIUNGI PAGINA";
+"This will also delete the recipes on this page." = "Questo eliminerà anche le ricette su questa pagina.";
+"Delete Page?" = "Eliminare pagina?";
+"RENAMING PAGE" = "RINOMINA PAGINA";
+"Unable to Rename" = "Impossibile rinominare";
+"Sorry, this page contains too many recipes to rename." = "Spiacenti, questa pagina contiene troppe ricette per la rinominazione.";
+"Page Name" = "Nome pagina";
+
+// General
+"OK" = "OK";
+"Cancel" = "Annulla";
+
+// Add Pin
+"ADDING TO PAGE" = "IN AGGIUNTA ALLA PAGINA";
+"ADD TO BOOK" = "AGGIUNGI AL LIBRO";
+"NO PAGES" = "NESSUNA PAGINA";
+
+// Dash
+"NEW" = "NUOVA";
+"CANNOT CONNECT" = "CONNESSIONE NON RIUSCITA";
+"CHECK YOUR WI-FI OR CELLULAR DATA" = "CONTROLLA IL WI-FI O LA RETE DATI DEL CELLULARE";
+
+// Help Cards
+"ADD A RECIPE" = "AGGIUNGI UNA RICETTA";
+"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!" = "O FOTO, SUGGERIMENTI, NOTE, QUALSIASI COSA CORRELATA AL CIBO!";
+"EDIT PROFILE" = "MODIFICA PROFILO";
+"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO" = "CAMBIA LO SFONDO, LA FOTO DEL PROFILO E LA BIOGRAFIA";
+"GET STARTED" = "INIZIA";
+"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..." = "CREA UNA NUOVA PAGINA PER LE TUE RICETTE, CHIAMALA COME PIÙ TI PIACE…";
+"YOUR PROFILE" = "IL TUO PROFILO";
+"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE" = "SCORRI A DESTRA PER VISUALIZZARE E MODIFICARE IL TUO PROFILO";
+
+// Book Profile
+"RECIPE" = "RICETTA";
+"RECIPES" = "RICETTE";
+
+// Book Summary
+"FRIEND" = "AMICO";
+"FRIENDS" = "AMICI";
+"ADD FRIEND" = "AGGIUNGI AMICI";
+"%@ WANTS TO BE FRIENDS" = "%@ VUOLE DIVENTARE TUO AMICO";
+"REQUESTED" = "RICHIESTA AVVENUTA";
+"SIGN IN TO VIEW THIS BOOK" = "ACCEDI PER VISUALIZZARE QUESTO LIBRO";
+"Send Friend Request?" = "Inviare richiesta di amicizia?";
+"Remove Friend" = "Rimuovi amico";
+"Remove" = "Rimuovi";
+"ADD TO BENCH" = "AGGIUNGI AL BANCO DI LAVORO";
+"BOOK ON BENCH" = "REGISTRA SUL BANCO DI LAVORO";
+"UNABLE TO ADD" = "IMPOSSIBILE AGGIUNGERE";
+"ACCEPTING" = "ACCETTA";
+"UNABLE TO SEND" = "IMPOSSIBILE INVIARE";
+"UNABLE TO REMOVE" = "IMPOSSIBILE RIMUOVERE";
+
+// Camera
+"NONE" = "NESSUNO";
+"AUTO" = "AUTO";
+"OUTDOORS" = "ESTERNO";
+"INDOOR" = "INTERNO";
+"VIBRANT" = "VIVACE";
+"WARM" = "CALDO";
+"COOL" = "FREDDO";
+"TEXT" = "TESTO";
+"Unable to Load Photo" = "Impossibile caricare foto";
+"The image you selected is too large" = "L’immagine selezionata è troppo grande";
+"Delete Photo?" = "Vuoi eliminare la foto?";
+
+// Comments
+"Comment" = "Commento";
+"COMMENTS" = "COMMENTI";
+"NO COMMENTS" = "NESSUN COMMENTO";
+"ADD COMMENT" = "AGGIUNGI COMMENTO";
+
+// Ingredients
+"INGREDIENT" = "INGREDIENTE";
+"QTY" = "QTÀ";
+"Release to add" = "Rilascia per aggiungere";
+"Pull to add" = "Trascina per aggiungere";
+"Release to delete" = "Rilascia per eliminare";
+"Swipe to delete" = "Scorri per eliminare";
+"ADD ITEM" = "AGGIUNGI ELEMENTO";
+
+// Library
+"NO COLLECTIONS BOOKS" = "NESSUN LIBRO DI RACCOLTE";
+"NO FEATURED BOOKS" = "NESSUN LIBRO IN PRIMO PIANO";
+"PLEASE CHECK BACK SOON" = "TORNA A CONTROLLARE TRA UN PO’";
+"NO FRIENDS" = "NESSUN AMICO";
+"SIGN IN TO ADD FRIENDS" = "ACCEDI PER AGGIUNGERE AMICI";
+"NO RESULTS" = "NESSUN RISULTATO";
+"TRY SEARCHING FOR ANOTHER NAME" = "PROVA A CERCARE UN ALTRO NOME";
+"GET SUGGESTIONS" = "OTTIENI SUGGERIMENTI";
+"UNABLE TO FETCH BOOKS" = "IMPOSSIBILE RECUPERARE LIBRI";
+"PLEASE TRY AGAIN LATER" = "PER FAVORE RIPROVA PIÙ TARDI";
+"SEARCH BY NAME" = "CERCA PER NOME";
+"COLLECTIONS" = "RACCOLTE";
+"FEATURED" = "IN PRIMO PIANO";
+"WORLD" = "MONDO";
+"SUGGESTIONS" = "SUGGERIMENTI";
+"USE SEARCH TO FIND PEOPLE YOU KNOW" = "USA LA RICERCA PER TROVARE PERSONE CHE CONOSCI";
+"Permission Required" = "Autorizzazione necessaria";
+"Couldn't Connect" = "Connessione non riuscita";
+"NO WORLD BOOKS" = "CARICAMENTO LIBRI DEL MONDO NON RIUSCITO";
+"UNABLE TO LOAD USER" = "IMPOSSIBILE CARICARE UTENTE";
+
+// Likes
+"LIKES" = "AMA";
+"LIKED" = "HA APPREZZATO";
+
+// Signin
+"SIGN IN" = "ACCEDI";
+"REGISTER" = "REGISTRATI";
+"RESET PASSWORD" = "AZZERA PASSWORD";
+"FORGOT PASSWORD" = "PASSWORD DIMENTICATA";
+"ALREADY HAVE AN ACCOUNT?" = "HAI GIÀ UN ACCOUNT?";
+"DON'T HAVE AN ACCOUNT?" = "NON HAI ANCORA UN ACCOUNT?";
+"SIGN UP" = "ISCRIVITI";
+"REGISTER WITH EMAIL" = "REGISTRATI TRAMITE EMAIL";
+"REGISTER WITH FACEBOOK" = "REGISTRATI TRAMITE FACEBOOK";
+"SIGN IN WITH FACEBOOK" = "ACCEDI CON FACEBOOK";
+"SEND" = "INVIA";
+"SIGNING UP" = "ISCRIZIONE";
+"SIGNING IN" = "ACCESSO";
+"SENDING" = "INVIO";
+"PLEASE CHECK YOUR EMAIL" = "PER FAVORE CONTROLLA LA TUA EMAIL";
+"EMAIL ADDRESS IS NOT REGISTERED" = "L’INDIRIZZO EMAIL NON È REGISTRATO";
+"EMAIL IS ALREADY REGISTERED" = "L’EMAIL È GIÀ REGISTRATA";
+"COULDN'T CONNECT" = "CONNESSIONE NON RIUSCITA";
+"INCORRECT EMAIL OR PASSWORD" = "EMAIL O PASSWORD NON CORRETTE";
+"CHATTING WITH FACEBOOK" = "CHAT TRAMITE FACEBOOK";
+"Create Account" = "Crea account";
+"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Il tuo account Facebook non è registrato. Vuoi creare un nuovo account Cook?";
+"Create" = "Crea";
+"COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+
+// Measurements
+"METRIC" = "METRICO";
+"US IMPERIAL" = "IMPERIALE USA";
+
+// Notifications
+"You are now friends with %@." = "Ora tu e %@ siete amici.";
+"%@ wants to be friends." = "%@ vuole essere tuo amico.";
+"%@ commented on %@." = "%@ ha commentato %@.";
+"%@ liked %@." = "A %@ piace %@.";
+"%@ added %@." = "%@ ha aggiunto %@.";
+"%@ is now featured in %@ in %@." = "%@ ora è in primo piano su %@ in %@.";
+"%@ and %@" = "%@ e %@";
+"NOTIFICATIONS" = "NOTIFICHE";
+"NO NOTIFICATIONS" = "NESSUNA NOTIFICA";
+
+// Recipe
+"TYPE UP THE RECIPE" = "DIGITA LA RICETTA";
+"TITLE" = "TITOLO";
+"TAGS" = "TAG";
+"WRITE SOMETHING" = "SCRIVI QUALCOSA";
+"INGREDIENTS" = "INGREDIENTI";
+"METHOD OR STEPS" = "METODO O PASSAGGI";
+"PHOTO" = "FOTO";
+"No" = "No";
+"Remove Recipe?" = "Vuoi rimuovere la ricetta?";
+"Already Added to %@" = "Già aggiunta su %@";
+"Close" = "Chiudi";
+"Delete Recipe?" = "Vuoi eliminare la ricetta?";
+"Sorry, you can't save an empty recipe" = "Spiacenti, non puoi salvare una ricetta vuota";
+"Unable to Save" = "Impossibile salvare";
+"Please try again soon" = "Per favore riprova tra un po’";
+"DELETING" = "ELIMINAZIONE";
+"REMOVING" = "RIMOZIONE";
+"SAVING" = "SALVATAGGIO";
+"SECRET" = "SEGRETA";
+"PUBLIC" = "PUBBLICA";
+"SECRET RECIPE" = "RICETTA SEGRETA";
+"VISIBLE TO FRIENDS" = "VISIBILE AGLI AMICI";
+
+// Search
+"RECIPE, INGREDIENT OR TAG" = "RICETTA, INGREDIENTE O TAG";
+"COULDN'T CONNECT, PLEASE TRY AGAIN" = "CONNESSIONE NON RIUSCITA, PER FAVORE RIPROVA";
+"POPULAR" = "POPOLARI";
+"LATEST" = "PIÙ RECENTI";
+
+// Serves
+"Makes" = "Creazioni";
+"Serves" = "Porzioni";
+"Prep" = "Prepara";
+"Cook" = "Cucina";
+
+// Settings
+"LOGOUT" = "ESCI";
+"MEASUREMENTS" = "MISURE";
+"TERMS & CONDITIONS" = "TERMINI E CONDIZIONI";
+"PRIVACY" = "PRIVACY";
+"ABOUT" = "INFORMAZIONI";
+"SUPPORT" = "SUPPORTO";
+"FACEBOOK" = "FACEBOOK";
+"TWITTER" = "TWITTER";
+"COULDN'T CONNECT TO FACEBOOK" = "CONNESSIONE A FACEBOOK NON RIUSCITA";
+
+// Share
+"Check out this recipe" = "Dai un’occhiata a questa ricetta";
+"Shared from Cook" = "Condivisa tramite Cook";
+"SHARE RECIPE" = "CONDIVIDI RICETTA";
+"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "LE RICETTE CONDIVISE SONO VISIBILI PUBBLICAMENTE SUL WEB";
+"REPORT" = "SEGNALA";
+"Couldn’t Add Facebook" = "Impossibile aggiungere Facebook";
+"The Facebook account is already used by another Cook account" = "L’account Facebook è già utilizzato da un altro account Cook";
+"Go to iPad Settings > Facebook and turn on for Cook" = "Vai sulle Impostazioni dell’iPad > Facebook e attiva per Cook";
+"Mail" = "Mail";
+"Please set up a mail account in Settings" = "Per favore imposta un account email nelle impostazioni dell’iPad";
+"Message" = "Messaggio";
+"Please set up iMessage in Settings" = "Per favore imposta iMessage nelle impostazioni dell’iPad";
+"%@ shared a recipe from Cook" = "%@ ha condiviso una ricetta da Cook";
+"A recipe from Cook" = "Una ricetta da Cook";
+"Error in posting to Facebook" = "Pubblicazione su Facebook non riuscita";
+"Please set up a Twitter account in the Settings app" = "Per favore imposta un account Twitter nelle impostazioni dell’iPad";
+"Error in posting to Mail" = "Condivisione su Mail non riuscita";
+"Error in posting to Message" = "Condivisione su iMessage non riuscita";
+"Error" = "Errore";
+"Error in sharing" = "Condivisione ricetta non riuscita";
+"Check out my recipe" = "Dai un’occhiata alla mia ricetta";
+"via @thecookapp" = "via @thecookapp";
+
+// Welcome
+"WELCOME" = "BENVENUTO";
+"Cook is the place to create and share %@your recipes with the world." = "Cook è il luogo in cui creare e condividere %@le tue ricette con il mondo.";
+"YOUR%@COOKBOOK" = "IL TUO LIBRO%@DI RICETTE";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personalizza la copertina del tuo libro e poi%@aggiungi le ricette di famiglia che più hai a cuore, %@i piatti che prepari regolarmente, suggerimenti, %@trucchi e tutto ciò che riguarda il cibo.";
+"SHARE YOUR RECIPES" = "CONDIVIDI LE TUE RICETTE";
+"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Rendi pubbliche le tue ricette e condividile %@con tutti oppure fai in modo che siano %@visibili solo agli amici più stretti, la scelta è tua.";
+"A WORLD OF RECIPES" = "UN MONDO DI RICETTE";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Trascina verso il basso il banco %@di lavoro per visualizzare la libreria con i libri di ricette %@e le ricette provenienti da tutto il mondo.";
+"LET'S GET STARTED..." = "INIZIAMO…";
+
+// Ingredients
+"TAP BELOW TO ADD" = "TOCCA SOTTO PER AGGIUNGERE";
+"PULL DOWN TO ADD ABOVE" = "TRASCINA IN BASSO PER AGGIUNGERE SOPRA";
+"SWIPE RIGHT TO DELETE" = "SCORRI A DESTRA PER ELIMINARE";
+"PRESS AND DRAG TO REORDER" = "TIENI PREMUTO E TRASCINA PER RIORDINARE";

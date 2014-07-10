@@ -1826,7 +1826,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         if ([self.recipeDetails saveRequired]) {
             self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
-                                                cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                                                cancelButtonTitle:@"Cancel" otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         } else {
             [self closeRecipeView];
         }
@@ -1834,7 +1834,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     } else {
         if ([self.recipeDetails saveRequired]) {
             self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
-                                                cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                                                cancelButtonTitle:@"Cancel" otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         } else {
             [self initRecipeDetails];
             [self enableEditMode:NO];
@@ -1866,7 +1866,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         UIAlertView *blankAlertView = [[UIAlertView alloc] initWithTitle:@"Sorry, you can't save an empty recipe"
                                                                  message:nil
                                                                 delegate:nil cancelButtonTitle:nil
-                                                        otherButtonTitles:@"OK", nil];
+                                                        otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         [blankAlertView show];
         return;
     }
@@ -1921,7 +1921,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                            // Alert the error.
                                            [[[UIAlertView alloc] initWithTitle:@"Unable to Save"
                                                                        message:@"Please try again soon"
-                                                                      delegate:nil cancelButtonTitle:@"OK"
+                                                                      delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                                              otherButtonTitles:nil] show];
                                            
                                        }];
