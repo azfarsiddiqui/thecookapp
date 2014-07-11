@@ -133,6 +133,10 @@
 "Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Uw Facebook-account is niet geregistreerd. Wilt u een nieuwe Cook-account maken?";
 "Create" = "Maken";
 "COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+"Save" = "Opslaan";
+"Email Address" = "E-Mailadres";
+"Full Name" = "Volledige Naam";
+"Password" = "Wachtwoord";
 
 // Measurements
 "METRIC" = "METRISCH";
@@ -149,6 +153,7 @@
 "%@ and %@" = "%@ en %@";
 "NOTIFICATIONS" = "MELDINGEN";
 "NO NOTIFICATIONS" = "GEEN MELDINGEN";
+"Your recipe" = "Uw recept";
 
 // Recipe
 "TYPE UP THE RECIPE" = "TYP HET RECEPT";

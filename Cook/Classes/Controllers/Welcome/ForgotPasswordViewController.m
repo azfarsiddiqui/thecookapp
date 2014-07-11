@@ -152,7 +152,7 @@
 }
 
 - (NSString *)forgotButtonText {
-    return @"SEND";
+    return NSLocalizedString(@"SEND", nil);
 }
 
 - (void)forgotButtonTapped {

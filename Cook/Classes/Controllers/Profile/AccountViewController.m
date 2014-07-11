@@ -296,7 +296,7 @@
     
     // Password field anchor to the bottom.
     CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self
-                                                                    placeholder:@"Password" password:YES submit:YES];
+                                                                    placeholder:NSLocalizedString(@"Password", nil) password:YES submit:YES];
     emailPasswordView.allowSpaces = NO;
     emailPasswordView.maxLength = kPasswordMaxLength;
     emailPasswordView.frame = (CGRect){
@@ -310,7 +310,7 @@
     self.emailPasswordView = emailPasswordView;
     
     // Email field anchor to the bottom.
-    CKTextFieldView *emailAddressView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"Email Address"];
+    CKTextFieldView *emailAddressView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:NSLocalizedString(@"Email Address", nil)];
     emailAddressView.allowSpaces = NO;
     emailAddressView.maxLength = 256;
     emailAddressView.frame = (CGRect){
@@ -325,7 +325,7 @@
     self.emailAddressView = emailAddressView;
     
     // Name field anchor to the top.
-    CKTextFieldView *emailNameView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"Full Name" autoCapitalise:YES];
+    CKTextFieldView *emailNameView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:NSLocalizedString(@"Full Name", nil) autoCapitalise:YES];
     emailNameView.frame = (CGRect){
         emailInsets.left + floorf((availableSize.width - emailNameView.frame.size.width) / 2.0),
         self.emailAddressView.frame.origin.y - fieldsGap - emailNameView.frame.size.height,

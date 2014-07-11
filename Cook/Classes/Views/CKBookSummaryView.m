@@ -699,7 +699,7 @@
                                                              message:nil
                                                             delegate:self
                                                    cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                   otherButtonTitles:NSLocalizedString(@"Send", nil), nil];
+                                                   otherButtonTitles:[NSLocalizedString(@"SEND", nil) capitalizedString], nil];
         [self.friendRequestAlert show];
     }
 }

@@ -133,6 +133,10 @@
 "Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Tu cuenta de Facebook no está registrada. ¿Deseas crear una nueva cuenta de Cook?";
 "Create" = "Crear";
 "COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+"Save" = "Guardar";
+"Email Address" = "Email";
+"Full Name" = "Nombre Completo";
+"Password" = "Contraseña";
 
 // Measurements
 "METRIC" = "MÉTRICO";
@@ -149,6 +153,7 @@
 "%@ and %@" = "%@ y %@";
 "NOTIFICATIONS" = "NOTIFICACIONES";
 "NO NOTIFICATIONS" = "NO HAY NOTIFICACIONES";
+"Your recipe" = "Tu receta";
 
 // Recipe
 "TYPE UP THE RECIPE" = "REDACTA LA RECETA";

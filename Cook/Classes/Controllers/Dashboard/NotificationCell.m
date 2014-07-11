@@ -287,7 +287,7 @@
         
         NSArray *pages = notification.pages;
         NSString *pagesDisplay = [self pagesDisplayFor:pages];
-        text = [NSString stringWithFormat:NSLocalizedString(@"%@ is now featured in %@ in %@.", nil), [self nameForRecipe:notification.recipe defaultName:@"Your recipe"], pagesDisplay, [actionUser friendlyName]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"%@ is now featured in %@ in %@.", nil), [self nameForRecipe:notification.recipe defaultName:NSLocalizedString(@"Your recipe", nil)], pagesDisplay, [actionUser friendlyName]];
     }
     
     return text;
@@ -324,7 +324,7 @@
 }
 
 - (NSString *)nameForRecipe:(CKRecipe *)recipe {
-    return [self nameForRecipe:recipe defaultName:@"your recipe"];
+    return [self nameForRecipe:recipe defaultName:[NSLocalizedString(@"your recipe", nil) lowercaseString]];
 }
 
 - (NSString *)nameForRecipe:(CKRecipe *)recipe defaultName:(NSString *)defaultName {

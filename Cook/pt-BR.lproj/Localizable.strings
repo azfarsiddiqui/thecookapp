@@ -133,6 +133,10 @@
 "Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Sua conta do Facebook não está registrada. Deseja criar uma nova conta no Cook?";
 "Create" = "Criar";
 "COULDN'T CONNECT TO FACEBOOK" = "COULDN'T CONNECT TO FACEBOOK";
+"Save" = "Salvar";
+"Email Address" = "Email";
+"Full Name" = "Nome completo";
+"Password" = "Senha";
 
 // Measurements
 "METRIC" = "SISTEMA MÉTRICO";
@@ -149,6 +153,7 @@
 "%@ and %@" = "%@ e %@";
 "NOTIFICATIONS" = "NOTIFICAÇÕES";
 "NO NOTIFICATIONS" = "SEM NOTIFICAÇÕES";
+"Your recipe" = "Sua receita";
 
 // Recipe
 "TYPE UP THE RECIPE" = "DIGITE A RECEITA";
@@ -222,7 +227,7 @@
 "via @thecookapp" = "via @thecookapp";
 
 // Welcome
-"WELCOME" = "WELCOME";
+"WELCOME" = "BEM-VINDO";
 "Cook is the place to create and share %@your recipes with the world." = "Cook é o lugar para criar e compartilhar %@suas receitas com o mundo todo.";
 "YOUR%@COOKBOOK" = "SEU LIVRO%@DE RECEITAS";
 "Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personalize a capa do seu livro e adicione %@suas receitas de família mais queridas, %@os pratos que são sua carta na manga, %@dicas, truques e tudo relacionado à comida.";
