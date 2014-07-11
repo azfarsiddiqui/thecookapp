@@ -2089,8 +2089,6 @@
 		76663C0F196E5F4C008537E6 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		76663C10196E5F56008537E6 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		76663C11196E5F56008537E6 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
-		76663C12196E5F5C008537E6 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		76663C13196E5F5C008537E6 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		7666B3E616140A16001D1BA1 /* CKConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKConstants.h; sourceTree = "<group>"; };
 		7666B3E716140A16001D1BA1 /* CKConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKConstants.m; sourceTree = "<group>"; };
 		7666B3EA16140B16001D1BA1 /* CKUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUser.h; sourceTree = "<group>"; };
@@ -2369,6 +2367,8 @@
 		7680103F17A92ACF0065B2C6 /* cook_dash_settings_tab_selected_right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_tab_selected_right@2x.png"; sourceTree = "<group>"; };
 		76819811170BCC840091F91F /* CKBookSummaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBookSummaryView.h; sourceTree = "<group>"; };
 		76819812170BCC840091F91F /* CKBookSummaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBookSummaryView.m; sourceTree = "<group>"; };
+		768235F1196FBB1D00723AEB /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		768235F2196FBB1D00723AEB /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		768461871814CE1600C621DC /* cook_customise_privacy_label.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_privacy_label.png; sourceTree = "<group>"; };
 		768461881814CE1600C621DC /* cook_customise_privacy_label@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_privacy_label@2x.png"; sourceTree = "<group>"; };
 		7684618B1814FFD500C621DC /* CKBookInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBookInfoView.h; sourceTree = "<group>"; };
@@ -7584,6 +7584,7 @@
 				it,
 				nl,
 				"pt-PT",
+				"pt-BR",
 			);
 			mainGroup = 76ED27321612DC180012E479;
 			productRefGroup = 76ED273E1612DC180012E479 /* Products */;
@@ -9273,7 +9274,7 @@
 				76663C0D196E5F3F008537E6 /* fr */,
 				76663C0F196E5F4C008537E6 /* it */,
 				76663C11196E5F56008537E6 /* nl */,
-				76663C13196E5F5C008537E6 /* pt-PT */,
+				768235F2196FBB1D00723AEB /* pt-BR */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -9287,7 +9288,7 @@
 				76663C0C196E5F3F008537E6 /* fr */,
 				76663C0E196E5F4C008537E6 /* it */,
 				76663C10196E5F56008537E6 /* nl */,
-				76663C12196E5F5C008537E6 /* pt-PT */,
+				768235F1196FBB1D00723AEB /* pt-BR */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
