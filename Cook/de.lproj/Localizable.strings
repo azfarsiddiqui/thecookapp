@@ -221,13 +221,13 @@
 
 // Welcome
 "WELCOME" = "WILLKOMMEN";
-"Cook is the place to create and share %@your recipes with the world." = "Cook ist der Ort, an dem Sie Ihre %@Rezepte erstellen und mit der Welt teilen.";
+"Cook is the place to create and share %@your recipes with the world." = "Cook ist der Ort, an dem Sie Ihre Rezepte%@erstellen und mit der Welt teilen.";
 "YOUR%@COOKBOOK" = "IHR%@KOCHBUCH";
-"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personalisieren Sie das Cover Ihres Buchs,%@und fügen Sie dann Ihre wertvollen Familienrezepte%@, Gerichte, die Sie regelmäßig kochen, Tipps, Tricks,%@alles, was mit Essen zu tun hat, hinzu.";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personalisieren Sie das Cover Ihres Buchs, und%@fügen Sie dann Ihre wertvollen Familienrezepte,%@Gerichte, die Sie regelmäßig kochen, Tipps, Tricks, alles, was mit Essen zu tun hat, hinzu.";
 "SHARE YOUR RECIPES" = "TEILEN SIE IHRE REZEPTE";
-"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Veröffentlichen Sie Ihre Rezepte %@und teilen Sie sie mit jedermann, oder behalten %@Sie sie für enge Freunde, die Wahl liegt bei Ihnen.";
+"Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Veröffentlichen Sie Ihre Rezepte und teilen Sie sie%@mit jedermann, oder behalten Sie sie für%@enge Freunde, die Wahl liegt bei Ihnen.";
 "A WORLD OF RECIPES" = "EIEN WELT DER REZEPTE";
-"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Ziehen Sie auf Ihrer Bank nach unten, %@um die Bibliothek mit Kochbüchern und Rezepten %@aus aller Welt zu enthüllen.";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Ziehen Sie auf Ihrer Bank nach unten, um die%@Bibliothek mit Kochbüchern und Rezepten %@aus aller Welt zu enthüllen.";
 "LET'S GET STARTED..." = "LASSEN SIE UNS LOSLEGEN…";
 
 // Ingredients

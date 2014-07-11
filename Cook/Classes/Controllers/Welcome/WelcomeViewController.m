@@ -47,21 +47,22 @@
 
 @implementation WelcomeViewController
 
-#define kAdornmentCellId    @"AdornmentCellId"
-#define kPageHeaderId       @"PageHeaderId"
-#define kNumPages           5
-#define kButtonWidth        150.0
-#define kButtonGap          10.0
-#define kWelcomeSection     0
-#define kCreateSection      1
-#define kCollectSection     2
-#define kLibrarySection     3
-#define kSignUpSection      4
-#define kAdornmentTag       470
-#define kLabelSubtitleFont  [UIFont fontWithName:@"BrandonGrotesque-Light" size:26.0]
-#define kPageHeaderSize     CGSizeMake(500.0, 500.0)
-#define kLabelGap           10.0
-#define kBorderInsets       (UIEdgeInsets){ 16.0, 10.0, 12.0, 10.0 }
+#define kAdornmentCellId        @"AdornmentCellId"
+#define kPageHeaderId           @"PageHeaderId"
+#define kNumPages               5
+#define kButtonWidth            150.0
+#define kButtonGap              10.0
+#define kWelcomeSection         0
+#define kCreateSection          1
+#define kCollectSection         2
+#define kLibrarySection         3
+#define kSignUpSection          4
+#define kAdornmentTag           470
+#define kLabelSubtitleFont      [UIFont fontWithName:@"BrandonGrotesque-Light" size:26.0]
+#define kPageHeaderSize         CGSizeMake(500.0, 500.0)
+#define kWelcomePageHeaderSize  CGSizeMake(550.0, 500.0)
+#define kLabelGap               10.0
+#define kBorderInsets           (UIEdgeInsets){ 16.0, 10.0, 12.0, 10.0 }
 
 - (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
@@ -320,6 +321,7 @@
             
             switch (indexPath.item) {
                 case 0:
+                    size = kWelcomePageHeaderSize;
                     break;
                 case 1:
                     size = self.pagingView.frame.size;

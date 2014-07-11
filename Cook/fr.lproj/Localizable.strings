@@ -1,4 +1,4 @@
-﻿// Pages
+// Pages
 "PAGE ALREADY EXISTS" = "LA PAGE EXISTE DEJA";
 "ADD PAGE" = "AJOUTER UNE PAGE";
 "This will also delete the recipes on this page." = "Ceci va également effacer les recettes sur cette page.";
@@ -223,11 +223,11 @@
 "WELCOME" = "BIENVENUE";
 "Cook is the place to create and share %@your recipes with the world." = "Cook est l’endroit où créer et partager %@vos recettes avec le monde entier.";
 "YOUR%@COOKBOOK" = "VOTRE LIVRE%@DE RECETTES";
-"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personnalisez la couverture de votre%@livre puis ajoutez vos précieuses recettes de famille, %@les plats que vous cuisinez régulièrement, les trucs et astuces, %@ou tout ce qui a un lien avec la nourriture.";
+"Customize the cover of your book then%@add your cherished family recipes, the%@meals you cook regularly, tips, tricks,%@anything food related." = "Personnalisez la couverture de votre livre puis%@ajoutez vos précieuses recettes de famille, les%@plats que vous cuisinez régulièrement, les trucs%@et astuces, ou tout ce qui a un lien avec la nourriture.";
 "SHARE YOUR RECIPES" = "PARTAGEZ VOS RECETTES";
 "Make your recipes public and share them%@with everyone or keep them just for%@close friends, the choice is yours." = "Rendez vos recettes publiques et partagez-les%@avec tout le monde ou gardez-les juste pour %@vos amis proches, c’est votre choix.";
 "A WORLD OF RECIPES" = "UN MONDE DE RECETTES";
-"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Tirez vers le bas sur votre banc %@pour révéler la Bibliothèque avec des Livres %@et des recettes de partout dans le monde.";
+"Pull down on your bench to reveal the%@Library with Cookbooks and recipes%@from all over the world." = "Tirez vers le bas sur votre banc pour révéler%@la Bibliothèque avec des Livres et des%@recettes de partout dans le monde.";
 "LET'S GET STARTED..." = "DEMARRONS…";
 
 // Ingredients
