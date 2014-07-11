@@ -269,25 +269,25 @@
     
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]) {
         if (notification.friendRequestAccepted) {
-            text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
+            text = [NSString stringWithFormat:NSLocalizedString(@"You are now friends with %@.", nil), [actionUser friendlyName]];
         } else {
-            text = [NSString stringWithFormat:@"%@ wants to be friends.", [actionUser friendlyName]];
+            text = [NSString stringWithFormat:NSLocalizedString(@"%@ wants to be friends.", nil), [actionUser friendlyName]];
         }
     } else if ([notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
-        text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"You are now friends with %@.", nil), [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]) {
-        text = [NSString stringWithFormat:@"%@ commented on %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"%@ commented on %@.", nil), [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeReply]) {
-        text = [NSString stringWithFormat:@"%@ commented on %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"%@ commented on %@.", nil), [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
-        text = [NSString stringWithFormat:@"%@ liked %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"%@ liked %@.", nil), [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
     } else if ([notificationName isEqualToString:kUserNotificationTypePin]) {
-        text = [NSString stringWithFormat:@"%@ added %@.", [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"%@ added %@.", nil), [actionUser friendlyName], [self nameForRecipe:notification.recipe]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeFeedPin]) {
         
         NSArray *pages = notification.pages;
         NSString *pagesDisplay = [self pagesDisplayFor:pages];
-        text = [NSString stringWithFormat:@"%@ is now featured in %@ in %@.", [self nameForRecipe:notification.recipe defaultName:@"Your recipe"], pagesDisplay, [actionUser friendlyName]];
+        text = [NSString stringWithFormat:NSLocalizedString(@"%@ is now featured in %@ in %@.", nil), [self nameForRecipe:notification.recipe defaultName:@"Your recipe"], pagesDisplay, [actionUser friendlyName]];
     }
     
     return text;
@@ -300,11 +300,11 @@
         if ([pages count] == 1) {
             pagesDisplay = pages[0];
         } else if ([pages count] == 2) {
-            pagesDisplay = [pages componentsJoinedByString:@" and "];
+            pagesDisplay = [pages componentsJoinedByString:[NSString stringWithFormat:@" %@ ", NSLocalizedString(@"and", nil)]];
         } else {
             NSArray *frontPages = [pages subarrayWithRange:(NSRange){ 0, [pages count] - 1 }];
             NSString *lastPage = [pages objectAtIndex:[pages count] - 1];
-            pagesDisplay = [NSString stringWithFormat:@"%@ and %@", [frontPages componentsJoinedByString:@", "], lastPage];
+            pagesDisplay = [NSString stringWithFormat:NSLocalizedString(@"%@ and %@", nil), [frontPages componentsJoinedByString:@", "], lastPage];
         }
         
     }

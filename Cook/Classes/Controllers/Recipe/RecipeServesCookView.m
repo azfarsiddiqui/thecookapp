@@ -68,10 +68,10 @@
 - (void)updateServes {
     if (self.editMode || self.recipeDetails.numServes) {
         NSString *imageString = [NSString stringWithFormat:@"cook_book_recipe_icon_%@%@",
-                                 self.recipeDetails.quantityType == CKQuantityMakes ? @"makes" : @"serves",
+                                 self.recipeDetails.quantityType == CKQuantityMakes ? [ NSLocalizedString(@"Makes", nil) lowercaseString] : [ NSLocalizedString(@"Serves", nil) lowercaseString],
                                  self.editMode ? @"_edit" : @""];
         UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageString]];
-        UIView *servesStatView = [self viewForStatText:self.recipeDetails.quantityType == CKQuantityMakes ? @"Makes" : @"Serves" statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
+        UIView *servesStatView = [self viewForStatText:self.recipeDetails.quantityType == CKQuantityMakes ? NSLocalizedString(@"Makes", nil) : NSLocalizedString(@"Serves", nil) statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
         CGRect servesFrame = servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
         servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
@@ -110,7 +110,7 @@
         if (self.editMode ||self.recipeDetails.prepTimeInMinutes) {
             
             // Prep.
-            prepStatView = [self viewForStatText:@"Prep" statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes formatted:YES ]];
+            prepStatView = [self viewForStatText:NSLocalizedString(@"Prep", nil) statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes formatted:YES ]];
             prepFrame = prepStatView.frame;
             prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
             
@@ -126,7 +126,7 @@
         if (self.editMode || self.recipeDetails.cookingTimeInMinutes) {
             
             // Cook.
-            cookStatView = [self viewForStatText:@"Cook" statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes formatted:YES]];
+            cookStatView = [self viewForStatText:NSLocalizedString(@"Cook", nil) statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes formatted:YES]];
             cookFrame = cookStatView.frame;
             
             if (!CGRectEqualToRect(prepFrame, CGRectZero)) {

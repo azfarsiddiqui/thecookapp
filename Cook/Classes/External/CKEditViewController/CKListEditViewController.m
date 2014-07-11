@@ -190,11 +190,11 @@
 
 - (NSString *)pullToReleaseTextForActivated:(BOOL)activated {
 
-    return activated ? @"Release to add" : @"Pull to add";
+    return activated ? NSLocalizedString(@"Release to add", nil) : NSLocalizedString(@"Pull to add", nil);
 }
 
 - (NSString *)swipeToDeleteTextActivated:(BOOL)activated {
-    return activated ? @"Release to delete" : @"Swipe to delete";
+    return activated ? NSLocalizedString(@"Release to delete", nil) : NSLocalizedString(@"Swipe to delete", nil);
 }
 
 - (void)addCellToBottom {

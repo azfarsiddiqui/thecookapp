@@ -182,7 +182,7 @@
                 }
                 failure:^(NSError *error){
                     [self.activityView stopAnimating];
-                    [self displayStatusMessage:@"UNABLE TO LOAD USER"];
+                    [self displayStatusMessage:NSLocalizedString(@"UNABLE TO LOAD USER", nil)];
                 }];
 }
 

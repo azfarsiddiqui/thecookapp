@@ -592,7 +592,7 @@
 }
 
 - (void)initFriendsButton {
-    NSString *friendRequestText = @"ADD FRIEND";
+    NSString *friendRequestText = NSLocalizedString(@"ADD FRIEND", nil);
     
     [self initActionButtonWithSelector:@selector(requestTapped:)];
     [self updateRequestButtonText:friendRequestText activity:YES enabled:NO];
@@ -603,20 +603,20 @@
                                           
                                           if (alreadyConnected) {
                                               
-                                              [self updateButtonText:@"FRIENDS" activity:NO
+                                              [self updateButtonText:NSLocalizedString(@"FRIENDS", nil) activity:NO
                                                                 icon:nil
                                                              enabled:YES target:self selector:@selector(unfriendTapped:)];
                                               
                                           } else if (pendingAcceptance) {
                                               self.pendingAcceptance = pendingAcceptance;
-                                              [self updateButtonText:@"ADD FRIEND" activity:NO
+                                              [self updateButtonText:NSLocalizedString(@"ADD FRIEND", nil) activity:NO
                                                                 icon:nil
                                                              enabled:YES target:nil selector:nil];
                                               
                                               self.actionButtonCaptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
                                               self.actionButtonCaptionLabel.font = kActionSubCaptionFont;
                                               self.actionButtonCaptionLabel.textColor = [UIColor whiteColor];
-                                              self.actionButtonCaptionLabel.text = [[NSString stringWithFormat:@"%@ WANTS TO BE FRIENDS", [self.book.user friendlyName]] uppercaseString];
+                                              self.actionButtonCaptionLabel.text = [[NSString stringWithFormat:NSLocalizedString(@"%@ WANTS TO BE FRIENDS", nil), [self.book.user friendlyName]] uppercaseString];
                                               [self.actionButtonCaptionLabel sizeToFit];
                                               self.actionButtonCaptionLabel.frame = (CGRect){
                                                   floorf((self.bounds.size.width - self.actionButtonCaptionLabel.frame.size.width) / 2.0),
@@ -627,7 +627,7 @@
                                               [self addSubview:self.actionButtonCaptionLabel];
                                               
                                           } else if (alreadySent) {
-                                              [self updateButtonText:@"REQUESTED" activity:NO
+                                              [self updateButtonText:NSLocalizedString(@"REQUESTED", nil) activity:NO
                                                                 icon:nil
                                                              enabled:NO target:nil selector:nil];
                                           } else {
@@ -646,7 +646,7 @@
         _signInLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _signInLabel.font = kActionCaptionFont;
         _signInLabel.textColor = [UIColor whiteColor];
-        _signInLabel.text = [[NSString stringWithFormat:@"SIGN IN TO VIEW THIS BOOK"] uppercaseString];
+        _signInLabel.text = [NSLocalizedString(@"SIGN IN TO VIEW THIS BOOK", nil) uppercaseString];
         [_signInLabel sizeToFit];
         _signInLabel.frame = (CGRect){
             floorf((self.bounds.size.width - _signInLabel.frame.size.width) / 2.0),
@@ -695,25 +695,26 @@
     if (self.pendingAcceptance) {
         [self sendFriendRequest];
     } else {
-        self.friendRequestAlert = [[UIAlertView alloc] initWithTitle:@"Send Friend Request?"
+        self.friendRequestAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Send Friend Request?", nil)
                                                              message:nil
                                                             delegate:self
-                                                   cancelButtonTitle:@"Cancel"
-                                                   otherButtonTitles:@"Send", nil];
+                                                   cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                   otherButtonTitles:NSLocalizedString(@"Send", nil), nil];
         [self.friendRequestAlert show];
     }
 }
 
 - (void)unfriendTapped:(id)sender {
     [self.actionButtonCaptionLabel removeFromSuperview];
-    self.unfriendAlert = [[UIAlertView alloc] initWithTitle:@"Remove Friend?" message:nil delegate:self
-                                          cancelButtonTitle:@"Cancel"
-                                          otherButtonTitles:@"Remove", nil];
+    self.unfriendAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Remove Friend?", nil)
+                                                    message:nil delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                          otherButtonTitles:NSLocalizedString(@"Remove", nil), nil];
     [self.unfriendAlert show];
 }
 
 - (void)addTapped:(id)sender {
-    [self updateAddButtonText:@"ADD TO BENCH" activity:YES enabled:NO];
+    [self updateAddButtonText:NSLocalizedString(@"ADD TO BENCH", nil) activity:YES enabled:NO];
     
     // Weak reference so we don't have retain cycles.
     __weak typeof(self) weakSelf = self;
@@ -721,7 +722,7 @@
                    success:^{
                        [AnalyticsHelper trackEventName:kEventBookAdd params:nil];
                        
-                       [weakSelf updateButtonText:@"BOOK ON BENCH" activity:NO
+                       [weakSelf updateButtonText:NSLocalizedString(@"BOOK ON BENCH", nil) activity:NO
                                              icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
                                           enabled:NO target:nil selector:nil];
                        
@@ -734,15 +735,15 @@
                        
                    }
                    failure:^(NSError *error) {
-                       [weakSelf updateAddButtonText:@"UNABLE TO ADD" activity:NO enabled:NO];
+                       [weakSelf updateAddButtonText:NSLocalizedString(@"UNABLE TO ADD", nil) activity:NO enabled:NO];
                    }];
 }
 
 - (void)sendFriendRequest {
     if (self.pendingAcceptance) {
-        [self updateRequestButtonText:@"ACCEPTING" activity:YES enabled:NO];
+        [self updateRequestButtonText:NSLocalizedString(@"ACCEPTING", nil) activity:YES enabled:NO];
     } else {
-        [self updateRequestButtonText:@"SENDING" activity:YES enabled:NO];
+        [self updateRequestButtonText:NSLocalizedString(@"SENDING", nil) activity:YES enabled:NO];
     }
     
     [self.currentUser requestFriend:self.book.user
@@ -753,11 +754,11 @@
                                  self.areFriends = YES;
                                  [self updateViews];
                                  
-                                 [self updateButtonText:@"FRIENDS" activity:NO
+                                 [self updateButtonText:NSLocalizedString(@"FRIENDS", nil) activity:NO
                                                    icon:nil
                                                 enabled:NO target:nil selector:nil];
                              } else {
-                                 [self updateButtonText:@"REQUESTED" activity:NO
+                                 [self updateButtonText:NSLocalizedString(@"REQUESTED", nil) activity:NO
                                                    icon:nil
                                                 enabled:NO target:nil selector:nil];
                              }
@@ -769,7 +770,8 @@
                              
                          }
                             failure:^(NSError *error) {
-                                [self updateButtonText:@"UNABLE TO SEND" activity:NO icon:nil enabled:NO target:nil selector:nil];
+                                [self updateButtonText:NSLocalizedString(@"UNABLE TO SEND", nil)
+                                              activity:NO icon:nil enabled:NO target:nil selector:nil];
                             }];
 }
 
@@ -783,7 +785,7 @@
                                              self.areFriends = NO;
                                              [self updateViews];
                                              
-                                             [self updateButtonText:@"ADD FRIEND" activity:NO
+                                             [self updateButtonText:NSLocalizedString(@"ADD FRIEND", nil) activity:NO
                                                                icon:nil
                                                             enabled:YES target:self selector:@selector(requestTapped:)];
                                              
@@ -794,7 +796,7 @@
                                              
                                          } failure:^(NSError *error) {
                                              
-                                             [self updateButtonText:@"UNABLE TO REMOVE"
+                                             [self updateButtonText:NSLocalizedString(@"UNABLE TO REMOVE", nil)
                                                            activity:NO icon:nil enabled:NO target:nil selector:nil];
                                          }];
 }

@@ -38,8 +38,8 @@
 
 #define kUnderlayMaxAlpha   0.7
 #define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
-#define SHARE_TITLE         @"Check out this recipe"
-#define SHARE_DESCRIPTION   @"Shared from Cook"
+#define SHARE_TITLE         NSLocalizedString(@"Check out this recipe", nil)
+#define SHARE_DESCRIPTION   NSLocalizedString(@"Shared from Cook", nil)
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeShareViewControllerDelegate>)delegate {
     if (self = [super  init]) {
@@ -116,7 +116,7 @@
     [shareTitleLabel setBackgroundColor:[UIColor clearColor]];
     shareTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
 //    shareTitleLabel.textAlignment = NSTextAlignmentCenter;
-    shareTitleLabel.text = @"SHARE RECIPE";
+    shareTitleLabel.text = NSLocalizedString(@"SHARE RECIPE", nil);
     shareTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:40.0];
     shareTitleLabel.textColor = [UIColor whiteColor];
     [shareTitleLabel sizeToFit];
@@ -154,7 +154,7 @@
         bottomLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
         bottomLabel.textColor = [UIColor whiteColor];
         [self.view addSubview:bottomLabel];
-        bottomLabel.text = @"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB";
+        bottomLabel.text = NSLocalizedString(@"SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB", nil);
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
         lockImageView.backgroundColor = [UIColor clearColor];
         lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -180,7 +180,7 @@
         reportLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
         reportLabel.textColor = [UIColor whiteColor];
         [self.view addSubview:reportLabel];
-        reportLabel.text = @"REPORT";
+        reportLabel.text = NSLocalizedString(@"REPORT", nil);
         UIImageView *flagImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_report"]];
         UITapGestureRecognizer *reportGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reportPressed:)];
         [reportLabel addGestureRecognizer:reportGesture];
@@ -286,14 +286,18 @@
     if ([MFMailComposeViewController canSendMail])
         [self shareEmail];
     else
-        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Mail", nil)
+                                    message:NSLocalizedString(@"Please set up a mail account in Settings", nil)
+                                   delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 - (void)messageShareTapped:(id)sender {
     if ([MFMessageComposeViewController canSendText])
         [self shareMessage];
     else
-        [[[UIAlertView alloc] initWithTitle:@"Message" message:@"Please set up iMessage in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Message", nil)
+                                    message:NSLocalizedString(@"Please set up iMessage in Settings", nil)
+                                   delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 #pragma mark - Social Sharers
@@ -386,9 +390,9 @@
     
     NSMutableString *subject = [NSMutableString new];
     if (self.currentUser) {
-        [subject appendFormat:@"%@ shared a recipe from Cook", [self.currentUser friendlyName]];
+        [subject appendFormat:NSLocalizedString(@"%@ shared a recipe from Cook", nil), [self.currentUser friendlyName]];
     } else {
-        [subject appendString:@"A recipe from Cook"];
+        [subject appendString:NSLocalizedString(@"A recipe from Cook", nil)];
     }
     
     [mailDialog setSubject:subject];
@@ -411,22 +415,23 @@
     if (error) DLog(@"Error in sharing: %@", error.localizedDescription);
     switch (shareType) {
         case CKShareFacebook:
-            errorString = @"Error in posting to Facebook";
+            errorString = NSLocalizedString(@"Error in posting to Facebook", nil);
             break;
         case CKShareTwitter:
-            errorString = @"Please set up a Twitter account in the Settings app";
+            errorString = NSLocalizedString(@"Please set up a Twitter account in the Settings app", nil);
             break;
         case CKShareMail:
-            errorString = @"Error in posting to Mail";
+            errorString = NSLocalizedString(@"Error in posting to Mail", nil);
             break;
         case CKShareMessage:
-            errorString = @"Error in posting to Message";
+            errorString = NSLocalizedString(@"Error in posting to Message", nil);
             break;
         default:
-            errorString = @"Error";
+            errorString = NSLocalizedString(@"Error", nil);
             break;
     }
-    [[[UIAlertView alloc] initWithTitle:@"Error in sharing" message:errorString delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in sharing", nil) message:errorString
+                               delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 - (void)successWithType:(CKShareType)shareType
@@ -517,10 +522,16 @@
         [recipeTitle replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0, [recipeTitle length])];
         [shareText appendString:recipeTitle];
     } else {
-        [shareText appendFormat:@"Check out %@ recipe", [self.recipe isOwner] ? @"my" : @"this"];
+        
+        if ([self.recipe isOwner]) {
+            [shareText appendString:NSLocalizedString(@"Check out my recipe", nil)];
+        } else {
+            [shareText appendString:NSLocalizedString(@"Check out this recipe", nil)];
+        }
+        
     }
     if (showTwitter) {
-        [shareText appendString:@" via @thecookapp"];
+        [shareText appendString:[NSString stringWithFormat:@" %@", NSLocalizedString(@"via @thecookapp", nil)]];
     }
     if (showUrl) {
         [shareText appendFormat:@"\n%@", [self.shareURL absoluteString]];
@@ -538,7 +549,7 @@
         NSString *versionString = [NSString stringWithFormat:@"Version: %@", minorVersion];
         
         CKUser *currentUser = [CKUser currentUser];
-        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : @"None"];
+        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : NSLocalizedString(@"None", nil)];
         NSString *badRecipeString = [NSString stringWithFormat:@"Reported Recipe ID: %@ \n Reported Recipe Name: %@", self.recipe.objectId, self.recipe.name];
         NSString *badURLString = [NSString stringWithFormat:@"Reported Recipe URL: http://www.worldscookbook.com/%@", self.recipe.objectId];
         NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@\n%@", versionString, userDisplay, badRecipeString, badURLString];
@@ -550,7 +561,7 @@
         [self presentViewController:mailDialog animated:YES completion:nil];
     }
     else
-        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Mail", nil) message:NSLocalizedString(@"Please set up a mail account in Settings", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 @end

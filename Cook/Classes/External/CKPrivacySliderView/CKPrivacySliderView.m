@@ -298,13 +298,13 @@
     NSString *info = nil;
     switch (notchIndex) {
         case 0:
-            info = @"SECRET";
+            info = NSLocalizedString(@"SECRET", nil);
             break;
         case 1:
-            info = @"FRIENDS";
+            info = NSLocalizedString(@"FRIENDS", nil);
             break;
         case 2:
-            info = @"PUBLIC";
+            info = NSLocalizedString(@"PUBLIC", nil);
             break;
         default:
             break;

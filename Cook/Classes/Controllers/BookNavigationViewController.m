@@ -2136,7 +2136,9 @@
 }
 
 - (NSArray *)potentialLikesPageNames {
-    return @[@"LIKES", @"LIKED", @"COOK LIKES", @"COOK LIKED"];
+    return @[
+             NSLocalizedString(@"LIKES", nil), NSLocalizedString(@"LIKED", nil), @"COOK LIKES", @"COOK LIKED"
+             ];
 }
 
 - (BOOL)onLikesPage {

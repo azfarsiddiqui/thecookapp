@@ -355,7 +355,7 @@
     if (!_footerForgotButton) {
         _footerForgotButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _footerForgotButton.userInteractionEnabled = YES;
-        [_footerForgotButton setAttributedTitle:[self attributedTextForFooterLabelWithText:@"FORGOT PASSWORD"] forState:UIControlStateNormal];
+        [_footerForgotButton setAttributedTitle:[self attributedTextForFooterLabelWithText:NSLocalizedString(@"FORGOT PASSWORD", nil)] forState:UIControlStateNormal];
         [_footerForgotButton addTarget:self action:@selector(forgotButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerForgotButton sizeToFit];
         
@@ -610,23 +610,24 @@
 }
 
 - (NSString *)titleForSignUp:(BOOL)signUp {
-    return signUp ? @"REGISTER" : @"SIGN IN";
+    return signUp ? NSLocalizedString(@"REGISTER", nil) : NSLocalizedString(@"SIGN IN", nil);
 }
 
 - (NSString *)footerTextForSignUp:(BOOL)signUp {
-    return signUp ? @"ALREADY HAVE AN ACCOUNT? SIGN IN" : @"DON'T HAVE AN ACCOUNT? SIGN UP";
+    return signUp ? [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"ALREADY HAVE AN ACCOUNT?", nil), NSLocalizedString(@"SIGN IN", nil)] :
+                    [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"DON'T HAVE AN ACCOUNT?", nil), NSLocalizedString(@"SIGN UP", nil)];
 }
 
 - (NSString *)emailButtonTextForSignUp:(BOOL)signUp {
-    return signUp ? @"REGISTER WITH EMAIL" : @"SIGN IN";
+    return signUp ? NSLocalizedString(@"REGISTER WITH EMAIL", nil) : NSLocalizedString(@"SIGN IN", nil);
 }
 
 - (NSString *)facebookButtonTextForSignUp:(BOOL)signUp {
-    return signUp ? @"REGISTER WITH FACEBOOK" : @"SIGN IN WITH FACEBOOK";
+    return signUp ? NSLocalizedString(@"REGISTER WITH FACEBOOK", nil) : NSLocalizedString(@"SIGN IN WITH FACEBOOK", nil);
 }
 
 - (NSString *)forgotButtonText {
-    return @"SEND";
+    return NSLocalizedString(@"SEND", nil);
 }
 
 - (CGRect)emailContainerFrameForSignUp:(BOOL)signUp {
@@ -704,14 +705,14 @@
     
     if (self.signUpMode) {
         
-        [self.emailButton setText:@"SIGNING UP" activity:YES animated:NO enabled:NO];
+        [self.emailButton setText:NSLocalizedString(@"SIGNING UP", nil) activity:YES animated:NO enabled:NO];
         [self enableEmailLogin:YES completion:^{
             [self registerViaEmail];
         }];
         
     } else {
         
-        [self.emailButton setText:@"SIGNING IN" activity:YES animated:NO enabled:NO];
+        [self.emailButton setText:NSLocalizedString(@"SIGNING IN", nil) activity:YES animated:NO enabled:NO];
         [self enableEmailLogin:YES completion:^{
             [self loginViaEmail];
         }];
@@ -740,9 +741,9 @@
                    } failure:^(NSError *error) {
                        
                        if ([CKUser usernameExistsForSignUpError:error]) {
-                           [self.emailButton setText:@"EMAIL IS ALREADY REGISTERED" activity:NO animated:NO enabled:NO];
+                           [self.emailButton setText:NSLocalizedString(@"EMAIL IS ALREADY REGISTERED", nil) activity:NO animated:NO enabled:NO];
                        } else {
-                           [self.emailButton setText:@"COULDN'T CONNECT" activity:NO animated:NO enabled:NO];
+                           [self.emailButton setText:NSLocalizedString(@"COULDN'T CONNECT", nil) activity:NO animated:NO enabled:NO];
                        }
 
                        // Re-enable the email button.
@@ -773,9 +774,9 @@
                 } failure:^(NSError *error) {
                     
                     if ([CKUser invalidCredentialsForSignInError:error]) {
-                        [self.emailButton setText:@"INCORRECT EMAIL OR PASSWORD" activity:NO animated:NO enabled:NO];
+                        [self.emailButton setText:NSLocalizedString(@"INCORRECT EMAIL OR PASSWORD", nil) activity:NO animated:NO enabled:NO];
                     } else {
-                        [self.emailButton setText:@"COULDN'T CONNECT" activity:NO animated:NO enabled:NO];
+                        [self.emailButton setText:NSLocalizedString(@"COULDN'T CONNECT", nil) activity:NO animated:NO enabled:NO];
                     }
                     
                     [self informLoginSuccessful:NO];
@@ -793,7 +794,7 @@
     
     // Inform for modal.
     [self.delegate signUpViewControllerModalRequested:YES];
-    [self.facebookButton setText:@"CHATTING WITH FACEBOOK" activity:YES animated:NO enabled:NO];
+    [self.facebookButton setText:NSLocalizedString(@"CHATTING WITH FACEBOOK", nil) activity:YES animated:NO enabled:NO];
     [self loginViaFacebook];
 }
 
@@ -815,10 +816,11 @@
     [CKUser loginWithFacebookCompletion:^(BOOL isNewUser) {
         
         if (!self.signUpMode && isNewUser) {
-            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:@"Create Account"
-                                                                   message:@"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?"
+            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Create Account", nil)
+                                                                   message:NSLocalizedString(@"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?", nil)
                                                                   delegate:self
-                                                         cancelButtonTitle:@"Cancel" otherButtonTitles:@"Create", nil];
+                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                         otherButtonTitles:NSLocalizedString(@"Create", nil), nil];
             [self.facebookNewUserAlert show];
             
         } else {
@@ -837,9 +839,10 @@
         [self enableFacebookLogin:NO completion:^{
             
             if ([CKUser isFacebookPermissionsError:error]) {
-                [ViewHelper alertWithTitle:@"Permission Required" message:@"Go to iPad Settings > Facebook and turn on for Cook"];
+                [ViewHelper alertWithTitle:NSLocalizedString(@"Permission Required", nil)
+                                   message:NSLocalizedString(@"Go to iPad Settings > Facebook and turn on for Cook", nil)];
             }
-            [self.facebookButton setText:@"COULDN'T CONNECT TO FACEBOOK" activity:NO animated:NO enabled:NO];
+            [self.facebookButton setText:NSLocalizedString(@"COULDN'T CONNECT TO FACEBOOK", nil) activity:NO animated:NO enabled:NO];
             [self informLoginSuccessful:NO];
             
             // Re-enable the facebook button.

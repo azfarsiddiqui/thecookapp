@@ -44,7 +44,8 @@
 }
 
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO RESULTS" subtitle:@"TRY SEARCHING FOR ANOTHER NAME"
+    [[CardViewHelper sharedInstance] showCardText:NSLocalizedString(@"NO RESULTS", nil)
+                                         subtitle:NSLocalizedString(@"TRY SEARCHING FOR ANOTHER NAME", nil)
                         view:self.collectionView show:YES center:self.collectionView.center];
 }
 

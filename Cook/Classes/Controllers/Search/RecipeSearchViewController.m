@@ -345,7 +345,7 @@
 }
 
 - (NSString *)recipeSearchFieldViewPlaceholderText {
-    return @"RECIPE, INGREDIENT OR TAG";
+    return NSLocalizedString(@"RECIPE, INGREDIENT OR TAG", nil);
 }
 
 - (void)recipeSearchFieldViewSearchByText:(NSString *)text {
@@ -921,13 +921,13 @@
 - (NSString *)displayForSearchFilter:(CKRecipeSearchFilter)filter {
     switch (filter) {
         case CKRecipeSearchFilterPopularity:
-            return @"POPULAR";
+            return NSLocalizedString(@"POPULAR", nil);
             break;
         case CKRecipeSearchFilterCreationDate:
-            return @"LATEST";
+            return NSLocalizedString(@"LATEST", nil);
             break;
         default:
-            return @"POPULAR";
+            return NSLocalizedString(@"POPULAR", nil);
             break;
     }
 }

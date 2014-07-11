@@ -34,7 +34,7 @@
         fbSocialLabel.textAlignment = NSTextAlignmentCenter;
         fbSocialLabel.font = [Theme suggestFacebookFont];
         fbSocialLabel.textColor = [UIColor whiteColor];
-        fbSocialLabel.text = @"GET SUGGESTIONS";
+        fbSocialLabel.text = NSLocalizedString(@"GET SUGGESTIONS", nil);
         [fbSocialLabel sizeToFit];
         fbSocialLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [self.socialButton addSubview:fbSocialLabel];

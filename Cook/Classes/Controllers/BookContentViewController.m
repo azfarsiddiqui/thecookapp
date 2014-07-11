@@ -273,8 +273,8 @@
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_category.png"]
-                                                       title:@"ADD A RECIPE"
-                                                    subtitle:@"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!"
+                                                       title:NSLocalizedString(@"ADD A RECIPE", nil)
+                                                    subtitle:NSLocalizedString(@"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!", nil)
                                                         view:self.view
                                                       anchor:CardViewAnchorTopRight
                                                       center:(CGPoint){
@@ -677,7 +677,7 @@
     // Inform delegate to exit. edit mode.
     [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
     
-    self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"DELETING"];
+    self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:NSLocalizedString(@"DELETING", nil)];
     [ModalOverlayHelper showModalOverlayForViewController:self.progressOverlayViewController
                                                      show:YES
                                                completion:^{

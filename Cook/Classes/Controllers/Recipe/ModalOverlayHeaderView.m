@@ -25,7 +25,7 @@
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
         [self addSubview:self.titleLabel];
-        [self configureTitle:@"Comments"];
+        [self configureTitle:NSLocalizedString(@"Comments", nil)];
     }
     return self;
 }

@@ -74,7 +74,7 @@
 - (UILabel *)forgotLabel {
     if (!_forgotLabel) {
         _forgotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _forgotLabel.attributedText = [self attributedTextForTitleLabelWithText:@"RESET PASSWORD"];
+        _forgotLabel.attributedText = [self attributedTextForTitleLabelWithText:NSLocalizedString(@"RESET PASSWORD", nil)];
         [_forgotLabel sizeToFit];
     }
     return _forgotLabel;
@@ -97,7 +97,7 @@
     
     // Forgot email.
     self.forgotEmailView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self
-                                                      placeholder:@"Email Address" password:NO submit:YES];
+                                                      placeholder:NSLocalizedString(@"Email Address", nil) password:NO submit:YES];
     CGRect forgotEmailFrame = self.forgotEmailView.frame;
     forgotEmailFrame.origin.y = forgotLabelFrame.origin.y + forgotLabelFrame.size.height + labelFieldGap;
     [self.view addSubview:self.forgotEmailView];
@@ -163,7 +163,7 @@
         return;
     }
     
-    [self.forgotButton setText:@"SENDING" activity:YES animated:NO enabled:NO];
+    [self.forgotButton setText:NSLocalizedString(@"SENDING", nil) activity:YES animated:NO enabled:NO];
     [self sendForgotPassword];
 }
 
@@ -191,12 +191,12 @@
     NSString *email = [self.forgotEmailView inputText];
     [CKUser requestPasswordResetForEmail:email completion:^{
         
-        [self.forgotButton setText:@"PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
+        [self.forgotButton setText:NSLocalizedString(@"PLEASE CHECK YOUR EMAIL", nil) done:YES activity:NO animated:NO enabled:NO];
         [self.forgotEmailView focusTextFieldView:NO];
         
     } failure:^(NSError *error) {
         
-        [self.forgotButton setText:@"EMAIL ADDRESS IS NOT REGISTERED" activity:NO animated:NO enabled:NO];
+        [self.forgotButton setText:NSLocalizedString(@"EMAIL ADDRESS IS NOT REGISTERED", nil) activity:NO animated:NO enabled:NO];
         
         // Re-enable the forgot button.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

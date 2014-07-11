@@ -310,7 +310,7 @@
         _prepTitleLabel.backgroundColor = [UIColor clearColor];
         _prepTitleLabel.font = [Theme editPrepTitleFont];
         _prepTitleLabel.textColor = [Theme editPrepTitleColour];
-        _prepTitleLabel.text = @"PREP";
+        _prepTitleLabel.text = [NSLocalizedString(@"Prep", nil) uppercaseString];
         [_prepTitleLabel sizeToFit];
     }
     return _prepTitleLabel;
@@ -348,7 +348,7 @@
         _cookTitleLabel.backgroundColor = [UIColor clearColor];
         _cookTitleLabel.font = [Theme editCookTitleFont];
         _cookTitleLabel.textColor = [Theme editCookTitleColour];
-        _cookTitleLabel.text = @"COOK";
+        _cookTitleLabel.text = [NSLocalizedString(@"Cook", nil) uppercaseString];
         [_cookTitleLabel sizeToFit];
     }
     return _cookTitleLabel;

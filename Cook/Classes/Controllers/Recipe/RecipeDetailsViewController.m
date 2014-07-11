@@ -815,7 +815,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         photoLabel.textColor = [Theme editPhotoColour];
         photoLabel.textAlignment = NSTextAlignmentCenter;
         photoLabel.backgroundColor = [UIColor clearColor];
-        photoLabel.text = @"PHOTO";
+        photoLabel.text = NSLocalizedString(@"PHOTO", nil);
         [photoLabel sizeToFit];
         CGRect photoLabelFrame = photoLabel.frame;
         photoLabelFrame = (CGRect){
@@ -1773,13 +1773,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if (self.recipePin) {
         if ([self.book isOwner]) {
-            self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?" message:nil delegate:self
-                                             cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
+            self.pinAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Remove Recipe?", nil) message:nil delegate:self
+                                             cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Remove", nil), nil];
         } else {
-            self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?"
-                                                       message:[NSString stringWithFormat:@"Already Added to %@", [self.recipePin.page uppercaseString]]
+            self.pinAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Remove Recipe?", nil)
+                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Already Added to %@", nil),
+                                                                [self.recipePin.page uppercaseString]]
                                                       delegate:self
-                                             cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
+                                             cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Remove", nil), nil];
         }
         [self.pinAlert show];
     } else {
@@ -1826,7 +1827,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         if ([self.recipeDetails saveRequired]) {
             self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
-                                                cancelButtonTitle:@"Cancel" otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                                cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         } else {
             [self closeRecipeView];
         }
@@ -1834,7 +1836,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     } else {
         if ([self.recipeDetails saveRequired]) {
             self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
-                                                cancelButtonTitle:@"Cancel" otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                                cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         } else {
             [self initRecipeDetails];
             [self enableEditMode:NO];
@@ -1852,8 +1854,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)deleteTapped:(id)sender {
-    self.deleteAlert = [[UIAlertView alloc] initWithTitle:@"Delete Recipe?" message:nil delegate:self
-                                              cancelButtonTitle:@"No" otherButtonTitles:@"Delete", nil];
+    self.deleteAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Delete Recipe?", nil) message:nil delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@"Delete", nil];
     [self.deleteAlert show];
 }
 
@@ -1863,7 +1865,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Blank recipe?
     if (self.addMode && !saveRequired) {
-        UIAlertView *blankAlertView = [[UIAlertView alloc] initWithTitle:@"Sorry, you can't save an empty recipe"
+        UIAlertView *blankAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sorry, you can't save an empty recipe", nil)
                                                                  message:nil
                                                                 delegate:nil cancelButtonTitle:nil
                                                         otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -1919,8 +1921,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                            self.addMode = NO;
                                            
                                            // Alert the error.
-                                           [[[UIAlertView alloc] initWithTitle:@"Unable to Save"
-                                                                       message:@"Please try again soon"
+                                           [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Unable to Save", nil)
+                                                                       message:NSLocalizedString(@"Please try again soon", nil)
                                                                       delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                                              otherButtonTitles:nil] show];
                                            
@@ -2153,7 +2155,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
     
     // Fade in/out the overlay.
-    [self showProgressOverlayView:deleteMode title:@"DELETING" completion:completion];
+    [self showProgressOverlayView:deleteMode title:NSLocalizedString(@"DELETING", nil) completion:completion];
 }
 
 - (void)enableUnpinMode:(BOOL)unpin completion:(void (^)())completion {
@@ -2297,7 +2299,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)showProgressOverlayView:(BOOL)show completion:(void (^)())completion {
-    [self showProgressOverlayView:show title:@"SAVING" completion:completion];
+    [self showProgressOverlayView:show title:NSLocalizedString(@"SAVING", nil) completion:completion];
 }
 
 - (void)showProgressOverlayView:(BOOL)show title:(NSString *)title completion:(void (^)())completion {

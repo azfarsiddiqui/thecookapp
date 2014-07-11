@@ -94,8 +94,8 @@
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
-                                                       title:@"EDIT PROFILE"
-                                                    subtitle:@"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO"
+                                                       title:NSLocalizedString(@"EDIT PROFILE", nil)
+                                                    subtitle:NSLocalizedString(@"CHANGE YOUR BACKGROUND, PROFILE PHOTO AND BIO", nil)
                                                         view:self.view
                                                       anchor:CardViewAnchorTopRight
                                                       center:(CGPoint){
@@ -223,7 +223,7 @@
         photoLabel.textColor = [Theme editPhotoColour];
         photoLabel.textAlignment = NSTextAlignmentCenter;
         photoLabel.backgroundColor = [UIColor clearColor];
-        photoLabel.text = @"PHOTO";
+        photoLabel.text = NSLocalizedString(@"PHOTO", nil);
         [photoLabel sizeToFit];
         CGRect photoLabelFrame = photoLabel.frame;
         photoLabelFrame = (CGRect){

@@ -53,8 +53,8 @@
 }
 
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO SUGGESTIONS"
-                                         subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
+    [[CardViewHelper sharedInstance] showCardText:NSLocalizedString(@"NO SUGGESTIONS", nil)
+                                         subtitle:NSLocalizedString(@"USE SEARCH TO FIND PEOPLE YOU KNOW", nil)
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 
@@ -219,9 +219,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)handleFacebookError:(NSError *)error {
     DLog(@"Error: %@", [error localizedDescription]);
     if ([CKUser isFacebookPermissionsError:error]) {
-        [ViewHelper alertWithTitle:@"Permission Required" message:@"Go to iPad Settings > Facebook and turn on for Cook"];
+        [ViewHelper alertWithTitle:NSLocalizedString(@"Permission Required", nil)
+                           message:NSLocalizedString(@"Go to iPad Settings > Facebook and turn on for Cook", nil)];
     } else {
-        [ViewHelper alertWithTitle:@"Couldn't Connect" message:nil];
+        [ViewHelper alertWithTitle:NSLocalizedString(@"Couldn't Connect", nil) message:nil];
     }
     [self.facebookButtonView enableActivity:NO];
 }

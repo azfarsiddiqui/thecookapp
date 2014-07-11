@@ -251,13 +251,13 @@
     NSString *info = nil;
     switch (privacy) {
         case CKPrivacyPrivate:
-            info = @"SECRET";
+            info = NSLocalizedString(@"SECRET", nil);
             break;
         case CKPrivacyFriends:
-            info = @"FRIENDS";
+            info = NSLocalizedString(@"FRIENDS", nil);
             break;
         case CKPrivacyPublic:
-            info = @"PUBLIC";
+            info = NSLocalizedString(@"PUBLIC", nil);
             break;
         default:
             break;

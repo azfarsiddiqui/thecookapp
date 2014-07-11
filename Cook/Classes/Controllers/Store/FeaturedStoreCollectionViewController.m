@@ -29,7 +29,8 @@
 }
 
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO FEATURED BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
+    [[CardViewHelper sharedInstance] showCardText:NSLocalizedString(@"NO FEATURED BOOKS", nil)
+                                         subtitle:NSLocalizedString(@"PLEASE CHECK BACK SOON", nil)
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 

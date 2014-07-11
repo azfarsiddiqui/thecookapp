@@ -44,7 +44,7 @@
 "REQUESTED" = "AANGEVRAAGD";
 "SIGN IN TO VIEW THIS BOOK" = "MELD AAN OM DIT BOEK WEER TE GEVEN";
 "Send Friend Request?" = "Vriendenverzoek verzenden?";
-"Remove Friend" = "Vriend verwijderen";
+"Remove Friend?" = "Vriend verwijderen?";
 "Remove" = "Verwijderen";
 "ADD TO BENCH" = "TOEVOEGEN AAN BANK";
 "BOOK ON BENCH" = "BOEK OP BANK";
@@ -68,6 +68,7 @@
 
 // Comments
 "Comment" = "Opmerking";
+"Comments" = "Opmerkingen";
 "COMMENTS" = "OPMERKINGEN";
 "NO COMMENTS" = "GEEN OPMERKINGEN";
 "ADD COMMENT" = "OPMERKING TOEVOEGEN";
@@ -144,6 +145,7 @@
 "%@ liked %@." = "%@ vind %@ leuk.";
 "%@ added %@." = "%@ heeft %@ toegevoegd.";
 "%@ is now featured in %@ in %@." = "%@ is nu aanbevolen in %@ in %@.";
+"and" = "en";
 "%@ and %@" = "%@ en %@";
 "NOTIFICATIONS" = "MELDINGEN";
 "NO NOTIFICATIONS" = "GEEN MELDINGEN";
@@ -174,7 +176,7 @@
 
 // Search
 "RECIPE, INGREDIENT OR TAG" = "RECEPT, INGREDIËNT OF LABEL";
-"COULDN'T CONNECT, PLEASE TRY AGAIN" = "KAN GEEN VERBINDING MAKEN. PROBEER HET OPNIEUW";
+"COULDN'T CONNECT%@PLEASE TRY AGAIN" = "KAN GEEN VERBINDING MAKEN%@PROBEER HET OPNIEUW";
 "POPULAR" = "POPULAIR";
 "LATEST" = "NIEUWSTE";
 

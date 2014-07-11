@@ -142,7 +142,7 @@
 }
 
 - (NSString *)addItemText {
-    return @"ADD ITEM";
+    return NSLocalizedString(@"ADD ITEM", nil);
 }
 
 - (void)selectedItemAtIndex:(NSInteger)index {

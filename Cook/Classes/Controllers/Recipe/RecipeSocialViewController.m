@@ -441,7 +441,7 @@
         
         ModalOverlayHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
-        [headerView configureTitle:@"COMMENTS"];
+        [headerView configureTitle:NSLocalizedString(@"COMMENTS", nil)];
         supplementaryView = headerView;
         self.headerView = headerView;
         
@@ -490,7 +490,7 @@
         _emptyCommentsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _emptyCommentsLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
         _emptyCommentsLabel.textColor = [UIColor whiteColor];
-        _emptyCommentsLabel.text = @"NO COMMENTS";
+        _emptyCommentsLabel.text = NSLocalizedString(@"NO COMMENTS", nil);
         [_emptyCommentsLabel sizeToFit];
     }
     return _emptyCommentsLabel;
@@ -638,7 +638,7 @@
                                                                                                      delegate:self
                                                                                                 editingHelper:self.editingHelper
                                                                                                         white:YES
-                                                                                                        title:@"ADD COMMENT"
+                                                                                                        title:NSLocalizedString(@"ADD COMMENT", nil)
                                                                                                characterLimit:500];
     editViewController.clearOnFocus = YES;
     editViewController.showTitle = YES;

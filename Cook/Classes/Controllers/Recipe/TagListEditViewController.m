@@ -81,7 +81,7 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.font = [Theme tagTitleFont];
     titleLabel.textColor = [Theme editServesTitleColour];
-    titleLabel.text = @"TAGS";
+    titleLabel.text = NSLocalizedString(@"TAGS", nil);
     [titleAlignView addSubview:titleLabel];
     
     self.titleCountLabel = [[UILabel alloc] initWithFrame:CGRectZero];

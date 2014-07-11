@@ -20,7 +20,7 @@
 
 - (id)initWithDelegate:(id<ServesTabViewDelegate>)delegate selectedType:(CKQuantityType)selectedType quantityString:(NSString *)quantity
 {
-    self = [super initWithOptions:@[@"SERVES", @"MAKES"]
+    self = [super initWithOptions:@[ [NSLocalizedString(@"Serves", nil) uppercaseString], [NSLocalizedString(@"Makes", nil) uppercaseString] ]
                        buttonFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:32]
                       buttonWidth:220];
     if (self) {
@@ -165,9 +165,9 @@
                                               NSForegroundColorAttributeName: [UIColor colorWithRed:0.102 green:0.533 blue:0.961 alpha:1.000]};
     
     // TODO: Redo this so that i have makesTitle, servesTitle with the attributes chosen by the ternary operatoriph
-    NSMutableAttributedString *makesTitle = [[NSMutableAttributedString alloc] initWithString:@"MAKES" attributes:self.selectedType == CKQuantityMakes ?activeTitleAttributes : inactiveTitleAttributes];
+    NSMutableAttributedString *makesTitle = [[NSMutableAttributedString alloc] initWithString:[NSLocalizedString(@"Makes", nil) uppercaseString] attributes:self.selectedType == CKQuantityMakes ?activeTitleAttributes : inactiveTitleAttributes];
     NSAttributedString *activeNumber = [[NSAttributedString alloc] initWithString:quantity attributes:activeNumAttributes];
-    NSMutableAttributedString *servesTitle = [[NSMutableAttributedString alloc] initWithString:@"SERVES" attributes:self.selectedType == CKQuantityServes ? activeTitleAttributes : inactiveTitleAttributes];
+    NSMutableAttributedString *servesTitle = [[NSMutableAttributedString alloc] initWithString:[NSLocalizedString(@"Serves", nil) uppercaseString] attributes:self.selectedType == CKQuantityServes ? activeTitleAttributes : inactiveTitleAttributes];
     
     NSAttributedString *spaceString = [[NSAttributedString alloc] initWithString:@" "];
     [self.selectedType == CKQuantityMakes ? makesTitle : servesTitle appendAttributedString:spaceString];

@@ -76,7 +76,7 @@
         _commentLabel.backgroundColor = [UIColor clearColor];
         _commentLabel.font = [Theme recipeCommentFont];
         _commentLabel.textColor = [UIColor blackColor];
-        _commentLabel.text = @"Comment";
+        _commentLabel.text = NSLocalizedString(@"Comment", nil);
         _commentLabel.shadowOffset = (CGSize){ 0.0, -1.0 };
         _commentLabel.shadowColor = [UIColor whiteColor];
         _commentLabel.userInteractionEnabled = NO;

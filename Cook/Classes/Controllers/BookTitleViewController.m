@@ -317,8 +317,8 @@
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_title.png"]
-                                                       title:@"GET STARTED"
-                                                    subtitle:@"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..."
+                                                       title:NSLocalizedString(@"GET STARTED", nil)
+                                                    subtitle:NSLocalizedString(@"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE...", nil)
                                                         view:self.collectionView
                                                       anchor:CardViewAnchorMidLeft
                                                       center:(CGPoint){
@@ -342,8 +342,8 @@
         CGSize cardSize = [CardViewHelper cardViewSize];
         [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
-                                                       title:@"YOUR PROFILE"
-                                                    subtitle:@"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE"
+                                                       title:NSLocalizedString(@"YOUR PROFILE", nil)
+                                                    subtitle:NSLocalizedString(@"SWIPE RIGHT TO VIEW AND EDIT YOUR PROFILE", nil)
                                                         view:self.view
                                                       anchor:CardViewAnchorMidLeft
                                                       center:(CGPoint){

@@ -44,7 +44,7 @@
 "REQUESTED" = "REQUESTED";
 "SIGN IN TO VIEW THIS BOOK" = "SIGN IN TO VIEW THIS BOOK";
 "Send Friend Request?" = "Send Friend Request?";
-"Remove Friend" = "Remove Friend";
+"Remove Friend?" = "Remove Friend?";
 "Remove" = "Remove";
 "ADD TO BENCH" = "ADD TO BENCH";
 "BOOK ON BENCH" = "BOOK ON BENCH";
@@ -68,6 +68,7 @@
 
 // Comments
 "Comment" = "Comment";
+"Comments" = "Comments";
 "COMMENTS" = "COMMENTS";
 "NO COMMENTS" = "NO COMMENTS";
 "ADD COMMENT" = "ADD COMMENT";
@@ -144,6 +145,7 @@
 "%@ liked %@." = "%@ liked %@.";
 "%@ added %@." = "%@ added %@.";
 "%@ is now featured in %@ in %@." = "%@ is now featured in %@ in %@.";
+"and" = "and";
 "%@ and %@" = "%@ and %@";
 "NOTIFICATIONS" = "NOTIFICATIONS";
 "NO NOTIFICATIONS" = "NO NOTIFICATIONS";
@@ -174,7 +176,7 @@
 
 // Search
 "RECIPE, INGREDIENT OR TAG" = "RECIPE, INGREDIENT OR TAG";
-"COULDN'T CONNECT, PLEASE TRY AGAIN" = "COULDN’T CONNECT, PLEASE TRY AGAIN";
+"COULDN'T CONNECT%@PLEASE TRY AGAIN" = "COULDN’T CONNECT%@PLEASE TRY AGAIN";
 "POPULAR" = "POPULAR";
 "LATEST" = "LATEST";
 

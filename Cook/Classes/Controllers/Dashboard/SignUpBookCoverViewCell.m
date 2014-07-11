@@ -52,7 +52,9 @@
 
 - (CKBlueSignInButtonView *)signInButton {
     if (!_signInButton) {
-        _signInButton = [[CKBlueSignInButtonView alloc] initWithWidth:self.registerButton.frame.size.width text:@"SIGN IN" activity:NO delegate:self];
+        _signInButton = [[CKBlueSignInButtonView alloc] initWithWidth:self.registerButton.frame.size.width
+                                                                 text:NSLocalizedString(@"SIGN IN", nil)
+                                                             activity:NO delegate:self];
         _signInButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin;
         _signInButton.frame = CGRectMake(self.registerButton.frame.origin.x,
                                          self.registerButton.frame.origin.y - _signInButton.frame.size.height + 8.0,
@@ -65,7 +67,7 @@
 - (CKSignInButtonView *)registerButton {
     if (!_registerButton) {
         UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 16.0, 0.0);
-        _registerButton = [[CKSignInButtonView alloc] initWithWidth:kWidth text:@"REGISTER" activity:NO delegate:self];
+        _registerButton = [[CKSignInButtonView alloc] initWithWidth:kWidth text:NSLocalizedString(@"REGISTER", nil) activity:NO delegate:self];
         _registerButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin;
         _registerButton.frame = CGRectMake(floorf((self.contentView.bounds.size.width - kWidth) / 2.0),
                                            self.contentView.bounds.size.height - _registerButton.frame.size.height - insets.bottom,

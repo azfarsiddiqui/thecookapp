@@ -88,7 +88,7 @@
                      }
                      completion:^(BOOL finished) {
                          
-                         [self showProgress:0.1 message:@"ADDING TO PAGE"];
+                         [self showProgress:0.1 message:NSLocalizedString(@"ADDING TO PAGE", nil)];
                          
                          // Pin the recipe via network.
                          [self.recipe pinToBook:self.book
@@ -152,7 +152,7 @@
         
         ModalOverlayHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
-        [headerView configureTitle:@"ADD TO BOOK"];
+        [headerView configureTitle:NSLocalizedString(@"ADD TO BOOK", nil)];
         supplementaryView = headerView;
     }
     
@@ -166,7 +166,7 @@
         _noPagesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _noPagesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
         _noPagesLabel.textColor = [UIColor whiteColor];
-        _noPagesLabel.text = @"NO PAGES";
+        _noPagesLabel.text = NSLocalizedString(@"NO PAGES", nil);
         [_noPagesLabel sizeToFit];
     }
     return _noPagesLabel;

@@ -182,7 +182,10 @@
     DLog (@"Free memory: %f, Image Memory: %f", ([[UIDevice currentDevice] userMemory]/bytesPerMB)/4, totalMB);
     if (totalMB > ([[UIDevice currentDevice] userMemory]/bytesPerMB)/4)
     {
-        UIAlertView *sizeAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Load Photo" message:@"The image you selected is too large" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        UIAlertView *sizeAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Unable to Load Photo", nil)
+                                                            message:NSLocalizedString(@"The image you selected is too large", nil)
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [sizeAlert show];
     }
     else
@@ -508,7 +511,9 @@
 }
 
 - (void)deleteTapped:(id)sender {
-    UIAlertView *confirmView = [[UIAlertView alloc] initWithTitle:@"Delete Photo?" message:nil delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Delete", nil];
+    UIAlertView *confirmView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Delete Photo?", nil)
+                                                          message:nil delegate:self
+                                                cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@"Delete", nil];
     [confirmView show];
 }
 

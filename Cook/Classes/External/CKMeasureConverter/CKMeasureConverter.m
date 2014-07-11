@@ -158,9 +158,9 @@
 + (NSString *)displayStringForMeasureType:(CKMeasurementType)measureType {
     switch (measureType) {
         case CKMeasureTypeImperial:
-            return @"US IMPERIAL";
+            return NSLocalizedString(@"US IMPERIAL", nil);
         case CKMeasureTypeMetric:
-            return @"METRIC";
+            return NSLocalizedString(@"METRIC", nil);
         default:
             return @"";
             break;

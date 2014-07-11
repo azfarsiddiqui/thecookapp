@@ -193,7 +193,7 @@
 }
 
 - (NSString *)searchFieldViewPlaceholderText {
-    return @"SEARCH BY NAME";
+    return NSLocalizedString(@"SEARCH BY NAME", nil);
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -278,13 +278,13 @@
 - (StoreTabView *)storeTabView {
     if (!_storeTabView) {
         NSArray *tabViews = @[
-                              [[StoreUnitTabView alloc] initWithText:@"COLLECTIONS"
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"COLLECTIONS", nil)
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_categories.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_categories_off.png"]],
-                              [[StoreUnitTabView alloc] initWithText:@"FEATURED"
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"FEATURED", nil)
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_featured_off.png"]],
-                              [[StoreUnitTabView alloc] initWithText:@"WORLD"
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"WORLD", nil)
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_world.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_world_off.png"]]
                               ];
@@ -296,10 +296,10 @@
 - (StoreTabView *)friendsTabView {
     if (!_friendsTabView) {
         NSArray *tabViews = @[
-                              [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"FRIENDS", nil)
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]],
-                              [[StoreUnitTabView alloc] initWithText:@"SUGGESTIONS"
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"SUGGESTIONS", nil)
                                                                 icon:[UIImage imageNamed:@"cook_library_icons_suggestions.png"]
                                                              offIcon:[UIImage imageNamed:@"cook_library_icons_suggestions_off.png"]],
                               ];

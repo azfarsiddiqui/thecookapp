@@ -325,7 +325,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         ModalOverlayHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
-        [headerView configureTitle:@"NOTIFICATIONS"];
+        [headerView configureTitle:NSLocalizedString(@"NOTIFICATIONS", nil)];
         supplementaryView = headerView;
     }
     
@@ -404,7 +404,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         _emptyCommentsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _emptyCommentsLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
         _emptyCommentsLabel.textColor = [UIColor whiteColor];
-        _emptyCommentsLabel.text = @"NO NOTIFICATIONS";
+        _emptyCommentsLabel.text = NSLocalizedString(@"NO NOTIFICATIONS", nil);
         [_emptyCommentsLabel sizeToFit];
     }
     return _emptyCommentsLabel;

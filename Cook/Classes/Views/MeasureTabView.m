@@ -21,7 +21,7 @@
 @implementation MeasureTabView
 
 - (id)init {
-    if (self = [super initWithOptions:@[@"METRIC", @"US IMPERIAL"]
+    if (self = [super initWithOptions:@[ NSLocalizedString(@"METRIC", nil), NSLocalizedString(@"US IMPERIAL", nil)]
                            buttonFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:12]
                           buttonWidth:100]) {
     }

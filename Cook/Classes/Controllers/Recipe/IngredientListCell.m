@@ -75,8 +75,8 @@
             self.textField.frame.size.height
         };
         
-        self.textField.placeholder = @"INGREDIENT";
-        self.unitTextField.placeholder = @"QTY";
+        self.textField.placeholder = NSLocalizedString(@"INGREDIENT", nil);
+        self.unitTextField.placeholder = NSLocalizedString(@"QTY", nil);
     }
     return self;
 }
@@ -148,9 +148,9 @@
         self.textField.placeholder = @"";
         self.textField.font = self.font;
     } else {
-        self.textField.placeholder = @"INGREDIENT";
+        self.textField.placeholder = NSLocalizedString(@"INGREDIENT", nil);
         self.textField.font = self.placeholderFont;
-        self.unitTextField.placeholder = @"QTY";
+        self.unitTextField.placeholder = NSLocalizedString(@"QTY", nil);
         self.unitTextField.font = self.placeholderFont;
     }
 }

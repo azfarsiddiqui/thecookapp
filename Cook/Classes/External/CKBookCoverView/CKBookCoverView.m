@@ -240,7 +240,7 @@
         [self.updatesIcon addSubview:self.updatesLabel];
     }
     
-    self.updatesLabel.text = @"NEW";
+    self.updatesLabel.text = NSLocalizedString(@"NEW", nil);
     self.updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:18.0];
     [self.updatesLabel sizeToFit];
     self.updatesLabel.frame = (CGRect){

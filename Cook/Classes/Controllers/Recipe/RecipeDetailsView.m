@@ -489,7 +489,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         label.shadowColor = [UIColor whiteColor];
         label.userInteractionEnabled = NO;
         
-        NSAttributedString *display = [self attributedTextForText:@"TYPE UP THE RECIPE" lineSpacing:0.0
+        NSAttributedString *display = [self attributedTextForText:NSLocalizedString(@"TYPE UP THE RECIPE", nil) lineSpacing:0.0
                                                              font:[Theme storyFont] colour:[Theme storyColor]
                                                     textAlignment:NSTextAlignmentCenter];
         label.attributedText = display;
@@ -684,7 +684,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *name = self.recipeDetails.name;
     
     if (![self.recipeDetails.name CK_containsText]) {
-        name = @"TITLE";
+        name = NSLocalizedString(@"TITLE", nil);
     }
     
     return [[name CK_lineBreakFormattedString] uppercaseString];
@@ -787,7 +787,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     else if (self.editMode)
     {
-        tagsString = [NSMutableString stringWithString:@"TAGS"];
+        tagsString = [NSMutableString stringWithString:NSLocalizedString(@"TAGS", nil)];
     }
     else
     {
@@ -870,7 +870,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *story = self.recipeDetails.story;
     
     if (![self.recipeDetails.story CK_containsText]) {
-        story = @"WRITE SOMETHING";
+        story = NSLocalizedString(@"WRITE SOMETHING", nil);
     }
     
     CGFloat dividerStoryGap = 5.0;
@@ -1035,7 +1035,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSArray *ingredients = self.recipeDetails.ingredients;
     
     if ([ingredients count] == 0) {
-        ingredients = @[[Ingredient ingredientwithName:@"INGREDIENTS" measurement:nil]];
+        ingredients = @[[Ingredient ingredientwithName:NSLocalizedString(@"INGREDIENTS", nil) measurement:nil]];
     }
     
     // Update divider if exists.
@@ -1071,7 +1071,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateChangeMeasureButton {
     if (!self.changeMeasureTypeButton) {
         self.selectedMeasureType = [CKUser currentMeasureType];
-        self.changeMeasureTypeButton = [[UISegmentedControl alloc] initWithItems:@[@"METRIC", @"US IMPERIAL"]];
+        self.changeMeasureTypeButton = [[UISegmentedControl alloc] initWithItems:@[ NSLocalizedString(@"METRIC", nil), NSLocalizedString(@"US IMPERIAL", nil)]];
         [self.changeMeasureTypeButton setTintColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]];
         [self.changeMeasureTypeButton setTitleTextAttributes:@{NSFontAttributeName : [Theme changeMeasureFont]}
                                                     forState:UIControlStateNormal];
@@ -1140,7 +1140,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *method = self.recipeDetails.method;
     
     if (![self.recipeDetails.method CK_containsText]) {
-        method = @"METHOD OR STEPS";
+        method = NSLocalizedString(@"METHOD OR STEPS", nil);
     }
     
     if (self.editMode) {

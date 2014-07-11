@@ -146,7 +146,7 @@
         profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         profileLabel.shadowColor = [UIColor blackColor];
         profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        profileLabel.text = (self.currentUser == nil) ? @"SIGN IN" : [[self.currentUser friendlyName] uppercaseString];
+        profileLabel.text = (self.currentUser == nil) ? NSLocalizedString(@"SIGN IN", nil) : [[self.currentUser friendlyName] uppercaseString];
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
@@ -171,7 +171,7 @@
         _measureLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         _measureLabel.shadowColor = [UIColor blackColor];
         _measureLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        _measureLabel.text = @"MEASUREMENTS";
+        _measureLabel.text = NSLocalizedString(@"MEASUREMENTS", nil);
         [_measureLabel sizeToFit];
         _measureLabel.frame = (CGRect){
             self.measureTabView.frame.origin.x + floorf((self.measureTabView.frame.size.width - _measureLabel.frame.size.width) / 2.0),
@@ -219,7 +219,7 @@
     
     //Privacy and terms
     UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(50, 85, 138, 40)];
-    [termsButton setTitle:@"TERMS & CONDITIONS" forState:UIControlStateNormal];
+    [termsButton setTitle:NSLocalizedString(@"TERMS & CONDITIONS", nil) forState:UIControlStateNormal];
     termsButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     termsButton.backgroundColor = [UIColor clearColor];
     termsButton.titleLabel.font = [Theme settingsThemeFont];
@@ -229,7 +229,7 @@
     [termsButton addTarget:self action:@selector(termsPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:termsButton];
     UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(198, 85, 54, 40)];
-    [privacyButton setTitle:@"PRIVACY" forState:UIControlStateNormal];
+    [privacyButton setTitle:NSLocalizedString(@"PRIVACY", nil) forState:UIControlStateNormal];
     privacyButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     privacyButton.backgroundColor = [UIColor clearColor];
     privacyButton.titleLabel.font = [Theme settingsThemeFont];
@@ -261,7 +261,7 @@
     [self.aboutButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_web_onpress"] forState:UIControlStateHighlighted];
     self.aboutButton.translatesAutoresizingMaskIntoConstraints = NO;
     UILabel *aboutLabel = [UILabel new];
-    aboutLabel.text = @"ABOUT";
+    aboutLabel.text = NSLocalizedString(@"ABOUT", nil);
     aboutLabel.textAlignment = NSTextAlignmentCenter;
     aboutLabel.backgroundColor = [UIColor clearColor];
     aboutLabel.font = [Theme settingsProfileFont];
@@ -278,7 +278,7 @@
     [self.supportButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_support_onpress"] forState:UIControlStateHighlighted];
     self.supportButton.translatesAutoresizingMaskIntoConstraints = NO;
     UILabel *supportLabel = [UILabel new];
-    supportLabel.text = @"SUPPORT";
+    supportLabel.text = NSLocalizedString(@"SUPPORT", nil);
     supportLabel.textAlignment = NSTextAlignmentCenter;
     supportLabel.backgroundColor = [UIColor clearColor];
     supportLabel.font = [Theme settingsProfileFont];
@@ -295,7 +295,7 @@
     [self.facebookButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_facebook_onpress"] forState:UIControlStateHighlighted];
     self.facebookButton.translatesAutoresizingMaskIntoConstraints = NO;
     UILabel *facebookLabel = [UILabel new];
-    facebookLabel.text = @"FACEBOOK";
+    facebookLabel.text = NSLocalizedString(@"FACEBOOK", nil);
     facebookLabel.textAlignment = NSTextAlignmentCenter;
     facebookLabel.backgroundColor = [UIColor clearColor];
     facebookLabel.font = [Theme settingsProfileFont];
@@ -312,7 +312,7 @@
     [self.twitterButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_twitter_onpress"] forState:UIControlStateHighlighted];
     self.twitterButton.translatesAutoresizingMaskIntoConstraints = NO;
     UILabel *twitterLabel = [UILabel new];
-    twitterLabel.text = @"TWITTER";
+    twitterLabel.text = NSLocalizedString(@"TWITTER", nil);
     twitterLabel.textAlignment = NSTextAlignmentCenter;
     twitterLabel.backgroundColor = [UIColor clearColor];
     twitterLabel.font = [Theme settingsProfileFont];
@@ -388,7 +388,7 @@
         NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
         NSString *versionString = [NSString stringWithFormat:@"Version: %@", minorVersion];
         
-        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (self.currentUser != nil) ? self.currentUser.objectId : @"None"];
+        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (self.currentUser != nil) ? self.currentUser.objectId : NSLocalizedString(@"None", nil)];
         
         NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
         NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@", versionString, userDisplay, deviceString];
@@ -400,7 +400,7 @@
         [self presentViewController:mailDialog animated:YES completion:nil];
     }
     else
-        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Mail", nil) message:NSLocalizedString(@"Please set up a mail account in Settings", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
 }
 
 - (void)facebookPressed:(id)sender {

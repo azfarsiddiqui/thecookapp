@@ -180,7 +180,9 @@
 }
 
 - (void)showNoConnectionCard:(BOOL)show view:(UIView *)view center:(CGPoint)center {
-    [self showCardText:@"CANNOT CONNECT" subtitle:@"CHECK YOUR WI-FI OR CELLULAR DATA" view:view show:show center:center];
+    [self showCardText:NSLocalizedString(@"CANNOT CONNECT", nil)
+              subtitle:NSLocalizedString(@"CHECK YOUR WI-FI OR CELLULAR DATA", nil)
+                  view:view show:show center:center];
 }
 
 - (void)showCardText:(NSString *)text subtitle:(NSString *)subtitle view:(UIView *)view show:(BOOL)show

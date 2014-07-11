@@ -44,7 +44,7 @@
 "REQUESTED" = "SOLICITOU";
 "SIGN IN TO VIEW THIS BOOK" = "ACESSE SUA CONTA PARA VISUALIZAR ESTE LIVRO";
 "Send Friend Request?" = "Enviar solicitação de amizade?";
-"Remove Friend" = "Remover Amigo";
+"Remove Friend?" = "Remover Amigo?";
 "Remove" = "Remover";
 "ADD TO BENCH" = "ADICIONAR AO BANCO";
 "BOOK ON BENCH" = "REGISTRAR NO BANCO";
@@ -68,6 +68,7 @@
 
 // Comments
 "Comment" = "Comentário";
+"Comments" = "Comentários";
 "COMMENTS" = "COMENTÁRIOS";
 "NO COMMENTS" = "SEM COMENTÁRIOS";
 "ADD COMMENT" = "ADICIONAR COMENTÁRIOS";
@@ -144,6 +145,7 @@
 "%@ liked %@." = "%@ curtiu %@.";
 "%@ added %@." = "%@ adicionou %@.";
 "%@ is now featured in %@ in %@." = "%@ agora é destaque em %@ em %@.";
+"and" = "e";
 "%@ and %@" = "%@ e %@";
 "NOTIFICATIONS" = "NOTIFICAÇÕES";
 "NO NOTIFICATIONS" = "SEM NOTIFICAÇÕES";
@@ -174,7 +176,7 @@
 
 // Search
 "RECIPE, INGREDIENT OR TAG" = "RECEITA, INGREDIENTE OU PALAVRA-CHAVE";
-"COULDN'T CONNECT, PLEASE TRY AGAIN" = "NÃO FOI POSSÍVEL CONECTAT. TENTE NOVAMENTE";
+"COULDN'T CONNECT%@PLEASE TRY AGAIN" = "NÃO FOI POSSÍVEL CONECTAT%@TENTE NOVAMENTE";
 "POPULAR" = "POPULAR";
 "LATEST" = "MAIS RECENTES";
 

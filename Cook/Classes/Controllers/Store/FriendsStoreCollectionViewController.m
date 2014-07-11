@@ -36,12 +36,14 @@
 }
 
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
+    [[CardViewHelper sharedInstance] showCardText:NSLocalizedString(@"NO FRIENDS", nil)
+                                         subtitle:NSLocalizedString(@"USE SEARCH TO FIND PEOPLE YOU KNOW", nil)
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 - (void)showSignInCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"SIGN IN TO ADD FRIENDS"
+    [[CardViewHelper sharedInstance] showCardText:NSLocalizedString(@"NO FRIENDS", nil)
+                                         subtitle:NSLocalizedString(@"SIGN IN TO ADD FRIENDS", nil)
                                              view:self.collectionView show:YES center:self.collectionView.center];
 }
 

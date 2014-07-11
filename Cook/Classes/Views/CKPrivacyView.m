@@ -103,9 +103,9 @@
 
 - (NSString *)displayForPrivateMode:(BOOL)privateMode {
     if (privateMode) {
-        return @"SECRET RECIPE";
+        return NSLocalizedString(@"SECRET RECIPE", nil);
     } else {
-        return @"VISIBLE TO FRIENDS";
+        return NSLocalizedString(@"VISIBLE TO FRIENDS", nil);
     }
 }
 

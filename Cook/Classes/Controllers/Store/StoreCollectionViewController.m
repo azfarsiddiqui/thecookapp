@@ -212,7 +212,8 @@
     if ([CKError noConnectionError:error]) {
         [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
     } else {
-        [[CardViewHelper sharedInstance] showCardText:@"UNABLE TO FETCH BOOKS" subtitle:@"PLEASE TRY AGAIN LATER"
+        [[CardViewHelper sharedInstance] showCardText:NSLocalizedString(@"UNABLE TO FETCH BOOKS", nil)
+                                             subtitle:NSLocalizedString(@"PLEASE TRY AGAIN LATER", nil)
                                                  view:self.collectionView show:YES center:self.collectionView.center];
     }
     [self showActivity:NO];

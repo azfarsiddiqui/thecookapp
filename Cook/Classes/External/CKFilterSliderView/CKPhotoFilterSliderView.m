@@ -40,56 +40,56 @@
         
         { //CKPhotoFilterTypeNone
             FilterObject *noneFilterObj = [[FilterObject alloc] init];
-            noneFilterObj.title = @"NONE";
+            noneFilterObj.title = NSLocalizedString(@"NONE", nil);
             noneFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_none"];
             noneFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_none"];
             [_filterArray addObject:noneFilterObj];
         }
         { //CKPhotoFilterAuto
             FilterObject *autoFilterObj = [[FilterObject alloc] init];
-            autoFilterObj.title = @"AUTO";
+            autoFilterObj.title = NSLocalizedString(@"AUTO", nil);
             autoFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_auto"];
             autoFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_auto"];
             [_filterArray addObject:autoFilterObj];
         }
         { //CKPhotoFilterOutdoors
             FilterObject *outdoorsFilterObj = [[FilterObject alloc] init];
-            outdoorsFilterObj.title = @"OUTDOORS";
+            outdoorsFilterObj.title = NSLocalizedString(@"OUTDOORS", nil);
             outdoorsFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_outdoor"];
             outdoorsFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_outdoor"];
             [_filterArray addObject:outdoorsFilterObj];
         }
         { //CKPhotoFilterIndoors
             FilterObject *indoorFilterObj = [[FilterObject alloc] init];
-            indoorFilterObj.title = @"INDOOR";
+            indoorFilterObj.title = NSLocalizedString(@"INDOOR", nil);
             indoorFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_indoor"];
             indoorFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_indoor"];
             [_filterArray addObject:indoorFilterObj];
         }
         { //CKPhotoFilterVibrant
             FilterObject *vibrantFilterObj = [[FilterObject alloc] init];
-            vibrantFilterObj.title = @"VIBRANT";
+            vibrantFilterObj.title = NSLocalizedString(@"VIBRANT", nil);
             vibrantFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_vibrant"];
             vibrantFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_vibrant"];
             [_filterArray addObject:vibrantFilterObj];
         }
         { //CKPhotoFilterWarm
             FilterObject *warmFilterObj = [[FilterObject alloc] init];
-            warmFilterObj.title = @"WARM";
+            warmFilterObj.title = NSLocalizedString(@"WARM", nil);
             warmFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_warm"];
             warmFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_warm"];
             [_filterArray addObject:warmFilterObj];
         }
         { //CKPhotoFilterCool
             FilterObject *coolFilterObj = [[FilterObject alloc] init];
-            coolFilterObj.title = @"COOL";
+            coolFilterObj.title = NSLocalizedString(@"COOL", nil);
             coolFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_cool"];
             coolFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_cool"];
             [_filterArray addObject:coolFilterObj];
         }
         { //CKPhotoFilterText
             FilterObject *textFilterObj = [[FilterObject alloc] init];
-            textFilterObj.title = @"TEXT";
+            textFilterObj.title = NSLocalizedString(@"TEXT", nil);
             textFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_text"];
             textFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_text"];
             [_filterArray addObject:textFilterObj];

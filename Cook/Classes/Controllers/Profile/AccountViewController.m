@@ -203,7 +203,7 @@
     if (!_footerTermsButton) {
         _footerTermsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _footerTermsButton.userInteractionEnabled = YES;
-        [_footerTermsButton setAttributedTitle:[self attributedTextForFooterLabelWithText:@"TERMS & CONDITION"] forState:UIControlStateNormal];
+        [_footerTermsButton setAttributedTitle:[self attributedTextForFooterLabelWithText:NSLocalizedString(@"TERMS & CONDITION", nil)] forState:UIControlStateNormal];
         [_footerTermsButton addTarget:self action:@selector(termsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerTermsButton sizeToFit];
     }
@@ -214,7 +214,7 @@
     if (!_footerPrivacyButton) {
         _footerPrivacyButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _footerPrivacyButton.userInteractionEnabled = YES;
-        [_footerPrivacyButton setAttributedTitle:[self attributedTextForFooterLabelWithText:@"PRIVACY"] forState:UIControlStateNormal];
+        [_footerPrivacyButton setAttributedTitle:[self attributedTextForFooterLabelWithText:NSLocalizedString(@"PRIVACY", nil)] forState:UIControlStateNormal];
         [_footerPrivacyButton addTarget:self action:@selector(privacyButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerPrivacyButton sizeToFit];
     }
@@ -225,7 +225,7 @@
     if (!_footerForgotButton) {
         _footerForgotButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _footerForgotButton.userInteractionEnabled = YES;
-        [_footerForgotButton setAttributedTitle:[self attributedTextForFooterLabelWithText:@"FORGOT PASSWORD"] forState:UIControlStateNormal];
+        [_footerForgotButton setAttributedTitle:[self attributedTextForFooterLabelWithText:NSLocalizedString(@"FORGOT PASSWORD", nil)] forState:UIControlStateNormal];
         [_footerForgotButton addTarget:self action:@selector(forgotButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerForgotButton sizeToFit];
         
@@ -353,7 +353,7 @@
     [self.scrollView addSubview:self.profilePhotoView];
     
     // Logout button
-    self.logoutButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ availableSize.width, 83.0 } text:@"LOGOUT" activity:NO delegate:self];
+    self.logoutButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ availableSize.width, 83.0 } text:NSLocalizedString(@"LOGOUT", nil) activity:NO delegate:self];
     self.logoutButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     self.logoutButton.frame = CGRectMake(floorf((self.scrollView.bounds.size.width - self.logoutButton.frame.size.width) / 2.0),
                                          self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 30.0,
