@@ -47,15 +47,26 @@
     return self;
 }
 
++ (NSString *)localizedStringFromArray:(NSArray *)anArray
+                            arrayStyle:(TTTArrayFormatterStyle)style
+{
+    TTTArrayFormatter *formatter = [[TTTArrayFormatter alloc] init];
+    [formatter setArrayStyle:style];
+
+    return [formatter stringFromArray:anArray];
+}
+
 - (NSString *)stringFromArray:(NSArray *)anArray {
     return [self stringFromArray:anArray rangesOfComponents:nil];
 }
 
-- (NSString *)stringFromArray:(NSArray *)anArray rangesOfComponents:(NSArray **)rangeValues {
+- (NSString *)stringFromArray:(NSArray *)anArray
+           rangesOfComponents:(NSArray * __autoreleasing *)rangeValues
+{
     NSMutableString *mutableString = [NSMutableString string];
     NSMutableArray *componentRanges = [NSMutableArray arrayWithCapacity:[anArray count]];
     for (NSUInteger idx = 0; idx < [anArray count]; idx++) {
-        NSString *component = [[anArray objectAtIndex:idx] description];
+        NSString *component = [anArray[idx] description];
         if (!component) {
             continue;
         }
@@ -104,26 +115,19 @@
     return array;
 }
 
-+ (NSString *)localizedStringFromArray:(NSArray *)anArray arrayStyle:(TTTArrayFormatterStyle)style {
-    TTTArrayFormatter *formatter = [[TTTArrayFormatter alloc] init];
-    [formatter setArrayStyle:style];
-
-    return [formatter stringFromArray:anArray];
-}
-
-#pragma mark NSFormatter
+#pragma mark - NSFormatter
 
 - (NSString *)stringForObjectValue:(id)anObject {
     if (![anObject isKindOfClass:[NSArray class]]) {
         return nil;
     }
 
-    return [self stringFromArray:anObject rangesOfComponents:nil];
+    return [self stringFromArray:(NSArray *)anObject rangesOfComponents:nil];
 }
 
-- (BOOL)getObjectValue:(id *)obj
+- (BOOL)getObjectValue:(out __autoreleasing id *)obj
              forString:(NSString *)string
-      errorDescription:(NSString **)error
+      errorDescription:(out NSString *__autoreleasing *)error
 {
     BOOL returnValue = NO;
     NSMutableArray *components = nil;
@@ -150,18 +154,34 @@
     return returnValue;
 }
 
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    TTTArrayFormatter *formatter = [[[self class] allocWithZone:zone] init];
+
+    formatter.arrayStyle = self.arrayStyle;
+    formatter.delimiter = [self.delimiter copyWithZone:zone];
+    formatter.separator = [self.separator copyWithZone:zone];
+    formatter.conjunction = [self.conjunction copyWithZone:zone];
+    formatter.abbreviatedConjunction = [self.abbreviatedConjunction copyWithZone:zone];
+    formatter.usesAbbreviatedConjunction = self.usesAbbreviatedConjunction;
+    formatter.usesSerialDelimiter = self.usesSerialDelimiter;
+
+    return formatter;
+}
+
 #pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
 
-    self.arrayStyle = (TTTArrayFormatterStyle)[aDecoder decodeIntegerForKey:@"arrayStyle"];
-    self.delimiter = [aDecoder decodeObjectForKey:@"delimiter"];
-    self.separator = [aDecoder decodeObjectForKey:@"separator"];
-    self.conjunction = [aDecoder decodeObjectForKey:@"conjunction"];
-    self.abbreviatedConjunction = [aDecoder decodeObjectForKey:@"abbreviatedConjunction"];
-    self.usesAbbreviatedConjunction = [aDecoder decodeBoolForKey:@"usesAbbreviatedConjunction"];
-    self.usesSerialDelimiter = [aDecoder decodeBoolForKey:@"usesSerialDelimiter"];
+    self.arrayStyle = (TTTArrayFormatterStyle)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(arrayStyle))];
+    self.delimiter = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(delimiter))];
+    self.separator = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(separator))];
+    self.conjunction = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(conjunction))];
+    self.abbreviatedConjunction = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(abbreviatedConjunction))];
+    self.usesAbbreviatedConjunction = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(usesAbbreviatedConjunction))];
+    self.usesSerialDelimiter = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(usesSerialDelimiter))];
 
     return self;
 }
@@ -169,13 +189,13 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeInteger:self.arrayStyle forKey:@"arrayStyle"];
-    [aCoder encodeObject:self.delimiter forKey:@"delimiter"];
-    [aCoder encodeObject:self.separator forKey:@"separator"];
-    [aCoder encodeObject:self.conjunction forKey:@"conjunction"];
-    [aCoder encodeObject:self.abbreviatedConjunction forKey:@"abbreviatedConjunction"];
-    [aCoder encodeBool:self.usesAbbreviatedConjunction forKey:@"usesAbbreviatedConjunction"];
-    [aCoder encodeBool:self.usesSerialDelimiter forKey:@"usesSerialDelimiter"];
+    [aCoder encodeInteger:self.arrayStyle forKey:NSStringFromSelector(@selector(arrayStyle))];
+    [aCoder encodeObject:self.delimiter forKey:NSStringFromSelector(@selector(delimiter))];
+    [aCoder encodeObject:self.separator forKey:NSStringFromSelector(@selector(separator))];
+    [aCoder encodeObject:self.conjunction forKey:NSStringFromSelector(@selector(conjunction))];
+    [aCoder encodeObject:self.abbreviatedConjunction forKey:NSStringFromSelector(@selector(abbreviatedConjunction))];
+    [aCoder encodeBool:self.usesAbbreviatedConjunction forKey:NSStringFromSelector(@selector(usesAbbreviatedConjunction))];
+    [aCoder encodeBool:self.usesSerialDelimiter forKey:NSStringFromSelector(@selector(usesSerialDelimiter))];
 }
 
 @end

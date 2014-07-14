@@ -35,30 +35,75 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
         return NSHourCalendarUnit;
     } else if ([string isEqualToString:@"minute"]) {
         return NSMinuteCalendarUnit;
-    } if ([string isEqualToString:@"second"]) {
+    } else if ([string isEqualToString:@"second"]) {
         return NSSecondCalendarUnit;
     }
 
     return NSUndefinedDateComponent;
 }
 
-@interface TTTTimeIntervalFormatter ()
-- (NSString *)localizedStringForNumber:(NSUInteger)number ofCalendarUnit:(NSCalendarUnit)unit;
-- (NSString *)localizedIdiomaticDeicticExpressionForComponents:(NSDateComponents *)componenets;
-- (NSString *)enRelativeDateStringForComponents:(NSDateComponents *)components;
-@end
+static inline NSCalendarUnit NSNormalizedCalendarUnit(NSCalendarUnit unit) {
+    switch (unit) {
+        case NSCalendarUnitWeekOfMonth:
+        case NSCalendarUnitWeekOfYear:
+            return NSWeekCalendarUnit;
+        case NSCalendarUnitWeekday:
+        case NSCalendarUnitWeekdayOrdinal:
+            return NSDayCalendarUnit;
+        default:
+            return unit;
+    }
+}
+
+static inline NSComparisonResult NSCalendarUnitCompareSignificance(NSCalendarUnit a, NSCalendarUnit b) {
+    a = NSNormalizedCalendarUnit(a);
+    b = NSNormalizedCalendarUnit(b);
+
+    if ((a == NSWeekCalendarUnit) ^ (b == NSWeekCalendarUnit)) {
+        if (a == NSWeekCalendarUnit) {
+            switch (a) {
+                case NSYearCalendarUnit:
+                case NSMonthCalendarUnit:
+                    return NSOrderedAscending;
+                default:
+                    return NSOrderedDescending;
+            }
+        } else {
+            switch (b) {
+                case NSYearCalendarUnit:
+                case NSMonthCalendarUnit:
+                    return NSOrderedDescending;
+                default:
+                    return NSOrderedAscending;
+            }
+        }
+    } else {
+        if (a > b) {
+            return NSOrderedAscending;
+        } else if (a < b) {
+            return NSOrderedDescending;
+        } else {
+            return NSOrderedSame;
+        }
+    }
+}
 
 @implementation TTTTimeIntervalFormatter
 @synthesize locale = _locale;
+@synthesize calendar = _calendar;
 @synthesize pastDeicticExpression = _pastDeicticExpression;
 @synthesize presentDeicticExpression = _presentDeicticExpression;
 @synthesize futureDeicticExpression = _futureDeicticExpression;
 @synthesize deicticExpressionFormat = _deicticExpressionFormat;
+@synthesize suffixExpressionFormat = _suffixExpressionFormat;
 @synthesize approximateQualifierFormat = _approximateQualifierFormat;
 @synthesize presentTimeIntervalMargin = _presentTimeIntervalMargin;
 @synthesize usesAbbreviatedCalendarUnits = _usesAbbreviatedCalendarUnits;
 @synthesize usesApproximateQualifier = _usesApproximateQualifier;
 @synthesize usesIdiomaticDeicticExpressions = _usesIdiomaticDeicticExpressions;
+@synthesize numberOfSignificantUnits = _numberOfSignificantUnits;
+@synthesize leastSignificantUnit = _leastSignificantUnit;
+@synthesize significantUnits = _significantUnits;
 
 - (id)init {
     self = [super init];
@@ -66,21 +111,29 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
         return nil;
     }
 
+    self.locale = [NSLocale currentLocale];
+    self.calendar = [NSCalendar currentCalendar];
+
     self.pastDeicticExpression = NSLocalizedStringFromTable(@"ago", @"FormatterKit", @"Past Deictic Expression");
     self.presentDeicticExpression = NSLocalizedStringFromTable(@"just now", @"FormatterKit", @"Present Deictic Expression");
     self.futureDeicticExpression = NSLocalizedStringFromTable(@"from now", @"FormatterKit", @"Future Deictic Expression");
 
-    self.deicticExpressionFormat = NSLocalizedStringFromTable(@"%@ %@", @"FormatterKit", @"Deictic Expression Format (#{Time} #{Ago/From Now}");
+    self.deicticExpressionFormat = NSLocalizedStringWithDefaultValue(@"Deictic Expression Format String", @"FormatterKit", [NSBundle mainBundle], @"%@ %@", @"Deictic Expression Format (#{Time} #{Ago/From Now}");
     self.approximateQualifierFormat = NSLocalizedStringFromTable(@"about %@", @"FormatterKit", @"Approximate Qualifier Format");
+    self.suffixExpressionFormat = NSLocalizedStringWithDefaultValue(@"Suffix Expression Format String", @"FormatterKit", [NSBundle mainBundle], @"%@ %@", @"Suffix Expression Format (#{Time} #{Unit})");
 
     self.presentTimeIntervalMargin = 1;
+
+    self.significantUnits = NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
+    self.numberOfSignificantUnits = 1;
+    self.leastSignificantUnit = NSSecondCalendarUnit;
 
     return self;
 }
 
-
 - (NSString *)stringForTimeInterval:(NSTimeInterval)seconds {
-    return [self stringForTimeIntervalFromDate:[NSDate date] toDate:[NSDate dateWithTimeIntervalSinceNow:seconds]];
+    NSDate *date = [NSDate date];
+    return [self stringForTimeIntervalFromDate:date toDate:[NSDate dateWithTimeInterval:seconds sinceDate:date]];
 }
 
 - (NSString *)stringForTimeIntervalFromDate:(NSDate *)startingDate
@@ -91,9 +144,7 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
         return self.presentDeicticExpression;
     }
 
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSUInteger unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-    NSDateComponents *components = [calendar components:unitFlags fromDate:startingDate toDate:endingDate options:0];
+    NSDateComponents *components = [self.calendar components:self.significantUnits fromDate:startingDate toDate:endingDate options:0];
 
     if (self.usesIdiomaticDeicticExpressions) {
         NSString *idiomaticDeicticExpression = [self localizedIdiomaticDeicticExpressionForComponents:components];
@@ -104,13 +155,22 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
 
     NSString *string = nil;
     BOOL isApproximate = NO;
-    for (NSString *unitName in [NSArray arrayWithObjects:@"year", @"month", @"week", @"day", @"hour", @"minute", @"second", nil]) {
-        NSNumber *number = [NSNumber numberWithInteger:abs([[components valueForKey:unitName] integerValue])];
-        if ([number integerValue]) {
-            if (!string) {
-                string = [NSString stringWithFormat:@"%@ %@", number, [self localizedStringForNumber:[number integerValue] ofCalendarUnit:NSCalendarUnitFromString(unitName)]];
-            } else {
-                isApproximate = YES;
+    NSUInteger numberOfUnits = 0;
+    for (NSString *unitName in @[@"year", @"month", @"week", @"day", @"hour", @"minute", @"second"]) {
+        NSCalendarUnit unit = NSCalendarUnitFromString(unitName);
+        if ((self.significantUnits & unit) && NSCalendarUnitCompareSignificance(self.leastSignificantUnit, unit) != NSOrderedDescending) {
+            NSNumber *number = @(abs((int)[[components valueForKey:unitName] integerValue]));
+            if ([number integerValue]) {
+                NSString *suffix = [NSString stringWithFormat:self.suffixExpressionFormat, number, [self localizedStringForNumber:[number unsignedIntegerValue] ofCalendarUnit:unit]];
+                if (!string) {
+                    string = suffix;
+                } else if (self.numberOfSignificantUnits == 0 || numberOfUnits < self.numberOfSignificantUnits) {
+                    string = [string stringByAppendingFormat:@" %@", suffix];
+                } else {
+                    isApproximate = YES;
+                }
+                
+                numberOfUnits++;
             }
         }
     }
@@ -181,11 +241,53 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
 #pragma mark -
 
 - (NSString *)localizedIdiomaticDeicticExpressionForComponents:(NSDateComponents *)components {
-    NSString *languageCode = [[self locale] objectForKey:NSLocaleLanguageCode];
+    NSString *languageCode = [self.locale objectForKey:NSLocaleLanguageCode];
     if ([languageCode isEqualToString:@"en"]) {
         return [self enRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"es"]){
+        return [self esRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"nl"]){
+        return [self nlRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"ca"]){
+        return [self caRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"pl"]) {
+        return [self plRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"cs"]) {
+        return [self csRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"ja"]) {
+        return [self jaRelativeDateStringForComponents:components];
+    } else if ([languageCode isEqualToString:@"fr"]) {
+        return [self frRelativeDateStringForComponents:components];
     }
 
+    return nil;
+}
+
+- (NSString *)caRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"any passat";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"mes passat";
+    } else if ([components weekOfYear] == -1 && [components year] == 0 && [components month] == 0) {
+        return @"setmana passada";
+    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"ahir";
+    } else if ([components day] == -2 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"abans d'ahir";
+    }
+    
+    if ([components year] == 1) {
+        return @"pròxim any";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"pròxim mes";
+    } else if ([components weekOfYear] == 1 && [components year] == 0 && [components month] == 0) {
+        return @"pròxima setmana";
+    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"demà";
+    } else if ([components day] == 2 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"passat demà";
+    }
+    
     return nil;
 }
 
@@ -194,9 +296,9 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
         return @"last year";
     } else if ([components month] == -1 && [components year] == 0) {
         return @"last month";
-    } else if ([components week] == -1 && [components year] == 0 && [components month] == 0) {
+    } else if ([components weekOfYear] == -1 && [components year] == 0 && [components month] == 0) {
         return @"last week";
-    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components week] == 0) {
+    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
         return @"yesterday";
     }
 
@@ -204,13 +306,207 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
         return @"next year";
     } else if ([components month] == 1 && [components year] == 0) {
         return @"next month";
-    } else if ([components week] == 1 && [components year] == 0 && [components month] == 0) {
+    } else if ([components weekOfYear] == 1 && [components year] == 0 && [components month] == 0) {
         return @"next week";
-    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components week] == 0) {
+    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
         return @"tomorrow";
     }
 
     return nil;
+}
+
+- (NSString *)esRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"año pasado";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"mes pasado";
+    } else if ([components weekOfYear] == -1 && [components year] == 0 && [components month] == 0) {
+        return @"semana pasada";
+    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"ayer";
+    } else if ([components day] == -2 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"antes de ayer";
+    }
+
+    if ([components year] == 1) {
+        return @"próximo año";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"próximo mes";
+    } else if ([components weekOfYear] == 1 && [components year] == 0 && [components month] == 0) {
+        return @"próxima semana";
+    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"mañana";
+    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"pasado mañana";
+    }
+
+    return nil;
+}
+
+- (NSString *)nlRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"vorig jaar";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"vorige maand";
+    } else if ([components weekOfYear] == -1 && [components year] == 0 && [components month] == 0) {
+        return @"vorige week";
+    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"gisteren";
+    } else if ([components day] == -2 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"eergisteren";
+    }
+    
+    if ([components year] == 1) {
+        return @"volgend jaar";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"volgende maand";
+    } else if ([components weekOfYear] == 1 && [components year] == 0 && [components month] == 0) {
+        return @"volgende week";
+    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"morgen";
+    } else if ([components day] == 2 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"overmorgen";
+    }
+    
+    return nil;
+}
+
+- (NSString *)plRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"zeszły rok";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"zeszły miesiąc";
+    } else if ([components weekOfYear] == -1 && [components year] == 0 && [components month] == 0) {
+        return @"zeszły tydzień";
+    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"wczoraj";
+    }
+
+    if ([components year] == 1) {
+        return @"przyszły rok";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"przyszły miesiąc";
+    } else if ([components weekOfYear] == 1 && [components year] == 0 && [components month] == 0) {
+        return @"przyszły tydzień";
+    } else if ([components day] == 1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"jutro";
+    }
+
+    return nil;
+}
+
+- (NSString *)csRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"minulý rok";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"minulý měsíc";
+    } else if ([components weekOfYear] == -1 && [components month] == 0 && [components year] == 0) {
+        return @"minulý týden";
+    } else if ([components day] == -1 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"včera";
+    } else if ([components day] == -2 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"předevčírem";
+    }
+    
+    if ([components year] == 1) {
+        return @"příští rok";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"příští měsíc";
+    } else if ([components weekOfYear] == 1 && [components month] == 0 && [components year] == 0) {
+        return @"příští týden";
+    } else if ([components day] == 1 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"zítra";
+    } else if ([components day] == 2 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"pozítří";
+    }
+    
+    return nil;
+}
+
+- (NSString *)jaRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"去年";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"先月";
+    } else if ([components weekOfYear] == -1 && [components month] == 0 && [components year] == 0) {
+        return @"先週";
+    } else if ([components day] == -1 && [components year] == 0 && [components month] == 0 && [components weekOfYear] == 0) {
+        return @"昨日";
+    }
+    
+    if ([components year] == 1) {
+        return @"来年";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"来月";
+    } else if ([components weekOfYear] == 1 && [components month] == 0 && [components year] == 0) {
+        return @"来週";
+    } else if ([components day] == 1 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"明日";
+    }
+    
+    return nil;
+}
+
+- (NSString *)frRelativeDateStringForComponents:(NSDateComponents *)components {
+    if ([components year] == -1) {
+        return @"l'annnée dernière";
+    } else if ([components month] == -1 && [components year] == 0) {
+        return @"le mois dernier";
+    } else if ([components weekOfYear] == -1 && [components month] == 0 && [components year] == 0) {
+        return @"la semaine dernière";
+    } else if ([components day] == -1 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"hier";
+    }
+    
+    if ([components year] == 1) {
+        return @"l'année prochaine";
+    } else if ([components month] == 1 && [components year] == 0) {
+        return @"le mois prochain";
+    } else if ([components weekOfYear] == 1 && [components month] == 0 && [components year] == 0) {
+        return @"la semaine prochaine";
+    } else if ([components day] == 1 && [components weekOfYear] == 0 && [components month] == 0 && [components year] == 0) {
+        return @"demain";
+    }
+    
+    return nil;
+}
+
+#pragma mark - NSFormatter
+
+- (NSString *)stringForObjectValue:(id)anObject {
+    if (![anObject isKindOfClass:[NSNumber class]]) {
+        return nil;
+    }
+
+    return [self stringForTimeInterval:[(NSNumber *)anObject doubleValue]];
+}
+
+- (BOOL)getObjectValue:(out __unused __autoreleasing id *)obj
+             forString:(__unused NSString *)string
+      errorDescription:(out NSString *__autoreleasing *)error
+{
+    *error = NSLocalizedStringFromTable(@"Method Not Implemented", @"FormatterKit", nil);
+
+    return NO;
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    TTTTimeIntervalFormatter *formatter = [[[self class] allocWithZone:zone] init];
+
+    formatter.locale = [self.locale copyWithZone:zone];
+    formatter.pastDeicticExpression = [self.pastDeicticExpression copyWithZone:zone];
+    formatter.presentDeicticExpression = [self.presentDeicticExpression copyWithZone:zone];
+    formatter.futureDeicticExpression = [self.futureDeicticExpression copyWithZone:zone];
+    formatter.deicticExpressionFormat = [self.deicticExpressionFormat copyWithZone:zone];
+    formatter.approximateQualifierFormat = [self.approximateQualifierFormat copyWithZone:zone];
+    formatter.presentTimeIntervalMargin = self.presentTimeIntervalMargin;
+    formatter.usesAbbreviatedCalendarUnits = self.usesAbbreviatedCalendarUnits;
+    formatter.usesApproximateQualifier = self.usesApproximateQualifier;
+    formatter.usesIdiomaticDeicticExpressions = self.usesIdiomaticDeicticExpressions;
+
+    return formatter;
 }
 
 #pragma mark - NSCoding
@@ -218,16 +514,16 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
 
-    self.locale = [aDecoder decodeObjectForKey:@"locale"];
-    self.pastDeicticExpression = [aDecoder decodeObjectForKey:@"pastDeicticExpression"];
-    self.presentDeicticExpression = [aDecoder decodeObjectForKey:@"presentDeicticExpression"];
-    self.futureDeicticExpression = [aDecoder decodeObjectForKey:@"futureDeicticExpression"];
-    self.deicticExpressionFormat = [aDecoder decodeObjectForKey:@"deicticExpressionFormat"];
-    self.approximateQualifierFormat = [aDecoder decodeObjectForKey:@"approximateQualifierFormat"];
-    self.presentTimeIntervalMargin = [aDecoder decodeDoubleForKey:@"presentTimeIntervalMargin"];
-    self.usesAbbreviatedCalendarUnits = [aDecoder decodeBoolForKey:@"usesAbbreviatedCalendarUnits"];
-    self.usesApproximateQualifier = [aDecoder decodeBoolForKey:@"usesApproximateQualifier"];
-    self.usesIdiomaticDeicticExpressions = [aDecoder decodeBoolForKey:@"usesIdiomaticDeicticExpressions"];
+    self.locale = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(locale))];
+    self.pastDeicticExpression = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(pastDeicticExpression))];
+    self.presentDeicticExpression = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(presentDeicticExpression))];
+    self.futureDeicticExpression = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(futureDeicticExpression))];
+    self.deicticExpressionFormat = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(deicticExpressionFormat))];
+    self.approximateQualifierFormat = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(approximateQualifierFormat))];
+    self.presentTimeIntervalMargin = [aDecoder decodeDoubleForKey:NSStringFromSelector(@selector(presentTimeIntervalMargin))];
+    self.usesAbbreviatedCalendarUnits = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(usesAbbreviatedCalendarUnits))];
+    self.usesApproximateQualifier = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(usesApproximateQualifier))];
+    self.usesIdiomaticDeicticExpressions = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(usesIdiomaticDeicticExpressions))];
 
     return self;
 }
@@ -236,15 +532,15 @@ static inline NSCalendarUnit NSCalendarUnitFromString(NSString *string) {
     [super encodeWithCoder:aCoder];
 
     [aCoder encodeObject:self.locale forKey:@"locale"];
-    [aCoder encodeObject:self.pastDeicticExpression forKey:@"pastDeicticExpression"];
-    [aCoder encodeObject:self.presentDeicticExpression forKey:@"presentDeicticExpression"];
-    [aCoder encodeObject:self.futureDeicticExpression forKey:@"futureDeicticExpression"];
-    [aCoder encodeObject:self.deicticExpressionFormat forKey:@"deicticExpressionFormat"];
-    [aCoder encodeObject:self.approximateQualifierFormat forKey:@"approximateQualifierFormat"];
-    [aCoder encodeDouble:self.presentTimeIntervalMargin forKey:@"presentTimeIntervalMargin"];
-    [aCoder encodeBool:self.usesAbbreviatedCalendarUnits forKey:@"usesAbbreviatedCalendarUnits"];
-    [aCoder encodeBool:self.usesApproximateQualifier forKey:@"usesApproximateQualifier"];
-    [aCoder encodeBool:self.usesIdiomaticDeicticExpressions forKey:@"usesIdiomaticDeicticExpressions"];
+    [aCoder encodeObject:self.pastDeicticExpression forKey:NSStringFromSelector(@selector(pastDeicticExpression))];
+    [aCoder encodeObject:self.presentDeicticExpression forKey:NSStringFromSelector(@selector(presentDeicticExpression))];
+    [aCoder encodeObject:self.futureDeicticExpression forKey:NSStringFromSelector(@selector(futureDeicticExpression))];
+    [aCoder encodeObject:self.deicticExpressionFormat forKey:NSStringFromSelector(@selector(deicticExpressionFormat))];
+    [aCoder encodeObject:self.approximateQualifierFormat forKey:NSStringFromSelector(@selector(approximateQualifierFormat))];
+    [aCoder encodeDouble:self.presentTimeIntervalMargin forKey:NSStringFromSelector(@selector(presentTimeIntervalMargin))];
+    [aCoder encodeBool:self.usesAbbreviatedCalendarUnits forKey:NSStringFromSelector(@selector(usesAbbreviatedCalendarUnits))];
+    [aCoder encodeBool:self.usesApproximateQualifier forKey:NSStringFromSelector(@selector(usesApproximateQualifier))];
+    [aCoder encodeBool:self.usesIdiomaticDeicticExpressions forKey:NSStringFromSelector(@selector(usesIdiomaticDeicticExpressions))];
 }
 
 @end

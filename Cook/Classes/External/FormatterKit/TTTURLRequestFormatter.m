@@ -26,6 +26,16 @@
 - (void)appendCommandLineArgument:(NSString *)arg;
 @end
 
+@implementation NSMutableString (TTTURLRequestFormatter)
+
+- (void)appendCommandLineArgument:(NSString *)arg {
+    [self appendFormat:@" %@", [arg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+}
+
+@end
+
+#pragma mark -
+
 @implementation TTTURLRequestFormatter
 
 - (NSString *)stringFromURLRequest:(NSURLRequest *)request {
@@ -51,9 +61,11 @@
         [command appendCommandLineArgument:@"--compressed"];
     }
 
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[request URL]];
-    for (NSHTTPCookie *cookie in cookies) {
-        [command appendCommandLineArgument:[NSString stringWithFormat:@"--cookie \"%@=%@\"", [cookie name], [cookie value]]];
+    if ([request URL]) {
+        NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[request URL]];
+        for (NSHTTPCookie *cookie in cookies) {
+            [command appendCommandLineArgument:[NSString stringWithFormat:@"--cookie \"%@=%@\"", [cookie name], [cookie value]]];
+        }
     }
 
     for (id field in [request allHTTPHeaderFields]) {
@@ -93,17 +105,26 @@
 @implementation TTTHTTPURLResponseFormatter
 
 - (NSString *)stringFromHTTPURLResponse:(NSHTTPURLResponse *)response {
-    return [NSString stringWithFormat:@"%d '%@'", [response statusCode], [[response URL] absoluteString]];
+    return [NSString stringWithFormat:@"%d '%@'", (int)[response statusCode], [[response URL] absoluteString]];
 }
 
-@end
+#pragma mark - NSFormatter
 
-#pragma mark -
+- (NSString *)stringForObjectValue:(id)obj {
+    if ([obj isKindOfClass:[NSHTTPURLResponse class]]) {
+        return [self stringFromHTTPURLResponse:(NSHTTPURLResponse *)obj];
+    } else {
+        return nil;
+    }
+}
 
-@implementation NSMutableString (TTTURLRequestFormatter)
+- (BOOL)getObjectValue:(out __unused __autoreleasing id *)obj
+             forString:(__unused NSString *)string
+      errorDescription:(out NSString *__autoreleasing *)error
+{
+    *error = NSLocalizedStringFromTable(@"Method Not Implemented", @"FormatterKit", nil);
 
-- (void)appendCommandLineArgument:(NSString *)arg {
-    [self appendFormat:@" %@", [arg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+    return NO;
 }
 
 @end

@@ -53,6 +53,23 @@ static inline double RAD2DEG(double radians) {
     return radians * 180 / M_PI;
 }
 
+static inline void TTTGetDegreesMinutesSecondsFromCoordinateDegrees(CLLocationDegrees degrees, double *d, double *m, double *s) {
+    double r;
+
+    *d = trunc(degrees);
+    r = fabs(degrees - *d);
+
+    *m = 60.0 * r;
+    r = *m - floor(*m);
+
+    *s = 60.0 * r;
+}
+
+static inline void TTTGetCardinalDirectionsFromCoordinate(CLLocationCoordinate2D coordinate, TTTLocationCardinalDirection *latitudeDirection, TTTLocationCardinalDirection *longitudeDirection) {
+    *latitudeDirection = coordinate.latitude >= 0.0 ? TTTNorthDirection : TTTSouthDirection;
+    *longitudeDirection = coordinate.longitude >= 0.0 ? TTTEastDirection : TTTWestDirection;
+}
+
 static inline CLLocationDegrees CLLocationDegreesBearingBetweenCoordinates(CLLocationCoordinate2D originCoordinate, CLLocationCoordinate2D destinationCoordinate) {
     double lat1 = DEG2RAD(originCoordinate.latitude);
 	double lon1 = DEG2RAD(originCoordinate.longitude);
@@ -112,11 +129,64 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
     return speed * kTTTMetersPerSecondToMilesPerHourCoefficient;
 }
 
+#pragma mark -
+
+static NSString * TTTLocalizedStringForCardinalDirection(TTTLocationCardinalDirection direction) {
+    switch (direction) {
+        case TTTNorthDirection:
+            return NSLocalizedStringFromTable(@"North", @"FormatterKit", @"North Direction");
+        case TTTNortheastDirection:
+            return NSLocalizedStringFromTable(@"Northeast", @"FormatterKit", @"Northeast Direction");
+        case TTTEastDirection:
+            return NSLocalizedStringFromTable(@"East", @"FormatterKit", @"East Direction");
+        case TTTSoutheastDirection:
+            return NSLocalizedStringFromTable(@"Southeast", @"FormatterKit", @"Southeast Direction");
+        case TTTSouthDirection:
+            return NSLocalizedStringFromTable(@"South", @"FormatterKit", @"South Direction");
+        case TTTSouthwestDirection:
+            return NSLocalizedStringFromTable(@"Southwest", @"FormatterKit", @"Southwest Direction");
+        case TTTWestDirection:
+            return NSLocalizedStringFromTable(@"West", @"FormatterKit", @"West Direction");
+        case TTTNorthwestDirection:
+            return NSLocalizedStringFromTable(@"Northwest", @"FormatterKit", @"Northwest Direction");
+        default:
+            return nil;
+    }
+}
+
+static NSString * TTTLocalizedStringForAbbreviatedCardinalDirection(TTTLocationCardinalDirection direction) {
+    switch (direction) {
+        case TTTNorthDirection:
+            return NSLocalizedStringFromTable(@"N", @"FormatterKit", @"North Direction Abbreviation");
+        case TTTNortheastDirection:
+            return NSLocalizedStringFromTable(@"NE", @"FormatterKit", @"Northeast Direction Abbreviation");
+        case TTTEastDirection:
+            return NSLocalizedStringFromTable(@"E", @"FormatterKit", @"East Direction Abbreviation");
+        case TTTSoutheastDirection:
+            return NSLocalizedStringFromTable(@"SE", @"FormatterKit", @"Southeast Direction Abbreviation");
+        case TTTSouthDirection:
+            return NSLocalizedStringFromTable(@"S", @"FormatterKit", @"South Direction Abbreviation");
+        case TTTSouthwestDirection:
+            return NSLocalizedStringFromTable(@"SW", @"FormatterKit", @"Southwest Direction Abbreviation");
+        case TTTWestDirection:
+            return NSLocalizedStringFromTable(@"W", @"FormatterKit", @"West Direction Abbreviation");
+        case TTTNorthwestDirection:
+            return NSLocalizedStringFromTable(@"NW", @"FormatterKit", @"Northwest Direction Abbreviation");
+        default:
+            return nil;
+    }
+}
+
+@interface TTTLocationFormatter ()
+@property (readwrite, nonatomic, strong) NSNumberFormatter *numberFormatter;
+@end
+
 @implementation TTTLocationFormatter
+@synthesize numberFormatter = _numberFormatter;
 @synthesize coordinateOrder = _coordinateOrder;
+@synthesize coordinateStyle = _coordinateStyle;
 @synthesize bearingStyle = _bearingStyle;
 @synthesize unitSystem = _unitSystem;
-@synthesize numberFormatter = _numberFormatter;
 
 - (id)init {
     self = [super init];
@@ -137,9 +207,51 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
     return self;
 }
 
+#pragma mark -
 
 - (NSString *)stringFromCoordinate:(CLLocationCoordinate2D)coordinate {
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"(%@, %@)", @"FormatterKit", @"Coordinate format"), [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:coordinate.latitude]], [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:coordinate.longitude]], nil];
+    NSString *latitudeString = nil;
+    NSString *longitudeString = nil;
+
+    switch (self.coordinateStyle) {
+        case TTTSignedDegreesFormat:
+            latitudeString = [self.numberFormatter stringFromNumber:@(coordinate.latitude)];
+            longitudeString = [self.numberFormatter stringFromNumber:@(coordinate.longitude)];
+            break;
+        case TTTDegreesFormat: {
+            static NSString * TTTDegreesFormatString = @"%@° %@";
+            TTTLocationCardinalDirection latitudeDirection, longitudeDirection;
+            TTTGetCardinalDirectionsFromCoordinate(coordinate, &latitudeDirection, &longitudeDirection);
+            latitudeString = [NSString stringWithFormat:TTTDegreesFormatString, [self.numberFormatter stringFromNumber:@(fabs(coordinate.latitude))], TTTLocalizedStringForAbbreviatedCardinalDirection(latitudeDirection)];
+            longitudeString = [NSString stringWithFormat:TTTDegreesFormatString, [self.numberFormatter stringFromNumber:@(fabs(coordinate.longitude))], TTTLocalizedStringForAbbreviatedCardinalDirection(longitudeDirection)];
+            break;
+        }
+        case TTTDegreesMinutesSecondsFormat: {
+            static NSString * TTTDegreesMinutesSecondsFormatString = @"%d° %d′ %@″ %@";
+            double degrees, minutes, seconds;
+            TTTLocationCardinalDirection latitudeDirection, longitudeDirection;
+            TTTGetCardinalDirectionsFromCoordinate(coordinate, &latitudeDirection, &longitudeDirection);
+
+            TTTGetDegreesMinutesSecondsFromCoordinateDegrees(coordinate.latitude, &degrees, &minutes, &seconds);
+            latitudeString = [NSString stringWithFormat:TTTDegreesMinutesSecondsFormatString, (NSInteger)degrees, (NSInteger)minutes, [self.numberFormatter stringFromNumber:@(seconds)], TTTLocalizedStringForAbbreviatedCardinalDirection(latitudeDirection)];
+
+            TTTGetDegreesMinutesSecondsFromCoordinateDegrees(coordinate.longitude, &degrees, &minutes, &seconds);
+            longitudeString = [NSString stringWithFormat:TTTDegreesMinutesSecondsFormatString, (NSInteger)degrees, (NSInteger)minutes, [self.numberFormatter stringFromNumber:@(seconds)], TTTLocalizedStringForAbbreviatedCardinalDirection(longitudeDirection)];
+            break;
+        }
+        default:
+            break;
+    }
+
+    switch (self.coordinateOrder) {
+        case TTTCoordinateLatLngOrder:
+            return [NSString stringWithFormat:@"%@, %@", latitudeString, longitudeString];
+            break;
+        case TTTCoordinateLngLatOrder:
+            return [NSString stringWithFormat:@"%@, %@", longitudeString, latitudeString];
+        default:
+            return nil;;
+    }
 }
 
 - (NSString *)stringFromLocation:(CLLocation *)location {
@@ -155,11 +267,11 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
             double meterDistance = distance;
             double kilometerDistance = CLLocationDistanceToKilometers(distance);
 
-            if (kilometerDistance > 1) {
-                distanceString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:kilometerDistance]];
+            if (kilometerDistance >= 1) {
+                distanceString = [_numberFormatter stringFromNumber:@(kilometerDistance)];
                 unitString = NSLocalizedStringFromTable(@"km", @"FormatterKit", @"Kilometer Unit");
             } else {
-                distanceString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:meterDistance]];
+                distanceString = [_numberFormatter stringFromNumber:@(meterDistance)];
                 unitString = NSLocalizedStringFromTable(@"m", @"FormatterKit", @"Meter Unit");
             }
             break;
@@ -171,66 +283,30 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
             double milesDistance = CLLocationDistanceToMiles(distance);
 
             if (feetDistance < 300) {
-                distanceString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:feetDistance]];
+                distanceString = [_numberFormatter stringFromNumber:@(feetDistance)];
                 unitString = NSLocalizedStringFromTable(@"ft", @"FormatterKit", @"Feet Unit");
             } else if (yardDistance < 500) {
-                distanceString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:yardDistance]];
+                distanceString = [_numberFormatter stringFromNumber:@(yardDistance)];
                 unitString = NSLocalizedStringFromTable(@"yds", @"FormatterKit", @"Yard Unit");
             } else {
-                distanceString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:milesDistance]];
+                distanceString = [_numberFormatter stringFromNumber:@(milesDistance)];
                 unitString = (milesDistance > 1.0 && milesDistance < 1.1) ? NSLocalizedStringFromTable(@"mile", @"FormatterKit", @"Mile Unit (Singular)") : NSLocalizedStringFromTable(@"miles", @"FormatterKit", @"Mile Unit (Plural)");
             }
             break;
         }
     }
 
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ %@", @"FormatterKit", @"#{Distance} #{Unit}"), distanceString, unitString];
+    return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"Distance Format String", @"FormatterKit", [NSBundle mainBundle], @"%@ %@", @"#{Distance} #{Unit}"), distanceString, unitString];
 }
 
 - (NSString *)stringFromBearing:(CLLocationDegrees)bearing {
     switch (self.bearingStyle) {
         case TTTBearingWordStyle:
-            switch (TTTLocationCardinalDirectionFromBearing(bearing)) {
-                case TTTNorthDirection:
-                    return NSLocalizedStringFromTable(@"North", @"FormatterKit", @"North Direction");
-                case TTTNortheastDirection:
-                    return NSLocalizedStringFromTable(@"Northeast", @"FormatterKit", @"Northeast Direction");
-                case TTTEastDirection:
-                    return NSLocalizedStringFromTable(@"East", @"FormatterKit", @"East Direction");
-                case TTTSoutheastDirection:
-                    return NSLocalizedStringFromTable(@"Southeast", @"FormatterKit", @"Southeast Direction");
-                case TTTSouthDirection:
-                    return NSLocalizedStringFromTable(@"South", @"FormatterKit", @"South Direction");
-                case TTTSouthwestDirection:
-                    return NSLocalizedStringFromTable(@"Southwest", @"FormatterKit", @"Southwest Direction");
-                case TTTWestDirection:
-                    return NSLocalizedStringFromTable(@"West", @"FormatterKit", @"West Direction");
-                case TTTNorthwestDirection:
-                    return NSLocalizedStringFromTable(@"Northwest", @"FormatterKit", @"Northwest Direction");
-            }
-            break;
+            return TTTLocalizedStringForCardinalDirection(TTTLocationCardinalDirectionFromBearing(bearing));
         case TTTBearingAbbreviationWordStyle:
-            switch (TTTLocationCardinalDirectionFromBearing(bearing)) {
-                case TTTNorthDirection:
-                    return NSLocalizedStringFromTable(@"N", @"FormatterKit", @"North Direction Abbreviation");
-                case TTTNortheastDirection:
-                    return NSLocalizedStringFromTable(@"NE", @"FormatterKit", @"Northeast Direction Abbreviation");
-                case TTTEastDirection:
-                    return NSLocalizedStringFromTable(@"E", @"FormatterKit", @"East Direction Abbreviation");
-                case TTTSoutheastDirection:
-                    return NSLocalizedStringFromTable(@"SE", @"FormatterKit", @"Southeast Direction Abbreviation");
-                case TTTSouthDirection:
-                    return NSLocalizedStringFromTable(@"S", @"FormatterKit", @"South Direction Abbreviation");
-                case TTTSouthwestDirection:
-                    return NSLocalizedStringFromTable(@"SW", @"FormatterKit", @"Southwest Direction Abbreviation");
-                case TTTWestDirection:
-                    return NSLocalizedStringFromTable(@"W", @"FormatterKit", @"West Direction Abbreviation");
-                case TTTNorthwestDirection:
-                    return NSLocalizedStringFromTable(@"NW", @"FormatterKit", @"Northwest Direction Abbreviation");;
-            }
-            break;
+            return TTTLocalizedStringForAbbreviatedCardinalDirection(TTTLocationCardinalDirectionFromBearing(bearing));
         case TTTBearingNumericStyle:
-            return [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:bearing]];
+            return [self.numberFormatter stringFromNumber:@(bearing)];
     }
 
     return nil;
@@ -246,10 +322,10 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
             double kilometersPerHourSpeed = CLLocationSpeedToKilometersPerHour(speed);
 
             if (kilometersPerHourSpeed > 1) {
-                speedString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:kilometersPerHourSpeed]];
+                speedString = [self.numberFormatter stringFromNumber:@(kilometersPerHourSpeed)];
                 unitString = NSLocalizedStringFromTable(@"km/h", @"FormatterKit", @"Kilometers Per Hour Unit");
             } else {
-                speedString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:metersPerSecondSpeed]];
+                speedString = [self.numberFormatter stringFromNumber:@(metersPerSecondSpeed)];
                 unitString = NSLocalizedStringFromTable(@"m/s", @"FormatterKit", @"Meters Per Second Unit");
             }
             break;
@@ -260,17 +336,17 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
             double milesPerHourSpeed = CLLocationSpeedToMilesPerHour(speed);
 
             if (milesPerHourSpeed > 1) {
-                speedString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:milesPerHourSpeed]];
+                speedString = [self.numberFormatter stringFromNumber:@(milesPerHourSpeed)];
                 unitString = NSLocalizedStringFromTable(@"mph", @"FormatterKit", @"Miles Per Hour Unit");
             } else {
-                speedString = [_numberFormatter stringFromNumber:[NSNumber numberWithDouble:feetPerSecondSpeed]];
+                speedString = [self.numberFormatter stringFromNumber:@(feetPerSecondSpeed)];
                 unitString = NSLocalizedStringFromTable(@"ft/s", @"FormatterKit", @"Feet Per Second Unit");
             }
             break;
         }
     }
 
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ %@", @"FormatterKit", @"#{Speed} #{Unit}"), speedString, unitString];
+    return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"Speed Format String", @"FormatterKit", [NSBundle mainBundle], @"%@ %@", @"#{Speed} #{Unit}"), speedString, unitString];
 }
 
 - (NSString *)stringFromDistanceFromLocation:(CLLocation *)originLocation
@@ -288,14 +364,46 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
 - (NSString *)stringFromDistanceAndBearingFromLocation:(CLLocation *)originLocation
                                             toLocation:(CLLocation *)destinationLocation
 {
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ %@", @"FormatterKit", @"#{Dimensional Quantity} #{Direction}"), [self stringFromDistanceFromLocation:originLocation toLocation:destinationLocation], [self stringFromBearingFromLocation:originLocation toLocation:destinationLocation]];
+    return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"Dimension Format String", @"FormatterKit", [NSBundle mainBundle], @"%@ %@", @"#{Dimensional Quantity} #{Direction}"), [self stringFromDistanceFromLocation:originLocation toLocation:destinationLocation], [self stringFromBearingFromLocation:originLocation toLocation:destinationLocation]];
 }
 
 - (NSString *)stringFromVelocityFromLocation:(CLLocation *)originLocation
                                   toLocation:(CLLocation *)destinationLocation
                                      atSpeed:(CLLocationSpeed)speed
 {
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ %@", @"FormatterKit", @"#{Dimensional Quantity} #{Direction}"), [self stringFromSpeed:speed], [self stringFromBearingFromLocation:originLocation toLocation:destinationLocation]];
+    return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"Dimension Format String", @"FormatterKit", [NSBundle mainBundle], @"%@ %@", @"#{Dimensional Quantity} #{Direction}"), [self stringFromSpeed:speed], [self stringFromBearingFromLocation:originLocation toLocation:destinationLocation]];
+}
+
+#pragma mark - NSFormatter
+
+- (NSString *)stringForObjectValue:(id)anObject {
+    if (![anObject isKindOfClass:[CLLocation class]]) {
+        return nil;
+    }
+
+    return [self stringFromLocation:(CLLocation *)anObject];
+}
+
+- (BOOL)getObjectValue:(out __unused __autoreleasing id *)obj
+             forString:(__unused NSString *)string
+      errorDescription:(out NSString *__autoreleasing *)error
+{
+    *error = NSLocalizedStringFromTable(@"Method Not Implemented", @"FormatterKit", nil);
+
+    return NO;
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    TTTLocationFormatter *formatter = [[[self class] allocWithZone:zone] init];
+
+    formatter.numberFormatter = [self.numberFormatter copyWithZone:zone];
+    formatter.coordinateOrder = self.coordinateOrder;
+    formatter.bearingStyle = self.bearingStyle;
+    formatter.unitSystem = self.unitSystem;
+
+    return formatter;
 }
 
 #pragma mark - NSCoding
@@ -303,11 +411,10 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
 
-    self.coordinateOrder = [aDecoder decodeIntegerForKey:@"coordinateOrder"];
-    self.bearingStyle = [aDecoder decodeIntegerForKey:@"bearingStyle"];
-    self.unitSystem = [aDecoder decodeIntegerForKey:@"unitSystem"];
-
-    _numberFormatter = [aDecoder decodeObjectForKey:@"numberFormatter"];
+    self.numberFormatter = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(numberFormatter))];
+    self.coordinateOrder = (TTTLocationFormatterCoordinateOrder)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(coordinateOrder))];
+    self.bearingStyle = (TTTLocationFormatterBearingStyle)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(bearingStyle))];
+    self.unitSystem = (TTTLocationUnitSystem)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(unitSystem))];
 
     return self;
 }
@@ -315,11 +422,10 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeInteger:self.coordinateOrder forKey:@"coordinateOrder"];
-    [aCoder encodeInteger:self.bearingStyle forKey:@"bearingStyle"];
-    [aCoder encodeInteger:self.unitSystem forKey:@"unitSystem"];
-
-    [aCoder encodeObject:_numberFormatter forKey:@"numberFormatter"];
+    [aCoder encodeObject:self.numberFormatter forKey:NSStringFromSelector(@selector(numberFormatter))];
+    [aCoder encodeInteger:self.coordinateOrder forKey:NSStringFromSelector(@selector(coordinateOrder))];
+    [aCoder encodeInteger:self.bearingStyle forKey:NSStringFromSelector(@selector(bearingStyle))];
+    [aCoder encodeInteger:self.unitSystem forKey:NSStringFromSelector(@selector(unitSystem))];
 }
 
 @end

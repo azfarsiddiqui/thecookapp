@@ -877,6 +877,8 @@
 		76B8560218E29640007C4A37 /* cook_dash_icons_search_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B855FE18E29640007C4A37 /* cook_dash_icons_search_onpress@2x.png */; };
 		76B8560318E29640007C4A37 /* cook_dash_icons_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B855FF18E29640007C4A37 /* cook_dash_icons_search.png */; };
 		76B8560418E29640007C4A37 /* cook_dash_icons_search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B8560018E29640007C4A37 /* cook_dash_icons_search@2x.png */; };
+		76B89B691973BAFA00FAF0DF /* TTTColorFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B89B681973BAFA00FAF0DF /* TTTColorFormatter.m */; };
+		76B89B6C1973BB6900FAF0DF /* FormatterKit.strings in Resources */ = {isa = PBXBuildFile; fileRef = 76B89B6E1973BB6900FAF0DF /* FormatterKit.strings */; };
 		76BBF555184605BB004B3F70 /* cook_login_library.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BBF553184605BB004B3F70 /* cook_login_library.png */; };
 		76BBF556184605BB004B3F70 /* cook_login_library@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BBF554184605BB004B3F70 /* cook_login_library@2x.png */; };
 		76BD4A9418C015CC007684F4 /* CKError.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BD4A9318C015CC007684F4 /* CKError.m */; };
@@ -2692,6 +2694,15 @@
 		76B855FE18E29640007C4A37 /* cook_dash_icons_search_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_search_onpress@2x.png"; sourceTree = "<group>"; };
 		76B855FF18E29640007C4A37 /* cook_dash_icons_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_search.png; sourceTree = "<group>"; };
 		76B8560018E29640007C4A37 /* cook_dash_icons_search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_search@2x.png"; sourceTree = "<group>"; };
+		76B89B671973BAFA00FAF0DF /* TTTColorFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTColorFormatter.h; sourceTree = "<group>"; };
+		76B89B681973BAFA00FAF0DF /* TTTColorFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTColorFormatter.m; sourceTree = "<group>"; };
+		76B89B6D1973BB6900FAF0DF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FormatterKit.strings; sourceTree = "<group>"; };
+		76B89B6F1973BB7200FAF0DF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/FormatterKit.strings; sourceTree = "<group>"; };
+		76B89B701973BB7200FAF0DF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FormatterKit.strings; sourceTree = "<group>"; };
+		76B89B711973BB7300FAF0DF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/FormatterKit.strings; sourceTree = "<group>"; };
+		76B89B721973BB7400FAF0DF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/FormatterKit.strings; sourceTree = "<group>"; };
+		76B89B731973BB7400FAF0DF /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/FormatterKit.strings; sourceTree = "<group>"; };
+		76B89B741973BB7500FAF0DF /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/FormatterKit.strings"; sourceTree = "<group>"; };
 		76BBF553184605BB004B3F70 /* cook_login_library.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_login_library.png; sourceTree = "<group>"; };
 		76BBF554184605BB004B3F70 /* cook_login_library@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_library@2x.png"; sourceTree = "<group>"; };
 		76BD4A9218C015CC007684F4 /* CKError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKError.h; sourceTree = "<group>"; };
@@ -4477,6 +4488,8 @@
 				7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */,
 				7643B8C716D7037B001A2452 /* TTTURLRequestFormatter.h */,
 				7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */,
+				76B89B671973BAFA00FAF0DF /* TTTColorFormatter.h */,
+				76B89B681973BAFA00FAF0DF /* TTTColorFormatter.m */,
 			);
 			path = FormatterKit;
 			sourceTree = "<group>";
@@ -5984,6 +5997,7 @@
 				76ED274A1612DC180012E479 /* InfoPlist.strings */,
 				76ED274D1612DC180012E479 /* main.m */,
 				76ED274F1612DC180012E479 /* Cook-Prefix.pch */,
+				76B89B6E1973BB6900FAF0DF /* FormatterKit.strings */,
 				76EC02711964F436004B1296 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
@@ -7645,6 +7659,7 @@
 				76F5EE441782A3E7004AB119 /* cook_book_purple.png in Resources */,
 				7647853C17A697D800387A7B /* cook_customise_privacy_bg_left.png in Resources */,
 				76A10AAD17CB017F0051751F /* cook_book_inner_loading_tiny_outer.png in Resources */,
+				76B89B6C1973BB6900FAF0DF /* FormatterKit.strings in Resources */,
 				76D2BF6517B8C43E00BA46A1 /* cook_book_graphic_onion@2x.png in Resources */,
 				76A10ABA17CB02400051751F /* cook_login_btn_signup_facebook_onpress.png in Resources */,
 				F64299E61907500200124DDE /* cook_customise_toggle_left_off.png in Resources */,
@@ -9161,6 +9176,7 @@
 				7605B4BD170A54B800216DF1 /* CKUserProfilePhotoView.m in Sources */,
 				76EE2CD3170AE7A30043D128 /* SDImageCache.m in Sources */,
 				76EE2CD4170AE7A30043D128 /* SDWebImageCompat.m in Sources */,
+				76B89B691973BAFA00FAF0DF /* TTTColorFormatter.m in Sources */,
 				76EE2CD5170AE7A30043D128 /* SDWebImageDecoder.m in Sources */,
 				76EE2CD6170AE7A30043D128 /* SDWebImageDownloader.m in Sources */,
 				76EE2CD7170AE7A30043D128 /* SDWebImageDownloaderOperation.m in Sources */,
@@ -9265,6 +9281,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		76B89B6E1973BB6900FAF0DF /* FormatterKit.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				76B89B6D1973BB6900FAF0DF /* en */,
+				76B89B6F1973BB7200FAF0DF /* es */,
+				76B89B701973BB7200FAF0DF /* de */,
+				76B89B711973BB7300FAF0DF /* fr */,
+				76B89B721973BB7400FAF0DF /* it */,
+				76B89B731973BB7400FAF0DF /* nl */,
+				76B89B741973BB7500FAF0DF /* pt-BR */,
+			);
+			name = FormatterKit.strings;
+			sourceTree = "<group>";
+		};
 		76EC02711964F436004B1296 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

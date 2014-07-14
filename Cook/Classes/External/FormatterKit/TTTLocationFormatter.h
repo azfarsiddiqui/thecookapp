@@ -26,32 +26,41 @@
 /**
  Specifies the ordering of latitude and longitude in coordinate pairs.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, TTTLocationFormatterCoordinateOrder) {
     TTTCoordinateLatLngOrder = 0,
     TTTCoordinateLngLatOrder,
-} TTTLocationFormatterCoordinateOrder;
+};
+
+/**
+ Specifies the format of coordinate pairs.
+ */
+typedef NS_ENUM(NSUInteger, TTTLocationFormatterCoordinateStyle) {
+    TTTSignedDegreesFormat = 0,         // e.g. "45.55873, -122.77854"
+    TTTDegreesFormat,                   // 45.5200° N, 122.6819° W
+    TTTDegreesMinutesSecondsFormat,     // e.g. "45° 33′ 31.43″ N, 122° 46′ 42.74″ W"
+};
 
 /**
  Specifies the style used when formatting bearing into a string.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, TTTLocationFormatterBearingStyle) {
     TTTBearingWordStyle = 0,            // e.g. "Southwest"
     TTTBearingAbbreviationWordStyle,    // e.g. "SW"
     TTTBearingNumericStyle,             // e.g. "225°"
-} TTTLocationFormatterBearingStyle;
+};
 
 /**
  Specifies the units used to express distance in formatted strings.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, TTTLocationUnitSystem) {
     TTTMetricSystem = 0,    // Expresses distance in meters and kilometers.
     TTTImperialSystem,      // Expresses distance in feet, yards, and miles.
-} TTTLocationUnitSystem;
+};
 
 /**
  Defines the cardinal directions.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, TTTLocationCardinalDirection) {
     TTTNorthDirection,
     TTTNortheastDirection,
     TTTEastDirection,
@@ -60,7 +69,7 @@ typedef enum {
     TTTSouthwestDirection,
     TTTWestDirection,
     TTTNorthwestDirection,
-} TTTLocationCardinalDirection;
+};
 
 /**
  Converts a specified bearing from degrees into its closest cardinal direction.
@@ -79,20 +88,37 @@ extern TTTLocationCardinalDirection TTTLocationCardinalDirectionFromBearing(CLLo
  */
 @property (readonly, nonatomic, strong) NSNumberFormatter *numberFormatter;
 
+///--------------------------------------------------
+/// @name Configuring Coordinate & Bearing Formatting
+///--------------------------------------------------
+
 /**
  Specifies the ordering of latitude and longitude values in coordinate pairs. `TTTCoordinateLatLngOrder` by default.
  */
 @property (nonatomic, assign) TTTLocationFormatterCoordinateOrder coordinateOrder;
 
 /**
+ Specifies the formatting of coordinate pairs. `TTTSignedDegreesFormat` by default.
+ */
+@property (nonatomic, assign) TTTLocationFormatterCoordinateStyle coordinateStyle;
+
+/**
  Specifies the formatting of bearing in strings. `TTTBearingWordStyle` by default.
  */
 @property (nonatomic, assign) TTTLocationFormatterBearingStyle bearingStyle;
+
+///------------------------------
+/// @name Configuring Unit System
+///------------------------------
 
 /**
  Specifies the units used to express distance in formatted strings. `TTTMetricSystem` by default.
  */
 @property (nonatomic, assign) TTTLocationUnitSystem unitSystem;
+
+///-------------------------
+/// @name Converting Objects
+///-------------------------
 
 /**
  Returns a string representation of a given coordinate formatted using the receiver’s current settings.

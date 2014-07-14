@@ -24,20 +24,6 @@
 
 static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @".";
 
-@interface TTTOrdinalNumberFormatter ()
-- (NSString *)localizedOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)deOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)enOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)esOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)frOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)gaOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)itOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)jaOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)nlOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)ptOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-- (NSString *)zhHansOrdinalIndicatorStringFromNumber:(NSNumber *)number;
-@end
-
 @implementation TTTOrdinalNumberFormatter
 @synthesize ordinalIndicator = _ordinalIndicator;
 @synthesize grammaticalGender = _grammaticalGender;
@@ -53,29 +39,10 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
     [self setAllowsFloats:NO];
     [self setGeneratesDecimalNumbers:NO];
     [self setRoundingMode:NSNumberFormatterRoundFloor];
-    [self setMinimum:[NSNumber numberWithInteger:0]];
+    [self setMinimum:@(0)];
     [self setLenient:YES];
 
     return self;
-}
-
-- (NSString *)stringFromNumber:(NSNumber *)number {
-    NSString *indicator = self.ordinalIndicator;
-    if (!indicator) {
-        indicator = [self localizedOrdinalIndicatorStringFromNumber:number];
-    }
-
-    [self setPositivePrefix:nil];
-    [self setPositiveSuffix:nil];
-
-    NSString *languageCode = [[self locale] objectForKey:NSLocaleLanguageCode];
-    if ([languageCode isEqualToString:@"zh"]) {
-        [self setPositivePrefix:indicator];
-    } else {
-        [self setPositiveSuffix:indicator];
-    }
-
-    return [super stringFromNumber:number];
 }
 
 #pragma mark -
@@ -100,12 +67,52 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
         return [self jaOrdinalIndicatorStringFromNumber:number];
     } else if ([languageCode isEqualToString:@"zh"]) {
         return [self zhHansOrdinalIndicatorStringFromNumber:number];
+    } else if ([languageCode isEqualToString:@"ca"]) {
+        return [self caOrdinalIndicatorStringFromNumber:number];
     } else {
         return kTTTOrdinalNumberFormatterDefaultOrdinalIndicator;
     }
 }
 
-- (NSString *)deOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)caOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+    if (self.grammaticalNumber == TTTOrdinalNumberFormatterPlural) {
+        if (self.grammaticalGender == TTTOrdinalNumberFormatterFemaleGender) {
+            return @"es";
+        } else {
+            switch ([number integerValue]) {
+                case 1:
+                    return @"rs";
+                case 2:
+                    return @"ns";
+                case 3:
+                    return @"rs";
+                case 4:
+                    return @"ts";
+                default:
+                    return @"ns";
+            }
+        }
+    } else {
+        if (self.grammaticalGender == TTTOrdinalNumberFormatterFemaleGender) {
+            return @"a";
+        } else {
+            switch ([number integerValue]) {
+                case 1:
+                    return @"r";
+                case 2:
+                    return @"n";
+                case 3:
+                    return @"r";
+                case 4:
+                    return @"t";
+                default:
+                    return @"è";
+            }
+        }
+    }
+}
+
+- (NSString *)deOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
 	return @".";
 }
 
@@ -127,18 +134,16 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
     }
 }
 
-- (NSString *)esOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)esOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     switch (self.grammaticalGender) {
-        case TTTOrdinalNumberFormatterMaleGender:
-            return @"\u00BA"; // MASCULINE ORDINAL INDICATOR
         case TTTOrdinalNumberFormatterFemaleGender:
             return @"\u00AA"; // FEMININE ORDINAL INDICATOR
         default:
-            return kTTTOrdinalNumberFormatterDefaultOrdinalIndicator;
+            return @"\u00BA"; // MASCULINE ORDINAL INDICATOR
     }
 }
 
-- (NSString *)frOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)frOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     NSString *ordinalIndicator = nil;
     if ([number integerValue] == 1) {
         switch (self.grammaticalGender) {
@@ -152,23 +157,29 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
                 ordinalIndicator = @"er";
                 break;
         }
-    }
-    else {
+    } else {
         ordinalIndicator = @"e";
     }
-
-    if (self.grammaticalNumber == TTTOrdinalNumberFormatterDual || self.grammaticalNumber == TTTOrdinalNumberFormatterTrial || self.grammaticalNumber == TTTOrdinalNumberFormatterQuadral || self.grammaticalNumber == TTTOrdinalNumberFormatterPlural) {
-        ordinalIndicator = [ordinalIndicator stringByAppendingString:@"s"];
+    
+    switch (self.grammaticalNumber) {
+        case TTTOrdinalNumberFormatterDual:
+        case TTTOrdinalNumberFormatterTrial:
+        case TTTOrdinalNumberFormatterQuadral:
+        case TTTOrdinalNumberFormatterPlural:
+            ordinalIndicator = [ordinalIndicator stringByAppendingString:@"s"];
+            break;
+        default:
+            break;
     }
 
     return ordinalIndicator;
 }
 
-- (NSString *)gaOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)gaOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     return @"\u00fa"; // LATIN SMALL LETTER U WITH ACUTE
 }
 
-- (NSString *)itOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)itOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     switch (self.grammaticalGender) {
         case TTTOrdinalNumberFormatterMaleGender:
             return @"\u00BA"; // MASCULINE ORDINAL INDICATOR
@@ -179,15 +190,15 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
     }
 }
 
-- (NSString *)jaOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)jaOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     return @"\u756a";
 }
 
-- (NSString *)nlOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)nlOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     return @"e";
 }
 
-- (NSString *)ptOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)ptOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     switch (self.grammaticalGender) {
         case TTTOrdinalNumberFormatterMaleGender:
             return @"\u00BA"; // MASCULINE ORDINAL INDICATOR
@@ -198,8 +209,69 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
     }
 }
 
-- (NSString *)zhHansOrdinalIndicatorStringFromNumber:(NSNumber *)number {
+- (NSString *)zhHansOrdinalIndicatorStringFromNumber:(__unused NSNumber *)number {
     return @"\u7b2c";
+}
+
+#pragma mark - NSFormatter
+
+- (NSString *)stringForObjectValue:(id)anObject {
+    if (![anObject isKindOfClass:[NSNumber class]]) {
+        return nil;
+    }
+    
+    NSString *indicator = self.ordinalIndicator;
+    if (!indicator) {
+        indicator = [self localizedOrdinalIndicatorStringFromNumber:(NSNumber *)anObject];
+    }
+    
+    NSString *string = nil;
+    @synchronized(self) {
+        [self setPositivePrefix:nil];
+        [self setPositiveSuffix:nil];
+        
+        NSString *languageCode = [[self locale] objectForKey:NSLocaleLanguageCode];
+        if ([languageCode hasPrefix:@"zh"]) {
+            [self setPositivePrefix:indicator];
+        } else {
+            [self setPositiveSuffix:indicator];
+        }
+        
+        string = [super stringForObjectValue:anObject];
+    }
+    
+    return string;
+}
+
+- (BOOL)getObjectValue:(out __autoreleasing id *)obj
+             forString:(NSString *)string
+      errorDescription:(out NSString *__autoreleasing *)error
+{
+    NSInteger integer = NSNotFound;
+    NSScanner *scanner = [NSScanner scannerWithString:string];
+    [scanner scanInteger:&integer];
+
+    if (integer != NSNotFound) {
+        *obj = @(integer);
+
+        return YES;
+    }
+
+    *error = NSLocalizedStringFromTable(@"String did not contain a valid ordinal number", @"FormatterKit", nil);
+
+    return NO;
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    TTTOrdinalNumberFormatter *formatter = [[[self class] allocWithZone:zone] init];
+
+    formatter.ordinalIndicator = [self.ordinalIndicator copyWithZone:zone];
+    formatter.grammaticalGender = self.grammaticalGender;
+    formatter.grammaticalNumber = self.grammaticalNumber;
+
+    return formatter;
 }
 
 #pragma mark - NSCoding
@@ -207,9 +279,9 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
 
-    self.ordinalIndicator = [aDecoder decodeObjectForKey:@"ordinalIndicator"];
-    self.grammaticalGender = [aDecoder decodeIntegerForKey:@"grammaticalGender"];
-    self.grammaticalNumber = [aDecoder decodeIntegerForKey:@"grammaticalNumber"];
+    self.ordinalIndicator = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(ordinalIndicator))];
+    self.grammaticalGender = (TTTOrdinalNumberFormatterPredicateGrammaticalGender)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(grammaticalGender))];
+    self.grammaticalNumber = (TTTOrdinalNumberFormatterPredicateGrammaticalNumber)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(grammaticalNumber))];
 
     return self;
 }
@@ -217,9 +289,9 @@ static NSString * const kTTTOrdinalNumberFormatterDefaultOrdinalIndicator = @"."
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeObject:self.ordinalIndicator forKey:@"ordinalIndicator"];
-    [aCoder encodeInteger:self.grammaticalGender forKey:@"grammaticalGender"];
-    [aCoder encodeInteger:self.grammaticalNumber forKey:@"grammaticalNumber"];
+    [aCoder encodeObject:self.ordinalIndicator forKey:NSStringFromSelector(@selector(ordinalIndicator))];
+    [aCoder encodeInteger:self.grammaticalGender forKey:NSStringFromSelector(@selector(grammaticalGender))];
+    [aCoder encodeInteger:self.grammaticalNumber forKey:NSStringFromSelector(@selector(grammaticalNumber))];
 }
 
 @end

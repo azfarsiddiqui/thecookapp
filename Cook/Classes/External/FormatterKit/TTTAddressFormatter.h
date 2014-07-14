@@ -21,9 +21,6 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Availability.h>
-
-#if defined(__ABPerson__)
 
 /**
  Instances of `TTTAddressFormatter` create address strings formatted according to a given locale.
@@ -50,6 +47,10 @@
  */
 @property (nonatomic, strong) NSLocale *locale;
 
+///-------------------------
+/// @name Converting Objects
+///-------------------------
+
 /**
  Returns an address string for the specified components formatted with the receiver's locale.
  
@@ -66,5 +67,3 @@
                                   country:(NSString *)country;
 
 @end
-
-#endif

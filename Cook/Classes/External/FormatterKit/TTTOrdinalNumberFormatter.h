@@ -25,23 +25,23 @@
 /**
  Specifies the grammatical gender of the word conjugated by the ordinal number.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, TTTOrdinalNumberFormatterPredicateGrammaticalGender) {
     TTTOrdinalNumberFormatterMaleGender     = 1,
     TTTOrdinalNumberFormatterFemaleGender   = 2,
     TTTOrdinalNumberFormatterNeuterGender   = 3,
-} TTTOrdinalNumberFormatterPredicateGrammaticalGender;
+};
 
 /**
- Specifies the grammatical number of the word conjugatd by the ordinal number.
+ Specifies the grammatical number of the word conjugated by the ordinal number.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, TTTOrdinalNumberFormatterPredicateGrammaticalNumber) {
     TTTOrdinalNumberFormatterSingular       = 1,
     TTTOrdinalNumberFormatterDual           = 2,
     TTTOrdinalNumberFormatterTrial          = 3,
     TTTOrdinalNumberFormatterQuadral        = 4,
     TTTOrdinalNumberFormatterSingularCollective,
     TTTOrdinalNumberFormatterPlural,
-} TTTOrdinalNumberFormatterPredicateGrammaticalNumber;
+};
 
 /**
  Instances of `TTTOrdinalNumberFormatter` create localized ordinal string representations of `NSNumber` objects.
@@ -55,15 +55,15 @@ typedef enum {
 /**
  When specified, this overrides the indicator determined by the formatter. `nil` by default.
  */
-@property (nonatomic, strong) NSString *ordinalIndicator;
+@property (nonatomic, copy) NSString *ordinalIndicator;
 
 /**
- Specifies the grammatical gender of the word conjugatd by the ordinal number.
+ Specifies the grammatical gender of the word conjugated by the ordinal number.
  */
 @property (nonatomic, assign) TTTOrdinalNumberFormatterPredicateGrammaticalGender grammaticalGender;
 
 /**
- Specifies the grammatical number of the word conjugatd by the ordinal number.
+ Specifies the grammatical number of the word conjugated by the ordinal number.
  */
 @property (nonatomic, assign) TTTOrdinalNumberFormatterPredicateGrammaticalNumber grammaticalNumber;
 

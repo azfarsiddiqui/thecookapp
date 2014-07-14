@@ -22,7 +22,27 @@
 
 #import "TTTAddressFormatter.h"
 
-#if defined(__ABPerson__)
+#import <Availability.h>
+
+#import <AddressBook/AddressBook.h>
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <AddressBookUI/AddressBookUI.h>
+
+#define TTTAddressStreetKey ((__bridge NSString *)kABPersonAddressStreetKey)
+#define TTTAddressLocalityKey ((__bridge NSString *)kABPersonAddressCityKey)
+#define TTTAddressRegionKey ((__bridge NSString *)kABPersonAddressStateKey)
+#define TTTAddressPostalCodeKey ((__bridge NSString *)kABPersonAddressZIPKey)
+#define TTTAddressCountryKey ((__bridge NSString *)kABPersonAddressCountryKey)
+#define TTTAddressCountryCodeKey ((__bridge NSString *)kABPersonAddressCountryCodeKey)
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#define TTTAddressStreetKey (kABAddressStreetKey)
+#define TTTAddressLocalityKey (kABAddressCityKey)
+#define TTTAddressRegionKey (kABAddressStateKey)
+#define TTTAddressPostalCodeKey (kABAddressZIPKey)
+#define TTTAddressCountryKey (kABAddressCountryKey)
+#define TTTAddressCountryCodeKey (kABAddressCountryCodeKey)
+#endif
 
 @implementation TTTAddressFormatter
 @synthesize locale = _locale;
@@ -47,53 +67,62 @@
     NSMutableDictionary *mutableAddressComponents = [NSMutableDictionary dictionary];
     
     if (street) {
-        [mutableAddressComponents setValue:street forKey:(__bridge NSString *)kABPersonAddressStreetKey];
+        mutableAddressComponents[TTTAddressStreetKey] = street;
     }
     
     if (locality) {
-        [mutableAddressComponents setValue:locality forKey:(__bridge NSString *)kABPersonAddressCityKey];
+        mutableAddressComponents[TTTAddressLocalityKey] = locality;
     }
     
     if (region) {
-        [mutableAddressComponents setValue:region forKey:(__bridge NSString *)kABPersonAddressStateKey];
+        mutableAddressComponents[TTTAddressRegionKey] = region;
     }
     
     if (postalCode) {
-        [mutableAddressComponents setValue:postalCode forKey:(__bridge NSString *)kABPersonAddressZIPKey];
+        mutableAddressComponents[TTTAddressPostalCodeKey] = postalCode;
     }
     
     if (country) {
-        [mutableAddressComponents setValue:country forKey:(__bridge NSString *)kABPersonAddressCountryKey];
+        mutableAddressComponents[TTTAddressCountryKey] = country;
     }
     
-    [mutableAddressComponents setValue:[self.locale objectForKey:NSLocaleCountryCode] forKey:(__bridge NSString *)kABPersonAddressCountryCodeKey];
+    mutableAddressComponents[TTTAddressCountryCodeKey] = [self.locale objectForKey:NSLocaleCountryCode];
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    return ABCreateStringWithAddressDictionary(mutableAddressComponents, !!country);
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    return [[[ABAddressBook sharedAddressBook] formattedAddressFromDictionary:mutableAddressComponents] string];
-#else
-    return nil;
-#endif
+    return [self stringForObjectValue:mutableAddressComponents];
 }
 
-#pragma mark NSFormatter
+#pragma mark - NSFormatter
 
 - (NSString *)stringForObjectValue:(id)anObject {
     if (![anObject isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-    
-    return ABCreateStringWithAddressDictionary(anObject, YES);
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    return ABCreateStringWithAddressDictionary((NSDictionary *)anObject, YES);
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+    return [[[ABAddressBook sharedAddressBook] formattedAddressFromDictionary:(NSDictionary *)anObject] string];
+#else
+    return nil;
+#endif
 }
 
-- (BOOL)getObjectValue:(id *)obj
-             forString:(NSString *)string
-      errorDescription:(NSString **)error
+- (BOOL)getObjectValue:(out __unused __autoreleasing id *)obj
+             forString:(__unused NSString *)string
+      errorDescription:(out NSString *__autoreleasing *)error
 {
     *error = NSLocalizedStringFromTable(@"Method Not Implemented", @"FormatterKit", nil);
     
     return NO;
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    TTTAddressFormatter *formatter = [[[self class] allocWithZone:zone] init];
+    formatter.locale = [self.locale copyWithZone:zone];
+
+    return formatter;
 }
 
 #pragma mark - NSCoding
@@ -101,7 +130,7 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     
-    self.locale = [aDecoder decodeObjectForKey:@"locale"];
+    self.locale = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(locale))];
     
     return self;
 }
@@ -109,9 +138,7 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
     
-    [aCoder encodeObject:self.locale forKey:@"locale"];
+    [aCoder encodeObject:self.locale forKey:NSStringFromSelector(@selector(locale))];
 }
 
 @end
-
-#endif
