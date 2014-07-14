@@ -12,7 +12,8 @@
 
 @interface CKStatView ()
 
-@property (nonatomic, strong) NSString *unit;
+@property (nonatomic, strong) NSString *unitDisplay;
+@property (nonatomic, strong) NSString *pluralDisplay;
 @property (nonatomic, assign) NSNumber *number;
 @property (nonatomic, strong) UILabel *numberLabel;
 @property (nonatomic, strong) UILabel *unitLabel;
@@ -27,11 +28,12 @@
 #define kNumberUnitGap  5.0
 
 
-
-- (id)initWithUnit:(NSString *)unit {
+- (id)initWithUnitDisplay:(NSString *)unitDisplay pluralDisplay:(NSString *)pluralDisplay {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         
-        self.unit = unit;
+        self.unitDisplay = unitDisplay;
+        self.pluralDisplay = pluralDisplay;
         
         // Number.
         NSString *numberString = @"-";
@@ -95,11 +97,11 @@
 #pragma mark - Private methods
 
 - (NSString *)numberAdjustedUnitForNumber:(NSNumber *)num {
-    NSMutableString *display = [NSMutableString stringWithString:self.unit];
     if ([num unsignedIntegerValue] != 1) {
-        [display appendString:@"S"];
+        return self.unitDisplay;
+    } else {
+        return self.pluralDisplay;
     }
-    return display;
 }
 
 - (void)updateFrame {

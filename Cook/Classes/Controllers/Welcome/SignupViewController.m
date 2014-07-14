@@ -472,7 +472,7 @@
 
     // Password field anchor to the bottom.
     CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self
-                                                                    placeholder:@"Password" password:YES submit:YES];
+                                                                    placeholder:NSLocalizedString(@"Password", nil) password:YES submit:YES];
     emailPasswordView.allowSpaces = NO;
     emailPasswordView.maxLength = kPasswordMaxLength;
     emailPasswordView.frame = (CGRect){

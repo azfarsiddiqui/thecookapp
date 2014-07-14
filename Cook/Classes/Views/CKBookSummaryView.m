@@ -363,13 +363,15 @@
     [self updateName:name];
     
     // Downloads
-    NSString *followersDisplay = self.book.featured ? @"DOWNLOAD" : @"FOLLOWER";
-    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnit:followersDisplay];
+    NSString *unitDisplay = self.book.featured ? NSLocalizedString(@"DOWNLOAD", nil) : NSLocalizedString(@"FOLLOWER", nil);
+    NSString *pluralDisplay = self.book.featured ? NSLocalizedString(@"DOWNLOADS", nil) : NSLocalizedString(@"FOLLOWERS", nil);
+    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnitDisplay:unitDisplay pluralDisplay:pluralDisplay];
     [self addSubview:pagesStatView];
     self.followersStatView = pagesStatView;
     
     // Recipes
-    CKStatView *recipesStatView = [[CKStatView alloc] initWithUnit:@"RECIPE"];
+    CKStatView *recipesStatView = [[CKStatView alloc] initWithUnitDisplay:NSLocalizedString(@"RECIPE", nil)
+                                                            pluralDisplay:NSLocalizedString(@"RECIPES", nil)];
     [self addSubview:recipesStatView];
     self.numRecipesStatView = recipesStatView;
     
