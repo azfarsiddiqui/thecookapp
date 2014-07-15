@@ -513,6 +513,12 @@
         return;
     }
     
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Under Construction"
+                                                        message:nil
+                                                       delegate:self
+                                              cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    [alertView show];
+    
 //    [self.emailButton setText:@"SAVING" activity:YES animated:NO enabled:NO];
 }
 
