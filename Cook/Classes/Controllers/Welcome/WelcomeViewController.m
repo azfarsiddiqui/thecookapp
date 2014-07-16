@@ -17,6 +17,7 @@
 #import "ImageHelper.h"
 #import "DataHelper.h"
 #import "NSString+Utilities.h"
+#import "Theme.h"
 
 @interface WelcomeViewController () <WelcomeCollectionViewLayoutDataSource>
 
@@ -39,6 +40,7 @@
 @property (nonatomic, strong) UIView *welcomeImageView;
 @property (nonatomic, strong) UIView *welcomeImageView2;
 @property (nonatomic, strong) UIView *createImageView;
+@property (nonatomic, strong) UILabel *createLabel;
 @property (nonatomic, strong) UIView *collectImageView;
 @property (nonatomic, strong) UIView *collectImageView2;
 @property (nonatomic, strong) UIView *libraryImageView;
@@ -122,8 +124,31 @@
 - (UIView *)createImageView {
     if (!_createImageView) {
         _createImageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_mybook" type:@"png"]];
+        self.createLabel.frame = (CGRect) {
+            floorf((_createImageView.bounds.size.width - self.createLabel.frame.size.width) / 2.0) + 1.0,
+            53.0,
+            self.createLabel.frame.size.width,
+            self.createLabel.frame.size.height
+        };
+        [_createImageView addSubview:self.createLabel];
     }
     return _createImageView;
+}
+
+- (UILabel *)createLabel {
+    if (!_createLabel) {
+        _createLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _createLabel.autoresizingMask = UIViewAutoresizingNone;
+        _createLabel.backgroundColor = [UIColor clearColor];
+        _createLabel.font = [Theme bookCoverViewModeTitleFont];
+        _createLabel.textColor = [UIColor whiteColor];
+        _createLabel.userInteractionEnabled = NO;
+        _createLabel.textAlignment = NSTextAlignmentCenter;
+        _createLabel.text = NSLocalizedString(@"RECIPES FROM ALL OVER THE WORLD", nil);
+        [_createLabel sizeToFit];
+    }
+    
+    return _createLabel;
 }
 
 - (UIView *)collectImageView {
