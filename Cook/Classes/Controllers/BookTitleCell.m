@@ -78,11 +78,8 @@
 
     self.titleLabel.text = [page uppercaseString];
     
-    NSMutableString *numRecipesDisplay = [NSMutableString stringWithFormat:@"%d RECIPE", numRecipes];
-    if (numRecipes != 1) {
-        [numRecipesDisplay appendString:@"S"];
-    }
-    self.subtitleLabel.text = numRecipesDisplay;
+    NSString *numRecipesDisplay = (numRecipes != 1) ? NSLocalizedString(@"RECIPES", nil) : NSLocalizedString(@"RECIPE", nil);
+    self.subtitleLabel.text = [NSString stringWithFormat:@"%ld %@", (long)numRecipes, numRecipesDisplay];
     
     [self.titleLabel sizeToFit];
     [self.subtitleLabel sizeToFit];

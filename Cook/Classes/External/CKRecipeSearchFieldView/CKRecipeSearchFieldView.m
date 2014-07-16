@@ -360,9 +360,11 @@
 }
 
 - (NSString *)displayForNumResults:(NSUInteger)numResults {
-    NSMutableString *display = [NSMutableString stringWithFormat:@"%ld RESULT", (unsigned long)numResults];
+    NSString *display = nil;
     if (numResults != 1) {
-        [display appendString:@"S"];
+        display = [NSMutableString stringWithFormat:NSLocalizedString(@"%ld RESULTS", nil), (unsigned long)numResults];
+    } else {
+        display = [NSMutableString stringWithFormat:NSLocalizedString(@"%ld RESULT", nil), (unsigned long)numResults];
     }
     return display;
 }

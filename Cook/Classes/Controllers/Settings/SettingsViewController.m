@@ -394,7 +394,7 @@
         NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@", versionString, userDisplay, deviceString];
         
         [mailDialog setToRecipients:@[@"support@thecookapp.com"]];
-        [mailDialog setSubject:@"Cook Feedback"];
+        [mailDialog setSubject:NSLocalizedString(@"Cook Feedback", nil)];
         [mailDialog setMessageBody:shareBody isHTML:NO];
         mailDialog.mailComposeDelegate = self;
         [self presentViewController:mailDialog animated:YES completion:nil];

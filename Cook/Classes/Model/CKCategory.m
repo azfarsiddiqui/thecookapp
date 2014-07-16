@@ -74,7 +74,7 @@
 
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.order integerValue]] forKey:kCategoryAttrOrder];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%ld", (long)[self.order integerValue]] forKey:kCategoryAttrOrder];
     return descriptionProperties;
 }
 

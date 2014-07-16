@@ -285,7 +285,8 @@
     };
     
     // Email button anchored to the bottom.
-    self.emailButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ availableSize.width, 83.0 } text:@"SAVE" activity:NO delegate:self];
+    self.emailButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ availableSize.width, 83.0 }
+                                                           text:[NSLocalizedString(@"Save", nil) uppercaseString] activity:NO delegate:self];
     self.emailButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     self.emailButton.frame = (CGRect){
         emailInsets.left + floorf((availableSize.width - self.emailButton.frame.size.width) / 2.0),
@@ -524,7 +525,7 @@
 
 - (void)logoutButtonTapped {
     [CKUser logoutWithCompletion:^{
-        [self.logoutButton setText:@"LOGGING OUT" activity:YES animated:NO enabled:NO];
+        [self.logoutButton setText:NSLocalizedString(@"LOGGING OUT", nil) activity:YES animated:NO enabled:NO];
         
         // Wait before informing logout successful.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

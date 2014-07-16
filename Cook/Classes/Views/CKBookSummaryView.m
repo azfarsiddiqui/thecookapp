@@ -552,7 +552,7 @@
 }
 
 - (NSString *)defaultEditPlaceholderText {
-    return @"YOUR BIO";
+    return NSLocalizedString(@"YOUR BIO", nil);
 }
 
 - (NSDictionary *)storyParagraphAttributes {

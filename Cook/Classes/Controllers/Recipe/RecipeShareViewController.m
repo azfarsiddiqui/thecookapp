@@ -550,12 +550,12 @@
         
         CKUser *currentUser = [CKUser currentUser];
         NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : NSLocalizedString(@"None", nil)];
-        NSString *badRecipeString = [NSString stringWithFormat:@"Reported Recipe ID: %@ \n Reported Recipe Name: %@", self.recipe.objectId, self.recipe.name];
-        NSString *badURLString = [NSString stringWithFormat:@"Reported Recipe URL: http://www.worldscookbook.com/%@", self.recipe.objectId];
+        NSString *badRecipeString = [NSString stringWithFormat:@"ID: %@ \n Name: %@", self.recipe.objectId, self.recipe.name];
+        NSString *badURLString = [NSString stringWithFormat:@"URL: http://www.worldscookbook.com/%@", self.recipe.objectId];
         NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@\n%@", versionString, userDisplay, badRecipeString, badURLString];
         
         [mailDialog setToRecipients:@[@"report@thecookapp.com"]];
-        [mailDialog setSubject:@"Report a Recipe to Cook"];
+        [mailDialog setSubject:NSLocalizedString(@"Report a Recipe to Cook", nil)];
         [mailDialog setMessageBody:shareBody isHTML:NO];
         mailDialog.mailComposeDelegate = self;
         [self presentViewController:mailDialog animated:YES completion:nil];

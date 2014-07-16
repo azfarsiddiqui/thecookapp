@@ -527,7 +527,7 @@
         _errorMessageButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         [_errorMessageButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_errorMessageButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
-        [_errorMessageButton setTitle:[NSString stringWithFormat:@"COULDN'T CONNECT%@PLEASE TRY AGAIN", [NSString CK_lineBreakString]] forState:UIControlStateNormal];
+        [_errorMessageButton setTitle:[NSString stringWithFormat:NSLocalizedString(@"COULDN'T CONNECT%@PLEASE TRY AGAIN", nil), [NSString CK_lineBreakString]] forState:UIControlStateNormal];
         _errorMessageButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_errorMessageButton sizeToFit];
         _errorMessageButton.frame = (CGRect){

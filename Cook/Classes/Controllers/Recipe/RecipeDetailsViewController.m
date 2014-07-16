@@ -1826,7 +1826,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (self.addMode) {
         
         if ([self.recipeDetails saveRequired]) {
-            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Close without Saving?", nil) message:nil delegate:self
                                                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                                 otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         } else {
@@ -1835,7 +1835,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
     } else {
         if ([self.recipeDetails saveRequired]) {
-            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Close without Saving?", nil) message:nil delegate:self
                                                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         } else {
             [self initRecipeDetails];
@@ -1855,7 +1855,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)deleteTapped:(id)sender {
     self.deleteAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Delete Recipe?", nil) message:nil delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@"Delete", nil];
+                                              cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
     [self.deleteAlert show];
 }
 

@@ -513,7 +513,8 @@
 - (void)deleteTapped:(id)sender {
     UIAlertView *confirmView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Delete Photo?", nil)
                                                           message:nil delegate:self
-                                                cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@"Delete", nil];
+                                                cancelButtonTitle:NSLocalizedString(@"No", nil)
+                                                otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
     [confirmView show];
 }
 

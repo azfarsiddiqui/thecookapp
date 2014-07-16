@@ -1813,8 +1813,8 @@
         [self.updateIntroView addSubview:closeButton];
         
         // Bottom Find out More and Continue buttons.
-        UIButton *moreButton = [self updateIntroButtonWithText:@"READ MORE" target:self selector:@selector(updateIntroMoreTapped)];
-        UIButton *continueButton = [self updateIntroButtonWithText:@"CONTINUE" target:self selector:@selector(updateIntroContinueTapped)];
+        UIButton *moreButton = [self updateIntroButtonWithText:NSLocalizedString(@"READ MORE", nil) target:self selector:@selector(updateIntroMoreTapped)];
+        UIButton *continueButton = [self updateIntroButtonWithText:NSLocalizedString(@"CONTINUE", nil) target:self selector:@selector(updateIntroContinueTapped)];
         CGFloat buttonOffsetFromBottom = 145.0;
         CGFloat buttonOffset = -16.0;
         CGFloat buttonGap = 117.0;

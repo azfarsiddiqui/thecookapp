@@ -991,7 +991,7 @@
 
 - (NSString *)welcomeText {
     CKUser *currentUser = [CKUser currentUser];
-    return [[NSString stringWithFormat:@"WELCOME %@", currentUser.friendlyName] uppercaseString];
+    return [[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"WELCOME", nil), currentUser.friendlyName] uppercaseString];
 }
 
 - (void)deleteCurrentUser {

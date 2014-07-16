@@ -99,7 +99,7 @@
     helpLabel.numberOfLines = 1;
     helpLabel.font = [Theme tagLabelFont];
     helpLabel.textColor = [UIColor whiteColor];
-    helpLabel.text = [@"Tag your recipe appropriately to help other people find it" uppercaseString];
+    helpLabel.text = [NSLocalizedString(@"Tag your recipe appropriately to help other people find it", nil) uppercaseString];
     helpIcon.translatesAutoresizingMaskIntoConstraints = NO;
     helpLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:helpIcon];
