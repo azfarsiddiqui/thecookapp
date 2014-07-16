@@ -203,7 +203,7 @@
     if (!_footerTermsButton) {
         _footerTermsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _footerTermsButton.userInteractionEnabled = YES;
-        [_footerTermsButton setAttributedTitle:[self attributedTextForFooterLabelWithText:NSLocalizedString(@"TERMS & CONDITION", nil)] forState:UIControlStateNormal];
+        [_footerTermsButton setAttributedTitle:[self attributedTextForFooterLabelWithText:NSLocalizedString(@"TERMS", nil)] forState:UIControlStateNormal];
         [_footerTermsButton addTarget:self action:@selector(termsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerTermsButton sizeToFit];
     }

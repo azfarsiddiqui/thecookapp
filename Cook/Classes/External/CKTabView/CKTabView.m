@@ -53,6 +53,7 @@
         
         UIButton *button = [ViewHelper buttonWithImage:nil selectedImage:selectedImage target:self selector:@selector(optionTapped:)];
         button.titleLabel.font = self.buttonFont;
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;
         [button setTitle:optionName forState:UIControlStateNormal];
         button.titleLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.8];
         
@@ -86,13 +87,11 @@
 - (void)alignButton:(UIButton *)button atIndex:(NSInteger)optionIndex {
     if (optionIndex == 0) //Leftmost button compensate rounded edge
     {
-        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
     }
     else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
     {
-        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 15.0f)];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 5.0f)];
     }
 }
 

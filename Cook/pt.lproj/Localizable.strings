@@ -139,8 +139,8 @@
 "Password" = "Senha";
 
 // Measurements
-"METRIC" = "SISTEMA MÉTRICO";
-"US IMPERIAL" = "SISTEMA IMPERIAL DOS EUA";
+"METRIC" = "MÉTRICO";
+"US IMPERIAL" = "IMPERIAL";
 
 // Notifications
 "You are now friends with %@." = "Agora você é amigo de %@.";
@@ -194,7 +194,7 @@
 // Settings
 "LOGOUT" = "DESCONECTAR";
 "MEASUREMENTS" = "MEDIDAS";
-"TERMS & CONDITIONS" = "TERMOS & CONDIÇÕES";
+"TERMS" = "TERMOS";
 "PRIVACY" = "PRIVACIDADE";
 "ABOUT" = "SOBRE";
 "SUPPORT" = "SUPORTE";

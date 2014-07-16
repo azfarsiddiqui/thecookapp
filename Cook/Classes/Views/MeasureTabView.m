@@ -68,19 +68,6 @@
     return image;
 }
 
-- (void)alignButton:(UIButton *)button atIndex:(NSInteger)optionIndex {
-    if (optionIndex == 0) //Leftmost button compensate rounded edge
-    {
-        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(1.0f, 1.0f, 0.0f, 0.0f)];
-    }
-    else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
-    {
-        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(1.0f, 10.0f, 0.0f, 15.0f)];
-    }
-}
-
 #pragma mark - Private methods
 
 - (CKMeasurementType)measureTypeForIndex:(NSInteger)measureIndex {

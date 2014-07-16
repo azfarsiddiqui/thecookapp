@@ -140,7 +140,7 @@
 
 // Measurements
 "METRIC" = "METRICO";
-"US IMPERIAL" = "IMPERIALE USA";
+"US IMPERIAL" = "IMPERIALE";
 
 // Notifications
 "You are now friends with %@." = "Ora tu e %@ siete amici.";
@@ -194,7 +194,7 @@
 // Settings
 "LOGOUT" = "ESCI";
 "MEASUREMENTS" = "MISURE";
-"TERMS & CONDITIONS" = "TERMINI E CONDIZIONI";
+"TERMS" = "TERMINI";
 "PRIVACY" = "PRIVACY";
 "ABOUT" = "INFORMAZIONI";
 "SUPPORT" = "SUPPORTO";

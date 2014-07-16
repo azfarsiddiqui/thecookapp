@@ -217,9 +217,9 @@
     [scrollView addSubview:content1View];
     [scrollView addSubview:content2View];
     
-    //Privacy and terms
-    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(50, 85, 138, 40)];
-    [termsButton setTitle:NSLocalizedString(@"TERMS & CONDITIONS", nil) forState:UIControlStateNormal];
+    // Terms.
+    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [termsButton setTitle:NSLocalizedString(@"TERMS", nil) forState:UIControlStateNormal];
     termsButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     termsButton.backgroundColor = [UIColor clearColor];
     termsButton.titleLabel.font = [Theme settingsThemeFont];
@@ -227,8 +227,30 @@
     termsButton.titleLabel.shadowColor = [UIColor blackColor];
     termsButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [termsButton addTarget:self action:@selector(termsPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [termsButton sizeToFit];
+    termsButton.frame = (CGRect) {
+        50.0,
+        90.0,
+        termsButton.frame.size.width,
+        termsButton.frame.size.height
+    };
     [content1View addSubview:termsButton];
-    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(198, 85, 54, 40)];
+    
+    // Dot.
+    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    dotLabel.text = @".";
+    dotLabel.textColor = [UIColor whiteColor];
+    [dotLabel sizeToFit];
+    dotLabel.frame = (CGRect) {
+        termsButton.frame.origin.x + termsButton.frame.size.width + 5.0,
+        termsButton.frame.origin.y + 1.0,
+        dotLabel.frame.size.width,
+        dotLabel.frame.size.height
+    };
+    [content1View addSubview:dotLabel];
+    
+    // Privancy
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [privacyButton setTitle:NSLocalizedString(@"PRIVACY", nil) forState:UIControlStateNormal];
     privacyButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     privacyButton.backgroundColor = [UIColor clearColor];
@@ -237,12 +259,14 @@
     privacyButton.titleLabel.shadowColor = [UIColor blackColor];
     privacyButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [privacyButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [privacyButton sizeToFit];
+    privacyButton.frame = (CGRect) {
+        dotLabel.frame.origin.x + dotLabel.frame.size.width + 5.0,
+        termsButton.frame.origin.y,
+        privacyButton.frame.size.width,
+        privacyButton.frame.size.height
+    };
     [content1View addSubview:privacyButton];
-    
-    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(190, 93, 5, 15)];
-    dotLabel.text = @".";
-    dotLabel.textColor = [UIColor whiteColor];
-    [content1View addSubview:dotLabel];
     
     // Theme
     UIView *themeChooserContainerView = [UIView new];
