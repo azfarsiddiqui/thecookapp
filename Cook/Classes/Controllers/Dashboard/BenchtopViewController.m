@@ -2244,8 +2244,8 @@
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [Theme pullUpDownTextColour];
     label.shadowColor = [Theme pullUpDownShadowColour];
-    label.shadowOffset = (CGSize) { 0.0, 1.0 };
     label.font = [Theme pullUpDownTextFont];
+    label.shadowOffset = (CGSize) { 0.0, 2.0 };
     label.text = text;
     [label sizeToFit];
     return label;

@@ -570,7 +570,7 @@
 #pragma mark - Hint text on dash.
 
 + (UIFont *)pullUpDownTextFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:20.0];
 }
 
 + (UIColor *)pullUpDownTextColour {
@@ -578,7 +578,7 @@
 }
 
 + (UIColor *)pullUpDownShadowColour {
-    return [[UIColor blackColor]  colorWithAlphaComponent:0.3];
+    return [[UIColor blackColor]  colorWithAlphaComponent:0.1];
 }
 
 @end
