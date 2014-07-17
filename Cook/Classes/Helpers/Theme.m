@@ -567,4 +567,18 @@
     return [UIColor colorWithHexString:@"56b7f0"];
 }
 
+#pragma mark - Hint text on dash.
+
++ (UIFont *)pullUpDownTextFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+}
+
++ (UIColor *)pullUpDownTextColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
++ (UIColor *)pullUpDownShadowColour {
+    return [[UIColor blackColor]  colorWithAlphaComponent:0.3];
+}
+
 @end

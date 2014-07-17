@@ -1751,6 +1751,16 @@
         libraryFrame.origin.y = 31.0;
         self.libraryIntroView.frame = libraryFrame;
         [self.view addSubview:self.libraryIntroView];
+        
+        // Label.
+        UILabel *label = [self createPullUpDownLabelWithText:NSLocalizedString(@"PULL DOWN", nil)];
+        label.frame = (CGRect) {
+            floorf((self.libraryIntroView.bounds.size.width - label.frame.size.width) / 2.0),
+            self.libraryIntroView.bounds.size.height - label.frame.size.height - 78.0,
+            label.frame.size.width,
+            label.frame.size.height
+        };
+        [self.libraryIntroView addSubview:label];
     }
     
     if (!self.settingsIntroView.superview) {
@@ -1766,6 +1776,15 @@
         self.settingsIntroView.frame = settingsFrame;
         [self.view addSubview:self.settingsIntroView];
         
+        // Label.
+        UILabel *label = [self createPullUpDownLabelWithText:NSLocalizedString(@"PULL UP", nil)];
+        label.frame = (CGRect) {
+            floorf((self.settingsIntroView.bounds.size.width - label.frame.size.width) / 2.0),
+            83.0,
+            label.frame.size.width,
+            label.frame.size.height
+        };
+        [self.settingsIntroView addSubview:label];
     }
     
     [UIView animateWithDuration:0.3
@@ -2218,6 +2237,18 @@
             completion();
         }
     });
+}
+
+- (UILabel *)createPullUpDownLabelWithText:(NSString *)text {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [Theme pullUpDownTextColour];
+    label.shadowColor = [Theme pullUpDownShadowColour];
+    label.shadowOffset = (CGSize) { 0.0, 1.0 };
+    label.font = [Theme pullUpDownTextFont];
+    label.text = text;
+    [label sizeToFit];
+    return label;
 }
 
 @end

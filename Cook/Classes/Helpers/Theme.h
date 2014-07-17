@@ -186,5 +186,11 @@
 
 + (UIColor *)textInputTintColour;
 
+#pragma mark - Hint text on dash.
+
++ (UIFont *)pullUpDownTextFont;
++ (UIColor *)pullUpDownTextColour;
++ (UIColor *)pullUpDownShadowColour;
+
 @end
 
