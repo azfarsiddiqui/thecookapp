@@ -217,6 +217,21 @@
     [scrollView addSubview:content1View];
     [scrollView addSubview:content2View];
     
+    // Cook tagline on second page.
+    UILabel *tagLineLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    tagLineLabel.backgroundColor = [UIColor clearColor];
+    tagLineLabel.textColor = [Theme settingsCookTagLineColour];
+    tagLineLabel.font = [Theme settingsCookTagLineFont];
+    tagLineLabel.text = NSLocalizedString(@"THE WORLD'S COOK BOOK", nil);
+    [tagLineLabel sizeToFit];
+    tagLineLabel.frame = (CGRect) {
+        floorf((content2ImageView.bounds.size.width - tagLineLabel.frame.size.width) / 2.0),
+        121.0,
+        tagLineLabel.frame.size.width,
+        tagLineLabel.frame.size.height
+    };
+    [content2ImageView addSubview:tagLineLabel];
+    
     // Terms.
     UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [termsButton setTitle:NSLocalizedString(@"TERMS", nil) forState:UIControlStateNormal];

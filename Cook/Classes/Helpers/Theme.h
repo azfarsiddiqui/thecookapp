@@ -159,6 +159,8 @@
 #pragma mark - Settings
 + (UIFont *)settingsProfileFont;
 + (UIFont *)settingsThemeFont;
++ (UIFont *)settingsCookTagLineFont;
++ (UIColor *)settingsCookTagLineColour;
 
 #pragma mark - Ingredients
 

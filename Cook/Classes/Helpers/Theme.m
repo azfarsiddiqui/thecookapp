@@ -516,6 +516,14 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:13.0];
 }
 
++ (UIFont *)settingsCookTagLineFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0];
+}
+
++ (UIColor *)settingsCookTagLineColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
 #pragma mark - Ingredients
 
 + (UIFont *)ingredientAccessoryViewButtonTextFont {
