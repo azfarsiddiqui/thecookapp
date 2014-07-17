@@ -69,6 +69,10 @@
 }
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    if (!self.userInteractionEnabled) {
+        return;
+    }
+    
     CGPoint location = [tapGesture locationInView:self];
     
     // Detech which tab has been selected.

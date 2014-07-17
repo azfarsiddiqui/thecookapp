@@ -18,6 +18,8 @@
 #import "DataHelper.h"
 #import "NSString+Utilities.h"
 #import "Theme.h"
+#import "StoreTabView.h"
+#import "StoreUnitTabView.h"
 
 @interface WelcomeViewController () <WelcomeCollectionViewLayoutDataSource>
 
@@ -44,6 +46,7 @@
 @property (nonatomic, strong) UIView *collectImageView;
 @property (nonatomic, strong) UIView *collectImageView2;
 @property (nonatomic, strong) UIView *libraryImageView;
+@property (nonatomic, strong) StoreTabView *storeTabView;
 
 @end
 
@@ -168,8 +171,36 @@
 - (UIView *)libraryImageView {
     if (!_libraryImageView) {
         _libraryImageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_library" type:@"png"]];
+        self.storeTabView.frame = (CGRect){
+            floorf((_libraryImageView.bounds.size.width - self.storeTabView.frame.size.width) / 2.0),
+            38.0,
+            self.storeTabView.frame.size.width,
+            self.storeTabView.frame.size.height
+        };
+        self.storeTabView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        [_libraryImageView addSubview:self.storeTabView];
     }
     return _libraryImageView;
+}
+
+- (StoreTabView *)storeTabView {
+    if (!_storeTabView) {
+        NSArray *tabViews = @[
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"COLLECTIONS", nil)
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_categories.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_categories_off.png"]],
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"FEATURED", nil)
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_featured_off.png"]],
+                              [[StoreUnitTabView alloc] initWithText:NSLocalizedString(@"WORLD", nil)
+                                                                icon:[UIImage imageNamed:@"cook_library_icons_world.png"]
+                                                             offIcon:[UIImage imageNamed:@"cook_library_icons_world_off.png"]]
+                              ];
+        _storeTabView = [[StoreTabView alloc] initWithUnitTabViews:tabViews delegate:nil];
+        [_storeTabView selectTabAtIndex:1];
+        _storeTabView.userInteractionEnabled = NO;
+    }
+    return _storeTabView;
 }
 
 - (UIView *)welcomePageView {

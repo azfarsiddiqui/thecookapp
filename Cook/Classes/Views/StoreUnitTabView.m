@@ -15,8 +15,7 @@
 @property (nonatomic, strong) UIImageView *offIconImageView;
 @property (nonatomic, strong) UIImageView *selectedTabImageView;
 @property (nonatomic, strong) NSString *text;
-@property (nonatomic, strong) UILabel *normalLabel;
-@property (nonatomic, strong) UILabel *selectedLabel;
+@property (nonatomic, strong) UILabel *tabLabel;
 
 @end
 
@@ -49,14 +48,14 @@
     self.offIconImageView.alpha = select ? 0.0 : 1.0;
     
     // Text label.
-    self.selectedLabel.textColor = select ? [Theme storeTabSelectedTextColour] : [Theme storeTabTextColour];
+    self.tabLabel.textColor = select ? [Theme storeTabSelectedTextColour] : [Theme storeTabTextColour];
 }
 
 #pragma mark - Private
 
 - (void)initTab {
     
-    // Selected tab image to be hidden to start off with.
+    // Tab icon.
     self.selectedTabImageView.frame = (CGRect){
         self.bounds.origin.x,
         self.bounds.size.height - self.selectedTabImageView.frame.size.height,
@@ -66,7 +65,7 @@
     self.selectedTabImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self addSubview:self.selectedTabImageView];
     
-    // Selected label to be hidden to start off with.
+    // Tab label.
     UILabel *selectedLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     selectedLabel.backgroundColor = [UIColor clearColor];
     selectedLabel.font = [Theme storeTabFont];
@@ -81,12 +80,12 @@
         selectedLabel.frame.size.height
     };
     [self addSubview:selectedLabel];
-    self.selectedLabel = selectedLabel;
+    self.tabLabel = selectedLabel;
     
-    // Selected icon that is hidden to start off with.
+    // Selected icon.
     self.iconImageView.frame = (CGRect) {
         floorf((self.bounds.size.width - self.iconImageView.frame.size.width) / 2.0),
-        self.selectedLabel.frame.origin.y - self.iconImageView.frame.size.height - kIconTextGap,
+        self.tabLabel.frame.origin.y - self.iconImageView.frame.size.height - kIconTextGap,
         self.iconImageView.frame.size.width,
         self.iconImageView.frame.size.height
     };
