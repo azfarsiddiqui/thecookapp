@@ -10,6 +10,7 @@
 #import "IngredientListCell.h"
 #import "Ingredient.h"
 #import "NSString+Utilities.h"
+#import "Theme.h"
 
 @interface IngredientListEditViewController ()
 
@@ -146,8 +147,71 @@ referenceSizeForFooterInSection:(NSInteger)section {
 - (UIView *)hintsView {
     if (!_hintsView) {
         _hintsView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_Ingredientshint.png"]];
+        
+        CGFloat verticalOffset = 66.0;
+        
+        UILabel *addLabel = [self hintLabelWithText:NSLocalizedString(@"TAP BELOW TO ADD", nil)];
+        addLabel.frame = (CGRect){
+            116.0 - floorf(addLabel.frame.size.width / 2.0),
+            verticalOffset,
+            addLabel.frame.size.width,
+            addLabel.frame.size.height
+        };
+        [_hintsView addSubview:addLabel];
+        
+        UILabel *pullLabel = [self hintLabelWithText:NSLocalizedString(@"PULL DOWN TO ADD ABOVE", nil)];
+        pullLabel.frame = (CGRect){
+            306.0 - floorf(pullLabel.frame.size.width / 2.0),
+            verticalOffset,
+            pullLabel.frame.size.width,
+            pullLabel.frame.size.height
+        };
+        [_hintsView addSubview:pullLabel];
+        
+        UILabel *swipeLabel = [self hintLabelWithText:NSLocalizedString(@"SWIPE RIGHT TO DELETE", nil)];
+        swipeLabel.frame = (CGRect){
+            498.0 - floorf(swipeLabel.frame.size.width / 2.0),
+            verticalOffset,
+            swipeLabel.frame.size.width,
+            swipeLabel.frame.size.height
+        };
+        [_hintsView addSubview:swipeLabel];
+        
+        UILabel *dragLabel = [self hintLabelWithText:NSLocalizedString(@"PRESS AND DRAG TO REORDER", nil)];
+        dragLabel.frame = (CGRect){
+            688.0 - floorf(dragLabel.frame.size.width / 2.0),
+            verticalOffset,
+            dragLabel.frame.size.width,
+            dragLabel.frame.size.height
+        };
+        [_hintsView addSubview:dragLabel];
+        
     }
     return _hintsView;
+}
+
+- (UILabel *)hintLabelWithText:(NSString *)text {
+    
+    CGFloat maxWidth = 180.0;
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [Theme ingredientsHintTextColor];
+    label.numberOfLines = 0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+    label.shadowColor = [Theme ingredientsHintShadowColor];
+    label.font = [Theme ingredientsHintTextFont];
+    label.shadowOffset = (CGSize) { 0.0, 2.0 };
+    label.text = text;
+    
+    CGSize labelSize = (CGSize){ maxWidth, MAXFLOAT };
+    CGRect labelFrame = label.frame;
+    CGSize size = [label sizeThatFits:labelSize];
+    labelFrame.size = size;
+    label.frame = labelFrame;
+
+    return label;
 }
 
 @end

@@ -446,6 +446,18 @@
     return [UIColor colorWithHexString:@"888888"];
 }
 
++ (UIFont *)ingredientsHintTextFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
+}
+
++ (UIColor *)ingredientsHintTextColor {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
++ (UIColor *)ingredientsHintShadowColor {
+    return [[UIColor blackColor]  colorWithAlphaComponent:0.1];
+}
+
 #pragma mark - Social view.
 
 + (UIFont *)recipeCommenterFont {

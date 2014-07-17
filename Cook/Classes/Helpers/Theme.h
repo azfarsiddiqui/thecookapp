@@ -112,12 +112,11 @@
 
 #pragma mark - Recipe Editing
 
-+ (UIColor *) cookServesPrepEditTitleColor;
-+ (UIColor *) cookServesNumberColor;
-+ (UIFont *) cookPrepPickerFont;
-+ (UIColor *) categoryListSelectedColor;
-+ (UIFont *) typeItUpFont;
-
++ (UIColor *)cookServesPrepEditTitleColor;
++ (UIColor *)cookServesNumberColor;
++ (UIFont *)cookPrepPickerFont;
++ (UIColor *)categoryListSelectedColor;
++ (UIFont *)typeItUpFont;
 + (UIFont *)editServesTitleFont;
 + (UIColor *)editServesTitleColour;
 + (UIFont *)editServesFont;
@@ -130,13 +129,15 @@
 + (UIColor *)editCookTitleColour;
 + (UIFont *)editCookFont;
 + (UIColor *)editCookColour;
-
 + (UIColor *)dividerRuleColour;
 + (UIFont *)tagLabelFont;
 + (UIColor *)tagLabelColor;
 + (UIFont *)tagTitleFont;
 + (UIFont *)tagTitleNumberFont;
 + (UIColor *)tagTitleNumberColor;
++ (UIFont *)ingredientsHintTextFont;
++ (UIColor *)ingredientsHintTextColor;
++ (UIColor *)ingredientsHintShadowColor;
 
 #pragma mark - Social view.
 
