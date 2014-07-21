@@ -242,3 +242,109 @@
 "PULL DOWN TO ADD ABOVE" = "TIREZ VERS LE BAS POUR AJOUTER CI-DESSUS";
 "SWIPE RIGHT TO DELETE" = "TAPEZ A DROITE POUR EFFACER";
 "PRESS AND DRAG TO REORDER" = "APPUYEZ ET FAITES GLISSER POUR RE-ARRANGER";
+
+// Number of Downloads of a book.
+"DOWNLOAD" = "TELECHARGEMENT";
+"DOWNLOADS" = "TELECHARGEMENTS";
+
+// Number of followers like Twitter's model.
+"FOLLOWER" = "ABONNE";
+"FOLLOWERS" = "ABONNES";
+
+// Process of logging out the user.
+"LOGGING OUT" = "DECONNEXION";
+
+// To encourage registering into Cook.
+"Sign in to add your recipes" = "Inscrivez-vous pour ajouter vos recettes";
+
+// Hint text to inform users that they could gesture pull up/down the screen.
+"PULL UP" = "TIRER VERS LE HAUT";
+"PULL DOWN" = "TIRER VERS LE BAS";
+
+// Default text of the names and captions of a blank book.
+"YOUR BOOK" = "VOTRE LIVRE";
+"Your Name" = "Votre nom";
+"My favorite recipes and food" = "Mes recettes et plats favoris";
+
+// Default description for a book from a particular country (see placeholder)
+"Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Des recettes délicieuses partagées par des confrères cuisiniers de tout %@. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.";
+
+// Name of common pages or meal types within a book.
+"POPULAR" = "POPULAIRES";
+"LATEST" = "PLUS RECENTES";
+"TOP 100" = "TOP 100";
+"GREAT PLACES" = "SUPER ENDROITS";
+"SAUCES" = "SAUCES";
+"BREAKFAST" = "PETIT-DEJEUNER";
+"STARTERS" = "ENTREES";
+"MAINS" = "PLATS PRINCIPAUX";
+
+// Name of book that contains vegetarian recipes
+"VEGETARIAN" = "VEGETARIEN";
+"Tasy vegetarian & vegan" = "Végétarien & végétalien savoureux";
+
+// Name of book that contains recipes relating to baking.
+"BAKING" = "A CUIRE";
+"Fresh from the oven" = "Cuit au four";
+
+// Name of book that contains desserts
+"DESSERT" = "DESSERT";
+"A delicious end to every meal" = "Une délicieuse fin pour chaque plat";
+
+// Name of book that contains recipes that doesn't take very long to make.
+"QUICK" = "RAPIDE";
+"Meals in 30 minutes or less" = "Plats en 30 minutes ou moins";
+
+// Recipes for drinks.
+"DRINKS" = "BOISSONS";
+"Recipes to quench your thirst" = "Recettes pour étancher votre soif";
+
+// Book made by the team at Cook
+"COOK TEAM" = "L'EQUIPE COOK";
+"The heart and soul of cook" = "Le coeur et l'âme de cook";
+
+// Healthy recipes
+"HEALTHY" = "BON POUR LA SANTE";
+"You are what you eat" = "Vous êtes ce que vous mangez";
+
+// Great chefs
+"MASTERS" = "MAÎTRES";
+"CHEFS" = "CHEFS";
+
+// Reporting offensive or inappropriate content to the Cook team for moderation purposes.
+"Report a Recipe to Cook" = "Signaler une recette à Cook";
+
+// Email subject to the Cook team for feedback purposes.
+"Cook Feedback" = "Commentaires sur Cook";
+
+// Hint text to users about tagging recipes with tags.
+"Tag your recipe appropriately to help other people find it" = "Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver";
+
+// Text on a screen about recent updates to the Cook app.
+"READ MORE" = "LIRE PLUS";
+"CONTINUE" = "CONTINUER";
+
+// Hint text to encourage users to enter a hint text.
+"YOUR BIO" = "VOTRE BIO";
+
+// Button text to prompt user to delete a recipe or a page within a book.
+"Delete" = "Effacer";
+
+// Text on the Cook search results screen.
+"%ld RESULT" = "%ld RESULTAT";
+"%ld RESULTS" = "%ld RESULTATS";
+
+// Button text to get suggested users from Facebook. Placeholder is a newline character.
+"GET FACEBOOK%@SUGGESTIONS" = "RECEVOIR DES SUGGESTIONS%@FACEBOOK";
+
+// Button text to confirm closing the recipe screen while editing.
+"Close without Saving?" = "Fermer sans enregistrer?";
+
+// No Internet connection text. Placeholder is a newline character.
+"COULDN'T CONNECT%@PLEASE TRY AGAIN" = "IMPOSSIBLE DE SE CONNECTER%@VEUILLEZ REESSAYER";
+
+// Description of the books that feature recipes from all over the world.
+"RECIPES FROM ALL OVER THE WORLD" = "DES RECETTES DU MONDE ENTIER";
+
+// Cook's tagline under the Cook logo.
+"THE WORLD'S COOK BOOK" = "LE LIVRE DE RECETTES DU MONDE ENTIER";

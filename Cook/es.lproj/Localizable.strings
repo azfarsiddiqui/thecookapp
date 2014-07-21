@@ -242,3 +242,109 @@
 "PULL DOWN TO ADD ABOVE" = "DESPLAZA HACIA ABAJO PARA AÑADIR ENCIMA";
 "SWIPE RIGHT TO DELETE" = "DESLIZA HACIA LA DERECHA PARA ELIMINAR";
 "PRESS AND DRAG TO REORDER" = "PULSA Y ARRASTRA PARA REORGANIZAR";
+
+// Number of Downloads of a book.
+"DOWNLOAD" = "DESCARGA";
+"DOWNLOADS" = "DESCARGAS";
+
+// Number of followers like Twitter's model.
+"FOLLOWER" = "SEGUIDOR";
+"FOLLOWERS" = "SEGUIDORES";
+
+// Process of logging out the user.
+"LOGGING OUT" = "CERRANDO SESIÓN";
+
+// To encourage registering into Cook.
+"Sign in to add your recipes" = "Inicia sesión para añadir tus recetas";
+
+// Hint text to inform users that they could gesture pull up/down the screen.
+"PULL UP" = "HACIA ARRIBA";
+"PULL DOWN" = "HACIA ABAJO";
+
+// Default text of the names and captions of a blank book.
+"YOUR BOOK" = "TU LIBRO";
+"Your Name" = "Tu nombre";
+"My favorite recipes and food" = "Mis comidas y recetas favoritas";
+
+// Default description for a book from a particular country (see placeholder)
+"Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Deliciosas recetas compartidas por compañeros cocineros de toda %@. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.";
+
+// Name of common pages or meal types within a book.
+"POPULAR" = "POPULARES";
+"LATEST" = "ÚLTIMAS";
+"TOP 100" = "TOP 100";
+"GREAT PLACES" = "BUENOS LUGARES";
+"SAUCES" = "SALSAS";
+"BREAKFAST" = "DESAYUNO";
+"STARTERS" = "ENTRANTES";
+"MAINS" = "PRINCIPALES";
+
+// Name of book that contains vegetarian recipes
+"VEGETARIAN" = "VEGETARIANAS";
+"Tasy vegetarian & vegan" = "Sabrosas vegetarianas y veganas";
+
+// Name of book that contains recipes relating to baking.
+"BAKING" = "PASTELERÍA";
+"Fresh from the oven" = "Recién horneada";
+
+// Name of book that contains desserts
+"DESSERT" = "POSTRES";
+"A delicious end to every meal" = "Un final delicioso para cada comida";
+
+// Name of book that contains recipes that doesn't take very long to make.
+"QUICK" = "RÁPIDAS";
+"Meals in 30 minutes or less" = "Preparadas en menos de 30 minutos";
+
+// Recipes for drinks.
+"DRINKS" = "BEBIDAS";
+"Recipes to quench your thirst" = "Recetas para calmar la sed";
+
+// Book made by the team at Cook
+"COOK TEAM" = "EQUIPO COOK";
+"The heart and soul of cook" = "El alma de Cook";
+
+// Healthy recipes
+"HEALTHY" = "SALUDABLES";
+"You are what you eat" = "Somos lo que comemos";
+
+// Great chefs
+"MASTERS" = "MAESTROS";
+"CHEFS" = "CHEFS";
+
+// Reporting offensive or inappropriate content to the Cook team for moderation purposes.
+"Report a Recipe to Cook" = "Denunciar una receta a Cook";
+
+// Email subject to the Cook team for feedback purposes.
+"Cook Feedback" = "Comentarios sobre Cook";
+
+// Hint text to users about tagging recipes with tags.
+"Tag your recipe appropriately to help other people find it" = "Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla";
+
+// Text on a screen about recent updates to the Cook app.
+"READ MORE" = "LEER MÁS";
+"CONTINUE" = "CONTINUAR";
+
+// Hint text to encourage users to enter a hint text.
+"YOUR BIO" = "TU BIO";
+
+// Button text to prompt user to delete a recipe or a page within a book.
+"Delete" = "Eliminar";
+
+// Text on the Cook search results screen.
+"%ld RESULT" = "%ld RESULTADO";
+"%ld RESULTS" = "%ld RESULTADOS";
+
+// Button text to get suggested users from Facebook. Placeholder is a newline character.
+"GET FACEBOOK%@SUGGESTIONS" = "OBTENER SUGERENCIAS%@DE FACEBOOK";
+
+// Button text to confirm closing the recipe screen while editing.
+"Close without Saving?" = "¿Cerrar sin guardar?";
+
+// No Internet connection text. Placeholder is a newline character.
+"COULDN'T CONNECT%@PLEASE TRY AGAIN" = "ERROR AL CONECTAR%@INTÉNTALO DE NUEVO";
+
+// Description of the books that feature recipes from all over the world.
+"RECIPES FROM ALL OVER THE WORLD" = "RECETAS DE TODO EL MUNDO";
+
+// Cook's tagline under the Cook logo.
+"THE WORLD'S COOK BOOK" = "EL LIBRO DE COCINA MUNDIAL";

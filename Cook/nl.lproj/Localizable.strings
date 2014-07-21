@@ -242,3 +242,109 @@
 "PULL DOWN TO ADD ABOVE" = "OMLAAG TREKKEN OM BOVENAAN TOE TE VOEGEN";
 "SWIPE RIGHT TO DELETE" = "NAAR RECHTS VEGEN OM TE VERWIJDEREN";
 "PRESS AND DRAG TO REORDER" = "DRUKKEN EN SLEPEN OM OPNIEUW TE ORDENEN";
+
+// Number of Downloads of a book.
+"DOWNLOAD" = "DOWNLOAD";
+"DOWNLOADS" = "DOWNLOADS";
+
+// Number of followers like Twitter's model.
+"FOLLOWER" = "VOLGER";
+"FOLLOWERS" = "VOLGERS";
+
+// Process of logging out the user.
+"LOGGING OUT" = "AFMELDEN";
+
+// To encourage registering into Cook.
+"Sign in to add your recipes" = "Schrijf u in voor het toevoegen van uw recepten";
+
+// Hint text to inform users that they could gesture pull up/down the screen.
+"PULL UP" = "OMHOOG TREKKEN";
+"PULL DOWN" = "OMLAAG TREKKEN";
+
+// Default text of the names and captions of a blank book.
+"YOUR BOOK" = "UW BOEK";
+"Your Name" = "Uw naam";
+"My favorite recipes and food" = "Mijn favoriete recepten en voeding";
+
+// Default description for a book from a particular country (see placeholder)
+"Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Heerlijke recepten, gedeeld door onze collega-koks uit heel %@. Om bij te dragen hoeft u Cook alleen toe te laten uw locatie te bepalen wanneer u uw recepten voor het publiek openstelt.";
+
+// Name of common pages or meal types within a book.
+"POPULAR" = "POPULAIR";
+"LATEST" = "NIEUWSTE";
+"TOP 100" = "TOP 100";
+"GREAT PLACES" = "FANTASTISCHE PLEKJES";
+"SAUCES" = "SAUZEN";
+"BREAKFAST" = "ONTBIJT";
+"STARTERS" = "VOORGERECHTEN";
+"MAINS" = "HOOFDGERECHTEN";
+
+// Name of book that contains vegetarian recipes
+"VEGETARIAN" = "VEGETARISCH";
+"Tasy vegetarian & vegan" = "Lekker vegetarisch en veganistisch";
+
+// Name of book that contains recipes relating to baking.
+"BAKING" = "BAKKEN";
+"Fresh from the oven" = "Vers uit de oven";
+
+// Name of book that contains desserts
+"DESSERT" = "DESSERT";
+"A delicious end to every meal" = "Een heerlijke afsluiter van elke maaltijd";
+
+// Name of book that contains recipes that doesn't take very long to make.
+"QUICK" = "SNEL";
+"Meals in 30 minutes or less" = "Maaltijden in 30 minuten of minder";
+
+// Recipes for drinks.
+"DRINKS" = "DRANK";
+"Recipes to quench your thirst" = "Recepten om uw dorst te lessen";
+
+// Book made by the team at Cook
+"COOK TEAM" = "COOK-TEAM";
+"The heart and soul of cook" = "Hart en ziel van Cook";
+
+// Healthy recipes
+"HEALTHY" = "GEZONDHEID";
+"You are what you eat" = "Je bent wat je eet";
+
+// Great chefs
+"MASTERS" = "MEESTERKOKS";
+"CHEFS" = "CHEFS";
+
+// Reporting offensive or inappropriate content to the Cook team for moderation purposes.
+"Report a Recipe to Cook" = "Een recept rapporteren aan Cook";
+
+// Email subject to the Cook team for feedback purposes.
+"Cook Feedback" = "Feedback voor Cook";
+
+// Hint text to users about tagging recipes with tags.
+"Tag your recipe appropriately to help other people find it" = "Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden";
+
+// Text on a screen about recent updates to the Cook app.
+"READ MORE" = "LEES MEER";
+"CONTINUE" = "DOORGAAN";
+
+// Hint text to encourage users to enter a hint text.
+"YOUR BIO" = "UW BIO";
+
+// Button text to prompt user to delete a recipe or a page within a book.
+"Delete" = "Verwijderen";
+
+// Text on the Cook search results screen.
+"%ld RESULT" = "%ld RESULTAAT";
+"%ld RESULTS" = "%ld RESULTATEN";
+
+// Button text to get suggested users from Facebook. Placeholder is a newline character.
+"GET FACEBOOK%@SUGGESTIONS" = "ONTVANG FACEBOOK%@SUGGESTIONS";
+
+// Button text to confirm closing the recipe screen while editing.
+"Close without Saving?" = "Sluiten zonder op te slaan?";
+
+// No Internet connection text. Placeholder is a newline character.
+"COULDN'T CONNECT%@PLEASE TRY AGAIN" = "KAN GEEN VERBINDING MAKEN%@PROBEER HET OPNIEUW";
+
+// Description of the books that feature recipes from all over the world.
+"RECIPES FROM ALL OVER THE WORLD" = "RECEPTEN UIT DE HELE WERELD";
+
+// Cook's tagline under the Cook logo.
+"THE WORLD'S COOK BOOK" = "HET WERELDWIJDE KOOKBOEK";
