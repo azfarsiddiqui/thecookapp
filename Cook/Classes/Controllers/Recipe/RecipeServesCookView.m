@@ -18,9 +18,9 @@
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) CGFloat layoutOffset;
-@property (nonatomic, strong) UILabel *servesLabel;
-@property (nonatomic, strong) UILabel *prepLabel;
-@property (nonatomic, strong) UILabel *cookLabel;
+@property (nonatomic, strong) UIView *servesStatView;
+@property (nonatomic, strong) UIView *prepStatView;
+@property (nonatomic, strong) UIView *cookStatView;
 
 @end
 
@@ -50,9 +50,10 @@
     
     // Remove all subviews and relayout.
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.servesLabel = nil;
-    self.prepLabel = nil;
-    self.cookLabel = nil;
+    self.servesStatView = nil;
+    self.prepStatView = nil;
+    self.cookStatView = nil;
+    
     [self updateLayout];
 }
 
@@ -67,17 +68,17 @@
 
 - (void)updateServes {
     if (self.editMode || self.recipeDetails.numServes) {
+        
         NSString *imageString = [NSString stringWithFormat:@"cook_book_recipe_icon_%@%@",
-                                 self.recipeDetails.quantityType == CKQuantityMakes ? [ NSLocalizedString(@"Makes", nil) lowercaseString] : [ NSLocalizedString(@"Serves", nil) lowercaseString],
+                                 self.recipeDetails.quantityType == CKQuantityMakes ? @"makes" : @"serves",
                                  self.editMode ? @"_edit" : @""];
         UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageString]];
-        UIView *servesStatView = [self viewForStatText:self.recipeDetails.quantityType == CKQuantityMakes ? NSLocalizedString(@"Makes", nil) : NSLocalizedString(@"Serves", nil) statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
-        CGRect servesFrame = servesStatView.frame;
+        
+        self.servesStatView = [self viewForStatText:self.recipeDetails.quantityType == CKQuantityMakes ? NSLocalizedString(@"Makes", nil) : NSLocalizedString(@"Serves", nil) statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
+        CGRect servesFrame = self.servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
         servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
-        servesStatView.frame = servesFrame;
-        
-        self.servesLabel = (UILabel *)[servesStatView viewWithTag:kLabelTag];
+        self.servesStatView.frame = servesFrame;
         
         CGRect combinedFrame = CGRectUnion(imageFrame, servesFrame);
         UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
@@ -85,10 +86,10 @@
         imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
         servesImageView.frame = imageFrame;
         servesFrame.origin.y = floorf((combinedFrame.size.height - servesFrame.size.height) / 2.0) + kStatViewOffset;
-        servesStatView.frame = servesFrame;
+        self.servesStatView.frame = servesFrame;
         
         [containerView addSubview:servesImageView];
-        [containerView addSubview:servesStatView];
+        [containerView addSubview:self.servesStatView];
         [self addSubview:containerView];
         self.layoutOffset += containerView.frame.size.height;
     }
@@ -97,8 +98,6 @@
 - (void)updatePrepCook {
     CGFloat prepCookGap = 20.0;
     
-    UIView *prepStatView = nil;
-    UIView *cookStatView = nil;
     CGRect prepFrame = CGRectZero;
     CGRect cookFrame = CGRectZero;
     
@@ -110,24 +109,31 @@
         if (self.editMode ||self.recipeDetails.prepTimeInMinutes) {
             
             // Prep.
-            prepStatView = [self viewForStatText:NSLocalizedString(@"Prep", nil) statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes formatted:YES ]];
-            prepFrame = prepStatView.frame;
+            self.prepStatView = [self viewForStatText:NSLocalizedString(@"Prep", nil) statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes formatted:YES ]];
+            prepFrame = self.prepStatView.frame;
             prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
             
             // Vertically align with the serves label if it's there.
-            if (self.servesLabel.superview) {
-                CGRect servesFrame = self.servesLabel.superview.frame;
-                prepFrame.origin.x += floorf((servesFrame.size.width - prepFrame.size.width) / 2.0);
+            if (self.servesStatView) {
+                
+                CGRect servesFrame = self.servesStatView.frame;
+                CGFloat targetOffset = floorf((servesFrame.size.width - prepFrame.size.width) / 2.0);
+                if (targetOffset >= 0) {
+                    prepFrame.origin.x += floorf((servesFrame.size.width - prepFrame.size.width) / 2.0);
+                    self.prepStatView.frame = prepFrame;
+                } else {
+                    servesFrame.origin.x += floorf((prepFrame.size.width - servesFrame.size.width) / 2.0);
+                    self.servesStatView.frame = servesFrame;
+                }
+                
             }
-            prepStatView.frame = prepFrame;
-            self.prepLabel = (UILabel *)[prepStatView viewWithTag:kLabelTag];
         }
         
         if (self.editMode || self.recipeDetails.cookingTimeInMinutes) {
             
             // Cook.
-            cookStatView = [self viewForStatText:NSLocalizedString(@"Cook", nil) statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes formatted:YES]];
-            cookFrame = cookStatView.frame;
+            self.cookStatView = [self viewForStatText:NSLocalizedString(@"Cook", nil) statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes formatted:YES]];
+            cookFrame = self.cookStatView.frame;
             
             if (!CGRectEqualToRect(prepFrame, CGRectZero)) {
                 cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
@@ -136,15 +142,22 @@
                 cookFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
                 
                 // Vertically align with the serves label if it's there.
-                if (self.servesLabel.superview) {
-                    CGRect servesFrame = self.servesLabel.superview.frame;
-                    cookFrame.origin.x += floorf((servesFrame.size.width - cookFrame.size.width) / 2.0);
+                if (self.servesStatView) {
+                    
+                    CGRect servesFrame = self.servesStatView.frame;
+                    CGFloat targetOffset = floorf((servesFrame.size.width - cookFrame.size.width) / 2.0);
+                    if (targetOffset >= 0) {
+                        cookFrame.origin.x += floorf((servesFrame.size.width - cookFrame.size.width) / 2.0);
+                        self.cookStatView.frame = cookFrame;
+                    } else {
+                        servesFrame.origin.x += floorf((cookFrame.size.width - servesFrame.size.width) / 2.0);
+                        self.servesStatView.frame = servesFrame;
+                    }
+
                 }
                 
             }
             
-            cookStatView.frame = cookFrame;
-            self.cookLabel = (UILabel *)[cookStatView viewWithTag:kLabelTag];
         }
         
         // Merge the frame to get our container frame.
@@ -153,7 +166,7 @@
         UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
         CGRect containerFrame = containerView.frame;
         
-        if (self.servesLabel.superview) {
+        if (self.servesStatView) {
             containerFrame.origin.y = kStatRowGap + self.layoutOffset;
         }
         containerView.frame = containerFrame;
@@ -164,15 +177,15 @@
         prepCookImageView.frame = imageFrame;
         
         prepFrame.origin.y = floorf((combinedFrame.size.height - prepFrame.size.height) / 2.0) + kStatViewOffset;
-        prepStatView.frame = prepFrame;
+        self.prepStatView.frame = prepFrame;
         cookFrame.origin.y = floorf((combinedFrame.size.height - cookFrame.size.height) / 2.0) + kStatViewOffset;
-        cookStatView.frame = cookFrame;
+        self.cookStatView.frame = cookFrame;
         prepCookImageView.frame = imageFrame;
-        prepStatView.frame = prepFrame;
-        cookStatView.frame = cookFrame;
+        self.prepStatView.frame = prepFrame;
+        self.cookStatView.frame = cookFrame;
         [containerView addSubview:prepCookImageView];
-        [containerView addSubview:prepStatView];
-        [containerView addSubview:cookStatView];
+        [containerView addSubview:self.prepStatView];
+        [containerView addSubview:self.cookStatView];
         [self addSubview:containerView];
         
         self.layoutOffset += kStatRowGap + containerView.frame.size.height;

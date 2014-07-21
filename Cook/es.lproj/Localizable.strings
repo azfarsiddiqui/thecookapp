@@ -188,8 +188,8 @@
 // Serves
 "Makes" = "Para";
 "Serves" = "Para";
-"Prep" = "Preparación";
-"Cook" = "Tiempo de cocción";
+"Prep" = "Prep";
+"Cook" = "Cocción";
 
 // Settings
 "LOGOUT" = "CERRAR SESIÓN";
