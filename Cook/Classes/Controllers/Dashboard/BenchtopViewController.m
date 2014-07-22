@@ -2093,7 +2093,11 @@
 }
 
 - (BOOL)hasSeenUpdateIntro {
-    return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro] != nil);
+    
+    // This update has no update screens.
+    return YES;
+    
+//    return ([[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro] != nil);
 }
 
 - (void)markHasSeenUpdateIntro {
