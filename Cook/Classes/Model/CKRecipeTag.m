@@ -9,6 +9,7 @@
 #import "CKRecipeTag.h"
 #import "CKUser.h"
 #import "CKConstants.h"
+#import "AppHelper.h"
 
 @implementation CKRecipeTag
 
@@ -16,7 +17,7 @@
 
 - (NSString *)displayName
 {
-    NSString *languageCode = [[NSLocale preferredLanguages] objectAtIndex:0]; //Current user's language code
+    NSString *languageCode = [[AppHelper sharedInstance] languageCode];
     //Grab dictionary of localised names and try to resolve with current language
     [self.parseObject fetchIfNeeded];
     NSString *localisedDictString = [self.parseObject objectForKey:kRecipeTagDisplayNames];

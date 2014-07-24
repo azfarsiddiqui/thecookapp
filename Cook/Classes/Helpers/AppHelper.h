@@ -39,4 +39,7 @@
 - (NSString *)documentsPathForFileName:(NSString *)name;
 - (NSString *)documentsPathForDirectoryName:(NSString *)name;
 
+// Language codes
+- (NSString *)languageCode;
+
 @end

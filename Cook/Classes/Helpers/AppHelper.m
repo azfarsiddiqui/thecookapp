@@ -113,4 +113,8 @@
     return [[self documentsDirectoryPath] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@", name]];
 }
 
+- (NSString *)languageCode {
+    return [[NSLocale preferredLanguages] objectAtIndex:0];
+}
+
 @end
