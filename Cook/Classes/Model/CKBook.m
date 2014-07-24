@@ -96,8 +96,8 @@
     
     // This creates it locally and not persisted, may be extended for network fetch.
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
-    [parseBook setObject:kBookAttrGuestCaptionValue forKey:kModelAttrName];
-    [parseBook setObject:kBookAttrGuestNameValue forKey:kBookAttrAuthor];
+    [parseBook setObject:NSLocalizedString(kBookAttrGuestCaptionValue, nil) forKey:kModelAttrName];
+    [parseBook setObject:NSLocalizedString(kBookAttrGuestNameValue, nil) forKey:kBookAttrAuthor];
     [parseBook setObject:[CKBookCover guestCover] forKey:kBookAttrCover];
     
     CKBook *guestBook = [[CKBook alloc] initWithParseObject:parseBook];
