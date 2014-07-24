@@ -348,3 +348,22 @@
 
 // Cook's tagline under the Cook logo.
 "THE WORLD'S COOK BOOK" = "THE WORLD'S COOK BOOK";
+
+// Tags
+"Preserve" = "Preserve";
+"Condiment" = "Condiment";
+"Kids" = "Kids";
+"Drink" = "Drink";
+"Dessert" = "Dessert";
+"Snack" = "Snack";
+"Main" = "Main";
+"Side" = "Side";
+"Appetizer" = "Appetizer";
+"Breakfast" = "Breakfast";
+"Baking" = "Baking";
+"Dairy Free" = "Dairy Free";
+"Low Fat" = "Low Fat";
+"Sugar Free" = "Sugar Free";
+"Gluten Free" = "Gluten Free";
+"Vegan" = "Vegan";
+"Vegetarian" = "Vegetarian";
