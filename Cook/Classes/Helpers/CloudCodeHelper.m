@@ -25,8 +25,11 @@
     // Add Cook version.
     [self safeAddToParams:params key:@"cookVersion" value:[[AppHelper sharedInstance] appVersion]];
     
-    // Add User language.
+    // Add user language.
     [self safeAddToParams:params key:@"cookLanguage" value:[[AppHelper sharedInstance] languageCode]];
+    
+    // Add user country.
+    [self safeAddToParams:params key:@"cookCountry" value:[[AppHelper sharedInstance] localeCountryCode]];
     
     return params;
 }

@@ -117,4 +117,8 @@
     return [[NSLocale preferredLanguages] objectAtIndex:0];
 }
 
+- (NSString*)localeCountryCode {
+    return [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+}
+
 @end
