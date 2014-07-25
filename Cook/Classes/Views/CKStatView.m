@@ -98,9 +98,9 @@
 
 - (NSString *)numberAdjustedUnitForNumber:(NSNumber *)num {
     if ([num unsignedIntegerValue] != 1) {
-        return self.unitDisplay;
-    } else {
         return self.pluralDisplay;
+    } else {
+        return self.unitDisplay;
     }
 }
 
