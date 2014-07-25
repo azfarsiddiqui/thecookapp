@@ -11,6 +11,7 @@
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "AppHelper.h"
+#import "CloudCodeHelper.h"
 
 @implementation CKUserNotification
 
@@ -33,10 +34,7 @@
                            failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"notifications_v1_5"
-                       withParameters:@{
-                                        @"cookVersion": [[AppHelper sharedInstance] appVersion],
-                                        @"itemIndex"  : @(itemIndex),
-                                        }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"itemIndex"  : @(itemIndex)} ]
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     if (!error) {

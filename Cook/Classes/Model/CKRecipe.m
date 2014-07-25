@@ -21,6 +21,7 @@
 #import "CKLocation.h"
 #import "CKMeasureConverter.h"
 #import "AppHelper.h"
+#import "CloudCodeHelper.h"
 
 @interface CKRecipe ()
 
@@ -128,12 +129,11 @@
                failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"searchRecipesWithRelevancy"
-                       withParameters:@{
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{
                                         @"keyword"      : searchTerm,
                                         @"searchFilter" : @(searchFilter),
-                                        @"itemIndex"    : @(itemIndex),
-                                        @"cookVersion"  : [[AppHelper sharedInstance] appVersion]
-                                        }
+                                        @"itemIndex"    : @(itemIndex)
+                                        }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -226,7 +226,7 @@
 - (void)infoAndViewedWithCompletion:(RecipeInfoSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"recipeInfo"
-                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"recipeId" : self.objectId }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -347,7 +347,7 @@
              failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"recipeIsPinnedToBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -371,7 +371,7 @@
           failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"pinRecipeToBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -393,7 +393,7 @@
 - (void)unpinnedFromBook:(CKBook *)book completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"unpinRecipeFromBook"
-                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         DLog(@"Unpinned recipe[%@] from book[%@]", self.objectId, book.objectId);
@@ -453,7 +453,7 @@
 
 - (void)commentsLikesWithCompletion:(RecipeCommentsLikesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"recipeCommentsLikes"
-                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"recipeId" : self.objectId }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         
@@ -851,7 +851,7 @@
 
 - (void)markShared {
     [PFCloud callFunctionInBackground:@"markRecipeShared"
-                       withParameters:@{ @"recipeId" : self.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"recipeId" : self.objectId }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
                                         DLog(@"Recipe[%@] marked shared.", self.objectId);

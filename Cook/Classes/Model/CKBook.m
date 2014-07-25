@@ -16,6 +16,7 @@
 #import "AppHelper.h"
 #import "CKBookManager.h"
 #import "CKRecipeTag.h"
+#import "CloudCodeHelper.h"
 
 @interface CKBook ()
 
@@ -109,7 +110,7 @@
 + (void)dashboardBooksForUser:(CKUser *)user success:(DashboardBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"dashboardBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParams]
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     // My book.
@@ -138,7 +139,7 @@
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"followBooks_v1_1"
-                       withParameters:@{ @"sortDescending" : @"true", @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"sortDescending" : @"true" }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     NSArray *books = [results objectForKey:@"books"];
                                     NSDictionary *bookUpdates = [results objectForKey:@"updates"];
@@ -219,7 +220,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"friendsBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParams]
                                 block:^(NSDictionary *booksResults, NSError *error) {
                                     
                                     if (!error) {
@@ -241,7 +242,7 @@
                                      failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"facebookSuggestedBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion], @"friendIds" : facebookIds }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"friendIds" : facebookIds }]
                                 block:^(NSDictionary *booksResults, NSError *error) {
                                     
                                     if (!error) {
@@ -275,7 +276,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"friendsAndSuggestedBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParams]
                                 block:^(NSDictionary *booksResults, NSError *error) {
                                     
                                     if (!error) {
@@ -313,7 +314,7 @@
 + (void)categoriesBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"storeCategoriesBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParams]
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     if (error) {
@@ -328,7 +329,7 @@
 + (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"storeFeatureBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParams]
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     if (error) {
@@ -343,7 +344,7 @@
 + (void)worldBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"storeWorldBooks"
-                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParams]
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     if (error) {
@@ -450,11 +451,10 @@
     DLog();
     
     [PFCloud callFunctionInBackground:@"bookRecipes_v1_4"
-                       withParameters:@{
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{
                                         @"bookId": self.objectId,
-                                        @"userId": self.user.objectId,
-                                        @"cookVersion": [[AppHelper sharedInstance] appVersion]
-                                        }
+                                        @"userId": self.user.objectId
+                                        }]
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
                                         
@@ -509,13 +509,12 @@
                failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"pageRecipes_v1_4"
-                       withParameters:@{
-                                        @"cookVersion": [[AppHelper sharedInstance] appVersion],
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{
                                         @"bookId" : self.objectId,
                                         @"userId" : self.user.objectId,
                                         @"page" : page,
                                         @"batchIndex" : @(batchIndex)
-                                        }
+                                        }]
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     
                                     if (!error) {
@@ -544,12 +543,11 @@
                failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"likedRecipes_v1_4"
-                       withParameters:@{
-                                        @"cookVersion": [[AppHelper sharedInstance] appVersion],
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{
                                         @"bookId" : self.objectId,
                                         @"userId" : self.user.objectId,
                                         @"batchIndex" : @(requestedBatchIndex)
-                                        }
+                                        }]
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     
                                     if (!error) {
@@ -655,7 +653,7 @@
     
     DLog(@"searching keyword[%@]", searchTerm);
     [PFCloud callFunctionInBackground:@"storeSearchBooks"
-                       withParameters:@{ @"keyword" : searchTerm, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"keyword" : searchTerm }]
                                 block:^(NSDictionary *results, NSError *error) {                                    
                                     if (error) {
                                         failure(error);
@@ -734,7 +732,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"bookDeletePage"
-                       withParameters:@{ @"bookId" : self.objectId, @"page" : page, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"bookId" : self.objectId, @"page" : page }]
                                 block:^(id result, NSError *error) {
                                     if (!error) {
                                         DLog(@"Deleted page from book and its associated recipes");
@@ -763,7 +761,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"bookRenamePage"
-                       withParameters:@{ @"bookId" : self.objectId, @"fromPage" : page, @"toPage" : toPage, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"bookId" : self.objectId, @"fromPage" : page, @"toPage" : toPage }]
                                 block:^(id result, NSError *error) {
                                     if (!error) {
                                         DLog(@"Renamed page for book and its associated recipes");
@@ -785,7 +783,7 @@
 
 - (void)bookInfoCompletion:(BookInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure; {
     [PFCloud callFunctionInBackground:@"bookInfo"
-                       withParameters:@{ @"bookId" : self.objectId, @"userId" : self.user.objectId, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{ @"bookId" : self.objectId, @"userId" : self.user.objectId }]
                                 block:^(NSDictionary *results, NSError *error) {
                                     
                                     NSUInteger followCount = [[results objectForKey:@"followCount"] unsignedIntegerValue];

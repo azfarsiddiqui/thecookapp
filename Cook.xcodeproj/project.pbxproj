@@ -360,6 +360,7 @@
 		7667999317AA9FCE001C5E8D /* cook_book_inner_category_new@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7667998B17AA9FCE001C5E8D /* cook_book_inner_category_new@2x.png */; };
 		7667999417AA9FCE001C5E8D /* cook_book_inner_category_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7667998C17AA9FCE001C5E8D /* cook_book_inner_category_overlay.png */; };
 		7667999517AA9FCE001C5E8D /* cook_book_inner_category_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7667998D17AA9FCE001C5E8D /* cook_book_inner_category_overlay@2x.png */; };
+		7668ACA1198209EE00873E51 /* CloudCodeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7668ACA0198209EE00873E51 /* CloudCodeHelper.m */; };
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
 		766D96F517D2E54700A9104E /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96F417D2E54700A9104E /* NotificationsViewController.m */; };
 		766D96F817D2E80000A9104E /* NotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96F717D2E80000A9104E /* NotificationCell.m */; };
@@ -2109,6 +2110,8 @@
 		7667998B17AA9FCE001C5E8D /* cook_book_inner_category_new@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_category_new@2x.png"; sourceTree = "<group>"; };
 		7667998C17AA9FCE001C5E8D /* cook_book_inner_category_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_category_overlay.png; sourceTree = "<group>"; };
 		7667998D17AA9FCE001C5E8D /* cook_book_inner_category_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_category_overlay@2x.png"; sourceTree = "<group>"; };
+		7668AC9F198209EE00873E51 /* CloudCodeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudCodeHelper.h; sourceTree = "<group>"; };
+		7668ACA0198209EE00873E51 /* CloudCodeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloudCodeHelper.m; sourceTree = "<group>"; };
 		766BFC201630DE990083EB0E /* UIColor+Expanded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Expanded.h"; sourceTree = "<group>"; };
 		766BFC211630DE990083EB0E /* UIColor+Expanded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Expanded.m"; sourceTree = "<group>"; };
 		766D96F317D2E54700A9104E /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
@@ -4654,6 +4657,8 @@
 				F61856EE191A02BB00CB5F0C /* ConversionHelper.m */,
 				762AEF731928CC4300B3AD6C /* PaginationHelper.h */,
 				762AEF741928CC4300B3AD6C /* PaginationHelper.m */,
+				7668AC9F198209EE00873E51 /* CloudCodeHelper.h */,
+				7668ACA0198209EE00873E51 /* CloudCodeHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9123,6 +9128,7 @@
 				76381CAB16685A8900404FB1 /* FriendsStoreCollectionViewController.m in Sources */,
 				76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */,
 				892282B61671933D002FE936 /* CKRecipeLike.m in Sources */,
+				7668ACA1198209EE00873E51 /* CloudCodeHelper.m in Sources */,
 				F6CB584C18B32C0000CD368C /* CKPhotoView.m in Sources */,
 				7649240217EB247700C4E347 /* DataHelper.m in Sources */,
 				76D2BF7017B90A3700BA46A1 /* UIImage+MultiFormat.m in Sources */,
