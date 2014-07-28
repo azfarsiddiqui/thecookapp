@@ -53,6 +53,7 @@
 @property (nonatomic, assign) BOOL dataLoaded;
 
 // Posting comments.
+@property (nonatomic, assign) BOOL isInitialActive;
 @property (nonatomic, strong) RecipeCommentCell *editingCell;
 @property (nonatomic, strong) UIView *editingView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
@@ -89,6 +90,10 @@
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate {
+    return [self initWithRecipe:recipe delegate:delegate commentActive:NO];
+}
+
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate commentActive:(BOOL)isActive {
     if (self = [super init]) {
         self.currentUser = [CKUser currentUser];
         self.recipe = recipe;
@@ -99,6 +104,7 @@
         self.commentTimeDisplays = [NSMutableDictionary dictionary];
         self.currentDate = [NSDate date];
         self.loading = YES;
+        self.isInitialActive = isActive;
     }
     return self;
 }
@@ -605,6 +611,11 @@
         }
         
         self.dataLoaded = YES;
+        
+        // If comment editing should be active on load
+        if (self.isInitialActive) {
+            [self showCommentBox];
+        }
         
     } failure:^(NSError *error) {
         

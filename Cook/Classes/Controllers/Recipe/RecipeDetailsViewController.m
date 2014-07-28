@@ -81,6 +81,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIButton *pinButton;
+@property (nonatomic, strong) UIButton *commentButton;
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
@@ -729,6 +730,23 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return _shareButton;
 }
 
+// Need to place this button and add action handler to bring up comment screen, same as social but bring up keyboard and auto activate comment textbox
+
+- (UIButton *)commentButton {
+    if (!_commentButton && ![self.recipe isOwner]) {
+        UIImage *commentImage = [UIImage imageNamed:@"cook_book_inner_icon_comment_light.png"];
+        UIImage *commentImagePressed = [UIImage imageNamed:@"cook_book_inner_icon_comment_light_on.png"];
+        _commentButton = [ViewHelper buttonWithImage:commentImage selectedImage:commentImagePressed target:self selector:@selector(commentTapped:)];
+        _commentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _commentButton.frame = (CGRect){
+            self.likeButton.frame.origin.x - kIconGap - _commentButton.frame.size.width,
+            kButtonInsets.top,
+            _commentButton.frame.size.width,
+            _commentButton.frame.size.height};
+    }
+    return _commentButton;
+}
+
 - (CKLikeView *)likeButton {
     if (!_likeButton && ![self.recipe isOwner]) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
@@ -1017,6 +1035,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Get stats and log pageView.
     self.pinButton.enabled = NO;
     self.likeButton.enabled = NO;
+    self.commentButton.enabled = NO;
     
     if ([self.recipe persisted]) {
         [self.recipe infoAndViewedWithCompletion:^(BOOL liked, CKRecipePin *recipePin) {
@@ -1030,6 +1049,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             
             self.pinButton.enabled = self.currentUser ? YES : NO;
             self.likeButton.enabled = self.currentUser ? YES : NO;
+            self.commentButton.enabled = self.currentUser ? YES : NO;
             
         } failure:^(NSError *error) {
             // Ignore error.
@@ -1491,6 +1511,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              self.editButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.shareButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.likeButton.alpha = fullscreen ? 0.0 : 1.0;
+                             self.commentButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.pinButton.alpha = fullscreen ? 0.0 : 1.0;
                          }
                          completion:^(BOOL finished)  {
@@ -1546,6 +1567,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
         self.likeButton.alpha = 0.0;
+        self.commentButton.alpha = 0.0;
         self.pinButton.alpha = 0.0;
         self.activityView.alpha = 0.0;
         [self.view addSubview:self.closeButton];
@@ -1553,6 +1575,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.view addSubview:self.editButton];
         [self.view addSubview:self.shareButton];
         [self.view addSubview:self.likeButton];
+        [self.view addSubview:self.commentButton];
         [self.view addSubview:self.pinButton];
     }
     
@@ -1567,6 +1590,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.editButton.alpha = self.editMode ? 0.0 : alpha;
                          self.shareButton.alpha = self.editMode ? 0.0 : alpha;
                          self.likeButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.commentButton.alpha = self.editMode ? 0.0 : alpha;
                          self.pinButton.alpha = self.editMode ? 0.0 : alpha;
                          self.privacyView.alpha = self.editMode ? alpha : 0.0;
                          self.activityView.alpha = self.editMode ? 0.0 : alpha;
@@ -1592,6 +1616,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.shareButton removeFromSuperview];
                              [self.pinButton removeFromSuperview];
                              [self.likeButton removeFromSuperview];
+                             [self.commentButton removeFromSuperview];
                              
                              // Select the privacy level.
                              [self.privacyView selectNotch:self.recipeDetails.privacy animated:YES informDelegate:NO];
@@ -1618,6 +1643,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.editButton.transform = transform;
     self.shareButton.transform = transform;
     self.likeButton.transform = transform;
+    self.commentButton.transform = transform;
     self.pinButton.transform = transform;
     self.privacyView.transform = transform;
     self.cancelButton.transform = transform;
@@ -1626,9 +1652,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)showSocialOverlay:(BOOL)show {
+    [self showSocialOverlay:show isActiveComment:NO];
+}
+
+- (void)showSocialOverlay:(BOOL)show isActiveComment:(BOOL)isActive {
     if (show) {
         [self hideButtons];
-        self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
+        self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self commentActive:isActive];
     } else {
         self.view.userInteractionEnabled = YES;
         self.scrollView.userInteractionEnabled = YES;
@@ -1820,6 +1850,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self updateButtons];
                          }
                      }];
+}
+
+- (void)commentTapped:(id)sender {
+    [self showSocialOverlay:YES isActiveComment:YES];
 }
 
 - (void)cancelTapped:(id)sender {
