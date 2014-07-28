@@ -19,9 +19,7 @@
 
 @implementation CKTabView
 
-#define kLeftEdgeInsets     (UIEdgeInsets){ 10.0, 22.0, 10.0, 16.0 }
-#define kMidEdgeInsets      (UIEdgeInsets){ 10.0, 20.0, 10.0, 20.0 }
-#define kRightEdgeInsets    (UIEdgeInsets){ 10.0, 18.0, 10.0, 22.0 }
+#define kContentInsets  (UIEdgeInsets){ 0.0, 50.0, 0.0, 50.0 }
 
 - (id)initWithOptions:(NSArray *)options buttonFont:(UIFont *)font buttonWidth:(CGFloat)width {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -44,6 +42,7 @@
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
     [self addSubview:backgroundImageView];
     
+    BOOL secondPassAdjustment = NO;
     CGSize size = (CGSize){ 0.0, backgroundImage.size.height };
     
     for (NSInteger optionIndex = 0; optionIndex < [self.options count]; optionIndex++) {
@@ -61,6 +60,12 @@
         
         [button sizeToFit];
         
+        // Check if we need second-pass size adjustment
+        if (button.frame.size.width > self.buttonWidth - kContentInsets.left - kContentInsets.right) {
+            self.buttonWidth = button.frame.size.width + kContentInsets.left + kContentInsets.right;
+            secondPassAdjustment = YES;
+        }
+        
         button.frame = (CGRect){
             size.width,
             self.bounds.origin.y,
@@ -74,6 +79,20 @@
         size.width += button.frame.size.width;
     }
     
+    // Second-pass adjustment.
+    if (secondPassAdjustment) {
+        size.width = 0.0;
+        
+        for (UIButton *button in self.buttons) {
+            CGRect buttonFrame = button.frame;
+            buttonFrame.origin.x = size.width;
+            buttonFrame.size.width = self.buttonWidth;
+            button.frame = buttonFrame;
+            size.width += buttonFrame.size.width;
+        }
+        
+    }
+    
     // Update background and self frame.
     backgroundImageView.frame = (CGRect){
         self.bounds.origin.x,
@@ -81,6 +100,7 @@
         size.width,
         size.height
     };
+    
     self.frame = backgroundImageView.frame;
 }
 

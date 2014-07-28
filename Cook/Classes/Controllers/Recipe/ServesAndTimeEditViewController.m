@@ -148,7 +148,7 @@
         self.cookSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(70)-[servesView(90)]-(20)-[servesSlider(controlHeight)]-(50)-[servesLine(1)]-(>=40)-[prepView(controlHeight)]-(5)-[prepSlider(controlHeight)]-(30)-[cookView(controlHeight)]-(5)-[cookSlider(controlHeight)]-(72)-|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
-        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView(440)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[smallServesIcon]-(9)-[servesSlider(sliderWidth)]-(10)-[largeServesIcon]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[servesLine(dividerWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[prepView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
@@ -156,6 +156,12 @@
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookView]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
         [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[cookSlider(longControlWidth)]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
 
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.servesTabButton
+                                                                       attribute:NSLayoutAttributeCenterX
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.containerView
+                                                                       attribute:NSLayoutAttributeCenterX
+                                                                      multiplier:1.f constant:0.f]];
         [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.servesSlider
                                                                        attribute:NSLayoutAttributeCenterX
                                                                        relatedBy:NSLayoutRelationEqual
@@ -396,9 +402,9 @@
     
     NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
     if (serves > [CKRecipe maxServes]) {
-        [servesDisplay appendFormat:@"%i+", [CKRecipe maxServes]];
+        [servesDisplay appendFormat:@"%li+", [CKRecipe maxServes]];
     } else {
-        [servesDisplay appendFormat:@"%i", serves];
+        [servesDisplay appendFormat:@"%li", serves];
     }
     [self.servesTabButton updateQuantity:servesDisplay];
 }

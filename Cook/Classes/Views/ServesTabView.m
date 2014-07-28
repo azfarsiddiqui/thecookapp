@@ -177,4 +177,8 @@
     [self updateTitle:makesTitle forButtonIndex:1];
 }
 
+- (CGSize)intrinsicContentSize {
+    return self.bounds.size;
+}
+
 @end
