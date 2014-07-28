@@ -25,6 +25,8 @@
 @interface RecipeSocialViewController : OverlayViewController
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate;
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate commentActive:(BOOL)isActive;
+
 - (NSInteger)currentNumComments;
 
 @end
