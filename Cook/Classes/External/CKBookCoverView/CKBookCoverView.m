@@ -230,6 +230,7 @@
 }
 
 - (void)markNew {
+    
     self.updatesIcon.image = [CKBookCover updatesIconImageForCover:self.book.cover];
     
     if (!self.updatesIcon.superview) {
@@ -242,10 +243,31 @@
     
     self.updatesLabel.text = NSLocalizedString(@"NEW", nil);
     self.updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:18.0];
+    
+    // Required size.
+    UIEdgeInsets labelInsets = (UIEdgeInsets){ 6.0, 13.0, 12.0, 13.0 };
+    CGFloat maxWidth = self.updatesIcon.frame.size.width - labelInsets.left - labelInsets.right;
     [self.updatesLabel sizeToFit];
+    
+    // Three iterations of size changes.
+    CGPoint adjustment = (CGPoint){ 0.0, -4.0 };
+    if (self.updatesLabel.frame.size.width > maxWidth) {
+        
+        adjustment.x = 1.0;
+        self.updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0];
+        [self.updatesLabel sizeToFit];
+        
+        if (self.updatesLabel.frame.size.width > maxWidth) {
+            self.updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:11.0];
+            adjustment.x = 1.0;
+            [self.updatesLabel sizeToFit];
+        }
+        
+    }
+    
     self.updatesLabel.frame = (CGRect){
-        floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.width) / 2.0),
-        floorf((self.updatesIcon.bounds.size.height - self.updatesLabel.frame.size.height) / 2.0) - 3.0,
+        floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.width) / 2.0) + adjustment.x,
+        floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.height) / 2.0) + adjustment.y,
         self.updatesLabel.frame.size.width,
         self.updatesLabel.frame.size.height
     };
@@ -362,9 +384,12 @@
     if (!_updatesLabel) {
         _updatesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:28.0];
+        _updatesLabel.backgroundColor = [UIColor clearColor];
         _updatesLabel.textColor = [UIColor whiteColor];
         _updatesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         _updatesLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.05];
+        _updatesLabel.textAlignment = NSTextAlignmentCenter;
+        _updatesLabel.adjustsFontSizeToFitWidth = YES;
     }
     return _updatesLabel;
 }
