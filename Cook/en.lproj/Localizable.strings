@@ -367,3 +367,67 @@
 "Gluten Free" = "Gluten Free";
 "Vegan" = "Vegan";
 "Vegetarian" = "Vegetarian";
+
+// Collection Tagline, where %@ placeholder is for example: Vegetarian, Dessert etc.
+"%@ recipes from around the world" = "%@ recipes from around the world";
+
+// Collection Description, where %@ placeholder is for example: Vegetarian, Dessert
+"Delicious recipes created by Cooks from around the world. To contribute simply tag your public recipes with %@." = "Delicious recipes created by Cooks from around the world. To contribute simply tag your public recipes with %@.";
+
+// Collections Quick Alternate Description
+"To contribute create public recipes that take 30 minutes or less." = "To contribute create public recipes that take 30 minutes or less.";
+
+// World Book Tagline, where %@ placeholder is for example: USA, Australia etc.
+"Delicious Recipes from %@" = "Delicious Recipes from %@";
+
+// World Book Description, where %@ placeholder is for example: USA, Australia etc.
+"Recipes shared by fellow Cooks from %@. To contribute to your country's book simply allow Cook to locate you when setting your recipes to public." = "Recipes shared by fellow Cooks from %@. To contribute to your country's book simply allow Cook to locate you when setting your recipes to public.";
+
+// Featured Book Generic Description
+"Great recipes shared by Chefs from around the world" = "Great recipes shared by Chefs from around the world";
+
+// Featured Book Generic Alternate Description
+"Great recipes from around the world" = "Great recipes from around the world";
+
+// Countries
+"United States" = "United States";
+"United Kingdom" = "United Kingdom";
+"Australia" = "Australia";
+"Spain" = "Spain";
+"Philippines" = "Philippines";
+"Italy" = "Italy";
+"Mexico" = "Mexico";
+"Germany" = "Germany";
+"Brazil" = "Brazil";
+"Canada" = "Canada";
+"New Zealand" = "New Zealand";
+"Denmark" = "Denmark";
+"India" = "India";
+"Turkey" = "Turkey";
+"France" = "France";
+"Netherlands" = "Netherlands";
+"Norway" = "Norway";
+"Sweden" = "Sweden";
+"Finland" = "Finland";
+"China" = "China";
+"Russia" = "Russia";
+"Japan" = "Japan";
+"Korea" = "Korea";
+"Malaysia" = "Malaysia";
+"Singapore" = "Singapore";
+"Indonesia" = "Indonesia";
+
+// Push Notification: first placeholder is user name, second placeholder is name of recipe, examples:
+"%@ added %@" = "%@ added %@"; // "Jeff added Sweet and Sour Pork".
+"%@ commented on %@" = "%@ commented on %@"; // "Jeff commented on Sweet and Sour Pork".
+"%@ liked %@" = "%@ commented on %@"; // "Jeff liked Sweet and Sour Pork".
+
+// Push Notification, a user receives a friend request from another user.
+"%@ sent you a friend request" = "%@ sent you a friend request";
+
+// Push Notification, a user accepts your friend request.
+"%@ accepted your friend request." = "%@ accepted your friend request.";
+
+// Push Notification: first placeholder is name of recipe, second placeholder is name of page, and third placeholder is
+// name of book.
+"%@ is now featured in %@ in %@" = "%@ is now featured in %@ in %@"; // Sweet and Sour Pork is now featured in Mains in Australia
