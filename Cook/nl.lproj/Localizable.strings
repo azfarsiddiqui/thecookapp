@@ -348,3 +348,22 @@
 
 // Cook's tagline under the Cook logo.
 "THE WORLD'S COOK BOOK" = "HET WERELDWIJDE KOOKBOEK";
+
+// Tags
+"Preserve" = "Inmaken";
+"Condiment" = "Kruiderij";
+"Kids" = "Kinderen";
+"Drink" = "Drank";
+"Dessert" = "Dessert";
+"Snack" = "Snack";
+"Main" = "Hoofdgerecht";
+"Side" = "Bijgerecht";
+"Appetizer" = "Voorgerecht";
+"Breakfast" = "Ontbijt";
+"Baking" = "Bakken";
+"Dairy Free" = "Zuivelvrij";
+"Low Fat" = "Vetarm";
+"Sugar Free" = "Suikervrij";
+"Gluten Free" = "Glutenvrij";
+"Vegan" = "Veganist";
+"Vegetarian" = "Vegetariër";

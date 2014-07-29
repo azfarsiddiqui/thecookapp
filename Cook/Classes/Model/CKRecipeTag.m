@@ -35,6 +35,10 @@
     return [localisedString uppercaseString];
 }
 
+- (NSString *)localisedDisplayName {
+    return [NSLocalizedString(self.name, nil) uppercaseString];
+}
+
 - (NSInteger)categoryIndex {
     [self.parseObject fetchIfNeeded];
     NSNumber *categoryNumber = [self.parseObject objectForKey:kRecipeTagCategory];

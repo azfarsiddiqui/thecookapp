@@ -348,3 +348,22 @@
 
 // Cook's tagline under the Cook logo.
 "THE WORLD'S COOK BOOK" = "IL LIBRO DI RICETTE DAL MONDO";
+
+// Tags
+"Preserve" = "Conserva";
+"Condiment" = "Condimento";
+"Kids" = "Bimbi";
+"Drink" = "Drink";
+"Dessert" = "Dessert";
+"Snack" = "Snack";
+"Main" = "Sec.";
+"Side" = "Cont.";
+"Appetizer" = "Antipasto";
+"Breakfast" = "Colazione";
+"Baking" = "Al forno";
+"Dairy Free" = "No latte";
+"Low Fat" = "Pochi gr.";
+"Sugar Free" = "No zucchero";
+"Gluten Free" = "No glutine";
+"Vegan" = "Vegano";
+"Vegetarian" = "Vegetariano";

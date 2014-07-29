@@ -739,7 +739,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self.recipeDetails.tags enumerateObjectsUsingBlock:^(CKRecipeTag *tag, NSUInteger idx, BOOL *stop) {
             if (tag.categoryIndex == kAllergyTagType) {
                 // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
-                NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
+                NSString *tempString = [tagsString stringByAppendingString:tag.localisedDisplayName];
                 CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                           attributes:@{ NSFontAttributeName : self.tagsLabel.font }
@@ -748,14 +748,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
                         [tagsString appendString:@" ･ "];
-                    [tagsString appendString:[tag displayName]];
+                    [tagsString appendString:tag.localisedDisplayName];
                 }
             }
         }];
         [self.recipeDetails.tags enumerateObjectsUsingBlock:^(CKRecipeTag *tag, NSUInteger idx, BOOL *stop) {
             if (tag.categoryIndex == kMealTagType) {
                 // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
-                NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
+                NSString *tempString = [tagsString stringByAppendingString:tag.localisedDisplayName];
                 CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                           attributes:@{ NSFontAttributeName : self.tagsLabel.font }
@@ -764,14 +764,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
                         [tagsString appendString:@" ･ "];
-                    [tagsString appendString:[tag displayName]];
+                    [tagsString appendString:tag.localisedDisplayName];
                 }
             }
         }];
         [self.recipeDetails.tags enumerateObjectsUsingBlock:^(CKRecipeTag *tag, NSUInteger idx, BOOL *stop) {
             if (tag.categoryIndex == kFoodTagType) {
                 // Check to make sure that the width of the tags will fit in label, otherwise, don't display at all so that it doesn't get truncated by UILabel
-                NSString *tempString = [tagsString stringByAppendingString:[tag displayName]];
+                NSString *tempString = [tagsString stringByAppendingString:tag.localisedDisplayName];
                 CGRect stringSize = [tempString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                           attributes:@{ NSFontAttributeName : self.tagsLabel.font }
@@ -780,7 +780,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                     //Append spaces and tag name
                     if ([tagsString length] > 0)
                         [tagsString appendString:@" ･ "];
-                    [tagsString appendString:[tag displayName]];
+                    [tagsString appendString:tag.localisedDisplayName];
                 }
             }
         }];

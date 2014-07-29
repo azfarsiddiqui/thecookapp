@@ -14,7 +14,12 @@
 
 @implementation TagLayout
 
-
+- (id)init {
+    if (self = [super init]) {
+        self.minimumLineSpacing = 0.0;
+    }
+    return self;
+}
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];

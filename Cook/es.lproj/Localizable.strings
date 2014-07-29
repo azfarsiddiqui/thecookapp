@@ -348,3 +348,22 @@
 
 // Cook's tagline under the Cook logo.
 "THE WORLD'S COOK BOOK" = "EL LIBRO DE COCINA MUNDIAL";
+
+// Tags
+"Preserve" = "Conserva";
+"Condiment" = "Condimento";
+"Kids" = "Infantiles";
+"Drink" = "Bebida";
+"Dessert" = "Postre";
+"Snack" = "Tentempié";
+"Main" = "Principale";
+"Side" = "Entremés"; //Acompañamiento
+"Appetizer" = "Aperitivo";
+"Breakfast" = "Desayuno";
+"Baking" = "Pastelería";
+"Dairy Free" = "Sin lácteos";
+"Low Fat" = "Bajas en grasa";
+"Sugar Free" = "Sin azúcar";
+"Gluten Free" = "Sin gluten";
+"Vegan" = "Vegana";
+"Vegetarian" = "Vegetariana";

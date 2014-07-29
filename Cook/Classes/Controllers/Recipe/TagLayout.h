@@ -15,8 +15,8 @@
 #define kContentInsets      UIEdgeInsetsMake(68.0, 60.0, 0.0, 60.0)
 #define kSectionHeadWidth   20.0
 #define kSectionFootWidth   20.0
-#define kItemHeight 105
-#define kItemWidth 115
+#define kItemHeight         125
+#define kItemWidth          125
 
 @interface TagLayout : UICollectionViewFlowLayout
 
