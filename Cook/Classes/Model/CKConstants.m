@@ -190,3 +190,9 @@ NSString *const kUserNotificationTypeFeedPin                = @"FeedPin";
 
 NSString *const kCookCloudCodeKey                           = @"ckcode";
 NSInteger const kCookCloudPageRenameBlockErrorCode          = 130;
+
+#pragma mark - Installation
+
+NSString *const kCookAppLanguageCode                        = @"appLanguageCode";
+NSString *const kCookAppCountryCode                         = @"appCountryCode";
+

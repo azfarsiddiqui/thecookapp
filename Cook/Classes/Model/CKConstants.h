@@ -189,3 +189,8 @@ extern NSString *const kUserNotificationTypeFeedPin;
 
 extern NSString *const kCookCloudCodeKey;
 extern NSInteger const kCookCloudPageRenameBlockErrorCode;
+
+#pragma mark - Installation
+
+extern NSString *const kCookAppLanguageCode;
+extern NSString *const kCookAppCountryCode;

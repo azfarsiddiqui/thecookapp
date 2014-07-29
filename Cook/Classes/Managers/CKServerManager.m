@@ -96,6 +96,20 @@
         saveInstallation = YES;
     }
     
+    // Update with app language code.
+    NSString *appLanguageCode = [[AppHelper sharedInstance] languageCode];
+    if ([appLanguageCode length] > 0) {
+        [currentInstallation setObject:appLanguageCode forKey:kCookAppLanguageCode];
+        saveInstallation = YES;
+    }
+    
+    // Update with app country code.
+    NSString *appCountryCode = [[AppHelper sharedInstance] localeCountryCode];
+    if ([appCountryCode length] > 0) {
+        [currentInstallation setObject:appCountryCode forKey:kCookAppCountryCode];
+        saveInstallation = YES;
+    }
+    
     // Update badge if non-zero.
     if (currentInstallation.badge != 0) {
         
