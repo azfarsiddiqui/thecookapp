@@ -23,5 +23,6 @@
 - (void)didSelectOptionAtIndex:(NSInteger)optionIndex;
 - (void)updateTitle:(NSAttributedString *)title forButtonIndex:(NSInteger)index;
 - (void)alignButton:(UIButton *)button atIndex:(NSInteger)optionIndex;
+- (UIEdgeInsets)contentInsets;
 
 @end

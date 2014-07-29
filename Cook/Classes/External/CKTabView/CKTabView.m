@@ -19,8 +19,6 @@
 
 @implementation CKTabView
 
-#define kContentInsets  (UIEdgeInsets){ 0.0, 50.0, 0.0, 50.0 }
-
 - (id)initWithOptions:(NSArray *)options buttonFont:(UIFont *)font buttonWidth:(CGFloat)width {
     if (self = [super initWithFrame:CGRectZero]) {
         self.options = options;
@@ -45,6 +43,8 @@
     BOOL secondPassAdjustment = NO;
     CGSize size = (CGSize){ 0.0, backgroundImage.size.height };
     
+    UIEdgeInsets contentInsets = [self contentInsets];
+    
     for (NSInteger optionIndex = 0; optionIndex < [self.options count]; optionIndex++) {
         
         NSString *optionName = [self.options objectAtIndex:optionIndex];
@@ -61,8 +61,8 @@
         [button sizeToFit];
         
         // Check if we need second-pass size adjustment
-        if (button.frame.size.width > self.buttonWidth - kContentInsets.left - kContentInsets.right) {
-            self.buttonWidth = button.frame.size.width + kContentInsets.left + kContentInsets.right;
+        if (button.frame.size.width > self.buttonWidth - contentInsets.left - contentInsets.right) {
+            self.buttonWidth = button.frame.size.width + contentInsets.left + contentInsets.right;
             secondPassAdjustment = YES;
         }
         
@@ -166,6 +166,10 @@
 
 - (void)didSelectOptionAtIndex:(NSInteger)optionIndex {
     
+}
+
+- (UIEdgeInsets)contentInsets {
+    return (UIEdgeInsets){ 0.0, 0.0, 0.0, 0.0 };
 }
 
 @end

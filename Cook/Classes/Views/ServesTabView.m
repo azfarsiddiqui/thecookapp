@@ -181,4 +181,8 @@
     return self.bounds.size;
 }
 
+- (UIEdgeInsets)contentInsets {
+    return (UIEdgeInsets){ 0.0, 50.0, 0.0, 50.0 };
+}
+
 @end
