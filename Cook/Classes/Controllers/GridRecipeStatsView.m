@@ -58,8 +58,8 @@
     }
     
     [self configureValue:[self prepCookTotalDisplayForPrepTime:recipe.prepTimeInMinutes cookTime:recipe.cookingTimeInMinutes] iconIndex:1];
-    [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numCommentsForRecipe:recipe]] iconIndex:2];
-    [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numLikesForRecipe:recipe]] iconIndex:3];
+    [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numCommentsForRecipe:recipe]] iconIndex:3];
+    [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numLikesForRecipe:recipe]] iconIndex:2];
     
     [self layoutIconViews];
     
@@ -75,8 +75,8 @@
     self.iconViews = [NSMutableArray array];
     [self configureIcon:@"cook_book_inner_icon_small_serves.png"];
     [self configureIcon:@"cook_book_inner_icon_small_time.png"];
-    [self configureIcon:@"cook_book_inner_icon_small_comments.png"];
     [self configureIcon:@"cook_book_inner_icon_small_likes_off.png"];
+    [self configureIcon:@"cook_book_inner_icon_small_comments.png"];
 }
 
 - (void)configureIcon:(NSString *)iconName {
