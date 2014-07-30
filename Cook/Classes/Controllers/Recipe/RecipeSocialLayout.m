@@ -223,9 +223,9 @@
     UICollectionViewLayoutAttributes *commentsHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                                 withIndexPath:commentsHeaderIndexPath];
     commentsHeaderAttributes.frame = (CGRect){
-        insets.left + bounds.origin.x,
+        bounds.origin.x + insets.right,
         yOffset,
-        bounds.size.width - insets.left,
+        bounds.size.width - insets.right,
         [ModalOverlayHeaderView unitSize].height
     };
     yOffset += commentsHeaderAttributes.frame.size.height;

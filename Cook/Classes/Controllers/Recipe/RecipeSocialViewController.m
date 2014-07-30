@@ -287,7 +287,7 @@
 }
 
 - (UIEdgeInsets)recipeSocialLayoutContentInsets {
-    return (UIEdgeInsets) { 0.0, (self.view.bounds.size.width - self.likesCollectionView.frame.origin.x), 0.0, 0.0 };
+    return (UIEdgeInsets) { 0.0, (self.view.bounds.size.width - self.likesCollectionView.frame.origin.x), 0.0, self.closeButton.frame.size.width + self.closeButton.frame.origin.x };
 }
 
 - (BOOL)recipeHeaderIsVisible {
