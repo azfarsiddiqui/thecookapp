@@ -304,6 +304,8 @@
                          bounds:(CGRect)bounds {
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
+        BOOL isVisible = [self.delegate recipeHeaderIsVisible];
+        attributes.alpha = isVisible;
     } else if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter]) {
         attributes.frame = [self adjustedFrameForFooterFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
     }

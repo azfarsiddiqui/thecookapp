@@ -290,6 +290,10 @@
     return (UIEdgeInsets) { 0.0, (self.view.bounds.size.width - self.likesCollectionView.frame.origin.x), 0.0, 0.0 };
 }
 
+- (BOOL)recipeHeaderIsVisible {
+    return !self.isInitialActive;
+}
+
 #pragma mark - ProfileViewControllerDelegate methods
 
 - (void)profileViewControllerCloseRequested {
@@ -300,7 +304,7 @@
 
 - (void)editViewControllerWillAppear:(BOOL)appear {
     [UIView animateWithDuration:0.2 animations:^{
-        self.headerView.alpha = 0.0;
+        self.headerView.alpha = appear ? 0.0 : 1.0;
     }];
 }
 
@@ -316,9 +320,9 @@
 
 - (void)editViewControllerDismissRequested {
     [self.editViewController performEditing:NO];
-    [UIView animateWithDuration:0.2 animations:^{
-        self.headerView.alpha = 1.0;
-    }];
+    
+    // Make sure isInitialActive is reset
+    self.isInitialActive = NO;
 }
 
 - (void)editViewControllerEditRequested {
@@ -592,7 +596,6 @@
                     };
                     [self.collectionView setContentOffset:bottomOffset animated:YES];
                 }
-                
             }];
             
         } else {
@@ -616,7 +619,6 @@
         if (self.isInitialActive) {
             [self showCommentBox];
         }
-        
     } failure:^(NSError *error) {
         
         // No comments.
