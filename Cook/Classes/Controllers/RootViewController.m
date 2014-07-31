@@ -1074,6 +1074,7 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    [self snapToLevel:1];
 }
 
 - (void)updateStatusBarLight:(BOOL)light {
