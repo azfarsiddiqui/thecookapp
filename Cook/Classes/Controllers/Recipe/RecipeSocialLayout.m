@@ -223,9 +223,9 @@
     UICollectionViewLayoutAttributes *commentsHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                                 withIndexPath:commentsHeaderIndexPath];
     commentsHeaderAttributes.frame = (CGRect){
-        insets.left + bounds.origin.x,
+        bounds.origin.x + insets.right,
         yOffset,
-        bounds.size.width - insets.left,
+        bounds.size.width - insets.right,
         [ModalOverlayHeaderView unitSize].height
     };
     yOffset += commentsHeaderAttributes.frame.size.height;
@@ -304,6 +304,8 @@
                          bounds:(CGRect)bounds {
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
+        BOOL isVisible = [self.delegate recipeHeaderIsVisible];
+        attributes.alpha = isVisible;
     } else if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter]) {
         attributes.frame = [self adjustedFrameForFooterFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
     }

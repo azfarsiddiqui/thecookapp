@@ -738,11 +738,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         UIImage *commentImagePressed = [UIImage imageNamed:@"cook_book_inner_icon_comment_light_on.png"];
         _commentButton = [ViewHelper buttonWithImage:commentImage selectedImage:commentImagePressed target:self selector:@selector(commentTapped:)];
         _commentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _commentButton.frame = (CGRect){
-            self.likeButton.frame.origin.x - kIconGap - _commentButton.frame.size.width,
-            kButtonInsets.top,
-            _commentButton.frame.size.width,
-            _commentButton.frame.size.height};
+        _commentButton.frame = [self resolveFrameForCommentButton:_commentButton];
     }
     return _commentButton;
 }
@@ -751,7 +747,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (!_likeButton && ![self.recipe isOwner]) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _likeButton.frame = [self resolveFrameForLikeButton:_likeButton];
+//        _likeButton.frame = [self resolveFrameForLikeButton:_likeButton];
+        _likeButton.frame = (CGRect) {
+            self.commentButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
+            kButtonInsets.top,
+            _likeButton.frame.size.width,
+            _likeButton.frame.size.height};
     }
     return _likeButton;
 }
@@ -1574,8 +1575,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.view addSubview:self.socialView];
         [self.view addSubview:self.editButton];
         [self.view addSubview:self.shareButton];
-        [self.view addSubview:self.likeButton];
         [self.view addSubview:self.commentButton];
+        [self.view addSubview:self.likeButton];
         [self.view addSubview:self.pinButton];
     }
     
@@ -1679,8 +1680,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                         // Reattach the like view which was adopted by Social.
                                                         // Also updates the positioning for this view as it is right
                                                         // aligned on the social screen.
+                                                        self.commentButton.alpha = 0.0;
+                                                        self.commentButton.frame = [self resolveFrameForCommentButton:self.commentButton];
+                                                        [self.view addSubview:self.commentButton];
+                                                        
                                                         self.likeButton.alpha = 0.0;
-                                                        self.likeButton.frame = [self resolveFrameForLikeButton:self.likeButton];
+                                                        self.likeButton.frame = (CGRect) {
+                                                            self.commentButton.frame.origin.x - kIconGap - self.likeButton.frame.size.width,
+                                                            kButtonInsets.top,
+                                                            self.likeButton.frame.size.width,
+                                                            self.likeButton.frame.size.height
+                                                        };
                                                         [self.view addSubview:self.likeButton];
                                                         
                                                         self.socialViewController = nil;
@@ -2436,29 +2446,29 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return pinned ? [UIImage imageNamed:@"cook_book_inner_icon_minus_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_add_light_onpress.png"];
 }
 
-- (CGRect)resolveFrameForLikeButton:(CKLikeView *)likeButton {
-    CGRect likeFrame = CGRectZero;
+- (CGRect)resolveFrameForCommentButton:(UIButton *)commentButton {
+    CGRect commentFrame = CGRectZero;
     if (self.pinButton) {
-        likeFrame = (CGRect){
-            self.pinButton.frame.origin.x - kIconGap - likeButton.frame.size.width,
+        commentFrame = (CGRect){
+            self.pinButton.frame.origin.x - kIconGap - commentButton.frame.size.width,
             kButtonInsets.top,
-            likeButton.frame.size.width,
-            likeButton.frame.size.height};
+            commentButton.frame.size.width,
+            commentButton.frame.size.height};
     } else if (self.shareButton) {
-        likeFrame = (CGRect){
-            self.pinButton.frame.origin.x - kIconGap - likeButton.frame.size.width,
+        commentFrame = (CGRect){
+            self.pinButton.frame.origin.x - kIconGap - commentButton.frame.size.width,
             kButtonInsets.top,
-            likeButton.frame.size.width,
-            likeButton.frame.size.height};
+            commentButton.frame.size.width,
+            commentButton.frame.size.height};
     } else {
-        likeFrame = (CGRect){
-            self.view.frame.size.width - kButtonInsets.right - likeButton.frame.size.width,
+        commentFrame = (CGRect){
+            self.view.frame.size.width - kButtonInsets.right - commentButton.frame.size.width,
             kButtonInsets.top,
-            likeButton.frame.size.width,
-            likeButton.frame.size.height
+            commentButton.frame.size.width,
+            commentButton.frame.size.height
         };
     }
-    return likeFrame;
+    return commentFrame;
 }
 
 @end

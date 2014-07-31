@@ -130,9 +130,31 @@
     // Keeps track of the required width.
     CGFloat requiredWidth = kContentInsets.left;
     
+    // Update like icon.
+    self.likeIconView.frame = (CGRect){
+        kContentInsets.left,// self.commentsLabel.frame.origin.x + self.commentsLabel.frame.size.width + kInterItemGap,
+        floorf((kContentHeight - self.likeIconView.frame.size.height) / 2.0),
+        self.likeIconView.frame.size.width,
+        self.likeIconView.frame.size.height
+    };
+    requiredWidth += self.likeIconView.frame.size.width;
+    requiredWidth += kIconStatGap;
+    
+    // Update likes label.
+    self.likeLabel.text = [DataHelper friendlyDisplayForCount:numLikes];
+    [self.likeLabel sizeToFit];
+    self.likeLabel.frame = (CGRect){
+        self.likeIconView.frame.origin.x + self.likeIconView.frame.size.width + kIconStatGap,
+        floorf((kContentHeight - self.likeLabel.frame.size.height) / 2.0) - 1.0,
+        self.likeLabel.frame.size.width,
+        self.likeLabel.frame.size.height
+    };
+    requiredWidth += self.likeLabel.frame.size.width;
+    requiredWidth += kContentInsets.right;
+    
     // Comments icon.
     self.messageIconView.frame = (CGRect){
-        kContentInsets.left,
+        self.likeLabel.frame.origin.x + self.likeLabel.frame.size.width + kInterItemGap,
         floorf((kContentHeight - self.messageIconView.frame.size.height) / 2.0),
         self.messageIconView.frame.size.width,
         self.messageIconView.frame.size.height
@@ -150,28 +172,6 @@
     };
     requiredWidth += self.commentsLabel.frame.size.width;
     requiredWidth += kInterItemGap;
-    
-    // Update like icon.
-    self.likeIconView.frame = (CGRect){
-        self.commentsLabel.frame.origin.x + self.commentsLabel.frame.size.width + kInterItemGap,
-        floorf((kContentHeight - self.likeIconView.frame.size.height) / 2.0),
-        self.likeIconView.frame.size.width,
-        self.likeIconView.frame.size.height
-    };
-    requiredWidth += self.likeIconView.frame.size.width;
-    requiredWidth += kIconStatGap;
-    
-    // Update likes label.
-    self.likeLabel.text = [DataHelper friendlyDisplayForCount:numLikes];
-    [self.likeLabel sizeToFit];
-    self.likeLabel.frame = (CGRect){
-        self.likeIconView.frame.origin.x + self.likeIconView.frame.size.width + kIconStatGap,
-        floorf((kContentHeight - self.commentsLabel.frame.size.height) / 2.0) - 1.0,
-        self.likeLabel.frame.size.width,
-        self.likeLabel.frame.size.height
-    };
-    requiredWidth += self.likeLabel.frame.size.width;
-    requiredWidth += kContentInsets.right;
     
     // Update frame.
     self.frame = (CGRect){0.0, 0.0, requiredWidth, kContentHeight};
