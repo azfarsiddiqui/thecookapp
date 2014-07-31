@@ -11,6 +11,7 @@
 #pragma mark - Model class
 
 NSString *const kModelAttrName                  = @"name";
+NSString *const kModelAttrLocalisedFormats      = @"localisedFormats";
 NSString *const kModelObjectId                  = @"objectId";
 NSString *const kModelAttrCreatedAt             = @"createdAt";
 NSString *const kModelAttrUpdatedAt             = @"updatedAt";

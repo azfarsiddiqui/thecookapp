@@ -17,6 +17,7 @@
 		760534EF17E974FA00EBC54F /* cook_intro_icon_share.png in Resources */ = {isa = PBXBuildFile; fileRef = 760534ED17E974FA00EBC54F /* cook_intro_icon_share.png */; };
 		760534F017E974FA00EBC54F /* cook_intro_icon_share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 760534EE17E974FA00EBC54F /* cook_intro_icon_share@2x.png */; };
 		7605B4BD170A54B800216DF1 /* CKUserProfilePhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7605B4BC170A54B800216DF1 /* CKUserProfilePhotoView.m */; };
+		7606D87C1988B84800511817 /* LocalisationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7606D87B1988B84800511817 /* LocalisationHelper.m */; };
 		76091F45175069C400018E6E /* CKPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76091F3F175069C400018E6E /* CKPagingView.m */; };
 		76091F46175069C400018E6E /* cook_dash_dot_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F41175069C400018E6E /* cook_dash_dot_off.png */; };
 		76091F47175069C400018E6E /* cook_dash_dot_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F42175069C400018E6E /* cook_dash_dot_off@2x.png */; };
@@ -1686,6 +1687,8 @@
 		760534EE17E974FA00EBC54F /* cook_intro_icon_share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_intro_icon_share@2x.png"; sourceTree = "<group>"; };
 		7605B4BB170A54B800216DF1 /* CKUserProfilePhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUserProfilePhotoView.h; sourceTree = "<group>"; };
 		7605B4BC170A54B800216DF1 /* CKUserProfilePhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUserProfilePhotoView.m; sourceTree = "<group>"; };
+		7606D87A1988B84800511817 /* LocalisationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalisationHelper.h; sourceTree = "<group>"; };
+		7606D87B1988B84800511817 /* LocalisationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalisationHelper.m; sourceTree = "<group>"; };
 		76091F3E175069C400018E6E /* CKPagingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPagingView.h; sourceTree = "<group>"; };
 		76091F3F175069C400018E6E /* CKPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPagingView.m; sourceTree = "<group>"; };
 		76091F41175069C400018E6E /* cook_dash_dot_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_off.png; sourceTree = "<group>"; };
@@ -4659,6 +4662,8 @@
 				762AEF741928CC4300B3AD6C /* PaginationHelper.m */,
 				7668AC9F198209EE00873E51 /* CloudCodeHelper.h */,
 				7668ACA0198209EE00873E51 /* CloudCodeHelper.m */,
+				7606D87A1988B84800511817 /* LocalisationHelper.h */,
+				7606D87B1988B84800511817 /* LocalisationHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9212,6 +9217,7 @@
 				76496324181014C60014047B /* AddRecipeLayout.m in Sources */,
 				76964E511908D156004E4158 /* CKCollectionViewSpringsHelper.m in Sources */,
 				76558EBC17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m in Sources */,
+				7606D87C1988B84800511817 /* LocalisationHelper.m in Sources */,
 				76A3956317FE9F8700DF249A /* ProfileViewController.m in Sources */,
 				76735C8E17BA16780027CA3B /* BookRecipeGridLargeCell.m in Sources */,
 				76A8CB9C1715998400A6B14B /* CKRecipeSocialView.m in Sources */,

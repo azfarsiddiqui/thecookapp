@@ -280,36 +280,36 @@
 "MAINS" = "SECONDI";
 
 // Name of book that contains vegetarian recipes
-"VEGETARIAN" = "VEGETARIANO";
+"Vegetarian" = "Vegetariano";
 "Tasy vegetarian & vegan" = "Squisite ricette vegetariane e vegane";
 
 // Name of book that contains recipes relating to baking.
-"BAKING" = "AL FORNO";
+"Baking" = "Al Forno";
 "Fresh from the oven" = "Appena sfornato";
 
 // Name of book that contains desserts
-"DESSERT" = "DOLCI";
+"Dessert" = "Dolci";
 "A delicious end to every meal" = "Per finire il pasto in dolcezza";
 
 // Name of book that contains recipes that doesn't take very long to make.
-"QUICK" = "VELOCI";
+"Quick" = "Veloci";
 "Meals in 30 minutes or less" = "Piatti in 30 minuti o meno";
 
 // Recipes for drinks.
-"DRINKS" = "DRINK";
+"Drinks" = "Drink";
 "Recipes to quench your thirst" = "Ricette per dissetarti";
 
 // Book made by the team at Cook
-"COOK TEAM" = "TEAM COOK";
+"Cook Team" = "Team Cook";
 "The heart and soul of cook" = "Il cuore e l'anima di Cook";
 
 // Healthy recipes
-"HEALTHY" = "SALUTARI";
+"Healthy" = "Salutari";
 "You are what you eat" = "Siamo ciò che mangiamo";
 
 // Great chefs
-"MASTERS" = "MASTER";
-"CHEFS" = "CHEF";
+"Masters" = "Master";
+"Chefs" = "Chef";
 
 // Reporting offensive or inappropriate content to the Cook team for moderation purposes.
 "Report a Recipe to Cook" = "Segnala una ricetta a Cook";

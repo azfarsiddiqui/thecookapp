@@ -280,36 +280,36 @@
 "MAINS" = "PLATS PRINCIPAUX";
 
 // Name of book that contains vegetarian recipes
-"VEGETARIAN" = "VEGETARIEN";
+"Vegetarian" = "Vegetarien";
 "Tasy vegetarian & vegan" = "Végétarien & végétalien savoureux";
 
 // Name of book that contains recipes relating to baking.
-"BAKING" = "A CUIRE";
+"Baking" = "A Cuire";
 "Fresh from the oven" = "Cuit au four";
 
 // Name of book that contains desserts
-"DESSERT" = "DESSERT";
+"Dessert" = "Dessert";
 "A delicious end to every meal" = "Une délicieuse fin pour chaque plat";
 
 // Name of book that contains recipes that doesn't take very long to make.
-"QUICK" = "RAPIDE";
+"Quick" = "Rapide";
 "Meals in 30 minutes or less" = "Plats en 30 minutes ou moins";
 
 // Recipes for drinks.
-"DRINKS" = "BOISSONS";
+"Drinks" = "Boissons";
 "Recipes to quench your thirst" = "Recettes pour étancher votre soif";
 
 // Book made by the team at Cook
-"COOK TEAM" = "L'EQUIPE COOK";
+"Cook Team" = "L'équipe Cook";
 "The heart and soul of cook" = "Le coeur et l'âme de cook";
 
 // Healthy recipes
-"HEALTHY" = "BON POUR LA SANTE";
+"Healthy" = "Bon Pour La Sante";
 "You are what you eat" = "Vous êtes ce que vous mangez";
 
 // Great chefs
-"MASTERS" = "MAÎTRES";
-"CHEFS" = "CHEFS";
+"Masters" = "Maîtres";
+"Chefs" = "Chefs";
 
 // Reporting offensive or inappropriate content to the Cook team for moderation purposes.
 "Report a Recipe to Cook" = "Signaler une recette à Cook";

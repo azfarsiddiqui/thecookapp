@@ -35,6 +35,9 @@ typedef void(^PaginatedListSuccessBlock)(NSArray *items, NSUInteger totalCount, 
 @property (nonatomic, readonly) NSDate *updatedDateTime;
 @property (nonatomic, readonly) NSDate *modelUpdatedDateTime;
 
+// Localisation Format
+@property (nonatomic, strong) NSDictionary *localisationFormats;
+
 + (NSError *)errorWithMessage:(NSString *)errorMessage;
 + (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;
 //default security - read/write by current user, read by public
@@ -52,5 +55,10 @@ typedef void(^PaginatedListSuccessBlock)(NSArray *items, NSUInteger totalCount, 
 - (NSDictionary *)descriptionProperties;
 - (BOOL)persisted;
 - (BOOL)dataAvailable;
+
+// Localisation.
+
+- (BOOL)localised;
+- (NSString *)localisedValueForKey:(NSString *)key;
 
 @end
