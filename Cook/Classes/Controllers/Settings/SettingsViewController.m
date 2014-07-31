@@ -146,7 +146,7 @@
         profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         profileLabel.shadowColor = [UIColor blackColor];
         profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        profileLabel.text = (self.currentUser == nil) ? NSLocalizedString(@"SIGN IN", nil) : [[self.currentUser friendlyName] uppercaseString];
+        profileLabel.text = (self.currentUser == nil) ? NSLocalizedString(@"SIGN IN", nil) : NSLocalizedString(@"LOGOUT", nil); //[[self.currentUser friendlyName] uppercaseString];
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
@@ -471,7 +471,14 @@
 - (void)processLoginLogout {
     
     if ([self.currentUser isSignedIn]) {
-        [self.delegate settingsViewControllerAccountRequested];
+//        [self.delegate settingsViewControllerAccountRequested];
+        [CKUser logoutWithCompletion:^{
+            
+            // Post logout.
+            [EventHelper postLogout];
+        } failure:^(NSError *error) {
+        }];
+
     } else {
         [self.delegate settingsViewControllerSignInRequested];
     }
