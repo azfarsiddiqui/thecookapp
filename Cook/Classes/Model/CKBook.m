@@ -168,7 +168,7 @@
 + (PFObject *)createParseBook {
     
     PFObject *parseBook = [self objectWithDefaultSecurityWithClassName:kBookModelName];
-    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:NSLocalizedString(kBookAttrDefaultNameValue, nil) forKey:kModelAttrName];
     [parseBook setObject:kBookAttrDefaultCaptionValue forKey:kBookAttrCaption];
     [parseBook setObject:[CKBookCover initialCover] forKey:kBookAttrCover];
     [parseBook setObject:[CKBookCover initialIllustration] forKey:kBookAttrIllustration];
