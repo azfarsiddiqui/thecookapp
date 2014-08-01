@@ -266,7 +266,42 @@
 "Your Name" = "Uw naam";
 "My favorite recipes and food" = "Mijn favoriete recepten en voeding";
 
-// Default description for a book from a particular country (see placeholder)
+// ------------------------------------------------------------------------------------------------------------------ //
+// Collection books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Collection books tagline.
+"Delicious %@ recipes" = "Heerlijke %@ recepten";
+
+// Generic.
+"Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Heerlijke %@ recepten.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// Vegetarian
+"Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Lekker vegetarisch en veganistisch.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// Baking
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Vers uit de oven.\u2028E Tag your Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden."
+
+// Dessert
+"A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "Een heerlijke afsluiter van elke maaltijd.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// Quick.
+"Meals in 30 minutes or less. Tag your recipe appropriately to help other people find it" = "Maaltijden in 30 minuten of minder.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// Drinks
+"Recipes to quench your thirst. Tag your recipe appropriately to help other people find it" = "Recepten om uw dorst te lessen.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// Healthy.
+"You are what you eat. Tag your recipe appropriately to help other people find it" = "Je bent wat je eet.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// World books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Tagline
+"Delicious recipes from %@" = "Heerlijke recepten uit %@";
+
+// Summary
 "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Heerlijke recepten, gedeeld door onze collega-koks uit heel %@. Om bij te dragen hoeft u Cook alleen toe te laten uw locatie te bepalen wanneer u uw recepten voor het publiek openstelt.";
 
 // Name of common pages or meal types within a book.
