@@ -277,7 +277,7 @@
 "Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Délicieuses recettes %@.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
 
 // Vegetarian
-"Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Végétarien & végétalien savoureux.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+"Tasty vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Végétarien & végétalien savoureux.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
 
 // Baking
 "Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Cuit au four.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
@@ -319,7 +319,7 @@
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetarien";
-"Tasy vegetarian & vegan" = "Végétarien & végétalien savoureux";
+"Tasty vegetarian & vegan" = "Végétarien & végétalien savoureux";
 
 // Name of book that contains recipes relating to baking.
 "Baking" = "A Cuire";

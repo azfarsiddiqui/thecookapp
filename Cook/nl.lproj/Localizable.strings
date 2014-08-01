@@ -277,7 +277,7 @@
 "Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Heerlijke %@ recepten.\n Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
 
 // Vegetarian
-"Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Lekker vegetarisch en veganistisch.\n Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+"Tasty vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Lekker vegetarisch en veganistisch.\n Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
 
 // Baking
 "Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Vers uit de oven.\n Tag your Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
@@ -319,7 +319,7 @@
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetarisch";
-"Tasy vegetarian & vegan" = "Lekker vegetarisch en veganistisch";
+"Tasty vegetarian & vegan" = "Lekker vegetarisch en veganistisch";
 
 // Name of book that contains recipes relating to baking.
 "Baking" = "Bakken";
