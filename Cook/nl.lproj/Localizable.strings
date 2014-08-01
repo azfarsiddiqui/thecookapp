@@ -367,3 +367,31 @@
 "Gluten Free" = "Glutenvrij";
 "Vegan" = "Veganist";
 "Vegetarian" = "Vegetariër";
+
+// Countries
+"United States" = "Verenigde Staten";
+"United Kingdom" = "Verenigd Koninkrijk";
+"Australia" = "Australië";
+"Spain" = "Spanje";
+"Philippines" = "Filippijnen";
+"Italy" = "Italië";
+"Mexico" = "Mexico";
+"Germany" = "Duitsland";
+"Brazil" = "Brazilië";
+"Canada" = "Canada";
+"New Zealand" = "Nieuw-Zeeland";
+"Denmark" = "Denemarken";
+"India" = "India";
+"Turkey" = "Turkije";
+"France" = "Frankrijk";
+"Netherlands" = "Nederland";
+"Norway" = "Noorwegen";
+"Sweden" = "Zweden";
+"Finland" = "Finland";
+"China" = "China";
+"Russia" = "Rusland";
+"Japan" = "Japan";
+"Korea" = "Korea";
+"Malaysia" = "Maleisië";
+"Singapore" = "Singapore";
+"Indonesia" = "Indonesië";
