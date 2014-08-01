@@ -414,7 +414,6 @@
 "Sugar Free" = "Sugar Free";
 "Gluten Free" = "Gluten Free";
 "Vegan" = "Vegan";
-"Vegetarian" = "Vegetarian";
 
 // Collection Tagline, where %@ placeholder is for example: Vegetarian, Dessert etc.
 "%@ recipes from around the world" = "%@ recipes from around the world";

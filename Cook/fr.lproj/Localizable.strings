@@ -328,7 +328,7 @@
 "VEGAN" = "VÉGÉTALIEN";
 
 // Name of book that contains vegetarian recipes
-"Vegetarian" = "Vegetarien";
+"Vegetarian" = "Végétarien";
 "Tasty vegetarian & vegan" = "Végétarien & végétalien savoureux";
 
 // Name of book that contains recipes relating to baking.
@@ -414,7 +414,6 @@
 "Sugar Free" = "Sans sucre";
 "Gluten Free" = "Sans gluten";
 "Vegan" = "Végétalien";
-"Vegetarian" = "Végétarien";
 
 // Countries
 "United States" = "États-Unis";
