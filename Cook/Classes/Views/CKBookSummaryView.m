@@ -421,9 +421,8 @@
         self.nameLabel.textColor = [Theme storeBookSummaryNameColour];
         self.nameLabel.shadowColor = [UIColor blackColor];
         self.nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        self.nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.nameLabel.numberOfLines = 1;
-        self.nameLabel.minimumScaleFactor = 0.8;
+        self.nameLabel.textAlignment = NSTextAlignmentCenter;
         self.nameLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:self.nameLabel];
     }
