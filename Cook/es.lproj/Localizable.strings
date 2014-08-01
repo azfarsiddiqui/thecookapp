@@ -277,7 +277,7 @@
 "Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Recetas deliciosos %@.\u2028 Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
 
 // Vegetarian
-"Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Sabrosas vegetarianas y veganas.\u2028 Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla".;
+"Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Sabrosas vegetarianas y veganas.\u2028 Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
 
 // Baking
 "Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Recién horneada.\u2028 Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
@@ -293,6 +293,9 @@
 
 // Healthy.
 "You are what you eat. Tag your recipe appropriately to help other people find it" = "Somos lo que comemos.\u2028 Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Excelentes recetas compartidas por los chefs.";
 
 // ------------------------------------------------------------------------------------------------------------------ //
 // World books.

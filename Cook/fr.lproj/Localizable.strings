@@ -280,7 +280,7 @@
 "Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Végétarien & végétalien savoureux.\u2028E Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
 
 // Baking
-"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Cuit au four.\u2028E Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver."
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Cuit au four.\u2028E Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
 
 // Dessert
 "A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "Une délicieuse fin pour chaque plat.\u2028E Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
@@ -293,6 +293,9 @@
 
 // Healthy.
 "You are what you eat. Tag your recipe appropriately to help other people find it" = "Vous êtes ce que vous mangez.\u2028E Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Délicieuses recettes partagées par nos chefs.";
 
 // ------------------------------------------------------------------------------------------------------------------ //
 // World books.

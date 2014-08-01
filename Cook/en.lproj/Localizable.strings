@@ -280,7 +280,7 @@
 "Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Tasy vegetarian & vegan.\u2028E Tag your recipe appropriately to help other people find it.";
 
 // Baking
-"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Fresh from the oven.\u2028E Tag your recipe appropriately to help other people find it."
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Fresh from the oven.\u2028E Tag your recipe appropriately to help other people find it.";
 
 // Dessert
 "A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "A delicious end to every meal.\u2028E Tag your recipe appropriately to help other people find it.";
@@ -293,6 +293,9 @@
 
 // Healthy.
 "You are what you eat. Tag your recipe appropriately to help other people find it" = "You are what you eat.\u2028E Tag your recipe appropriately to help other people find it.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Great recipes shared by chefs.";
 
 // ------------------------------------------------------------------------------------------------------------------ //
 // World books.
@@ -411,9 +414,6 @@
 
 // Collections Quick Alternate Description
 "To contribute create public recipes that take 30 minutes or less." = "To contribute create public recipes that take 30 minutes or less.";
-
-// World Book Tagline, where %@ placeholder is for example: USA, Australia etc.
-"Delicious Recipes from %@" = "Delicious Recipes from %@";
 
 // World Book Description, where %@ placeholder is for example: USA, Australia etc.
 "Recipes shared by fellow Cooks from %@. To contribute to your country's book simply allow Cook to locate you when setting your recipes to public." = "Recipes shared by fellow Cooks from %@. To contribute to your country's book simply allow Cook to locate you when setting your recipes to public.";

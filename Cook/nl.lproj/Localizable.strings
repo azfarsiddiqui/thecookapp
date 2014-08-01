@@ -280,7 +280,7 @@
 "Tasy vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Lekker vegetarisch en veganistisch.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
 
 // Baking
-"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Vers uit de oven.\u2028E Tag your Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden."
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Vers uit de oven.\u2028E Tag your Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
 
 // Dessert
 "A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "Een heerlijke afsluiter van elke maaltijd.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
@@ -293,6 +293,9 @@
 
 // Healthy.
 "You are what you eat. Tag your recipe appropriately to help other people find it" = "Je bent wat je eet.\u2028E Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Grote recepten gedeeld door chef-koks.";
 
 // ------------------------------------------------------------------------------------------------------------------ //
 // World books.
