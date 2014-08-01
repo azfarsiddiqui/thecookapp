@@ -316,6 +316,11 @@
 "BREAKFAST" = "ONTBIJT";
 "STARTERS" = "VOORGERECHTEN";
 "MAINS" = "HOOFDGERECHTEN";
+"DESSERTS" = "DESSERTS";
+"GLUTEN FREE" = "GLUTENVRIJ";
+"SUGAR FREE" = "SUIKERVRIJ";
+"LOW FAT" = "VETARM";
+"VEGAN" = "VEGANIST";
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetarisch";

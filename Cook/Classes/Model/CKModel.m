@@ -150,8 +150,8 @@
             NSArray *keys = nil;
             if ([keysObj isKindOfClass:[NSArray class]]) {
                 keys = (NSArray *)keysObj;
+                localisedValue = [LocalisationHelper stringWithPlaceholderFormat:format placeholderKeys:keys];
             }
-            localisedValue = [LocalisationHelper stringWithPlaceholderFormat:format placeholderKeys:keys];
             
         }
     }

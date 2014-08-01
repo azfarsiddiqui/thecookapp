@@ -316,6 +316,11 @@
 "BREAKFAST" = "CAFÉ DA MANHÃ";
 "STARTERS" = "ENTRADAS";
 "MAINS" = "PRATOS PRINCIPAIS";
+"DESSERTS" = "SOBREMESAS";
+"GLUTEN FREE" = "SEM GLÚTEN";
+"SUGAR FREE" = "SEM AÇÚCAR";
+"LOW FAT" = "POUCA GORDURA";
+"VEGAN" = "VEGANO";
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetariano";

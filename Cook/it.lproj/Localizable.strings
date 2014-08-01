@@ -316,6 +316,11 @@
 "BREAKFAST" = "COLAZIONE";
 "STARTERS" = "ANTIPASTI";
 "MAINS" = "SECONDI";
+"DESSERTS" = "DESSERT";
+"GLUTEN FREE" = "NO GLUTINE";
+"SUGAR FREE" = "NO ZUCCHERO";
+"LOW FAT" = "BASSO GRASSI";
+"VEGAN" = "VEGANO";
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetariano";
@@ -400,7 +405,7 @@
 "Breakfast" = "Colazione";
 "Baking" = "Al forno";
 "Dairy Free" = "No latte";
-"Low Fat" = "Pochi gr.";
+"Low Fat" = "Basso grassi";
 "Sugar Free" = "No zucchero";
 "Gluten Free" = "No glutine";
 "Vegan" = "Vegano";

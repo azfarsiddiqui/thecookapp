@@ -577,7 +577,13 @@
 
 - (BookContentTitleView *)contentTitleView {
     if (!_contentTitleView) {
-        _contentTitleView = [[BookContentTitleView alloc] initWithTitle:self.page];
+        
+        NSString *pageName = self.page;
+        if ([self.book localisedForPage:pageName]) {
+            pageName = NSLocalizedString(pageName, nil);
+        }
+
+        _contentTitleView = [[BookContentTitleView alloc] initWithTitle:pageName];
         _contentTitleView.userInteractionEnabled = NO;
     }
     return _contentTitleView;

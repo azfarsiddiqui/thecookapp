@@ -2351,6 +2351,11 @@
         
         NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
         if ([pageName length] > 0) {
+            
+            if ([self.book localisedForPage:pageName]) {
+                pageName = NSLocalizedString(pageName, nil);
+            }
+            
             [navigationTitle appendFormat:@" - %@", pageName];
         }
         

@@ -316,6 +316,11 @@
 "BREAKFAST" = "BREAKFAST";
 "STARTERS" = "STARTERS";
 "MAINS" = "MAINS";
+"DESSERTS" = "DESSERTS";
+"GLUTEN FREE" = "GLUTEN FREE";
+"SUGAR FREE" = "SUGAR FREE";
+"LOW FAT" = "LOW FAT";
+"VEGAN" = "VEGAN";
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetarian";

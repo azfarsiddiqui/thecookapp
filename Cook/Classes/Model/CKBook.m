@@ -874,6 +874,27 @@
     return (self.coverPhotoFile != nil);
 }
 
+- (BOOL)localisedForPage:(NSString *)page {
+    if (!self.localised) {
+        return NO;
+    }
+    
+    BOOL localisedForPage = NO;
+    
+    NSDictionary *keyFormats = [self.localisationFormats objectForKey:@"pages"];
+    
+    if ([keyFormats count] > 0) {
+        NSArray *pages = nil;
+        id keysObj = [keyFormats objectForKey:@"keys"];
+        if ([keysObj isKindOfClass:[NSArray class]]) {
+            pages = (NSArray *)keysObj;
+            localisedForPage = [pages containsObject:page];
+        }
+    }
+    
+    return localisedForPage;
+}
+
 - (void)setCoverPhotoFile:(PFFile *)coverPhotoFile {
     if (coverPhotoFile) {
         [self.parseObject setObject:coverPhotoFile forKey:kBookAttrCoverPhoto];

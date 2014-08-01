@@ -316,6 +316,11 @@
 "BREAKFAST" = "PETIT-DEJEUNER";
 "STARTERS" = "ENTREES";
 "MAINS" = "PLATS PRINCIPAUX";
+"DESSERTS" = "DESSERTS";
+"GLUTEN FREE" = "SANS GLUTEN";
+"SUGAR FREE" = "SANS SUCRE";
+"LOW FAT" = "FAIBLE EN GRAS";
+"VEGAN" = "VÉGÉTALIEN";
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetarien";

@@ -316,6 +316,11 @@
 "BREAKFAST" = "FRÜHSTÜCK";
 "STARTERS" = "VORSPEISEN";
 "MAINS" = "HAUPTGERICHTE";
+"DESSERTS" = "DESSERTS";
+"GLUTEN FREE" = "GLUTENFREI";
+"SUGAR FREE" = "ZUCKERFREI";
+"LOW FAT" = "FETTARM";
+"VEGAN" = "VEGANISCHES";
 
 // Name of book that contains vegetarian recipes
 "Vegetarian" = "Vegetarisch";
@@ -404,7 +409,7 @@
 "Sugar Free" = "Zuckerfrei";
 "Gluten Free" = "Glutenfrei";
 "Vegan" = "Vegan";
-"Vegetarian" = "Vegetar.";
+"Vegetarian" = "Vegetarisch";
 
 // Countries
 "United States" = "USA";
