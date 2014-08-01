@@ -1,0 +1,68 @@
+
+{ "title" : { "format" : "Quick", "keys" : [] }, "caption" : { "format" : "Meals in 30 minutes or less", "keys" : [ "Quick" ] }, "summary" : { "format" : "Meals in 30 minutes or less. Tag your recipe appropriately to help other people find it", "keys" : [] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+{ "title" : { "format" : "Dessert", "keys" : [] }, "caption" : { "format" : "A delicious end to every meal", "keys" : [ "Dessert" ] }, "summary" : { "format" : "A delicious end to every meal. Tag your recipe appropriately to help other people find it", "keys" : [] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+{ "title" : { "format" : "Baking", "keys" : [] }, "caption" : { "format" : "Fresh from the oven", "keys" : [ "Baking" ] }, "summary" : { "format" : "Fresh from the oven. Tag your recipe appropriately to help other people find it", "keys" : [] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+{ "title" : { "format" : "Drinks", "keys" : [] }, "caption" : { "format" : "Recipes to quench your thirst", "keys" : [ "Drinks" ] }, "summary" : { "format" : "Recipes to quench your thirst. Tag your recipe appropriately to help other people find it", "keys" : [] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+{ "title" : { "format" : "Vegetarian", "keys" : [] }, "caption" : { "format" : "Tasty vegetarian & vegan", "keys" : [ "Vegetarian" ] }, "summary" : { "format" : "Tasty vegetarian & vegan. Tag your recipe appropriately to help other people find it", "keys" : [] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+{ "title" : { "format" : "Healthy", "keys" : [] }, "caption" : { "format" : "You are what you eat", "keys" : [ "Healthy" ] }, "summary" : { "format" : "You are what you eat. Tag your recipe appropriately to help other people find it", "keys" : [] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+{ "title" : { "format" : "Kids", "keys" : [] }, "caption" : { "format" : "%@ recipes", "keys" : [ "Kids" ] }, "summary" : { "format" : "Delicious %@ recipes. Tag your recipe appropriately to help other people find it", "keys" : [ "Kids" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"] } }
+
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "United States" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "United States" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "United Kingdom" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "United Kingdom" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Australia" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Australia" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Spain" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Spain" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Philippines" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Philippines" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Italy" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Italy" ] } }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Mexico" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Mexico" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Germany" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Germany" ], "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Brazil" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Brazil" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Canada" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Canada" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "New Zealand" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "New Zealand" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Denmark" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Denmark" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "India" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "India" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Turkey" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Turkey" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "France" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "France" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+{ "caption" : { "format" : "Delicious recipes from %@", "keys" : [ "Netherlands" ] }, "summary" : { "format" : "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public.", "keys" : [ "Netherlands" ] }, "pages" : { "keys" : ["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"] } }
+
+{ "title" : { "format" : "Cook Team", "keys" : [] }, "caption" : { "format" : "The heart and soul of cook", "keys" : [] }, "summary" : { "format" : "Great recipes shared by chefs.", "keys" : [] } }
+{ "title" : { "format" : "Masters", "keys" : [] }, "summary" : { "format" : "Great recipes shared by chefs.", "keys" : [] } }
+{ "title" : { "format" : "Chefs", "keys" : [] }, "summary" : { "format" : "Great recipes shared by chefs.", "keys" : [] } }
+
+--
+
+{ "name" : { "key" : "Quick" } }
+{ "name" : { "key" : "Dessert" } }
+{ "name" : { "key" : "Baking" } }
+{ "name" : { "key" : "Drinks" } }
+{ "name" : { "key" : "Vegetarian" } }
+{ "name" : { "key" : "Healthy" } }
+{ "name" : { "key" : "Kids" } }
+
+{ "name" : { "key" : "United States" } }
+{ "name" : { "key" : "United Kingdom" } }
+{ "name" : { "key" : "Australia" } }
+{ "name" : { "key" : "Spain" } }
+{ "name" : { "key" : "Philippines" } }
+{ "name" : { "key" : "Italy" } }
+{ "name" : { "key" : "Mexico" } }
+{ "name" : { "key" : "Germany" } }
+{ "name" : { "key" : "Brazil" } }
+{ "name" : { "key" : "Canada" } }
+{ "name" : { "key" : "New Zealand" } }
+{ "name" : { "key" : "Denmark" } }
+{ "name" : { "key" : "India" } }
+{ "name" : { "key" : "Turkey" } }
+{ "name" : { "key" : "France" } }
+{ "name" : { "key" : "Netherlands" } }
+
+{ "name" : { "key" : "Cook Team" } }
+{ "name" : { "key" : "Masters" } }
+{ "name" : { "key" : "Chefs" } }
+
+["LATEST","POPULAR","TOP 100","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
+["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"]
+["LATEST","POPULAR","TOP 100","SUGAR FREE","DAIRY FREE","LOW FAT"]
+["LATEST","POPULAR","TOP 100","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
+["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"]
+["LATEST","POPULAR","TOP 100","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
+["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
