@@ -2366,7 +2366,7 @@
 }
 
 - (NSString *)bookNavigationAuthorName {
-    return [self.book author];
+    return [self.book userName];
 }
 
 - (void)updateNavigationTitleWithPage:(NSString *)page offset:(CGFloat)offset {
