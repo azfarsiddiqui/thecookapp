@@ -271,7 +271,7 @@
 // ------------------------------------------------------------------------------------------------------------------ //
 
 // Collection books tagline.
-"Delicious %@ recipes" = "Heerlijke %@ recepten";
+"%@ recipes" = "%@ recepten";
 
 // Generic.
 "Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Heerlijke %@ recepten.\n Geef uw recept een geschikt label zodat andere mensen het gemakkelijk vinden.";
