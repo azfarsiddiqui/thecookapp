@@ -95,7 +95,7 @@
 }
 
 + (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected {
-    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_new_blank" cover:cover selected:selected]];
+    return [UIImage imageNamed:[self imageNameForBaseName:NSLocalizedString(@"cook_book_inner_category_new", nil) cover:cover selected:selected]];
 }
 
 + (UIImage *)outlineImageForCover:(NSString *)cover left:(BOOL)left {
