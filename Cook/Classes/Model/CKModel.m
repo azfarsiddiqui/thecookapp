@@ -132,12 +132,21 @@
     NSString *localisedValue = nil;
     
     NSDictionary *keyFormats = [self.localisationFormats objectForKey:key];
+    
     if ([keyFormats count] > 0) {
+        
+        NSString *key = [keyFormats objectForKey:@"key"];
         NSString *format = [keyFormats objectForKey:@"format"];
         id keysObj = [keyFormats objectForKey:@"keys"];
         
-        if ([format length] > 0) {
+        if ([key length] > 0) {
             
+            // Direct localisation via key.
+            return NSLocalizedString(key, nil);
+            
+        } else if ([format length] > 0) {
+            
+            // Localisation via format then further localisation via given keys.
             NSArray *keys = nil;
             if ([keysObj isKindOfClass:[NSArray class]]) {
                 keys = (NSArray *)keysObj;
@@ -173,7 +182,11 @@
 }
 
 - (NSString *)name {
-    return [self.parseObject objectForKey:kModelAttrName];
+    if (self.nameLocalised) {
+        return [self localisedValueForKey:@"name"];
+    } else {
+        return [self.parseObject objectForKey:kModelAttrName];
+    }
 }
 
 - (NSDictionary *)localisationFormats {
@@ -197,6 +210,10 @@
 
 - (NSString *)objectId {
     return self.parseObject.objectId;
+}
+
+- (BOOL)nameLocalised {
+    return ([[self localisedValueForKey:@"name"] length] > 0);
 }
 
 #pragma mark - NSObject

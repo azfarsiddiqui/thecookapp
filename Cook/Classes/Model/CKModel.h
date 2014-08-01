@@ -34,6 +34,7 @@ typedef void(^PaginatedListSuccessBlock)(NSArray *items, NSUInteger totalCount, 
 @property (nonatomic, readonly) NSDate *createdDateTime;
 @property (nonatomic, readonly) NSDate *updatedDateTime;
 @property (nonatomic, readonly) NSDate *modelUpdatedDateTime;
+@property (nonatomic, readonly) BOOL nameLocalised;
 
 // Localisation Format
 @property (nonatomic, strong) NSDictionary *localisationFormats;

@@ -379,7 +379,7 @@
 }
 
 - (NSString *)name {
-    if ([self captionLocalised]) {
+    if (self.captionLocalised) {
         return [self localisedValueForKey:@"caption"];
     } else {
         return [self.parseObject objectForKey:kModelAttrName];
@@ -428,7 +428,7 @@
 }
 
 - (NSString *)story {
-    if ([self summaryLocalised]) {
+    if (self.summaryLocalised) {
         return [self localisedValueForKey:@"summary"];
     } else {
         return [self.parseObject objectForKey:kBookAttrStory];
@@ -689,7 +689,7 @@
 
 - (NSString *)userName {
     
-    if ([self titleLocalised]) {
+    if (self.titleLocalised) {
         
         return [self localisedValueForKey:@"title"];
         

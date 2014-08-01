@@ -130,7 +130,7 @@
         }
         
         // Wrap name up.
-        if (![self.book titleLocalised]) {
+        if (!self.book.user.nameLocalised) {
             [self.editingHelper wrapEditingView:self.nameLabel
                                   contentInsets:(UIEdgeInsets){
                                       defaultInsets.top,
@@ -365,8 +365,8 @@
     
     // User name
     NSString *name = self.book.user.name;
-    if ([self.book titleLocalised]) {
-        name = [self.book userName];
+    if (self.book.user.nameLocalised) {
+        name = self.book.user.name;
     }
     [self updateName:name];
     
@@ -604,7 +604,7 @@
 - (void)updateNameEditMode:(BOOL)editMode {
     
     // No edit mode for localised titles.
-    if ([self.book titleLocalised]) {
+    if (self.book.user.nameLocalised) {
         editMode = NO;
     }
     self.nameLabel.textColor = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryNameColour];
