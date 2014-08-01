@@ -629,6 +629,22 @@ static ObjectFailureBlock loginFailureBlock = nil;
                                 }];
 }
 
+- (void)modifyAccountWithCurrentPassword:(NSString *)oldPassword
+                                newEmail:(NSString *)newEmail
+                             newPassword:(NSString *)newPassword
+                              completion:(BoolObjectSuccessBlock)completion
+                                 failure:(ObjectFailureBlock)failure {
+    [PFCloud callFunctionInBackground:@"changeAccount"
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{@"email": newEmail, @"password": oldPassword}] //Need to send new password too
+                                block:^(id object, NSError *error) {
+                                    if (!error) {
+                                        completion(YES);
+                                    } else {
+                                        failure(error);
+                                    }
+                                }];
+}
+
 #pragma mark - Properties
 
 - (void)setPassword:(NSString *)password {

@@ -85,6 +85,11 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 - (PFFile *)parseCoverPhotoFile;
 - (BOOL)hasProfilePhoto;
 - (NSString *)friendlyName;
+- (void)modifyAccountWithCurrentPassword:(NSString *)oldPassword
+                                newEmail:(NSString *)newEmail
+                             newPassword:(NSString *)newPassword
+                              completion:(BoolObjectSuccessBlock)completion
+                                 failure:(ObjectFailureBlock)failure;
 
 // Notifications
 - (void)numUnreadNotificationsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
