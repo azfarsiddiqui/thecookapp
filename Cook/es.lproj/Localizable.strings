@@ -402,3 +402,31 @@
 "Gluten Free" = "Sin gluten";
 "Vegan" = "Vegana";
 "Vegetarian" = "Vegetariana";
+
+// Countries
+"United States" = "Estados Unidos";
+"United Kingdom" = "Reino Unido";
+"Australia" = "Australia";
+"Spain" = "España";
+"Philippines" = "Filipinas";
+"Italy" = "Italia";
+"Mexico" = "México";
+"Germany" = "Alemania";
+"Brazil" = "Brasil";
+"Canada" = "Canadá";
+"New Zealand" = "Nueva Zelandia";
+"Denmark" = "Dinamarca";
+"India" = "India";
+"Turkey" = "Turquía";
+"France" = "Francia";
+"Netherlands" = "Países Bajos";
+"Norway" = "Noruega";
+"Sweden" = "Suecia";
+"Finland" = "Finlandia";
+"China" = "China";
+"Russia" = "Rusia";
+"Japan" = "Japón";
+"Korea" = "Corea";
+"Malaysia" = "Malasia";
+"Singapore" = "Singapur";
+"Indonesia" = "Indonesia";
