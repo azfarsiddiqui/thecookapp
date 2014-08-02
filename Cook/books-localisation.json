@@ -1,0 +1,211 @@
+// ------------------------------------------------------------------------------------------------------------------ //
+// World Books
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// United States
+{
+    "es" : {
+        "caption" : "Deliciosas recetas de Estados Unidos",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Estados Unidos. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "de" : {
+        "caption" : "Leckere Rezepte aus USA",
+        "summary" : "Köstliche, von anderen Köchen aus ganz USA geteilte Rezepte. Um beizutragen, erlauben Sie Cook einfach, Sie zu orten, wenn Sie Ihre Rezepte auf öffentlich stellen.",
+        "pages" : {
+            "LATEST" : "NEUESTE",
+            "POPULAR" : "BELIEBT",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "VORSPEISEN",
+            "MAINS" : "HAUPTGERICHTE",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr" : {
+        "caption" : "Délicieuses recettes d'États-Unis",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout États-Unis. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "it" : {
+        "caption" : "Deliziose ricette dalla United States",
+        "summary" : "Deliziose ricette condivise dagli amici cuochi provenienti da United States. Per contribuire, ti basta permettere a Cook la localizzazione quando imposti la pubblicazione delle tue ricette.",
+        "pages" : {
+            "LATEST" : "ULTIME",
+            "POPULAR" : "POPOLARI",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ANTIPASTI",
+            "MAINS" : "SECONDI",
+            "DESSERTS" : "DESSERT"
+        }
+    },
+    "nl" : {
+        "caption" : "Heerlijke recepten uit Verenigde Staten",
+        "summary" : "Heerlijke recepten, gedeeld door onze collega-koks uit heel Verenigde Staten. Om bij te dragen hoeft u Cook alleen toe te laten uw locatie te bepalen wanneer u uw recepten voor het publiek openstelt.",
+        "pages" : {
+            "LATEST" : "NIEUWSTE",
+            "POPULAR" : "POPULAIR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "VOORGERECHTEN",
+            "MAINS" : "HOOFDGERECHTEN",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "pt" : {
+        "caption" : "Receitas deliciosas da Estados Unidos",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Estados Unidos. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
+    }
+}
+
+// United Kingdom
+
+// Australia
+
+// Spain
+
+// Philippines
+
+// Italy
+
+// Mexico
+
+// Germany
+
+// Brazil
+
+// Canada
+
+// New Zealand
+
+// Denmark
+
+// India
+
+// Turkey
+
+// France
+
+// Netherlands
+
+
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Collections Books
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Quick
+{
+    "es" : {
+        "caption" : "Preparadas en menos de 30 minutos",
+        "summary" : "Preparadas en menos de 30 minutos.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "de" : {
+        "caption" : "Leckere Rezepte aus USA",
+        "summary" : "Köstliche, von anderen Köchen aus ganz USA geteilte Rezepte. Um beizutragen, erlauben Sie Cook einfach, Sie zu orten, wenn Sie Ihre Rezepte auf öffentlich stellen.",
+        "pages" : {
+            "LATEST" : "NEUESTE",
+            "POPULAR" : "BELIEBT",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "VORSPEISEN",
+            "MAINS" : "HAUPTGERICHTE",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr" : {
+        "caption" : "Délicieuses recettes d'États-Unis",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout États-Unis. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "it" : {
+        "caption" : "Deliziose ricette dalla United States",
+        "summary" : "Deliziose ricette condivise dagli amici cuochi provenienti da United States. Per contribuire, ti basta permettere a Cook la localizzazione quando imposti la pubblicazione delle tue ricette.",
+        "pages" : {
+            "LATEST" : "ULTIME",
+            "POPULAR" : "POPOLARI",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ANTIPASTI",
+            "MAINS" : "SECONDI",
+            "DESSERTS" : "DESSERT"
+        }
+    },
+    "nl" : {
+        "caption" : "Heerlijke recepten uit Verenigde Staten",
+        "summary" : "Heerlijke recepten, gedeeld door onze collega-koks uit heel Verenigde Staten. Om bij te dragen hoeft u Cook alleen toe te laten uw locatie te bepalen wanneer u uw recepten voor het publiek openstelt.",
+        "pages" : {
+            "LATEST" : "NIEUWSTE",
+            "POPULAR" : "POPULAIR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "VOORGERECHTEN",
+            "MAINS" : "HOOFDGERECHTEN",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "pt" : {
+        "caption" : "Receitas deliciosas da Estados Unidos",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Estados Unidos. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
+    }
+}
+
+// Dessert
+["LATEST","POPULAR","TOP 100","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
+
+// Baking
+["LATEST","POPULAR","TOP 100","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
+
+// Drinks
+["LATEST","POPULAR","TOP 100","SUGAR FREE","DAIRY FREE","LOW FAT"]
+
+// Vegetarian
+["LATEST","POPULAR","TOP 100","STARTERS","MAINS","DESSERTS"]
+
+// Kids
+["LATEST","POPULAR","TOP 100","GLUTEN FREE","SUGAR FREE","LOW FAT","VEGAN"]
+
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Misc
+// ------------------------------------------------------------------------------------------------------------------ //
