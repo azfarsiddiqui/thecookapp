@@ -76,9 +76,7 @@
     
     [self addStacksWithNumRecipes:numRecipes];
 
-    if ([book localisedForPage:page]) {
-        page = NSLocalizedString(page, nil);
-    }
+    page = [book localisedNameForPage:page];
     
     self.titleLabel.text = [page uppercaseString];
     

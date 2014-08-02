@@ -122,6 +122,6 @@ typedef enum {
 - (BOOL)isUserBookAuthor:(CKUser*)user;
 - (BOOL)isPublic;
 - (BOOL)hasCoverPhoto;
-- (BOOL)localisedForPage:(NSString *)page;
+- (NSString *)localisedNameForPage:(NSString *)page;
 
 @end

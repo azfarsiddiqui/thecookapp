@@ -104,8 +104,9 @@
     if (!_maskedLabel) {
         _maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
         _maskedLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _maskedLabel.numberOfLines = 0;
+        _maskedLabel.numberOfLines = 1;
         _maskedLabel.textAlignment = NSTextAlignmentCenter;
+        _maskedLabel.adjustsFontSizeToFitWidth = YES;
         _maskedLabel.insets = [self maskedLabelInsets];
     }
     return _maskedLabel;

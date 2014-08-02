@@ -874,25 +874,23 @@
     return (self.coverPhotoFile != nil);
 }
 
-- (BOOL)localisedForPage:(NSString *)page {
+- (NSString *)localisedNameForPage:(NSString *)page {
+    
+    // Return given page if not localised.
     if (!self.localised) {
-        return NO;
+        return page;
     }
     
-    BOOL localisedForPage = NO;
-    
-    NSDictionary *keyFormats = [self.localisationFormats objectForKey:@"pages"];
-    
-    if ([keyFormats count] > 0) {
-        NSArray *pages = nil;
-        id keysObj = [keyFormats objectForKey:@"keys"];
-        if ([keysObj isKindOfClass:[NSArray class]]) {
-            pages = (NSArray *)keysObj;
-            localisedForPage = [pages containsObject:page];
-        }
+    NSString *localisedPage = [self.localisedData valueForKeyPath:[NSString stringWithFormat:@"pages.%@", page]];
+    if ([localisedPage length] > 0) {
+        
+        return localisedPage;
+        
+    } else {
+        
+        // Otherwise return unlocalised page.
+        return page;
     }
-    
-    return localisedForPage;
 }
 
 - (void)setCoverPhotoFile:(PFFile *)coverPhotoFile {

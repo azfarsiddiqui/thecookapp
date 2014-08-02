@@ -97,7 +97,8 @@
     }
     
     // Update with app language code.
-    NSString *appLanguageCode = [[AppHelper sharedInstance] languageCode];
+    [[AppHelper sharedInstance] handleActive];
+    NSString *appLanguageCode = [AppHelper sharedInstance].languageCode;
     if ([appLanguageCode length] > 0) {
         [currentInstallation setObject:appLanguageCode forKey:kCookAppLanguageCode];
         saveInstallation = YES;

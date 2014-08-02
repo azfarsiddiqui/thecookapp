@@ -9,6 +9,7 @@
 #import "CKModel.h"
 #import "NSString+Utilities.h"
 #import "LocalisationHelper.h"
+#import "AppHelper.h"
 
 @interface CKModel ()
 
@@ -125,38 +126,11 @@
 }
 
 - (BOOL)localised {
-    return ([self.localisationFormats count] > 0);
+    return ([self.localisedData count] > 0);
 }
 
 - (NSString *)localisedValueForKey:(NSString *)key {
-    NSString *localisedValue = nil;
-    
-    NSDictionary *keyFormats = [self.localisationFormats objectForKey:key];
-    
-    if ([keyFormats count] > 0) {
-        
-        NSString *key = [keyFormats objectForKey:@"key"];
-        NSString *format = [keyFormats objectForKey:@"format"];
-        id keysObj = [keyFormats objectForKey:@"keys"];
-        
-        if ([key length] > 0) {
-            
-            // Direct localisation via key.
-            return NSLocalizedString(key, nil);
-            
-        } else if ([format length] > 0) {
-            
-            // Localisation via format then further localisation via given keys.
-            NSArray *keys = nil;
-            if ([keysObj isKindOfClass:[NSArray class]]) {
-                keys = (NSArray *)keysObj;
-                localisedValue = [LocalisationHelper stringWithPlaceholderFormat:format placeholderKeys:keys];
-            }
-            
-        }
-    }
-    
-    return localisedValue;
+    return [self.localisedData objectForKey:key];
 }
 
 - (NSDate *)createdDateTime {
@@ -189,23 +163,25 @@
     }
 }
 
-- (NSDictionary *)localisationFormats {
-    if (!_localisationFormats) {
+- (NSDictionary *)localisedData {
+    if (!_localisedData) {
         NSError *error = nil;
-        NSString *localisedFormatsJson = [self.parseObject objectForKey:kModelAttrLocalisedFormats];
+        NSString *localisedFormatsJson = [self.parseObject objectForKey:kModelAttrLocalised];
         if ([localisedFormatsJson length] > 0) {
-            NSData *stringData = [localisedFormatsJson dataUsingEncoding:NSUTF8StringEncoding];
-            _localisationFormats = [NSJSONSerialization JSONObjectWithData:stringData
-                                                                   options:NSJSONReadingMutableContainers error:&error];
-        } else {
-            _localisationFormats = [NSDictionary dictionary];
-        }
-        
-        if (error != nil) {
-            _localisationFormats = [NSDictionary dictionary];
+            
+            NSString *languageCode = [[AppHelper sharedInstance].languageCode lowercaseString];
+            if ([languageCode length] > 0) {
+                NSData *stringData = [localisedFormatsJson dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *allLanguageData = [NSJSONSerialization JSONObjectWithData:stringData
+                                                                                options:NSJSONReadingMutableContainers error:&error];
+                NSDictionary *languageData = [allLanguageData objectForKey:languageCode];
+                if ([languageData count] > 0) {
+                    _localisedData = languageData;
+                }
+            }
         }
     }
-    return _localisationFormats;
+    return _localisedData;
 }
 
 - (NSString *)objectId {

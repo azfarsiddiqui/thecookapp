@@ -37,7 +37,7 @@ typedef void(^PaginatedListSuccessBlock)(NSArray *items, NSUInteger totalCount, 
 @property (nonatomic, readonly) BOOL nameLocalised;
 
 // Localisation Format
-@property (nonatomic, strong) NSDictionary *localisationFormats;
+@property (nonatomic, strong) NSDictionary *localisedData;
 
 + (NSError *)errorWithMessage:(NSString *)errorMessage;
 + (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;
