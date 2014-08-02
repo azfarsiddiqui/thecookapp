@@ -1,0 +1,584 @@
+// ------------------------------------------------------------------------------------------------------------------ //
+// World Books
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// United States
+{
+    "es" : {
+        "name" : "Estados Unidos"
+    },
+    "de" : {
+        "name" : "USA"
+    },
+    "fr" : {
+        "name" : "États-Unis"
+    },
+    "it" : {
+        "name" : "United States"
+    },
+    "nl" : {
+        "name" : "Verenigde Staten"
+    },
+    "pt" : {
+        "name" : "Estados Unidos"
+    }
+}
+
+// United Kingdom
+{
+    "es" : {
+        "name" : "Reino Unido"
+    },
+    "de" : {
+        "name" : "Vereinigtes Königreich"
+    },
+    "fr" : {
+        "name" : "Royaume-Uni"
+    },
+    "it" : {
+        "name" : "Regno Unito"
+    },
+    "nl" : {
+        "name" : "Verenigd Koninkrijk"
+    },
+    "pt" : {
+        "name" : "Reino Unido"
+    }
+}
+
+// Australia
+{
+    "es" : {
+        "name" : "Australia"
+    },
+    "de" : {
+        "name" : "Australien"
+    },
+    "fr" : {
+        "name" : "Australie"
+    },
+    "it" : {
+        "name" : "Australia"
+    },
+    "nl" : {
+        "name" : "Australië"
+    },
+    "pt" : {
+        "name" : "Austrália"
+    }
+}
+
+// Spain
+{
+    "es" : {
+        "name" : "España"
+    },
+    "de" : {
+        "name" : "Spanien"
+    },
+    "fr" : {
+        "name" : "Espagne"
+    },
+    "it" : {
+        "name" : "Spagna"
+    },
+    "nl" : {
+        "name" : "Spanje"
+    },
+    "pt" : {
+        "name" : "Espanha"
+    }
+}
+
+// Philippines
+{
+    "es" : {
+        "name" : "Filipinas"
+    },
+    "de" : {
+        "name" : "Philippinen"
+    },
+    "fr" : {
+        "name" : "Philippines"
+    },
+    "it" : {
+        "name" : "Filippine"
+    },
+    "nl" : {
+        "name" : "Filippijnen"
+    },
+    "pt" : {
+        "name" : "Filipinas"
+    }
+}
+
+// Italy
+{
+    "es" : {
+        "name" : "Italia"
+    },
+    "de" : {
+        "name" : "Italien"
+    },
+    "fr" : {
+        "name" : "Italie"
+    },
+    "it" : {
+        "name" : "Italia"
+    },
+    "nl" : {
+        "name" : "Italië"
+    },
+    "pt" : {
+        "name" : "Itália"
+    }
+}
+
+// Mexico
+{
+    "es" : {
+        "name" : "México"
+    },
+    "de" : {
+        "name" : "Mexiko"
+    },
+    "fr" : {
+        "name" : "Mexique"
+    },
+    "it" : {
+        "name" : "Messico"
+    },
+    "nl" : {
+        "name" : "Mexico"
+    },
+    "pt" : {
+        "name" : "México"
+    }
+}
+
+// Germany
+{
+    "es" : {
+        "name" : "Alemania"
+    },
+    "de" : {
+        "name" : "Deutschland"
+    },
+    "fr" : {
+        "name" : "Allemagne"
+    },
+    "it" : {
+        "name" : "Germania"
+    },
+    "nl" : {
+        "name" : "Duitsland"
+    },
+    "pt" : {
+        "name" : "Alemanha"
+    }
+}
+
+// Brazil
+{
+    "es" : {
+        "name" : "Brasil"
+    },
+    "de" : {
+        "name" : "Brasilien"
+    },
+    "fr" : {
+        "name" : "Brésil"
+    },
+    "it" : {
+        "name" : "Brasile"
+    },
+    "nl" : {
+        "name" : "Brazilië"
+    },
+    "pt" : {
+        "name" : "Brasil"
+    }
+}
+
+// Canada
+{
+    "es" : {
+        "name" : "Canadá"
+    },
+    "de" : {
+        "name" : "Kanada"
+    },
+    "fr" : {
+        "name" : "Canada"
+    },
+    "it" : {
+        "name" : "Canada"
+    },
+    "nl" : {
+        "name" : "Canada"
+    },
+    "pt" : {
+        "name" : "Canadá"
+    }
+}
+
+// New Zealand
+{
+    "es" : {
+        "name" : "Nueva Zelandia"
+    },
+    "de" : {
+        "name" : "Neuseeland"
+    },
+    "fr" : {
+        "name" : "Nouvelle-Zélande"
+    },
+    "it" : {
+        "name" : "Neozelandese"
+    },
+    "nl" : {
+        "name" : "Nieuw-Zeeland"
+    },
+    "pt" : {
+        "name" : "Nova Zelândia"
+    }
+}
+
+// Denmark
+{
+    "es" : {
+        "name" : "Dinamarca"
+    },
+    "de" : {
+        "name" : "Dänemark"
+    },
+    "fr" : {
+        "name" : "Danemark"
+    },
+    "it" : {
+        "name" : "Danimarca"
+    },
+    "nl" : {
+        "name" : "Denemarken"
+    },
+    "pt" : {
+        "name" : "Dinamarca"
+    }
+}
+
+// India
+{
+    "es" : {
+        "name" : "India"
+    },
+    "de" : {
+        "name" : "Indien"
+    },
+    "fr" : {
+        "name" : "Inde"
+    },
+    "it" : {
+        "name" : "India"
+    },
+    "nl" : {
+        "name" : "India"
+    },
+    "pt" : {
+        "name" : "Índia"
+    }
+}
+
+// Turkey
+{
+    "es" : {
+        "name" : "Turquía"
+    },
+    "de" : {
+        "name" : "Türkei"
+    },
+    "fr" : {
+        "name" : "Turquie"
+    },
+    "it" : {
+        "name" : "Turchia"
+    },
+    "nl" : {
+        "name" : "Turkije"
+    },
+    "pt" : {
+        "name" : "Turquia"
+    }
+}
+
+// France
+{
+    "es" : {
+        "name" : "Francia"
+    },
+    "de" : {
+        "name" : "Frankreich"
+    },
+    "fr" : {
+        "name" : "France"
+    },
+    "it" : {
+        "name" : "Francia"
+    },
+    "nl" : {
+        "name" : "Frankrijk"
+    },
+    "pt" : {
+        "name" : "França"
+    }
+}
+
+// Netherlands
+{
+    "es" : {
+        "name" : "Países Bajos"
+    },
+    "de" : {
+        "name" : "Niederlande"
+    },
+    "fr" : {
+        "name" : "pays-bas"
+    },
+    "it" : {
+        "name" : "Paesi Bassi"
+    },
+    "nl" : {
+        "name" : "Nederland"
+    },
+    "pt" : {
+        "name" : "Holanda"
+    }
+}
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Collections Books
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Quick
+{
+    "es" : {
+        "name" : "RÁPIDAS"
+    },
+    "de" : {
+        "name" : "SCHNELL"
+    },
+    "fr" : {
+        "name" : "RAPIDE"
+    },
+    "it" : {
+        "name" : "VELOCI"
+    },
+    "nl" : {
+        "name" : "SNEL"
+    },
+    "pt" : {
+        "name" : "RÁPIDO"
+    }
+}
+
+// Dessert
+{
+    "es" : {
+        "name" : "POSTRES"
+    }, 
+    "de" : {
+        "name" : "DESSERT"
+    },
+    "fr" : {
+        "name" : "DESSERT"
+    },
+    "it" : {
+        "name" : "DOLCI"
+    },
+    "nl" : {
+        "name" : "DESSERT"
+    },
+    "pt" : {
+        "name" : "SOBREMESA"
+    }
+}
+
+// Baking
+{
+    "es" : {
+        "name" : "PASTELERÍA"
+    },
+    "de" : {
+        "name" : "BACKEN"
+    },
+    "fr" : {
+        "name" : "A CUIRE"
+    },
+    "it" : {
+        "name" : "AL FORNO"
+    },
+    "nl" : {
+        "name" : "BAKKEN"
+    },
+    "pt" : {
+        "name" : "ASSAR"
+    }
+}
+
+// Drinks
+{
+    "es" : {
+        "name" : "BEBIDAS"
+    },
+    "de" : {
+        "name" : "DRINKS"
+    },
+    "fr" : {
+        "name" : "BIOSSONS"
+    },
+    "it" : {
+        "name" : "DRINK"
+    },
+    "nl" : {
+        "name" : "DRANK"
+    },
+    "pt" : {
+        "name" : "DRINKS"
+    }
+}
+
+// Vegetarian
+{
+    "es" : {
+        "name" : "VEGETARIANAS"
+    },
+    "de" : {
+        "name" : "VEGETARISCH"
+    },
+    "fr" : {
+        "name" : "VÉGÉTARIEN"
+    },
+    "it" : {
+        "name" : "VEGETARIANO"
+    },
+    "nl" : {
+        "name" : "VEGETARISCH"
+    },
+    "pt" : {
+        "name" : "VEGETARIANO"
+    }
+}
+
+// Kids
+{
+    "es" : {
+        "name" : "NIÑOS"
+    },
+    "de" : {
+        "name" : "KIDS"
+    },
+    "fr" : {
+        "name" : "ENFANTS"
+    },
+    "it" : {
+        "name" : "BIMBI"
+    },
+    "nl" : {
+        "name" : "KINDEREN"
+    },
+    "pt" : {
+        "name" : "CRIANÇAS"
+    }
+}
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Misc
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Healthy
+{
+    "es" : {
+        "name" : "SALUDABLES"
+    },
+    "de" : {
+        "name" : "GESUND"
+    },
+    "fr" : {
+        "name" : "BON PUR LA SANTE"
+    },
+    "it" : {
+        "name" : "SALUTARI"
+    },
+    "nl" : {
+        "name" : "GEZONDHEID"
+    },
+    "pt" : {
+        "name" : "SAUDÁVEL"
+    }
+}
+
+// Cook Team
+{
+    "es" : {
+        "name" : "EQUIPO COOK"
+    },
+    "de" : {
+        "name" : "COOK TEAM"
+    },
+    "fr" : {
+        "name" : "L'ÉQUIPE COOK"
+    },
+    "it" : {
+        "name" : "TEAM COOK"
+    },
+    "nl" : {
+        "name" : "COOK TEAM"
+    },
+    "pt" : {
+        "name" : "EQUIPE DO COOK"
+    }
+}
+
+// Masters
+{
+    "es" : {
+        "name" : "MAESTROS"
+    },
+    "de" : {
+        "name" : "MEISTER"
+    },
+    "fr" : {
+        "name" : "MAÎTRES"
+    },
+    "it" : {
+        "name" : "MASTER"
+    },
+    "nl" : {
+        "name" : "MEESTERKOKS"
+    },
+    "pt" : {
+        "name" : "MESTRES"
+    }
+}
+
+// Chefs
+{
+    "es" : {
+        "name" : "CHEFS"
+    },
+    "de" : {
+        "name" : "CHEFKÖCHE"
+    },
+    "fr" : {
+        "name" : "CHEFS"
+    },
+    "it" : {
+        "name" : "CHEF"
+    },
+    "nl" : {
+        "name" : "CHEFS"
+    },
+    "pt" : {
+        "name" : "CHEFES"
+    }
+}
+

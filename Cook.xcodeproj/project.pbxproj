@@ -2603,6 +2603,7 @@
 		76A28E97177A8C7400C98F8B /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
 		76A28E98177A8C7400C98F8B /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		76A35B66198CF490007596DA /* books-localisation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "books-localisation.json"; sourceTree = "<group>"; };
+		76A35B68198D22BF007596DA /* users-localisation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "users-localisation.json"; sourceTree = "<group>"; };
 		76A368E81783BD6400E5092F /* cook_dash_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_overlay.png; sourceTree = "<group>"; };
 		76A368E91783BD6400E5092F /* cook_dash_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_overlay@2x.png"; sourceTree = "<group>"; };
 		76A3955D17FE7D0200DF249A /* CKNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNavigationController.h; sourceTree = "<group>"; };
@@ -6056,6 +6057,7 @@
 				76ED27491612DC180012E479 /* Cook-Info.plist */,
 				765C3EB0198BCB880050AA36 /* featured-localisations.txt */,
 				76A35B66198CF490007596DA /* books-localisation.json */,
+				76A35B68198D22BF007596DA /* users-localisation.json */,
 				76ED274A1612DC180012E479 /* InfoPlist.strings */,
 				76ED274D1612DC180012E479 /* main.m */,
 				76ED274F1612DC180012E479 /* Cook-Prefix.pch */,
