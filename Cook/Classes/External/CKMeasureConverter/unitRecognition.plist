@@ -14,6 +14,30 @@
 	<string>°C</string>
 	<key>DEG C</key>
 	<string>°C</string>
+	<key>GRADI CELSIUS</key>
+	<string>°C</string>
+	<key>GRADI C</key>
+	<string>°C</string>
+	<key>GRADEN CELSIUS</key>
+	<string>°C</string>
+	<key>GRADEN C</key>
+	<string>°C</string>
+	<key>GRADOS CELSIUS</key>
+	<string>°C</string>
+	<key>GRADOS C</key>
+	<string>°C</string>
+	<key>DEGRÉS CELSIUS</key>
+	<string>°C</string>
+	<key>DEGRÉS C</key>
+	<string>°C</string>
+	<key>GRAUS CELSIUS</key>
+	<string>°C</string>
+	<key>GRAUS C</key>
+	<string>°C</string>
+	<key>GRAD CELSIUS</key>
+	<string>°C</string>
+	<key>GRAD C</key>
+	<string>°C</string>
 	<key>°F</key>
 	<string>°F</string>
 	<key>FAHRENHEIT</key>
@@ -26,6 +50,30 @@
 	<string>°F</string>
 	<key>DEG F</key>
 	<string>°F</string>
+	<key>GRADI FAHRENHEIT</key>
+	<string>°F</string>
+	<key>GRADI F</key>
+	<string>°F</string>
+	<key>GRADEN FAHRENHEIT</key>
+	<string>°F</string>
+	<key>GRADEN F</key>
+	<string>°F</string>
+	<key>GRADOS FAHRENHEIT</key>
+	<string>°F</string>
+	<key>GRADOS F</key>
+	<string>°F</string>
+	<key>DÉGRES FAHRENHEIT</key>
+	<string>°F</string>
+	<key>DEGRÉS F</key>
+	<string>°F</string>
+	<key>GRAUS FAHRENHEIT</key>
+	<string>°F</string>
+	<key>GRAUS F</key>
+	<string>°F</string>
+	<key>GRAD FAHRENHEIT</key>
+	<string>°F</string>
+	<key>GRAD F</key>
+	<string>°F</string>
 	<key>MM</key>
 	<string>MM</string>
 	<key>MILLIMETER</key>
@@ -35,6 +83,14 @@
 	<key>MILLIMETRE</key>
 	<string>MM</string>
 	<key>MILLIMETRES</key>
+	<string>MM</string>
+	<key>MILLIMÈTRE</key>
+	<string>MM</string>
+	<key>MILLIMÈTRES</key>
+	<string>MM</string>
+	<key>MILÍMETRO</key>
+	<string>MM</string>
+	<key>MILÍMETROS</key>
 	<string>MM</string>
 	<key>CM</key>
 	<string>CM</string>
@@ -46,6 +102,22 @@
 	<string>CM</string>
 	<key>CENTIMETRES</key>
 	<string>CM</string>
+	<key>CENTIMETRO</key>
+	<string>CM</string>
+	<key>CENTIMETROS</key>
+	<string>CM</string>
+	<key>CENTÍMETRO</key>
+	<string>CM</string>
+	<key>CENTÍMETROS</key>
+	<string>CM</string>
+	<key>ZENTIMETER</key>
+	<string>CM</string>
+	<key>CENTIMETRI</key>
+	<string>CM</string>
+	<key>CENTIMÈTRE</key>
+	<string>CM</string>
+	<key>CENTIMÈTRES</key>
+	<string>CM</string>
 	<key>ML</key>
 	<string>ML</string>
 	<key>MILLILITER</key>
@@ -55,6 +127,12 @@
 	<key>MILLILITRE</key>
 	<string>ML</string>
 	<key>MILLILITRES</key>
+	<string>ML</string>
+	<key>MILILITRO</key>
+	<string>ML</string>
+	<key>MILILITROS</key>
+	<string>ML</string>
+	<key>MILLILITRI</key>
 	<string>ML</string>
 	<key>L</key>
 	<string>L</string>
@@ -66,11 +144,35 @@
 	<string>L</string>
 	<key>LITRES</key>
 	<string>L</string>
+	<key>LITRO</key>
+	<string>L</string>
+	<key>LITROS</key>
+	<string>L</string>
+	<key>LITRI</key>
+	<string>L</string>
 	<key>G</key>
 	<string>G</string>
 	<key>GRAM</key>
 	<string>G</string>
 	<key>GRAMS</key>
+	<string>G</string>
+	<key>GRAMO</key>
+	<string>G</string>
+	<key>GRAMA</key>
+	<string>G</string>
+	<key>GRAMOS</key>
+	<string>G</string>
+	<key>GRAMMO</key>
+	<string>G</string>
+	<key>GRAMMI</key>
+	<string>G</string>
+	<key>GRAMAS</key>
+	<string>G</string>
+	<key>GRAMM</key>
+	<string>G</string>
+	<key>GRAMME</key>
+	<string>G</string>
+	<key>GRAMMES</key>
 	<string>G</string>
 	<key>KG</key>
 	<string>KG</string>
@@ -80,11 +182,45 @@
 	<string>KG</string>
 	<key>KILOGRAMS</key>
 	<string>KG</string>
+	<key>KILOGRAMME</key>
+	<string>KG</string>
+	<key>KILOGRAMMES</key>
+	<string>KG</string>
+	<key>KILOGRAMM</key>
+	<string>KG</string>
+	<key>QUILOGRAMA</key>
+	<string>KG</string>
+	<key>QUILOGRAMAS</key>
+	<string>KG</string>
+	<key>KILOGRAMO</key>
+	<string>KG</string>
+	<key>KILOGRAMOS</key>
+	<string>KG</string>
+	<key>CHILOGRAMMI</key>
+	<string>KG</string>
+	<key>CHILOGRAMMO</key>
+	<string>KG</string>
 	<key>IN</key>
 	<string>IN</string>
 	<key>INCH</key>
 	<string>IN</string>
 	<key>INCHES</key>
+	<string>IN</string>
+	<key>POLLICI</key>
+	<string>IN</string>
+	<key>PULGADA</key>
+	<string>IN</string>
+	<key>PULGADAS</key>
+	<string>IN</string>
+	<key>POLEGADA</key>
+	<string>IN</string>
+	<key>POLEGADAS</key>
+	<string>IN</string>
+	<key>ZOLL</key>
+	<string>IN</string>
+	<key>POUCE</key>
+	<string>IN</string>
+	<key>POUCES</key>
 	<string>IN</string>
 	<key>FL OZ</key>
 	<string>FL OZ</string>
@@ -102,6 +238,20 @@
 	<string>FL OZ</string>
 	<key>FL OUNCE</key>
 	<string>FL OZ</string>
+	<key>ONCIA LIQUIDA</key>
+	<string>FL OZ</string>
+	<key>ONCIA FLUIDA</key>
+	<string>FL OZ</string>
+	<key>ONCE LIQUIDE</key>
+	<string>FL OZ</string>
+	<key>ONCES LIQUIDES</key>
+	<string>FL OZ</string>
+	<key>ONZA LÍQUIDA</key>
+	<string>FL OZ</string>
+	<key>ONZAS LÍQUIDAS</key>
+	<string>FL OZ</string>
+	<key>FLÜSSIGUNZEN</key>
+	<string>FL OZ</string>
 	<key>PT</key>
 	<string>PT</string>
 	<key>PTS</key>
@@ -109,6 +259,14 @@
 	<key>PINT</key>
 	<string>PT</string>
 	<key>PINTS</key>
+	<string>PT</string>
+	<key>PINTA</key>
+	<string>PT</string>
+	<key>PINTAS</key>
+	<string>PT</string>
+	<key>PINTE</key>
+	<string>PT</string>
+	<key>PINTES</key>
 	<string>PT</string>
 	<key>OZ</key>
 	<string>OZ</string>
@@ -118,6 +276,20 @@
 	<string>OZ</string>
 	<key>OUNCES</key>
 	<string>OZ</string>
+	<key>ONCIA</key>
+	<string>OZ</string>
+	<key>ONZA</key>
+	<string>OZ</string>
+	<key>ONZAS</key>
+	<string>OZ</string>
+	<key>ONCE</key>
+	<string>OZ</string>
+	<key>ONCES</key>
+	<string>OZ</string>
+	<key>UNZE</key>
+	<string>OZ</string>
+	<key>UNZEN</key>
+	<string>OZ</string>
 	<key>LB</key>
 	<string>LB</string>
 	<key>LBS</key>
@@ -125,6 +297,20 @@
 	<key>POUND</key>
 	<string>LB</string>
 	<key>POUNDS</key>
+	<string>LB</string>
+	<key>PFUND</key>
+	<string>LB</string>
+	<key>LIBBRA</key>
+	<string>LB</string>
+	<key>LIBRA</key>
+	<string>LB</string>
+	<key>LIBRAS</key>
+	<string>LB</string>
+	<key>LIVRE</key>
+	<string>LB</string>
+	<key>LIVRES</key>
+	<string>LB</string>
+	<key>POND</key>
 	<string>LB</string>
 </dict>
 </plist>
