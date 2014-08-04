@@ -1,3 +1,9 @@
+//
+// These are localised strings for various components of the book.
+// On Parse, these are stored in the "localised" field. Use a minify tool to paste it in.
+// http://www.httputility.net/json-minifier.aspx
+//
+
 // ------------------------------------------------------------------------------------------------------------------ //
 // World Books
 // ------------------------------------------------------------------------------------------------------------------ //
@@ -5,6 +11,18 @@
 // United States
 {
     "es" : {
+        "caption" : "Recetas de Estados Unidos",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Estados Unidos. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Estados Unidos",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Estados Unidos. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -29,6 +47,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes États-Unis",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout États-Unis. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes États-Unis",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout États-Unis. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -75,12 +105,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas dos Estados Unidos",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Estados Unidos. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // United Kingdom
 {
     "es" : {
+        "caption" : "Recetas de Reino Unido",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Reino Unido. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Reino Unido",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Reino Unido. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -105,6 +159,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes du Royaume-Uni",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Royaume-Uni. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes du Royaume-Uni",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Royaume-Uni. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -151,12 +217,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Reino Unido",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Reino Unido. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Australia
 {
     "es" : {
+        "caption" : "Recetas de Australia",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Australia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Australia",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Australia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -181,6 +271,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes d'Australie",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Australie. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes d'Australie",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Australie. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -227,12 +329,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Austrália",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Austrália. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Spain
 {
     "es" : {
+        "caption" : "Recetas de España",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda España. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de España",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda España. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -257,6 +383,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes d'Espagne",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Espagne. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes d'Espagne",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Espagne. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -303,12 +441,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Espanha",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Espanha. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Philippines
 {
     "es" : {
+        "caption" : "Recetas de Filipinas",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Filipinas. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Filipinas",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Filipinas. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -333,6 +495,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes de Philippines",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Philippines. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes de Philippines",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Philippines. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -379,12 +553,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Filipinas",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Filipinas. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Italy
 {
     "es" : {
+        "caption" : "Recetas de Italia",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Italia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Italia",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Italia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -409,6 +607,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes d'Italie",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Italie. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes d'Italie",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Italie. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -455,12 +665,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Itália",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Itália. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Mexico
 {
     "es" : {
+        "caption" : "Recetas de México",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda México. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de México",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda México. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -485,6 +719,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes du Mexique",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Mexique. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes du Mexique",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Mexique. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -531,12 +777,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da México",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na México. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Germany
 {
     "es" : {
+        "caption" : "Recetas de Alemania",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Alemania. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Alemania",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Alemania. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -561,6 +831,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes de l'Allemagne",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Allemagne. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes de l'Allemagne",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Allemagne. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -607,12 +889,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Alemanha",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Alemanha. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Brazil
 {
     "es" : {
+        "caption" : "Recetas de Brasil",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Brasil. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Brasil",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Brasil. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -637,6 +943,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes du Brésil",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Brésil. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes du Brésil",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Brésil. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -683,12 +1001,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Brasil",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Brasil. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Canada
 {
     "es" : {
+        "caption" : "Recetas de Canadá",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Canadá. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Canadá",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Canadá. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -713,6 +1055,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes du Canada",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Canada. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes du Canada",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Canada. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -759,12 +1113,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Canadá",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Canadá. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // New Zealand
 {
     "es" : {
+        "caption" : "Recetas de Nueva Zelandia",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Nueva Zelandia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Nueva Zelandia",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Nueva Zelandia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -789,6 +1167,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes de Nouvelle-Zélande",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Nouvelle-Zélande. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes de Nouvelle-Zélande",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Nouvelle-Zélande. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -835,12 +1225,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Nova Zelândia",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Nova Zelândia. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Denmark
 {
     "es" : {
+        "caption" : "Recetas de Dinamarca",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Dinamarca. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Dinamarca",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Dinamarca. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -865,6 +1279,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes du Danemark",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Danemark. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes du Danemark",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Danemark. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -911,12 +1337,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Dinamarca",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Dinamarca. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // India
 {
     "es" : {
+        "caption" : "Recetas de India",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda India. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de India",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda India. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -941,6 +1391,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes de l'Inde",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Inde. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes de l'Inde",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Inde. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -987,12 +1449,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Índia",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Índia. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Turkey
 {
     "es" : {
+        "caption" : "Recetas de Turquía",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Turquía. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Turquía",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Turquía. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -1017,6 +1503,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes de Turquie",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Turquie. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes de Turquie",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Turquie. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -1063,12 +1561,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Turquia",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Turquia. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // France
 {
     "es" : {
+        "caption" : "Recetas de Francia",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Francia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Francia",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Francia. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -1093,6 +1615,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes de France",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout France. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes de France",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout France. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -1139,12 +1673,36 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da França",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na França. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Netherlands
 {
     "es" : {
+        "caption" : "Recetas de Países Bajos",
+        "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Países Bajos. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "caption" : "Recetas de Países Bajos",
         "summary" : "Deliciosas recetas compartidas por compañeros cocineros de toda Países Bajos. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.",
         "pages" : {
@@ -1169,6 +1727,18 @@
         }
     },
     "fr" : {
+        "caption" : "Recettes des pays-bas",
+        "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Pays-Bas. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "caption" : "Recettes des pays-bas",
         "summary" : "Des recettes délicieuses partagées par des confrères cuisiniers de tout Pays-Bas. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.",
         "pages" : {
@@ -1215,6 +1785,18 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "caption" : "Receitas da Holanda",
+        "summary" : "Deliciosas receitas compartilhadas por seguidores do Cook na Holanda. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
@@ -1225,6 +1807,19 @@
 // Quick
 {
     "es" : {
+        "title" : "RÁPIDAS",
+        "caption" : "Preparadas en menos de 30 minutos",
+        "summary" : "Preparadas en menos de 30 minutos.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
         "title" : "RÁPIDAS",
         "caption" : "Preparadas en menos de 30 minutos",
         "summary" : "Preparadas en menos de 30 minutos.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
@@ -1251,6 +1846,19 @@
         }
     },
     "fr" : {
+        "title" : "RAPIDE",
+        "caption" : "Plats en 30 minutes ou moins",
+        "summary" : "Plats en 30 minutes ou moins.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "title" : "RAPIDE",
         "caption" : "Plats en 30 minutes ou moins",
         "summary" : "Plats en 30 minutes ou moins.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1301,12 +1909,39 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "title" : "RÁPIDO",
+        "caption" : "Refeições em 30 minutos ou menos",
+        "summary" : "Refeições em 30 minutos ou menos.\u2028E Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Dessert
 {
     "es" : {
+        "title" : "POSTRES",
+        "caption" : "Un final delicioso para cada comida",
+        "summary" : "Un final delicioso para cada comida.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SIN GLUTEN",
+            "SUGAR FREE" : "SIN AZÚCAR",
+            "LOW FAT" : "BAJAS EN GRASA",
+            "VEGAN" : "VEGANA"
+        }
+    },
+    "es-mx" : {
         "title" : "POSTRES",
         "caption" : "Un final delicioso para cada comida",
         "summary" : "Un final delicioso para cada comida.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
@@ -1335,6 +1970,20 @@
         }
     },
     "fr" : {
+        "title" : "DESSERT",
+        "caption" : "Une délicieuse fin pour chaque plat",
+        "summary" : "Une délicieuse fin pour chaque plat.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SANS GLUTEN",
+            "SUGAR FREE" : "SANS SUCRE",
+            "LOW FAT" : "FAIBLE EN GRAS",
+            "VEGAN" : "VÉGÉTALIEN"
+        }
+    },
+    "fr-ca" : {
         "title" : "DESSERT",
         "caption" : "Une délicieuse fin pour chaque plat",
         "summary" : "Une délicieuse fin pour chaque plat.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1389,12 +2038,40 @@
             "LOW FAT" : "POUCA GORDURA",
             "VEGAN" : "VEGANO"
         }
+    },
+    "pt-pt" : {
+        "title" : "SOBREMESA",
+        "caption" : "Um final delicioso para cada refeição",
+        "summary" : "Um final delicioso para cada refeição.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SEM GLÚTEN",
+            "SUGAR FREE" : "SEM AÇÚCAR",
+            "LOW FAT" : "POUCA GORDURA",
+            "VEGAN" : "VEGANO"
+        }
     }
 }
 
 // Baking
 {
     "es" : {
+        "title" : "PASTELERÍA",
+        "caption" : "Recién horneada",
+        "summary" : "Recién horneada.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SIN GLUTEN",
+            "SUGAR FREE" : "SIN AZÚCAR",
+            "LOW FAT" : "BAJAS EN GRASA",
+            "VEGAN" : "VEGANA"
+        }
+    },
+    "es-mx" : {
         "title" : "PASTELERÍA",
         "caption" : "Recién horneada",
         "summary" : "Recién horneada.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
@@ -1423,6 +2100,20 @@
         }
     },
     "fr" : {
+        "title" : "A CUIRE",
+        "caption" : "Cuit au four",
+        "summary" : "Cuit au four.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SANS GLUTEN",
+            "SUGAR FREE" : "SANS SUCRE",
+            "LOW FAT" : "FAIBLE EN GRAS",
+            "VEGAN" : "VÉGÉTALIEN"
+        }
+    },
+    "fr-ca" : {
         "title" : "A CUIRE",
         "caption" : "Cuit au four",
         "summary" : "Cuit au four.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1477,12 +2168,39 @@
             "LOW FAT" : "POUCA GORDURA",
             "VEGAN" : "VEGANO"
         }
+    },
+    "pt-pt" : {
+        "title" : "ASSAR",
+        "caption" : "Quentinhos diretamente do forno",
+        "summary" : "Quentinhos diretamente do forno.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SEM GLÚTEN",
+            "SUGAR FREE" : "SEM AÇÚCAR",
+            "LOW FAT" : "POUCA GORDURA",
+            "VEGAN" : "VEGANO"
+        }
     }
 }
 
 // Drinks
 {
     "es" : {
+        "title" : "BEBIDAS",
+        "caption" : "Recetas para calmar la sed",
+        "summary" : "Recetas para calmar la sed.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "SUGAR FREE" : "SIN AZÚCAR",
+            "DAIRY FREE" : "SIN LÁCTEOS",
+            "LOW FAT" : "BAJAS EN GRASA"
+        }
+    },
+    "es-mx" : {
         "title" : "BEBIDAS",
         "caption" : "Recetas para calmar la sed",
         "summary" : "Recetas para calmar la sed.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
@@ -1509,6 +2227,19 @@
         }
     },
     "fr" : {
+        "title" : "BIOSSONS",
+        "caption" : "Recettes pour étancher votre soif",
+        "summary" : "Recettes pour étancher votre soif.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "SUGAR FREE" : "SANS SUCRE",
+            "DAIRY FREE" : "SS PROD. LAITIERS",
+            "LOW FAT" : "FAIBLE EN GRAS"
+        }
+    },
+    "fr-ca" : {
         "title" : "BIOSSONS",
         "caption" : "Recettes pour étancher votre soif",
         "summary" : "Recettes pour étancher votre soif.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1559,13 +2290,39 @@
             "DAIRY FREE" : "SEM LACTOSE",
             "LOW FAT" : "POUCA GORDURA"
         }
+    },
+    "pt-pt" : {
+        "title" : "DRINKS",
+        "caption" : "Receitas para matar sua sede",
+        "summary" : "Receitas para matar sua sede.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "SUGAR FREE" : "SEM AÇÚCAR",
+            "DAIRY FREE" : "SEM LACTOSE",
+            "LOW FAT" : "POUCA GORDURA"
+        }
     }
 }
 
 // Vegetarian
 {
     "es" : {
-        "title" : "VEGETARIANAS",
+        "title" : "VEGETARIANA",
+        "caption" : "Sabrosas vegetarianas y veganas",
+        "summary" : "Sabrosas vegetarianas y veganas.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERTS" : "POSTRES"
+        }
+    },
+    "es-mx" : {
+        "title" : "VEGETARIANA",
         "caption" : "Sabrosas vegetarianas y veganas",
         "summary" : "Sabrosas vegetarianas y veganas.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
         "pages" : {
@@ -1591,6 +2348,19 @@
         }
     },
     "fr" : {
+        "title" : "VÉGÉTARIEN",
+        "caption" : "Végétarien & végétalien savoureux",
+        "summary" : "Végétarien & végétalien savoureux.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERTS" : "DESSERTS"
+        }
+    },
+    "fr-ca" : {
         "title" : "VÉGÉTARIEN",
         "caption" : "Végétarien & végétalien savoureux",
         "summary" : "Végétarien & végétalien savoureux.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1641,12 +2411,39 @@
             "MAINS" : "PRATOS PRINCIPAIS",
             "DESSERTS" : "SOBREMESAS"
         }
+    },
+    "pt-pt" : {
+        "title" : "VEGETARIANO",
+        "caption" : "Delicias vegetarianas e veganas",
+        "summary" : "Delicias vegetarianas e veganas.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERTS" : "SOBREMESAS"
+        }
     }
 }
 
 // Kids
 {
     "es" : {
+        "title" : "NIÑOS",
+        "caption" : "Recetas Niños",
+        "summary" : "Recetas deliciosos niños.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "LATEST" : "ÚLTIMAS",
+            "POPULAR" : "POPULARES",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SIN GLUTEN",
+            "SUGAR FREE" : "SIN AZÚCAR",
+            "LOW FAT" : "BAJAS EN GRASA",
+            "VEGAN" : "VEGANA"
+        }
+    },
+    "es-mx" : {
         "title" : "NIÑOS",
         "caption" : "Recetas Niños",
         "summary" : "Recetas deliciosos niños.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
@@ -1675,6 +2472,20 @@
         }
     },
     "fr" : {
+        "title" : "ENFANTS",
+        "caption" : "Recettes enfants",
+        "summary" : "Délicieuses recettes enfants.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "LATEST" : "PLUS RECENTES",
+            "POPULAR" : "POPULAIRES",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SANS GLUTEN",
+            "SUGAR FREE" : "SANS SUCRE",
+            "LOW FAT" : "FAIBLE EN GRAS",
+            "VEGAN" : "VÉGÉTALIEN"
+        }
+    },
+    "fr-ca" : {
         "title" : "ENFANTS",
         "caption" : "Recettes enfants",
         "summary" : "Délicieuses recettes enfants.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1729,6 +2540,20 @@
             "LOW FAT" : "POUCA GORDURA",
             "VEGAN" : "VEGANO"
         }
+    },
+    "pt-pt" : {
+        "title" : "CRIANÇAS",
+        "caption" : "Receitas crianças",
+        "summary" : "Deliciosas receitas crianças.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "LATEST" : "MAIS RECENTES",
+            "POPULAR" : "POPULAR",
+            "TOP 100" : "TOP 100",
+            "GLUTEN FREE" : "SEM GLÚTEN",
+            "SUGAR FREE" : "SEM AÇÚCAR",
+            "LOW FAT" : "POUCA GORDURA",
+            "VEGAN" : "VEGANO"
+        }
     }
 }
 
@@ -1746,6 +2571,14 @@
             "BREAKFAST" : "DESAYUNO"
         }
     },
+    "es-mx" : {
+        "title" : "SALUDABLES",
+        "caption" : "Somos lo que comemos",
+        "summary" : "Somos lo que comemos.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.",
+        "pages" : {
+            "BREAKFAST" : "DESAYUNO"
+        }
+    },
     "de" : {
         "title" : "GESUND",
         "caption" : "Man ist, was man isst",
@@ -1755,6 +2588,14 @@
         }
     },
     "fr" : {
+        "title" : "BON PUR LA SANTE",
+        "caption" : "Vous êtes ce que vous mangez",
+        "summary" : "Vous êtes ce que vous mangez.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
+        "pages" : {
+            "BREAKFAST" : "PETIT-DEJEUNER"
+        }
+    },
+    "fr-ca" : {
         "title" : "BON PUR LA SANTE",
         "caption" : "Vous êtes ce que vous mangez",
         "summary" : "Vous êtes ce que vous mangez.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.",
@@ -1785,12 +2626,34 @@
         "pages" : {
             "BREAKFAST" : "CAFÉ DA MANHÃ"
         }
+    },
+    "pt-pt" : {
+        "title" : "SAUDÁVEL",
+        "caption" : "Você é o que você come",
+        "summary" : "Você é o que você come.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.",
+        "pages" : {
+            "BREAKFAST" : "CAFÉ DA MANHÃ"
+        }
     }
 }
 
 // Cook Team
 {
     "es" : {
+        "title" : "EQUIPO COOK",
+        "caption" : "El alma de Cook",
+        "summary" : "Excelentes recetas compartidas por los chefs.",
+        "pages" : {
+            "GREAT PLACES" : "GREAT PLACES",
+            "STARTERS" : "ENTRANTES",
+            "MAINS" : "PRINCIPALES",
+            "DESSERT" : "POSTRES",
+            "SAUCES" : "SALSAS",
+            "BAKING" : "PASTELERÍA",
+            "BREAKFAST" : "DESAYUNO"
+        }
+    },
+    "es-mx" : {
         "title" : "EQUIPO COOK",
         "caption" : "El alma de Cook",
         "summary" : "Excelentes recetas compartidas por los chefs.",
@@ -1819,6 +2682,20 @@
         }
     },
     "fr" : {
+        "title" : "L'ÉQUIPE COOK",
+        "caption" : "Le coeur et l'âme de Cook",
+        "summary" : "Délicieuses recettes partagées par nos chefs.",
+        "pages" : {
+            "GREAT PLACES" : "GREAT PLACES",
+            "STARTERS" : "ENTREES",
+            "MAINS" : "PLATS PRINCIPAUX",
+            "DESSERT" : "DESSERTS",
+            "SAUCES" : "SAUCES",
+            "BAKING" : "A CUIRE",
+            "BREAKFAST" : "PETIT-DEJEUNER"
+        }
+    },
+    "fr-ca" : {
         "title" : "L'ÉQUIPE COOK",
         "caption" : "Le coeur et l'âme de Cook",
         "summary" : "Délicieuses recettes partagées par nos chefs.",
@@ -1873,6 +2750,20 @@
             "BAKING" : "ASSAR",
             "BREAKFAST" : "CAFÉ DA MANHÃ"
         }
+    },
+    "pt-pt" : {
+        "title" : "EQUIPE DO COOK",
+        "caption" : "O coração e a alma da Cook",
+        "summary" : "Grandes receitas compartilhadas pelos chefs.",
+        "pages" : {
+            "GREAT PLACES" : "GREAT PLACES",
+            "STARTERS" : "ENTRADAS",
+            "MAINS" : "PRATOS PRINCIPAIS",
+            "DESSERT" : "SOBREMESAS",
+            "SAUCES" : "MOLHOS",
+            "BAKING" : "ASSAR",
+            "BREAKFAST" : "CAFÉ DA MANHÃ"
+        }
     }
 }
 
@@ -1882,11 +2773,19 @@
         "title" : "MAESTROS",
         "summary" : "Excelentes recetas compartidas por los chefs.",
     },
+    "es-mx" : {
+        "title" : "MAESTROS",
+        "summary" : "Excelentes recetas compartidas por los chefs.",
+    },
     "de" : {
         "title" : "MEISTER",
         "summary" : "Tolle Rezepte von Köchen geteilt.",
     },
     "fr" : {
+        "title" : "MAÎTRES",
+        "summary" : "Délicieuses recettes partagées par nos chefs.",
+    },
+    "fr-ca" : {
         "title" : "MAÎTRES",
         "summary" : "Délicieuses recettes partagées par nos chefs.",
     },
@@ -1901,6 +2800,10 @@
     "pt" : {
         "title" : "MESTRES",
         "summary" : "Grandes receitas compartilhadas pelos chefs.",
+    },
+    "pt-pt" : {
+        "title" : "MESTRES",
+        "summary" : "Grandes receitas compartilhadas pelos chefs.",
     }
 }
 
@@ -1910,11 +2813,19 @@
         "title" : "CHEFS",
         "summary" : "Excelentes recetas compartidas por los chefs.",
     },
+    "es-mx" : {
+        "title" : "CHEFS",
+        "summary" : "Excelentes recetas compartidas por los chefs.",
+    },
     "de" : {
         "title" : "CHEFKÖCHE",
         "summary" : "Tolle Rezepte von Köchen geteilt.",
     },
     "fr" : {
+        "title" : "CHEFS",
+        "summary" : "Délicieuses recettes partagées par nos chefs.",
+    },
+    "fr-ca" : {
         "title" : "CHEFS",
         "summary" : "Délicieuses recettes partagées par nos chefs.",
     },
@@ -1927,6 +2838,10 @@
         "summary" : "Grote recepten gedeeld door chef-koks.",
     },
     "pt" : {
+        "title" : "CHEFES",
+        "summary" : "Grandes receitas compartilhadas pelos chefs.",
+    },
+    "pt-pt" : {
         "title" : "CHEFES",
         "summary" : "Grandes receitas compartilhadas pelos chefs.",
     }
