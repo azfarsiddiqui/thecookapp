@@ -8,6 +8,8 @@
 
 #import "CKModel.h"
 #import "NSString+Utilities.h"
+#import "LocalisationHelper.h"
+#import "AppHelper.h"
 
 @interface CKModel ()
 
@@ -123,6 +125,14 @@
     return [self.parseObject isDataAvailable];
 }
 
+- (BOOL)localised {
+    return ([self.localisedData count] > 0);
+}
+
+- (NSString *)localisedValueForKey:(NSString *)key {
+    return [self.localisedData objectForKey:key];
+}
+
 - (NSDate *)createdDateTime {
      return self.parseObject.createdAt;
 }
@@ -146,11 +156,40 @@
 }
 
 - (NSString *)name {
-    return [self.parseObject objectForKey:kModelAttrName];
+    if (self.nameLocalised) {
+        return [self localisedValueForKey:@"name"];
+    } else {
+        return [self.parseObject objectForKey:kModelAttrName];
+    }
+}
+
+- (NSDictionary *)localisedData {
+    if (!_localisedData) {
+        NSError *error = nil;
+        NSString *localisedFormatsJson = [self.parseObject objectForKey:kModelAttrLocalised];
+        if ([localisedFormatsJson length] > 0) {
+            
+            NSString *languageCode = [[AppHelper sharedInstance].languageCode lowercaseString];
+            if ([languageCode length] > 0) {
+                NSData *stringData = [localisedFormatsJson dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *allLanguageData = [NSJSONSerialization JSONObjectWithData:stringData
+                                                                                options:NSJSONReadingMutableContainers error:&error];
+                NSDictionary *languageData = [allLanguageData objectForKey:languageCode];
+                if ([languageData count] > 0) {
+                    _localisedData = languageData;
+                }
+            }
+        }
+    }
+    return _localisedData;
 }
 
 - (NSString *)objectId {
     return self.parseObject.objectId;
+}
+
+- (BOOL)nameLocalised {
+    return ([[self localisedValueForKey:@"name"] length] > 0);
 }
 
 #pragma mark - NSObject

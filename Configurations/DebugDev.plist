@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CONVERSION_PLIST_BASE_URL</key>
-	<string>http://worldscookbook.com/app/</string>
+	<string>http://thecookapp-dev.parseapp.com/app/</string>
 	<key>COOK_SHARE_BASE_URL</key>
 	<string>http://thecookapp-dev.parseapp.com/recipes/</string>
 	<key>PARSE_APP_ID</key>

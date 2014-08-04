@@ -1,3 +1,8 @@
+// ------------------------------------------------------------------------------------------------------------------ //
+// Images
+// ------------------------------------------------------------------------------------------------------------------ //
+"cook_book_inner_category_new" = "cook_book_inner_category_new_blank";
+
 // Pages
 "PAGE ALREADY EXISTS" = "LA PÁGINA YA EXISTE";
 "ADD PAGE" = "AÑADIR PÁGINA";
@@ -116,18 +121,18 @@
 "ALREADY HAVE AN ACCOUNT?" = "¿YA TIENES CUENTA?";
 "DON'T HAVE AN ACCOUNT?" = "¿NO TIENES CUENTA?";
 "SIGN UP" = "REGISTRO";
-"REGISTER WITH EMAIL" = "REGISTRO CON CORREO ELECTRÓNICO";
+"REGISTER WITH EMAIL" = "REGISTRO CON EMAIL";
 "REGISTER WITH FACEBOOK" = "REGISTRO CON FACEBOOK";
 "SIGN IN WITH FACEBOOK" = "INICIAR SESIÓN CON FACEBOOK";
 "SEND" = "ENVIAR";
 "SIGNING UP" = "REGISTRANDO";
 "SIGNING IN" = "INICIANDO SESIÓN";
 "SENDING" = "ENVIANDO";
-"PLEASE CHECK YOUR EMAIL" = "CONSULTA TU CORREO ELECTRÓNICO";
-"EMAIL ADDRESS IS NOT REGISTERED" = "DIRECCIÓN DE CORREO ELECTRÓNICO NO REGISTRADA";
-"EMAIL IS ALREADY REGISTERED" = "DIRECCIÓN DE CORREO ELECTRÓNICO YA REGISTRADA";
+"PLEASE CHECK YOUR EMAIL" = "CONSULTA TU EMAIL";
+"EMAIL ADDRESS IS NOT REGISTERED" = "DIRECCIÓN DE EMAIL NO REGISTRADA";
+"EMAIL IS ALREADY REGISTERED" = "DIRECCIÓN DE EMAIL YA REGISTRADA";
 "COULDN'T CONNECT" = "ERROR AL CONECTAR";
-"INCORRECT EMAIL OR PASSWORD" = "CORREO ELECTRÓNICO O CONTRASEÑA INCORRECTOS";
+"INCORRECT EMAIL OR PASSWORD" = "EMAIL O CONTRASEÑA INCORRECTOS";
 "CHATTING WITH FACEBOOK" = "CHATEANDO CON FACEBOOK";
 "Create Account" = "Crear cuenta";
 "Your Facebook Account isn’t registered. Would you like to create a new Cook Account?" = "Tu cuenta de Facebook no está registrada. ¿Deseas crear una nueva cuenta de Cook?";
@@ -266,7 +271,45 @@
 "Your Name" = "Tu nombre";
 "My favorite recipes and food" = "Mis comidas y recetas favoritas";
 
-// Default description for a book from a particular country (see placeholder)
+// ------------------------------------------------------------------------------------------------------------------ //
+// Collection books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Collection books tagline.
+"%@ recipes" = "Recetas %@";
+
+// Generic.
+"Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Recetas deliciosos %@.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Vegetarian
+"Tasty vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Sabrosas vegetarianas y veganas.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Baking
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Recién horneada.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Dessert
+"A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "Un final delicioso para cada comida.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Quick.
+"Meals in 30 minutes or less. Tag your recipe appropriately to help other people find it" = "Preparadas en menos de 30 minutos.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Drinks
+"Recipes to quench your thirst. Tag your recipe appropriately to help other people find it" = "Recetas para calmar la sed.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Healthy.
+"You are what you eat. Tag your recipe appropriately to help other people find it" = "Somos lo que comemos.\n Etiqueta adecuadamente tu receta para ayudar a otras personas a encontrarla.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Excelentes recetas compartidas por los chefs.";
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// World books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Tagline
+"Delicious recipes from %@" = "Deliciosas recetas de %@";
+
+// Summary
 "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Deliciosas recetas compartidas por compañeros cocineros de toda %@. Para contribuir solo tienes que permitir que Cook te localice al publicar tus recetas.";
 
 // Name of common pages or meal types within a book.
@@ -278,38 +321,43 @@
 "BREAKFAST" = "DESAYUNO";
 "STARTERS" = "ENTRANTES";
 "MAINS" = "PRINCIPALES";
+"DESSERTS" = "POSTRES";
+"GLUTEN FREE" = "SIN GLUTEN";
+"SUGAR FREE" = "SIN AZÚCAR";
+"LOW FAT" = "BAJAS EN GRASA";
+"VEGAN" = "VEGANA";
 
 // Name of book that contains vegetarian recipes
-"VEGETARIAN" = "VEGETARIANAS";
-"Tasy vegetarian & vegan" = "Sabrosas vegetarianas y veganas";
+"Vegetarian" = "Vegetarianas";
+"Tasty vegetarian & vegan" = "Sabrosas vegetarianas y veganas";
 
 // Name of book that contains recipes relating to baking.
-"BAKING" = "PASTELERÍA";
+"Baking" = "Pastelería";
 "Fresh from the oven" = "Recién horneada";
 
 // Name of book that contains desserts
-"DESSERT" = "POSTRES";
+"Dessert" = "Postres";
 "A delicious end to every meal" = "Un final delicioso para cada comida";
 
 // Name of book that contains recipes that doesn't take very long to make.
-"QUICK" = "RÁPIDAS";
+"Quick" = "Rápidas";
 "Meals in 30 minutes or less" = "Preparadas en menos de 30 minutos";
 
 // Recipes for drinks.
-"DRINKS" = "BEBIDAS";
+"Drinks" = "Bebidas";
 "Recipes to quench your thirst" = "Recetas para calmar la sed";
 
 // Book made by the team at Cook
-"COOK TEAM" = "EQUIPO COOK";
+"Cook Team" = "Equipo Cook";
 "The heart and soul of cook" = "El alma de Cook";
 
 // Healthy recipes
-"HEALTHY" = "SALUDABLES";
+"Healthy" = "Saludables";
 "You are what you eat" = "Somos lo que comemos";
 
 // Great chefs
-"MASTERS" = "MAESTROS";
-"CHEFS" = "CHEFS";
+"Masters" = "Maestros";
+"Chefs" = "Chefs";
 
 // Reporting offensive or inappropriate content to the Cook team for moderation purposes.
 "Report a Recipe to Cook" = "Denunciar una receta a Cook";
@@ -352,7 +400,7 @@
 // Tags
 "Preserve" = "Conserva";
 "Condiment" = "Condimento";
-"Kids" = "Infantiles";
+"Kids" = "Niños";
 "Drink" = "Bebida";
 "Dessert" = "Postre";
 "Snack" = "Tentempié";
@@ -366,4 +414,31 @@
 "Sugar Free" = "Sin azúcar";
 "Gluten Free" = "Sin gluten";
 "Vegan" = "Vegana";
-"Vegetarian" = "Vegetariana";
+
+// Countries
+"United States" = "Estados Unidos";
+"United Kingdom" = "Reino Unido";
+"Australia" = "Australia";
+"Spain" = "España";
+"Philippines" = "Filipinas";
+"Italy" = "Italia";
+"Mexico" = "México";
+"Germany" = "Alemania";
+"Brazil" = "Brasil";
+"Canada" = "Canadá";
+"New Zealand" = "Nueva Zelandia";
+"Denmark" = "Dinamarca";
+"India" = "India";
+"Turkey" = "Turquía";
+"France" = "Francia";
+"Netherlands" = "Países Bajos";
+"Norway" = "Noruega";
+"Sweden" = "Suecia";
+"Finland" = "Finlandia";
+"China" = "China";
+"Russia" = "Rusia";
+"Japan" = "Japón";
+"Korea" = "Corea";
+"Malaysia" = "Malasia";
+"Singapore" = "Singapur";
+"Indonesia" = "Indonesia";

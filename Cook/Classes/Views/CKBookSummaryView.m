@@ -117,23 +117,28 @@
         [self updateNameEditMode:editMode];
         
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
-        // Wrap story up.
-        [self.editingHelper wrapEditingView:self.storyLabel
-                              contentInsets:(UIEdgeInsets){
-                                  defaultInsets.top + 5.0,
-                                  defaultInsets.left,
-                                  defaultInsets.bottom + 5.0,
-                                  defaultInsets.right + 5.0
-                              } delegate:self white:YES];
+        
+        // Wrap story up if it's not localised.
+        if (![self.book summaryLocalised]) {
+            [self.editingHelper wrapEditingView:self.storyLabel
+                                  contentInsets:(UIEdgeInsets){
+                                      defaultInsets.top + 5.0,
+                                      defaultInsets.left,
+                                      defaultInsets.bottom + 5.0,
+                                      defaultInsets.right + 5.0
+                                  } delegate:self white:YES];
+        }
         
         // Wrap name up.
-        [self.editingHelper wrapEditingView:self.nameLabel
-                              contentInsets:(UIEdgeInsets){
-                                  defaultInsets.top,
-                                  defaultInsets.left,
-                                  defaultInsets.bottom - 2.0,
-                                  defaultInsets.right + 5.0
-                              } delegate:self white:YES];
+        if (!self.book.user.nameLocalised) {
+            [self.editingHelper wrapEditingView:self.nameLabel
+                                  contentInsets:(UIEdgeInsets){
+                                      defaultInsets.top,
+                                      defaultInsets.left,
+                                      defaultInsets.bottom - 2.0,
+                                      defaultInsets.right + 5.0
+                                  } delegate:self white:YES];
+        }
         
     } else {
         [self updateStoryEditMode:editMode];
@@ -359,7 +364,10 @@
     [self addSubview:self.profilePhotoView];
     
     // User name
-    NSString *name = [self.book.user.name uppercaseString];
+    NSString *name = self.book.user.name;
+    if (self.book.user.nameLocalised) {
+        name = self.book.user.name;
+    }
     [self updateName:name];
     
     // Downloads
@@ -413,9 +421,8 @@
         self.nameLabel.textColor = [Theme storeBookSummaryNameColour];
         self.nameLabel.shadowColor = [UIColor blackColor];
         self.nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        self.nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.nameLabel.numberOfLines = 1;
-        self.nameLabel.minimumScaleFactor = 0.8;
+        self.nameLabel.textAlignment = NSTextAlignmentCenter;
         self.nameLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:self.nameLabel];
     }
@@ -560,6 +567,12 @@
 }
 
 - (NSDictionary *)storyParagraphAttributesEditMode:(BOOL)editMode {
+    
+    // No edit mode for localised titles.
+    if ([self.book summaryLocalised]) {
+        editMode = NO;
+    }
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = -10.0;
@@ -588,6 +601,11 @@
 }
 
 - (void)updateNameEditMode:(BOOL)editMode {
+    
+    // No edit mode for localised titles.
+    if (self.book.user.nameLocalised) {
+        editMode = NO;
+    }
     self.nameLabel.textColor = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryNameColour];
     self.nameLabel.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
     self.nameLabel.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);

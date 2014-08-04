@@ -168,7 +168,7 @@
 + (PFObject *)createParseBook {
     
     PFObject *parseBook = [self objectWithDefaultSecurityWithClassName:kBookModelName];
-    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:NSLocalizedString(kBookAttrDefaultNameValue, nil) forKey:kModelAttrName];
     [parseBook setObject:kBookAttrDefaultCaptionValue forKey:kBookAttrCaption];
     [parseBook setObject:[CKBookCover initialCover] forKey:kBookAttrCover];
     [parseBook setObject:[CKBookCover initialIllustration] forKey:kBookAttrIllustration];
@@ -378,6 +378,14 @@
     return self;
 }
 
+- (NSString *)name {
+    if (self.captionLocalised) {
+        return [self localisedValueForKey:@"caption"];
+    } else {
+        return [self.parseObject objectForKey:kModelAttrName];
+    }
+}
+
 - (void)setCover:(NSString *)cover {
     [self.parseObject setObject:cover forKey:kBookAttrCover];
 }
@@ -412,7 +420,7 @@
 }
 
 - (NSString *)author {
-    return [self userName];
+    return [self.parseObject objectForKey:kBookAttrAuthor];
 }
 
 - (void)setStory:(NSString *)story {
@@ -420,7 +428,11 @@
 }
 
 - (NSString *)story {
-    return [self.parseObject objectForKey:kBookAttrStory];
+    if (self.summaryLocalised) {
+        return [self localisedValueForKey:@"summary"];
+    } else {
+        return [self.parseObject objectForKey:kBookAttrStory];
+    }
 }
 
 - (void)setNumRecipes:(NSInteger)numRecipes {
@@ -640,6 +652,18 @@
     return [[self.parseObject objectForKey:kBookAttrDisabled] boolValue];
 }
 
+- (BOOL)captionLocalised {
+    return ([[self localisedValueForKey:@"caption"] length] > 0);
+}
+
+- (BOOL)titleLocalised {
+    return ([[self localisedValueForKey:@"title"] length] > 0);
+}
+
+- (BOOL)summaryLocalised {
+    return ([[self localisedValueForKey:@"summary"] length] > 0);
+}
+
 #pragma mark - Searches
 
 + (void)searchBooksByKeyword:(NSString *)keyword success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -664,11 +688,19 @@
 }
 
 - (NSString *)userName {
-    NSString *author = [self.parseObject objectForKey:kBookAttrAuthor];
-    if ([author length] > 0) {
-        return author;
+    
+    if (self.titleLocalised) {
+        
+        return [self localisedValueForKey:@"title"];
+        
     } else {
-        return self.user.name;
+        
+        NSString *author = self.author;
+        if ([author length] > 0) {
+            return author;
+        } else {
+            return self.user.name;
+        }
     }
 }
 
@@ -840,6 +872,25 @@
 
 - (BOOL)hasCoverPhoto {
     return (self.coverPhotoFile != nil);
+}
+
+- (NSString *)localisedNameForPage:(NSString *)page {
+    
+    // Return given page if not localised.
+    if (!self.localised) {
+        return page;
+    }
+    
+    NSString *localisedPage = [self.localisedData valueForKeyPath:[NSString stringWithFormat:@"pages.%@", page]];
+    if ([localisedPage length] > 0) {
+        
+        return localisedPage;
+        
+    } else {
+        
+        // Otherwise return unlocalised page.
+        return page;
+    }
 }
 
 - (void)setCoverPhotoFile:(PFFile *)coverPhotoFile {

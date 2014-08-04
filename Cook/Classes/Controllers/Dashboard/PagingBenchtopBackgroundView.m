@@ -25,11 +25,11 @@
 #define kRightEdgeWhiteGap      50.0
 
 + (CGFloat)minBlendAlpha {
-    return 0.58;
+    return 0.6;
 }
 
 + (CGFloat)maxBlendAlpha {
-    return 0.7;
+    return 0.75;
 }
 
 - (id)initWithFrame:(CGRect)frame pageWidth:(CGFloat)pageWidth {

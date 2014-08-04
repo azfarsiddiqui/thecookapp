@@ -1,3 +1,8 @@
+// ------------------------------------------------------------------------------------------------------------------ //
+// Images
+// ------------------------------------------------------------------------------------------------------------------ //
+"cook_book_inner_category_new" = "cook_book_inner_category_new_blank";
+
 // Pages
 "PAGE ALREADY EXISTS" = "LA PAGE EXISTE DEJA";
 "ADD PAGE" = "AJOUTER UNE PAGE";
@@ -266,7 +271,45 @@
 "Your Name" = "Votre nom";
 "My favorite recipes and food" = "Mes recettes et plats favoris";
 
-// Default description for a book from a particular country (see placeholder)
+// ------------------------------------------------------------------------------------------------------------------ //
+// Collection books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Collection books tagline.
+"%@ recipes" = "Recettes %@";
+
+// Generic.
+"Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Délicieuses recettes %@.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Vegetarian
+"Tasty vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Végétarien & végétalien savoureux.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Baking
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Cuit au four.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Dessert
+"A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "Une délicieuse fin pour chaque plat.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Quick.
+"Meals in 30 minutes or less. Tag your recipe appropriately to help other people find it" = "Plats en 30 minutes ou moins.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Drinks
+"Recipes to quench your thirst. Tag your recipe appropriately to help other people find it" = "Recettes pour étancher votre soif.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Healthy.
+"You are what you eat. Tag your recipe appropriately to help other people find it" = "Vous êtes ce que vous mangez.\n Tagguez votre recette de façon appropriée pour aider les autres gens à la trouver.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Délicieuses recettes partagées par nos chefs.";
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// World books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Tagline
+"Delicious recipes from %@" = "Délicieuses recettes d'%@";
+
+// Summary
 "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Des recettes délicieuses partagées par des confrères cuisiniers de tout %@. Pour contribuer, autorisez simplement Cook à vous localiser lorsque vous rendez vos recettes publiques.";
 
 // Name of common pages or meal types within a book.
@@ -278,38 +321,43 @@
 "BREAKFAST" = "PETIT-DEJEUNER";
 "STARTERS" = "ENTREES";
 "MAINS" = "PLATS PRINCIPAUX";
+"DESSERTS" = "DESSERTS";
+"GLUTEN FREE" = "SANS GLUTEN";
+"SUGAR FREE" = "SANS SUCRE";
+"LOW FAT" = "FAIBLE EN GRAS";
+"VEGAN" = "VÉGÉTALIEN";
 
 // Name of book that contains vegetarian recipes
-"VEGETARIAN" = "VEGETARIEN";
-"Tasy vegetarian & vegan" = "Végétarien & végétalien savoureux";
+"Vegetarian" = "Végétarien";
+"Tasty vegetarian & vegan" = "Végétarien & végétalien savoureux";
 
 // Name of book that contains recipes relating to baking.
-"BAKING" = "A CUIRE";
+"Baking" = "A Cuire";
 "Fresh from the oven" = "Cuit au four";
 
 // Name of book that contains desserts
-"DESSERT" = "DESSERT";
+"Dessert" = "Dessert";
 "A delicious end to every meal" = "Une délicieuse fin pour chaque plat";
 
 // Name of book that contains recipes that doesn't take very long to make.
-"QUICK" = "RAPIDE";
+"Quick" = "Rapide";
 "Meals in 30 minutes or less" = "Plats en 30 minutes ou moins";
 
 // Recipes for drinks.
-"DRINKS" = "BOISSONS";
+"Drinks" = "Boissons";
 "Recipes to quench your thirst" = "Recettes pour étancher votre soif";
 
 // Book made by the team at Cook
-"COOK TEAM" = "L'EQUIPE COOK";
+"Cook Team" = "L'équipe Cook";
 "The heart and soul of cook" = "Le coeur et l'âme de cook";
 
 // Healthy recipes
-"HEALTHY" = "BON POUR LA SANTE";
+"Healthy" = "Bon Pour La Sante";
 "You are what you eat" = "Vous êtes ce que vous mangez";
 
 // Great chefs
-"MASTERS" = "MAÎTRES";
-"CHEFS" = "CHEFS";
+"Masters" = "Maîtres";
+"Chefs" = "Chefs";
 
 // Reporting offensive or inappropriate content to the Cook team for moderation purposes.
 "Report a Recipe to Cook" = "Signaler une recette à Cook";
@@ -366,4 +414,31 @@
 "Sugar Free" = "Sans sucre";
 "Gluten Free" = "Sans gluten";
 "Vegan" = "Végétalien";
-"Vegetarian" = "Végétarien";
+
+// Countries
+"United States" = "États-Unis";
+"United Kingdom" = "Royaume-Uni";
+"Australia" = "Australie";
+"Spain" = "Espagne";
+"Philippines" = "Philippines";
+"Italy" = "Italie";
+"Mexico" = "Mexique";
+"Germany" = "Allemagne";
+"Brazil" = "Brésil";
+"Canada" = "Canada";
+"New Zealand" = "Nouvelle-Zélande";
+"Denmark" = "Danemark";
+"India" = "Inde";
+"Turkey" = "Turquie";
+"France" = "France";
+"Netherlands" = "Pays-Bas";
+"Norway" = "Norvège";
+"Sweden" = "Suède";
+"Finland" = "Finlande";
+"China" = "Chine";
+"Russia" = "Russie";
+"Japan" = "Japon";
+"Korea" = "Corée";
+"Malaysia" = "Malaisie";
+"Singapore" = "Singapour";
+"Indonesia" = "Indonésie";

@@ -12,8 +12,11 @@
 
 @interface AppHelper : NSObject
 
+@property (nonatomic, strong) NSString *languageCode;
+
 + (AppHelper *)sharedInstance;
 
+- (void)handleActive;
 - (BOOL)isNewUpdate;
 - (void)maskAsNewUpdate:(BOOL)update;
 
@@ -40,7 +43,6 @@
 - (NSString *)documentsPathForDirectoryName:(NSString *)name;
 
 // Language and country codes
-- (NSString *)languageCode;
 - (NSString*)localeCountryCode;
 
 @end

@@ -213,12 +213,21 @@
     }
     
     if (enable) {
-        [self.editingHelper wrapEditingView:self.nameTextView
-                              contentInsets:UIEdgeInsetsMake(15.0, 20.0, 12.0, 40.0)
-                                   delegate:self white:NO animated:animated];
-        [self.editingHelper wrapEditingView:self.authorTextView
-                              contentInsets:UIEdgeInsetsMake(5.0, 20.0, 5.0, 28.0)
-                                   delegate:self white:NO animated:animated];
+        
+        // Only allow editing if caption is not localised.
+        if (![self.book captionLocalised]) {
+            [self.editingHelper wrapEditingView:self.nameTextView
+                                  contentInsets:UIEdgeInsetsMake(15.0, 20.0, 12.0, 40.0)
+                                       delegate:self white:NO animated:animated];
+        }
+        
+        // Only allow editing if title is not localised.
+        if (![self.book titleLocalised]) {
+            [self.editingHelper wrapEditingView:self.authorTextView
+                                  contentInsets:UIEdgeInsetsMake(5.0, 20.0, 5.0, 28.0)
+                                       delegate:self white:NO animated:animated];
+        }
+        
     } else {
         [self.editingHelper unwrapEditingView:self.nameTextView];
         [self.editingHelper unwrapEditingView:self.authorTextView];
@@ -554,7 +563,7 @@
     
 //    [self adjustsFontSizeForLabel:self.authorLabel attributes:attributes toFitSize:self.contentOverlay.bounds.size decrementFontSize:5.0];
     [self adjustsFontSizeForLabel:self.authorTextView text:name attributes:attributes
-                        toFitSize:self.contentOverlay.bounds.size fontSizes:@[@58, @50, @46, @42]];
+                        toFitSize:self.contentOverlay.bounds.size fontSizes:@[@58, @50, @46, @42, @40, @38]];
     
     self.authorTextView.frame = [self authorFrame];
     

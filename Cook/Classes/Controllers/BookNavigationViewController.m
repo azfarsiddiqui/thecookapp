@@ -2351,6 +2351,9 @@
         
         NSMutableString *navigationTitle = [NSMutableString stringWithString:[self bookNavigationAuthorName]];
         if ([pageName length] > 0) {
+            
+            pageName = [self.book localisedNameForPage:pageName];
+            
             [navigationTitle appendFormat:@" - %@", pageName];
         }
         
@@ -2366,7 +2369,7 @@
 }
 
 - (NSString *)bookNavigationAuthorName {
-    return [self.book author];
+    return [self.book userName];
 }
 
 - (void)updateNavigationTitleWithPage:(NSString *)page offset:(CGFloat)offset {

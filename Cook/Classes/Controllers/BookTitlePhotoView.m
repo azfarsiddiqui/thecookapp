@@ -93,7 +93,7 @@
 
 - (BookTitleView *)bookTitleView {
     if (!_bookTitleView) {
-        _bookTitleView = [[BookTitleView alloc] initWithTitle:self.book.author subtitle:self.book.name];;
+        _bookTitleView = [[BookTitleView alloc] initWithTitle:[self.book userName] subtitle:self.book.name];;
     }
     return _bookTitleView;
 }

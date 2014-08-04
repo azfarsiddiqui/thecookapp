@@ -27,6 +27,18 @@
     return sharedInstance;
 }
 
+- (void)handleActive {
+    // Reset language code.
+    _languageCode = nil;
+}
+
+- (NSString *)languageCode {
+    if (!_languageCode) {
+        _languageCode = [[NSLocale preferredLanguages] objectAtIndex:0];
+    }
+    return _languageCode;
+}
+
 - (BOOL)isNewUpdate {
     BOOL newInstall = NO;
     NSString *currentVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
@@ -111,10 +123,6 @@
 
 - (NSString *)documentsPathForDirectoryName:(NSString *)name {
     return [[self documentsDirectoryPath] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@", name]];
-}
-
-- (NSString *)languageCode {
-    return [[NSLocale preferredLanguages] objectAtIndex:0];
 }
 
 - (NSString*)localeCountryCode {

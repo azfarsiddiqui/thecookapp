@@ -17,7 +17,7 @@
 
 - (NSString *)displayName
 {
-    NSString *languageCode = [[AppHelper sharedInstance] languageCode];
+    NSString *languageCode = [AppHelper sharedInstance].languageCode;
     //Grab dictionary of localised names and try to resolve with current language
     [self.parseObject fetchIfNeeded];
     NSString *localisedDictString = [self.parseObject objectForKey:kRecipeTagDisplayNames];

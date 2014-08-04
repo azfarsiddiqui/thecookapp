@@ -52,6 +52,9 @@ typedef enum {
 @property (nonatomic, assign) BOOL guest;
 @property (nonatomic, assign) BOOL disabled;
 @property (nonatomic, strong) CKRecipe *titleRecipe;
+@property (nonatomic, readonly) BOOL captionLocalised;
+@property (nonatomic, readonly) BOOL titleLocalised;
+@property (nonatomic, readonly) BOOL summaryLocalised;
 
 // Cover photos.
 @property (nonatomic, strong) PFFile *coverPhotoFile;
@@ -119,5 +122,6 @@ typedef enum {
 - (BOOL)isUserBookAuthor:(CKUser*)user;
 - (BOOL)isPublic;
 - (BOOL)hasCoverPhoto;
+- (NSString *)localisedNameForPage:(NSString *)page;
 
 @end

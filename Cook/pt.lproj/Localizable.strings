@@ -1,3 +1,8 @@
+// ------------------------------------------------------------------------------------------------------------------ //
+// Images
+// ------------------------------------------------------------------------------------------------------------------ //
+"cook_book_inner_category_new" = "cook_book_inner_category_new_blank";
+
 // Pages
 "PAGE ALREADY EXISTS" = "A PÁGINA JÁ EXISTE";
 "ADD PAGE" = "ADICIONAR PÁGINA";
@@ -266,7 +271,45 @@
 "Your Name" = "Seu nome";
 "My favorite recipes and food" = "Minhas receitas e pratos favoritos";
 
-// Default description for a book from a particular country (see placeholder)
+// ------------------------------------------------------------------------------------------------------------------ //
+// Collection books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Collection books tagline.
+"%@ recipes" = "Receitas %@";
+
+// Generic.
+"Delicious %@ recipes. Tag your recipe appropriately to help other people find it" = "Deliciosas receitas %@.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Vegetarian
+"Tasty vegetarian & vegan. Tag your recipe appropriately to help other people find it" = "Delicias vegetarianas e veganas.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Baking
+"Fresh from the oven. Tag your recipe appropriately to help other people find it" = "Quentinhos diretamente do forno.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Dessert
+"A delicious end to every meal. Tag your recipe appropriately to help other people find it" = "Um final delicioso para cada refeição.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Quick.
+"Meals in 30 minutes or less. Tag your recipe appropriately to help other people find it" = "Refeições em 30 minutos ou menos.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Drinks
+"Recipes to quench your thirst. Tag your recipe appropriately to help other people find it" = "Receitas para matar sua sede.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Healthy.
+"You are what you eat. Tag your recipe appropriately to help other people find it" = "Você é o que você come.\n Coloque marcadores na sua receita de maneira apropriada para ajudar pessoas a encontrá-la.";
+
+// Generic summary.
+"Great recipes shared by chefs." = "Grandes receitas compartilhadas pelos chefs.";
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// World books.
+// ------------------------------------------------------------------------------------------------------------------ //
+
+// Tagline
+"Delicious recipes from %@" = "Receitas deliciosas da %@";
+
+// Summary
 "Delicious recipes shared by fellow Cooks from all over %@. To contribute simply allow Cook to locate you when setting your recipes to public." = "Deliciosas receitas compartilhadas por seguidores do Cook na %@. Para contribuir, basta permitir que o Cook localize quando você adicionar uma receita para o público.";
 
 // Name of common pages or meal types within a book.
@@ -278,38 +321,43 @@
 "BREAKFAST" = "CAFÉ DA MANHÃ";
 "STARTERS" = "ENTRADAS";
 "MAINS" = "PRATOS PRINCIPAIS";
+"DESSERTS" = "SOBREMESAS";
+"GLUTEN FREE" = "SEM GLÚTEN";
+"SUGAR FREE" = "SEM AÇÚCAR";
+"LOW FAT" = "POUCA GORDURA";
+"VEGAN" = "VEGANO";
 
 // Name of book that contains vegetarian recipes
-"VEGETARIAN" = "VEGETARIANO";
-"Tasy vegetarian & vegan" = "Delicias vegetarianas e veganas";
+"Vegetarian" = "Vegetariano";
+"Tasty vegetarian & vegan" = "Delicias vegetarianas e veganas";
 
 // Name of book that contains recipes relating to baking.
-"BAKING" = "ASSADOS";
+"Baking" = "Assados";
 "Fresh from the oven" = "Quentinhos diretamente do forno";
 
 // Name of book that contains desserts
-"DESSERT" = "SOBREMESA";
+"Dessert" = "Sobremesa";
 "A delicious end to every meal" = "Um final delicioso para cada refeição";
 
 // Name of book that contains recipes that doesn't take very long to make.
-"QUICK" = "RÁPIDO";
+"Quick" = "Rápido";
 "Meals in 30 minutes or less" = "Refeições em 30 minutos ou menos";
 
 // Recipes for drinks.
-"DRINKS" = "DRINKS";
+"Drinks" = "Drinks";
 "Recipes to quench your thirst" = "Receitas para matar sua sede";
 
 // Book made by the team at Cook
-"COOK TEAM" = "EQUIPE DO COOK";
-"The heart and soul of cook" = "O coração e a alma da cozinha";
+"Cook Team" = "Equipe Do Cook";
+"The heart and soul of cook" = "O coração e a alma da Cook";
 
 // Healthy recipes
-"HEALTHY" = "SAUDÁVEL";
+"Healthy" = "Saudável";
 "You are what you eat" = "Você é o que você come";
 
 // Great chefs
-"MASTERS" = "MESTRES";
-"CHEFS" = "CHEFES";
+"Masters" = "Mestres";
+"CHEFS" = "Chefes";
 
 // Reporting offensive or inappropriate content to the Cook team for moderation purposes.
 "Report a Recipe to Cook" = "Denunciar uma receita de prato";
@@ -366,4 +414,31 @@
 "Sugar Free" = "Sem Açúcar"; //Sem adição de açúcar
 "Gluten Free" = "Sem glúten";
 "Vegan" = "Vegano";
-"Vegetarian" = "Vegetariano";
+
+// Countries
+"United States" = "Estados Unidos";
+"United Kingdom" = "Reino Unido";
+"Australia" = "Austrália";
+"Spain" = "Espanha";
+"Philippines" = "Filipinas";
+"Italy" = "Itália";
+"Mexico" = "México";
+"Germany" = "Alemanha";
+"Brazil" = "Brasil";
+"Canada" = "Canadá";
+"New Zealand" = "Nova Zelândia";
+"Denmark" = "Dinamarca";
+"India" = "Índia";
+"Turkey" = "Turquia";
+"France" = "França";
+"Netherlands" = "Holanda";
+"Norway" = "Noruega";
+"Sweden" = "Suécia";
+"Finland" = "Finlândia";
+"China" = "China";
+"Russia" = "Rússia";
+"Japan" = "Japão";
+"Korea" = "Coréia";
+"Malaysia" = "Malásia";
+"Singapore" = "Cingapura";
+"Indonesia" = "Indonésia";

@@ -702,7 +702,7 @@
     
     // Inform for modal.
     [self.delegate signUpViewControllerModalRequested:YES];
-    
+    self.closeButton.enabled = NO;
     if (self.signUpMode) {
         
         [self.emailButton setText:NSLocalizedString(@"SIGNING UP", nil) activity:YES animated:NO enabled:NO];
@@ -811,7 +811,7 @@
 
 
 - (void)performFacebookLogin {
-    
+    self.closeButton.enabled = NO;
     // Now tries and log the user in.
     [CKUser loginWithFacebookCompletion:^(BOOL isNewUser) {
         
@@ -860,7 +860,7 @@
 }
 
 - (void)informLoginSuccessful:(BOOL)success newUser:(BOOL)newUser {
-    
+    self.closeButton.enabled = YES;
     // Inform to release modal.
     [self.delegate signUpViewControllerModalRequested:NO];
     
