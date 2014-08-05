@@ -575,18 +575,50 @@
     // Assemble the fields to validate.
     NSMutableArray *fields = [NSMutableArray arrayWithArray:@[self.emailNameView, self.emailAddressView, self.emailPasswordView]];
 
+    if (self.verifyPasswordView.alpha == 1.0 && self.verifyPasswordView.textField.text.length > 0) {
+        [fields addObject:self.verifyPasswordView];
+    }
+    
     // Make sure all fields are validated before proceeding.
     BOOL validated = [self validateFields:fields];
     if (!validated) {
         return;
     }
-    [self showCurrentPasswordField];
-//    [[CKUser currentUser] modifyAccountWithCurrentPassword:self.emailPasswordView.textField.text newEmail:self.emailAddressView.textField.text newPassword:nil completion:^(BOOL yesNo) {
-//        DLog(@"Success");
-//    } failure:^(NSError *error) {
-//        DLog(@"Failure");
-//    }];
     
+    // If user has filled out password verification, attempt to verify and change account details
+    if (self.verifyPasswordView.alpha == 1.0 && self.verifyPasswordView.textField.text.length > 0) {
+        [self.emailButton setText:NSLocalizedString(@"CHANGING ACCOUNT", nil) activity:YES animated:NO enabled:NO];
+        [[CKUser currentUser] modifyAccountWithCurrentPassword:self.verifyPasswordView.textField.text newEmail:self.emailAddressView.textField.text newPassword:self.emailPasswordView.textField.text completion:^(BOOL yesNo) {
+            [self.emailButton setText:NSLocalizedString(@"SAVED", nil) activity:NO animated:NO enabled:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.delegate accountViewControllerDismissRequested];
+            });
+        } failure:^(NSError *error) {
+            DLog(@"Failure: %@", error);
+            [self.emailButton setText:NSLocalizedString(@"INCORRECT PASSWORD", nil) activity:NO animated:NO enabled:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.emailButton setText:[NSLocalizedString(@"Save", nil) uppercaseString] activity:NO
+                                 animated:NO enabled:YES];
+            });
+        }];
+    } else if ([CKUser currentUser].facebookId && ![CKUser currentUser].email) {
+        // User has Facebook login but no email/password, so don't need to verify
+        [self.emailButton setText:NSLocalizedString(@"CHANGING ACCOUNT", nil) activity:YES animated:NO enabled:NO];
+        [[CKUser currentUser] modifyAccountWithCurrentPassword:nil newEmail:self.emailAddressView.textField.text newPassword:self.emailPasswordView.textField.text completion:^(BOOL yesNo) {
+            [self.emailButton setText:NSLocalizedString(@"SAVED", nil) activity:NO animated:NO enabled:NO];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.delegate accountViewControllerDismissRequested];
+            });
+        } failure:^(NSError *error) {
+            [self.emailButton setText:NSLocalizedString(@"COULDN'T CONNECT", nil) activity:NO animated:NO enabled:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.emailButton setText:[NSLocalizedString(@"Save", nil) uppercaseString] activity:NO
+                                 animated:NO enabled:YES];
+            });
+        }];
+    } else { //Show password verification field
+        [self showCurrentPasswordField];
+    }
 //    [self.emailButton setText:@"SAVING" activity:YES animated:NO enabled:NO];
 }
 

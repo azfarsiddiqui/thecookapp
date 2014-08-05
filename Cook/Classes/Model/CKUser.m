@@ -635,7 +635,9 @@ static ObjectFailureBlock loginFailureBlock = nil;
                               completion:(BoolObjectSuccessBlock)completion
                                  failure:(ObjectFailureBlock)failure {
     [PFCloud callFunctionInBackground:@"changeAccount"
-                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{@"email": newEmail, @"password": oldPassword}] //Need to send new password too
+                       withParameters:[CloudCodeHelper commonCloudCodeParamsWithExtraParams:@{@"email": newEmail,
+                                                                                              @"password": oldPassword,
+                                                                                              @"newpassword": newPassword}]
                                 block:^(id object, NSError *error) {
                                     if (!error) {
                                         completion(YES);
