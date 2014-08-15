@@ -240,7 +240,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         
         // Snap to the start viewport.
         [self snapToViewport:[self startViewPort] animated:YES completion:^{
-            
+
             [self loadData];
             
             // Add mode?

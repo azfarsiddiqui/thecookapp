@@ -3385,6 +3385,7 @@
 		F6335E3B192DC43E00A434A3 /* cook_customise_toggle_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_toggle_bg.png; sourceTree = "<group>"; };
 		F6335E3C192DC43E00A434A3 /* cook_customise_toggle_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_toggle_bg@2x.png"; sourceTree = "<group>"; };
 		F63615C819186902000B0839 /* methodConversions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = methodConversions.plist; sourceTree = "<group>"; };
+		F63B110A19989C2C00E5A456 /* Cook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Cook.entitlements; sourceTree = "<group>"; };
 		F63E3A7317DC230A008B580E /* cook_book_inner_darkenphoto_strip_bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_darkenphoto_strip_bottom.png; sourceTree = "<group>"; };
 		F63E3A7717DC685C008B580E /* cook_book_inner_darkenphoto_strip_bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_darkenphoto_strip_bottom@2x.png"; sourceTree = "<group>"; };
 		F64299C11905F19A00124DDE /* cook_edit_details_icons_makes_lg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_edit_details_icons_makes_lg.png; sourceTree = "<group>"; };
@@ -6040,6 +6041,7 @@
 		76ED27471612DC180012E479 /* Cook */ = {
 			isa = PBXGroup;
 			children = (
+				F63B110A19989C2C00E5A456 /* Cook.entitlements */,
 				76ED27501612DC180012E479 /* AppDelegate.h */,
 				76ED27511612DC180012E479 /* AppDelegate.m */,
 				76381C9416683DE200404FB1 /* RootViewController.h */,
@@ -7645,6 +7647,9 @@
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
+							};
+							com.apple.SafariKeychain = {
+								enabled = 1;
 							};
 						};
 					};
@@ -9450,6 +9455,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9512,6 +9518,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9575,6 +9582,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9637,6 +9645,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9732,6 +9741,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9762,6 +9772,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

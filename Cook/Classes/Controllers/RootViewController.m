@@ -1155,6 +1155,17 @@
                         }];
 }
 
+- (void)showModalWithRecipeID:(NSString *)recipeID {
+    [self initViewControllers];
+    [CKRecipe recipeForObjectId:recipeID
+                        success:^(CKRecipe *recipe){
+                            [self showModalWithRecipe:recipe];
+                        }
+                        failure:^(NSError *error) {
+                            DLog(@"error %@", [error localizedDescription]);
+                        }];
+}
+
 - (void)showTutorialView:(BOOL)show {
     if (show) {
         self.tutorialViewController = [[DashboardTutorialViewController alloc] initWithDelegate:self];

@@ -14,6 +14,7 @@
 @interface AppDelegate ()
 
 @property (nonatomic, strong) NSDate *lastLaunchedDate;
+@property (nonatomic, strong) RootViewController *rootViewController;
 
 @end
 
@@ -26,7 +27,8 @@
     [[CKServerManager sharedInstance] startWithLaunchOptions:launchOptions];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [[RootViewController alloc] init];
+    self.rootViewController = [[RootViewController alloc] init];
+    self.window.rootViewController = self.rootViewController;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -49,9 +51,20 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    
-    return [[CKServerManager sharedInstance] handleFacebookCallback:url sourceApplication:sourceApplication
+    if ([[url scheme] isEqualToString:@"cookapp"]) {
+        NSArray *pathComponents = [url pathComponents];
+        if (pathComponents.count > 0) {
+            [self.rootViewController showModalWithRecipeID:[pathComponents lastObject]];
+        }
+        return YES;
+    }
+    else if ([[url scheme] isEqualToString:[NSString stringWithFormat:@"fb%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"COOK_FACEBOOK_APP_ID"]]]) {
+        return [[CKServerManager sharedInstance] handleFacebookCallback:url sourceApplication:sourceApplication
                                                          annotation:annotation];
+    }
+    else {
+        return NO;
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

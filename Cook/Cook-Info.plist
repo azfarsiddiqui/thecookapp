@@ -43,6 +43,16 @@
 				<string>fb${COOK_FACEBOOK_APP_ID}</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.thecookapp.cook</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cookapp</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.6.7</string>
