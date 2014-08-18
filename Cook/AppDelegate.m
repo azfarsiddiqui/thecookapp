@@ -53,9 +53,11 @@
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     if ([[url scheme] isEqualToString:@"cookapp"]) {
         NSArray *pathComponents = [url pathComponents];
-        if (pathComponents.count > 0) {
-            [self.rootViewController showModalWithRecipeID:[pathComponents lastObject]];
-        }
+        [pathComponents enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+            if ([obj isEqualToString:@"recipe"]) {
+                [self.rootViewController showModalWithRecipeID:[pathComponents objectAtIndex:(idx+1)]];
+            }
+        }];
         return YES;
     }
     else if ([[url scheme] isEqualToString:[NSString stringWithFormat:@"fb%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"COOK_FACEBOOK_APP_ID"]]]) {
