@@ -153,21 +153,49 @@
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate {
     
-    [self showModalWithRecipe:recipe book:book statusBarUpdate:statusBarUpdate callerViewController:self];
+    [self showModalWithRecipe:recipe book:book statusBarUpdate:statusBarUpdate callerViewController:self showBooks:NO];
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe
        callerViewController:(UIViewController<AppModalViewController> *)callerViewController {
     
-    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:callerViewController];
+    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:callerViewController showBooks:NO];
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate
-       callerViewController:(UIViewController<AppModalViewController> *)callerViewController {
+       callerViewController:(UIViewController<AppModalViewController> *)callerViewController showBooks:(BOOL)doShow {
     
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
     recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
-    [self showModalViewController:recipeViewController callerViewController:callerViewController];
+    [self showModalViewController:recipeViewController callerViewController:callerViewController showBooks:doShow];
+}
+
+- (void)showModalWithRecipeID:(NSString *)recipeID {
+    if (self.benchtopViewController) {
+        [self.benchtopViewController.view removeFromSuperview];
+        self.benchtopViewController = nil;
+        self.selectedBook = nil;
+    }
+    if (self.bookNavigationViewController) {
+        [self.bookNavigationViewController.view removeFromSuperview];
+        self.bookNavigationViewController = nil;
+    }
+    if (self.appModalViewController) {
+        [self.appModalViewController.view removeFromSuperview];
+        self.appModalViewController = nil;
+    }
+    
+    [self initViewControllers];
+    [UIView animateWithDuration:0.4 animations:^{
+        self.modalOverlayView.alpha = 1.0;
+    }];
+    [CKRecipe recipeForObjectId:recipeID
+                        success:^(CKRecipe *recipe){
+                            [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:self showBooks:YES];
+                        }
+                        failure:^(NSError *error) {
+                            DLog(@"error %@", [error localizedDescription]);
+                        }];
 }
 
 #pragma mark - WelcomeViewControllerDelegate methods
@@ -958,8 +986,14 @@
 
 - (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
            callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController {
+    [self showModalViewController:modalViewController callerViewController:callerModalViewController showBooks:NO];
+}
+
+- (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
+           callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController
+                      showBooks:(BOOL)doShow {
     
-    [self.benchtopViewController showVisibleBooks:NO];
+    [self.benchtopViewController showVisibleBooks:doShow];
     
     // Remember the modal VC's that are involved in this modal presentation.
     self.appModalViewController = modalViewController;
@@ -1070,7 +1104,6 @@
             [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
         }
     }
-    
 }
 
 - (void)loggedOut:(NSNotification *)notification {
@@ -1147,17 +1180,6 @@
     // qC9Dhevs7E - Dev Jeremy's pizza.
     // yVyEcZFboc - Prod Chicken adobo
     [CKRecipe recipeForObjectId:@"qC9Dhevs7E"
-                        success:^(CKRecipe *recipe){
-                            [self showModalWithRecipe:recipe];
-                        }
-                        failure:^(NSError *error) {
-                            DLog(@"error %@", [error localizedDescription]);
-                        }];
-}
-
-- (void)showModalWithRecipeID:(NSString *)recipeID {
-    [self initViewControllers];
-    [CKRecipe recipeForObjectId:recipeID
                         success:^(CKRecipe *recipe){
                             [self showModalWithRecipe:recipe];
                         }
