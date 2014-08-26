@@ -103,5 +103,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.thecookapp.recipe.browsing</string>
+	</array>
 </dict>
 </plist>

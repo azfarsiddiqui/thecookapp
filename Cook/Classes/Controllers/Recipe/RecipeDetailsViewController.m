@@ -99,6 +99,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
+@property (nonatomic, strong) id recipeActivity;
 
 // Social layer.
 @property (nonatomic, strong) RecipeSocialViewController *socialViewController;
@@ -186,11 +187,24 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:[UIApplication sharedApplication]];
     self.scrollView.delaysContentTouches = NO;
+    
+    if (NSClassFromString(@"NSUserActivity") != nil) {
+        NSUserActivity *recipeActivity = [[NSUserActivity alloc] initWithActivityType:@"com.thecookapp.recipe.browsing"];
+        recipeActivity.title = self.recipe.name;
+        recipeActivity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://thecookapp-dev.parseapp.com/recipes/%@", self.recipe.objectId]];
+        [recipeActivity becomeCurrent];
+        self.recipeActivity = recipeActivity;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [AnalyticsHelper trackEventName:kEventRecipeView params:@{ @"owner" : @([self.recipe isOwner]) } timed:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [((NSUserActivity *)self.recipeActivity) invalidate];
 }
 
 #pragma mark - PinRecipeViewControllerDelegate methods

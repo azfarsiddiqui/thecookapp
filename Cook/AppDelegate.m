@@ -52,12 +52,7 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     if ([[url scheme] isEqualToString:@"cookapp"]) {
-        NSArray *pathComponents = [url pathComponents];
-        [pathComponents enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
-            if ([obj isEqualToString:@"recipe"]) {
-                [self.rootViewController showModalWithRecipeID:[pathComponents objectAtIndex:(idx+1)]];
-            }
-        }];
+        [self openPageWithURL:url];
         return YES;
     }
     else if ([[url scheme] isEqualToString:[NSString stringWithFormat:@"fb%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"COOK_FACEBOOK_APP_ID"]]]) {
@@ -66,6 +61,13 @@
     }
     else {
         return NO;
+    }
+}
+
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+    if ([userActivity.activityType isEqual:NSUserActivityTypeBrowsingWeb]) {
+        [self openPageWithURL:userActivity.webpageURL];
     }
 }
 
@@ -84,6 +86,17 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[CKServerManager sharedInstance] handlePushWithUserInfo:userInfo];
+}
+
+#pragma mark - Handle URL deep-linking
+
+- (void)openPageWithURL:(NSURL *)url {
+    NSArray *pathComponents = [url pathComponents];
+    [pathComponents enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isEqualToString:@"recipe"] || [obj isEqualToString:@"recipes"]) {
+            [self.rootViewController showModalWithRecipeID:[pathComponents objectAtIndex:(idx+1)]];
+        }
+    }];
 }
 
 //- (void)application:(UIApplication *)application
