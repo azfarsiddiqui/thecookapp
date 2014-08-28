@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>COOK_HANDOFF_BASE_URL</key>
+	<string>http://www.cook.directory/</string>
 	<key>COOK_SHARE_BASE_URL</key>
 	<string>http://worldscookbook.com/</string>
 	<key>PARSE_APP_ID</key>

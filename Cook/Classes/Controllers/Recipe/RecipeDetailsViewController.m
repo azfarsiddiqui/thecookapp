@@ -191,7 +191,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     if (NSClassFromString(@"NSUserActivity") != nil) {
         NSUserActivity *recipeActivity = [[NSUserActivity alloc] initWithActivityType:@"com.thecookapp.recipe.browsing"];
         recipeActivity.title = self.recipe.name;
-        recipeActivity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://thecookapp-dev.parseapp.com/recipes/%@", self.recipe.objectId]];
+        recipeActivity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@recipes/%@", [AppHelper configValueForKey:@"COOK_HANDOFF_BASE_URL"], self.recipe.objectId]];
         [recipeActivity becomeCurrent];
         self.recipeActivity = recipeActivity;
     }
