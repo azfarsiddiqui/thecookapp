@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>COOK_HANDOFF_BASE_URL</key>
+	<string>http://www.cook.directory/</string>
 	<key>CONVERSION_PLIST_BASE_URL</key>
 	<string>http://worldscookbook.com/app/</string>
 	<key>COOK_SHARE_BASE_URL</key>
-	<string>http://thecookapp-dev.parseapp.com/recipes/</string>
+	<string>http://www.worldscookbook.com/recipes/</string>
 	<key>PARSE_APP_ID</key>
 	<string>fYp3YAuFHXpdYNTdjfvZtkbJOXrAL4FGCtj4kMIN</string>
 	<key>PARSE_CLIENT_KEY</key>

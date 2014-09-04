@@ -4093,6 +4093,7 @@
 		F6DD424F1810B29200AD3803 /* cook_customise_icon_page@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_page@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_page@2x.png"; sourceTree = "<group>"; };
 		F6DD42501810B29200AD3803 /* cook_customise_icon_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_customise_icon_tag.png; path = ../../../../Resources/recipes/cook_customise_icon_tag.png; sourceTree = "<group>"; };
 		F6DD42511810B29200AD3803 /* cook_customise_icon_tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_tag@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_tag@2x.png"; sourceTree = "<group>"; };
+		F6E9036919B8384D00589BC7 /* Cook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Cook.entitlements; sourceTree = "<group>"; };
 		F6F592D51817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_add_dark_onpress.png; sourceTree = "<group>"; };
 		F6F592D61817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_add_dark_onpress@2x.png"; sourceTree = "<group>"; };
 		F6F592D71817F32400998795 /* cook_book_inner_icon_add_light_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_add_light_onpress.png; sourceTree = "<group>"; };
@@ -6040,6 +6041,7 @@
 		76ED27471612DC180012E479 /* Cook */ = {
 			isa = PBXGroup;
 			children = (
+				F6E9036919B8384D00589BC7 /* Cook.entitlements */,
 				76ED27501612DC180012E479 /* AppDelegate.h */,
 				76ED27511612DC180012E479 /* AppDelegate.m */,
 				76381C9416683DE200404FB1 /* RootViewController.h */,
@@ -7645,6 +7647,9 @@
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
+							};
+							com.apple.SafariKeychain = {
+								enabled = 1;
 							};
 						};
 					};
@@ -9440,7 +9445,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "78C8A88C-BEA0-426F-8C11-0B23AECECD92";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9450,6 +9455,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9509,6 +9515,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9559,7 +9566,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "78C8A88C-BEA0-426F-8C11-0B23AECECD92";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9569,6 +9576,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9628,6 +9636,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9678,7 +9687,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "78C8A88C-BEA0-426F-8C11-0B23AECECD92";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -9709,7 +9718,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1430F91D-F900-47B3-9FC2-951C0D4B8D17";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "fc17734f-3d8a-444f-b107-2c299d820828";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -9720,6 +9729,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9747,6 +9757,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",

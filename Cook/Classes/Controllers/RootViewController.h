@@ -22,4 +22,6 @@
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate
        callerViewController:(UIViewController<AppModalViewController> *)callerViewController;
 
+- (void)showModalWithRecipeID:(NSString *)recipeID;
+
 @end

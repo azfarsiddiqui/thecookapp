@@ -14,6 +14,7 @@
 @interface AppDelegate ()
 
 @property (nonatomic, strong) NSDate *lastLaunchedDate;
+@property (nonatomic, strong) RootViewController *rootViewController;
 
 @end
 
@@ -26,7 +27,8 @@
     [[CKServerManager sharedInstance] startWithLaunchOptions:launchOptions];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [[RootViewController alloc] init];
+    self.rootViewController = [[RootViewController alloc] init];
+    self.window.rootViewController = self.rootViewController;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -49,9 +51,17 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    
-    return [[CKServerManager sharedInstance] handleFacebookCallback:url sourceApplication:sourceApplication
-                                                         annotation:annotation];
+    if ([[url scheme] isEqualToString:@"cookapp"]) {
+        [self openPageWithURL:url];
+        return YES;
+    }
+    else if ([[url scheme] isEqualToString:[NSString stringWithFormat:@"fb%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"COOK_FACEBOOK_APP_ID"]]]) {
+        return [[CKServerManager sharedInstance] handleFacebookCallback:url sourceApplication:sourceApplication
+                                                             annotation:annotation];
+    }
+    else {
+        return NO;
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -71,6 +81,27 @@
     [[CKServerManager sharedInstance] handlePushWithUserInfo:userInfo];
 }
 
+#pragma mark - Handle Handoff
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+    if ([userActivity.activityType isEqual:NSUserActivityTypeBrowsingWeb]) {
+        [self openPageWithURL:userActivity.webpageURL];
+    }
+    return YES;
+}
+
+
+
+#pragma mark - Handle URL deep-linking
+
+- (void)openPageWithURL:(NSURL *)url {
+    NSArray *pathComponents = [url pathComponents];
+    [pathComponents enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isEqualToString:@"recipe"] || [obj isEqualToString:@"recipes"] || ([pathComponents count] == 2 && [obj isEqualToString:@"/"])) {
+            [self.rootViewController showModalWithRecipeID:[pathComponents objectAtIndex:(idx+1)]];
+        }
+    }];
+}
 //- (void)application:(UIApplication *)application
 //    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
 //    DLog();

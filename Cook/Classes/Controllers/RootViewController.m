@@ -167,7 +167,37 @@
     
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
     recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
-    [self showModalViewController:recipeViewController callerViewController:callerViewController];
+    [self showModalViewController:recipeViewController callerViewController:callerViewController showBooks:NO];
+}
+
+- (void)showModalWithRecipeID:(NSString *)recipeID {
+    if (self.benchtopViewController) {
+        [self.benchtopViewController.view removeFromSuperview];
+        self.benchtopViewController = nil;
+        self.selectedBook = nil;
+    }
+    if (self.bookNavigationViewController) {
+        [self.bookNavigationViewController.view removeFromSuperview];
+        self.bookNavigationViewController = nil;
+    }
+    if (self.appModalViewController) {
+        [self.appModalViewController.view removeFromSuperview];
+        self.appModalViewController = nil;
+    }
+    
+    [self initViewControllers];
+    [UIView animateWithDuration:0.4 animations:^{
+        self.modalOverlayView.alpha = 1.0;
+    }];
+    [CKRecipe recipeForObjectId:recipeID
+                        success:^(CKRecipe *recipe){
+                            RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:recipe.book];
+                            recipeViewController.disableStatusBarUpdate = YES;
+                            [self showModalViewController:recipeViewController callerViewController:self showBooks:YES];
+                        }
+                        failure:^(NSError *error) {
+                            DLog(@"error %@", [error localizedDescription]);
+                        }];
 }
 
 #pragma mark - WelcomeViewControllerDelegate methods
@@ -952,14 +982,15 @@
     //Only allow adding of recipe to book if book is own book
     if ([book.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
         RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:book page:page];
-        [self showModalViewController:recipeViewController callerViewController:self];
+        [self showModalViewController:recipeViewController callerViewController:self showBooks:NO];
     }
 }
 
 - (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
-           callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController {
+           callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController
+                      showBooks:(BOOL)doShow {
     
-    [self.benchtopViewController showVisibleBooks:NO];
+    [self.benchtopViewController showVisibleBooks:doShow];
     
     // Remember the modal VC's that are involved in this modal presentation.
     self.appModalViewController = modalViewController;
