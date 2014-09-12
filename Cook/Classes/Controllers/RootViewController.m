@@ -153,21 +153,21 @@
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate {
     
-    [self showModalWithRecipe:recipe book:book statusBarUpdate:statusBarUpdate callerViewController:self];
+    [self showModalWithRecipe:recipe book:book statusBarUpdate:statusBarUpdate callerViewController:self showBooks:NO];
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe
        callerViewController:(UIViewController<AppModalViewController> *)callerViewController {
     
-    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:callerViewController];
+    [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:callerViewController showBooks:NO];
 }
 
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate
-       callerViewController:(UIViewController<AppModalViewController> *)callerViewController {
+       callerViewController:(UIViewController<AppModalViewController> *)callerViewController showBooks:(BOOL)doShow {
     
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:book];
     recipeViewController.disableStatusBarUpdate = !statusBarUpdate;
-    [self showModalViewController:recipeViewController callerViewController:callerViewController showBooks:NO];
+    [self showModalViewController:recipeViewController callerViewController:callerViewController showBooks:doShow];
 }
 
 - (void)showModalWithRecipeID:(NSString *)recipeID {
@@ -191,9 +191,7 @@
     }];
     [CKRecipe recipeForObjectId:recipeID
                         success:^(CKRecipe *recipe){
-                            RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe book:recipe.book];
-                            recipeViewController.disableStatusBarUpdate = YES;
-                            [self showModalViewController:recipeViewController callerViewController:self showBooks:YES];
+                            [self showModalWithRecipe:recipe book:recipe.book statusBarUpdate:NO callerViewController:self showBooks:YES];
                         }
                         failure:^(NSError *error) {
                             DLog(@"error %@", [error localizedDescription]);
@@ -982,8 +980,13 @@
     //Only allow adding of recipe to book if book is own book
     if ([book.user.objectId isEqualToString:[CKUser currentUser].objectId]) {
         RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:book page:page];
-        [self showModalViewController:recipeViewController callerViewController:self showBooks:NO];
+        [self showModalViewController:recipeViewController callerViewController:self];
     }
+}
+
+- (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
+           callerViewController:(UIViewController<AppModalViewController> *)callerModalViewController {
+    [self showModalViewController:modalViewController callerViewController:callerModalViewController showBooks:NO];
 }
 
 - (void)showModalViewController:(UIViewController<AppModalViewController> *)modalViewController
@@ -1101,7 +1104,6 @@
             [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
         }
     }
-    
 }
 
 - (void)loggedOut:(NSNotification *)notification {

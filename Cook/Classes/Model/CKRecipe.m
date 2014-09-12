@@ -138,7 +138,7 @@
                                     if (!error) {
                                         
                                         NSArray *parseRecipes = [results objectForKey:@"recipes"];
-                                        NSString *keyword = [results objectForKey:@"keyword"];
+//                                        NSString *keyword = [results objectForKey:@"keyword"];
                                         NSUInteger recipeCount = [[results objectForKey:@"count"] unsignedIntegerValue];
                                         NSUInteger maxItems = [[results objectForKey:@"maxItems"] unsignedIntegerValue];
                                         NSUInteger searchItemIndex = [[results objectForKey:@"itemIndex"] unsignedIntegerValue];
@@ -151,7 +151,7 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:user book:book];
                                         }];
                                         
-                                        success(keyword, recipes, recipeCount, maxItems, searchItemIndex);
+                                        success(searchTerm, recipes, recipeCount, maxItems, searchItemIndex);
                                         
                                     } else {
                                         DLog(@"Error searching recipes: %@", [error localizedDescription]);

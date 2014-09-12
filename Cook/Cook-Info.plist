@@ -46,6 +46,8 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.thecookapp.cook</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>cookapp</string>
@@ -53,11 +55,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.6.7</string>
+	<string>1.6.8</string>
 	<key>FacebookAppID</key>
 	<string>${COOK_FACEBOOK_APP_ID}</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.thecookapp.recipe.browsing</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Brandon_bld_it.otf</string>

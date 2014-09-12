@@ -15,6 +15,7 @@
 
 @interface RootViewController : UIViewController <AppModalViewControllerDelegate, AppModalViewController>
 
+- (void)showModalWithRecipeID:(NSString *)recipeID;
 - (void)showModalWithRecipe:(CKRecipe *)recipe;
 - (void)showModalWithRecipe:(CKRecipe *)recipe book:(CKBook *)book statusBarUpdate:(BOOL)statusBarUpdate;
 - (void)showModalWithRecipe:(CKRecipe *)recipe

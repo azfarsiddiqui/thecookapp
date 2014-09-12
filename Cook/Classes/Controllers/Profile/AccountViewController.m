@@ -32,6 +32,7 @@
 @property (nonatomic, strong) CKTextFieldView *emailNameView;
 @property (nonatomic, strong) CKTextFieldView *emailAddressView;
 @property (nonatomic, strong) CKTextFieldView *emailPasswordView;
+@property (nonatomic, strong) CKTextFieldView *verifyPasswordView;
 @property (nonatomic, strong) CKSignInButtonView *emailButton;
 @property (nonatomic, strong) CKSignInButtonView *logoutButton;
 @property (nonatomic, strong) ForgotPasswordViewController *forgotPasswordViewController;
@@ -70,6 +71,10 @@
     [self initFormContainerView];
     [self initForgotView];
     [self initFooterView];
+    
+    // Register for keyboard events.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 #pragma mark - CKSignInButtonViewDelegate methods
@@ -153,6 +158,41 @@
         [self showForgotArrow:YES];
     }
 }
+
+#pragma mark - Keyboard notification methods
+
+- (void)keyboardDidShow:(NSNotification *)notification {
+    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self handleKeyboardShow:YES keyboardFrame:keyboardFrame];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self handleKeyboardShow:NO keyboardFrame:keyboardFrame];
+}
+
+- (void)handleKeyboardShow:(BOOL)show keyboardFrame:(CGRect)keyboardFrame {
+    
+    // Convert keyboard frame to currentView to handle rotated interface.
+    keyboardFrame = [self.scrollView convertRect:keyboardFrame fromView:nil];
+    
+    CGFloat yOffset = 100.0;
+    if (show && self.verifyPasswordView.alpha > 0) {
+        yOffset -= self.verifyPasswordView.frame.size.height + 20;
+    }
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, -floorf(keyboardFrame.origin.y / 2.0) + yOffset);
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.dividerView.alpha = show ? 0.0: 1.0;
+                         self.logoutButton.alpha = show ? 0.0 : 1.0;
+                         self.scrollView.transform = show ? translateTransform : CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
 
 #pragma mark - Properties
 
@@ -266,7 +306,7 @@
 
 - (void)initFormContainerView {
     UIEdgeInsets emailInsets = UIEdgeInsetsMake(50.0, 50.0, 27.0, 50.0);
-    CGFloat fieldsGap = 30.0;
+    CGFloat fieldsGap = 22.0;
     
     UIView *emailContainerView = [[UIView alloc] initWithFrame:(CGRect){
         floorf((self.scrollView.bounds.size.width - kEmailSignupSize.width) / 2.0),
@@ -302,13 +342,27 @@
     emailPasswordView.maxLength = kPasswordMaxLength;
     emailPasswordView.frame = (CGRect){
         emailInsets.left + floorf((availableSize.width - emailPasswordView.frame.size.width) / 2.0),
-        self.emailButton.frame.origin.y - fieldsGap - emailPasswordView.frame.size.height + 20.0,
+        self.emailButton.frame.origin.y - 35 - emailPasswordView.frame.size.height + 20.0,
         emailPasswordView.frame.size.width,
         emailPasswordView.frame.size.height
     };
     emailPasswordView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [emailContainerView addSubview:emailPasswordView];
     self.emailPasswordView = emailPasswordView;
+    
+    // Verify password box
+    self.verifyPasswordView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:NSLocalizedString(@"Verify Password", nil) password:YES submit:YES];
+    self.verifyPasswordView.allowSpaces = NO;
+    self.verifyPasswordView.maxLength = kPasswordMaxLength;
+    self.verifyPasswordView.frame = (CGRect){
+        emailInsets.left + floorf((availableSize.width - emailPasswordView.frame.size.width) / 2.0),
+        self.emailButton.frame.origin.y + 7.0,
+        emailPasswordView.frame.size.width,
+        emailPasswordView.frame.size.height
+    };
+    self.verifyPasswordView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    [emailContainerView addSubview:self.verifyPasswordView];
+    self.verifyPasswordView.alpha = 0.0;
     
     // Email field anchor to the bottom.
     CKTextFieldView *emailAddressView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:NSLocalizedString(@"Email Address", nil)];
@@ -503,23 +557,68 @@
     return validated;
 }
 
+- (void)showCurrentPasswordField {
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, self.verifyPasswordView.frame.size.height + 20);
+    CGAffineTransform translateScrollTransform = CGAffineTransformMakeTranslation(0.0, -self.verifyPasswordView.frame.size.height - 20);
+    CGAffineTransform scrollTransform = CGAffineTransformConcat(self.scrollView.transform, translateScrollTransform);
+    [UIView animateWithDuration:0.4 animations:^{
+        self.emailButton.transform = translateTransform;
+        self.dividerView.transform = translateTransform;
+        self.logoutButton.transform = translateTransform;
+        self.scrollView.transform = scrollTransform;
+        self.verifyPasswordView.alpha = 1.0;
+    }];
+}
+
 - (void)saveButtonTapped {
     
     // Assemble the fields to validate.
     NSMutableArray *fields = [NSMutableArray arrayWithArray:@[self.emailNameView, self.emailAddressView, self.emailPasswordView]];
 
+    if (self.verifyPasswordView.alpha == 1.0 && self.verifyPasswordView.textField.text.length > 0) {
+        [fields addObject:self.verifyPasswordView];
+    }
+    
     // Make sure all fields are validated before proceeding.
     BOOL validated = [self validateFields:fields];
     if (!validated) {
         return;
     }
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Under Construction"
-                                                        message:nil
-                                                       delegate:self
-                                              cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-    [alertView show];
-    
+    // If user has filled out password verification, attempt to verify and change account details
+    if (self.verifyPasswordView.alpha == 1.0 && self.verifyPasswordView.textField.text.length > 0) {
+        [self.emailButton setText:NSLocalizedString(@"CHANGING ACCOUNT", nil) activity:YES animated:NO enabled:NO];
+        [[CKUser currentUser] modifyAccountWithCurrentPassword:self.verifyPasswordView.textField.text newEmail:self.emailAddressView.textField.text newPassword:self.emailPasswordView.textField.text completion:^(BOOL yesNo) {
+            [self.emailButton setText:NSLocalizedString(@"SAVED", nil) activity:NO animated:NO enabled:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.delegate accountViewControllerDismissRequested];
+            });
+        } failure:^(NSError *error) {
+            DLog(@"Failure: %@", error);
+            [self.emailButton setText:NSLocalizedString(@"INCORRECT PASSWORD", nil) activity:NO animated:NO enabled:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.emailButton setText:[NSLocalizedString(@"Save", nil) uppercaseString] activity:NO
+                                 animated:NO enabled:YES];
+            });
+        }];
+    } else if ([CKUser currentUser].facebookId && ![CKUser currentUser].email) {
+        // User has Facebook login but no email/password, so don't need to verify
+        [self.emailButton setText:NSLocalizedString(@"CHANGING ACCOUNT", nil) activity:YES animated:NO enabled:NO];
+        [[CKUser currentUser] modifyAccountWithCurrentPassword:nil newEmail:self.emailAddressView.textField.text newPassword:self.emailPasswordView.textField.text completion:^(BOOL yesNo) {
+            [self.emailButton setText:NSLocalizedString(@"SAVED", nil) activity:NO animated:NO enabled:NO];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.delegate accountViewControllerDismissRequested];
+            });
+        } failure:^(NSError *error) {
+            [self.emailButton setText:NSLocalizedString(@"COULDN'T CONNECT", nil) activity:NO animated:NO enabled:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.emailButton setText:[NSLocalizedString(@"Save", nil) uppercaseString] activity:NO
+                                 animated:NO enabled:YES];
+            });
+        }];
+    } else { //Show password verification field
+        [self showCurrentPasswordField];
+    }
 //    [self.emailButton setText:@"SAVING" activity:YES animated:NO enabled:NO];
 }
 

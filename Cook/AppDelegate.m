@@ -64,6 +64,15 @@
     }
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+    if ([userActivity.activityType isEqual:NSUserActivityTypeBrowsingWeb]) {
+        [self openPageWithURL:userActivity.webpageURL];
+    }
+    return YES;
+}
+#endif
+
 - (void)applicationWillTerminate:(UIApplication *)application {
     [[CKServerManager sharedInstance] stop];
 }
@@ -97,11 +106,12 @@
 - (void)openPageWithURL:(NSURL *)url {
     NSArray *pathComponents = [url pathComponents];
     [pathComponents enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
-        if ([obj isEqualToString:@"recipe"] || [obj isEqualToString:@"recipes"] || ([pathComponents count] == 2 && [obj isEqualToString:@"/"])) {
+        if ([obj isEqualToString:@"recipe"] || [obj isEqualToString:@"recipes"]) {
             [self.rootViewController showModalWithRecipeID:[pathComponents objectAtIndex:(idx+1)]];
         }
     }];
 }
+
 //- (void)application:(UIApplication *)application
 //    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
 //    DLog();

@@ -1150,23 +1150,23 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
-    
-    if (!self.editMode) {
-        CKMeasurementType selectedMeasureType = self.selectedMeasureType;
-        if (selectedMeasureType == CKMeasureTypeNone) {
-            selectedMeasureType = [CKUser currentUser].measurementType;
-        }
-        CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
-                                                                                   toMeasureType:selectedMeasureType
-                                                                                  highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
-                                                                                        delegate:self
-                                                                                       tokenOnly:YES];
-        NSAttributedString *convertedMethod = [methodConvert convert];
-        self.methodLabel.attributedText = convertedMethod;
-    } else {
+//    
+//    if (!self.editMode) {
+//        CKMeasurementType selectedMeasureType = self.selectedMeasureType;
+//        if (selectedMeasureType == CKMeasureTypeNone) {
+//            selectedMeasureType = [CKUser currentUser].measurementType;
+//        }
+//        CKMeasureConverter *methodConvert = [[CKMeasureConverter alloc] initWithAttributedString:methodDisplay
+//                                                                                   toMeasureType:selectedMeasureType
+//                                                                                  highlightColor:[CKBookCover textColourForCover:self.recipeDetails.book.cover]
+//                                                                                        delegate:self
+//                                                                                       tokenOnly:YES];
+//        NSAttributedString *convertedMethod = [methodConvert convert];
+//        self.methodLabel.attributedText = convertedMethod;
+//    } else {
         self.methodLabel.attributedText = methodDisplay;
-    }
-    
+//    }
+
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth - 20, MAXFLOAT }];
     size.width = kMaxRightWidth - 20;
     //Center story if no ingredients or serves
