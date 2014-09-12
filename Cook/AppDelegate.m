@@ -64,15 +64,6 @@
     }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    if ([userActivity.activityType isEqual:NSUserActivityTypeBrowsingWeb]) {
-        [self openPageWithURL:userActivity.webpageURL];
-    }
-    return YES;
-}
-#endif
-
 - (void)applicationWillTerminate:(UIApplication *)application {
     [[CKServerManager sharedInstance] stop];
 }
