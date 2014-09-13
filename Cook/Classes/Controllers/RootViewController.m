@@ -171,18 +171,29 @@
 }
 
 - (void)showModalWithRecipeID:(NSString *)recipeID {
+    //Clear all views
+    [self.view.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
+        [obj removeFromSuperview];
+    }];
+    
     if (self.benchtopViewController) {
-        [self.benchtopViewController.view removeFromSuperview];
+//        [self.benchtopViewController.view removeFromSuperview];
         self.benchtopViewController = nil;
         self.selectedBook = nil;
     }
     if (self.bookNavigationViewController) {
-        [self.bookNavigationViewController.view removeFromSuperview];
+//        [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
     }
     if (self.appModalViewController) {
-        [self.appModalViewController.view removeFromSuperview];
+//        [self.appModalViewController.view removeFromSuperview];
         self.appModalViewController = nil;
+    }
+    if (self.storeViewController) {
+        self.storeViewController = nil;
+    }
+    if (self.settingsViewController) {
+        self.settingsViewController = nil;
     }
     
     [self initViewControllers];
