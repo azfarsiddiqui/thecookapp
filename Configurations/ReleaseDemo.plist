@@ -5,7 +5,7 @@
 	<key>COOK_HANDOFF_BASE_URL</key>
 	<string>http://www.worldscookbook.com/</string>
 	<key>COOK_SHARE_BASE_URL</key>
-	<string>http://worldscookbook.com/</string>
+	<string>http://www.worldscookbook.com/</string>
 	<key>PARSE_APP_ID</key>
 	<string>36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS</string>
 	<key>PARSE_CLIENT_KEY</key>
