@@ -204,7 +204,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [((NSUserActivity *)self.recipeActivity) invalidate];
+    if (NSClassFromString(@"NSUserActivity") != nil) {
+        [((NSUserActivity *)self.recipeActivity) invalidate];
+    }
 }
 
 #pragma mark - PinRecipeViewControllerDelegate methods
@@ -2169,8 +2171,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
     if (enable) {
         self.scrollView.delaysContentTouches = YES;
+        if (NSClassFromString(@"NSUserActivity") != nil) {
+            [((NSUserActivity *)self.recipeActivity) invalidate];
+        }
     } else {
         self.scrollView.delaysContentTouches = NO;
+        if (NSClassFromString(@"NSUserActivity") != nil) {
+            NSUserActivity *recipeActivity = [[NSUserActivity alloc] initWithActivityType:@"com.thecookapp.recipe.browsing"];
+            recipeActivity.title = self.recipe.name;
+            recipeActivity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@recipes/%@", [AppHelper configValueForKey:@"COOK_HANDOFF_BASE_URL"], self.recipe.objectId]];
+            [recipeActivity becomeCurrent];
+            self.recipeActivity = recipeActivity;
+        }
     }
 }
 

@@ -98,7 +98,7 @@
 - (void)openPageWithURL:(NSURL *)url {
     NSArray *pathComponents = [url pathComponents];
     [pathComponents enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
-        if ([obj isEqualToString:@"recipe"] || [obj isEqualToString:@"recipes"]) {
+        if ([obj isEqualToString:@"recipe"] || [obj isEqualToString:@"recipes"] || ([pathComponents count] == 2 && [obj isEqualToString:@"/"])) {
             [self.rootViewController showModalWithRecipeID:[pathComponents objectAtIndex:(idx+1)]];
         }
     }];
