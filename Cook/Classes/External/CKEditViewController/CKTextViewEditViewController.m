@@ -62,7 +62,10 @@
     if (self.textView.inputAccessoryView) {
         accessoryViewHeight = self.accessoryView.view.frame.size.height;
     }
+    
+    
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom - accessoryViewHeight;
+    
     if ([self.titleLabel.text length] > 0) {
         self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.textView.frame.origin.y/2 + 20, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
         minHeight += self.titleLabel.frame.size.height;
@@ -291,6 +294,7 @@
     self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
     
     if (appear) {
+        [self updateContentSize];
         [self scrollToCursorIfRequired];
     } else {
         //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
@@ -314,9 +318,23 @@
     CGFloat requiredHeight = [self requiredTextViewHeight];
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
 
+    CGFloat accessoryViewHeight = 0;
+    if (self.textView.inputAccessoryView) {
+        accessoryViewHeight = self.accessoryView.view.frame.size.height;
+    }
+    DLog("Keyboard origin: %f, accessory height: %f, min Height: %f", self.keyboardFrame.origin.y - self.textView.frame.origin.y - 10, accessoryViewHeight, minHeight);
+    minHeight = MIN(minHeight, self.keyboardFrame.origin.y - self.textView.frame.origin.y - 10);
+    
     // Updates the textView frame.
     CGRect textViewFrame = self.textView.frame;
-    textViewFrame.size.height = MAX(requiredHeight, minHeight);
+    
+    //For small title labels, use required Height if smaller. For large textboxes, use the min height so it fills the space above keyboard
+    if (self.numLines > 5) {
+        textViewFrame.size.height = minHeight;
+    } else {
+        textViewFrame.size.height = MIN(requiredHeight, minHeight);
+    }
+    
     self.textView.frame = textViewFrame;
 
     // Updates the surrounding textboxes.
