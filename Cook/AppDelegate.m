@@ -51,11 +51,12 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
     if ([[url scheme] isEqualToString:@"cookapp"]) {
         [self openPageWithURL:url];
         return YES;
     }
-    else if ([[url scheme] isEqualToString:[NSString stringWithFormat:@"fb%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"COOK_FACEBOOK_APP_ID"]]]) {
+    else if ([[url scheme] hasPrefix:@"fb"]) {
         return [[CKServerManager sharedInstance] handleFacebookCallback:url sourceApplication:sourceApplication
                                                              annotation:annotation];
     }
