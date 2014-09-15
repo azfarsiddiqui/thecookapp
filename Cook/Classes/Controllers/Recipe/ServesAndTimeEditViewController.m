@@ -115,6 +115,8 @@
         [self.containerView addSubview:prepView];
         NSDictionary *views = @{@"title": self.prepTitleLabel, @"label": self.prepLabel};
         [prepView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[title]-[label]-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+        [prepView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(2)-[title]-(2)-|" options:0 metrics:nil views:views]];
+        [prepView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(2)-[label]-(2)-|" options:0 metrics:nil views:views]];
     }
     UIView *cookView = [[UIView alloc] initWithFrame:CGRectZero];
     {
@@ -124,6 +126,8 @@
         [self.containerView addSubview:cookView];
         NSDictionary *views = @{@"title": self.cookTitleLabel, @"label": self.cookLabel};
         [cookView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[title]-[label]-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+        [cookView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(2)-[title]-(2)-|" options:0 metrics:nil views:views]];
+        [cookView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(2)-[label]-(2)-|" options:0 metrics:nil views:views]];
     }
     
     //Setup layout

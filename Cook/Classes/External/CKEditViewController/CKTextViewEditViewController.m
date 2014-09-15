@@ -63,7 +63,6 @@
         accessoryViewHeight = self.accessoryView.view.frame.size.height;
     }
     
-    
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom - accessoryViewHeight;
     
     if ([self.titleLabel.text length] > 0) {

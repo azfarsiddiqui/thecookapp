@@ -136,6 +136,8 @@
                               @"collectionHeight":[NSNumber numberWithFloat:kItemHeight],
                               @"lineHeight":@1};
     [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[titleLabel]-10-[titleCount]-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
+    [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(5)-[titleLabel]-(5)-|" options:nil metrics:0 views:views]];
+    [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(5)-[titleCount]-(5)-|" options:nil metrics:0 views:views]];
 //    [titleAlignView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[titleLabel]" options:0 metrics:nil views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=0)-[titleAlign]-(>=0)-|" options:NSLayoutFormatAlignAllTop metrics:0 views:views]];
     [self.containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[mealCollection]-|" options:0 metrics:metrics views:views]];
