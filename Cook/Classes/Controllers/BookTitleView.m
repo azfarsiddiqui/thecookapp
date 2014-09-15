@@ -12,6 +12,7 @@
 #import "Theme.h"
 #import "DataHelper.h"
 #import "NSString+Utilities.h"
+#import "AppHelper.h"
 
 @interface BookTitleView ()
 
@@ -105,7 +106,11 @@
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = 0.0;
+    if ([[AppHelper sharedInstance] systemVersionAtLeast:@"8.0"]) {
+        paragraphStyle.lineSpacing = 10.0;
+    } else {
+        paragraphStyle.lineSpacing = 0.0;
+    }
     paragraphStyle.paragraphSpacing = 0.0;
 //    paragraphStyle.paragraphSpacingBefore = 6.0;
     paragraphStyle.paragraphSpacingBefore = 9.0;
