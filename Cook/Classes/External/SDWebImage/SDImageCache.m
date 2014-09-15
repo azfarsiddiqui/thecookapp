@@ -265,9 +265,15 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 
     // Second check the disk cache...
     UIImage *diskImage = [self diskImageForKey:key];
-    if (diskImage && !skipMemory) {
-        CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
-        [self.memCache setObject:diskImage forKey:key cost:cost];
+    if (diskImage) {
+        
+        //Update expiration on access
+        [self touchFileAtPath:[self defaultCachePathForKey:key]];
+        
+        if (!skipMemory) {
+            CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
+            [self.memCache setObject:diskImage forKey:key cost:cost];
+        }
     }
 
     return diskImage;
@@ -563,4 +569,17 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
     });
 }
 
+- (void)touchFileAtPath:(NSString *)filePath {
+    NSDate *extendedDate =[NSDate dateWithTimeIntervalSinceNow:kDefaultCacheMaxCacheAge];
+    
+    // Dispatch touching of modificaton.
+    __weak typeof(_fileManager) weakFileManager = _fileManager;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if ([weakFileManager fileExistsAtPath:filePath]) {
+            [weakFileManager setAttributes:@{ NSURLContentModificationDateKey : extendedDate }
+                              ofItemAtPath:filePath error:nil];
+        }
+    });
+    
+}
 @end
