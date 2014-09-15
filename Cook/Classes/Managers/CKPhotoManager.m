@@ -978,7 +978,7 @@
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png {
     [self storeImage:image forKey:cacheKey png:png toDisk:YES];
-    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey png:png toDisk:YES];
+    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey toDisk:YES];
 }
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png toDisk:(BOOL)toDisk {
@@ -989,7 +989,7 @@
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png toDisk:(BOOL)toDisk
         skipMemory:(BOOL)skipMemory {
     
-    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey png:png toDisk:toDisk skipMemory:skipMemory];
+    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey toDisk:toDisk skipMemory:skipMemory];
 }
 
 - (void)removeImageForKey:(NSString *)cacheKey {
@@ -1240,7 +1240,7 @@
     
     // Go ahead and download the file with progress updates.
     [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:0
-                                                         progress:^(NSUInteger receivedSize, long long expectedSize) {
+                                                         progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                                                              if (expectedSize > 0) {
                                                                  progress(receivedSize / expectedSize);
                                                              }

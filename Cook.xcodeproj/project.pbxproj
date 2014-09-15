@@ -710,6 +710,9 @@
 		768E74FF17D612C500502C19 /* cook_btns_ignore_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 768E74F717D612C500502C19 /* cook_btns_ignore_onpress@2x.png */; };
 		768E750017D612C500502C19 /* cook_btns_ignore.png in Resources */ = {isa = PBXBuildFile; fileRef = 768E74F817D612C500502C19 /* cook_btns_ignore.png */; };
 		768E750117D612C500502C19 /* cook_btns_ignore@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 768E74F917D612C500502C19 /* cook_btns_ignore@2x.png */; };
+		7691985319C67EA90034E4D3 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 7691985219C67EA90034E4D3 /* NSData+ImageContentType.m */; };
+		7691985619C67EB60034E4D3 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7691985519C67EB60034E4D3 /* UIImageView+HighlightedWebCache.m */; };
+		7691985919C67EC00034E4D3 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7691985819C67EC00034E4D3 /* UIView+WebCacheOperation.m */; };
 		7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationPickerViewController.m */; };
 		769226051647863A00752128 /* IllustrationBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* IllustrationBookCell.m */; };
 		7692830C1848B9F3002D9E8A /* BookTitlePhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692830B1848B9F3002D9E8A /* BookTitlePhotoView.m */; };
@@ -2518,6 +2521,12 @@
 		768E74F817D612C500502C19 /* cook_btns_ignore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btns_ignore.png; sourceTree = "<group>"; };
 		768E74F917D612C500502C19 /* cook_btns_ignore@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_ignore@2x.png"; sourceTree = "<group>"; };
 		768EC2F717D1A13F00F323D7 /* CKSaveableContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKSaveableContent.h; sourceTree = "<group>"; };
+		7691985119C67EA90034E4D3 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
+		7691985219C67EA90034E4D3 /* NSData+ImageContentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ImageContentType.m"; sourceTree = "<group>"; };
+		7691985419C67EB60034E4D3 /* UIImageView+HighlightedWebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+HighlightedWebCache.h"; sourceTree = "<group>"; };
+		7691985519C67EB60034E4D3 /* UIImageView+HighlightedWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+HighlightedWebCache.m"; sourceTree = "<group>"; };
+		7691985719C67EC00034E4D3 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
+		7691985819C67EC00034E4D3 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		7692260016474D4600752128 /* IllustrationPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationPickerViewController.h; sourceTree = "<group>"; };
 		7692260116474D4600752128 /* IllustrationPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationPickerViewController.m; sourceTree = "<group>"; };
 		769226031647863900752128 /* IllustrationBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationBookCell.h; sourceTree = "<group>"; };
@@ -6214,6 +6223,12 @@
 				76D2BF6C17B90A3700BA46A1 /* UIImage+MultiFormat.m */,
 				76D2BF6D17B90A3700BA46A1 /* UIImage+WebP.h */,
 				76D2BF6E17B90A3700BA46A1 /* UIImage+WebP.m */,
+				7691985119C67EA90034E4D3 /* NSData+ImageContentType.h */,
+				7691985219C67EA90034E4D3 /* NSData+ImageContentType.m */,
+				7691985419C67EB60034E4D3 /* UIImageView+HighlightedWebCache.h */,
+				7691985519C67EB60034E4D3 /* UIImageView+HighlightedWebCache.m */,
+				7691985719C67EC00034E4D3 /* UIView+WebCacheOperation.h */,
+				7691985819C67EC00034E4D3 /* UIView+WebCacheOperation.m */,
 			);
 			path = SDWebImage;
 			sourceTree = "<group>";
@@ -9198,6 +9213,7 @@
 				76708FE1181228410065DE51 /* CKRecipePin.m in Sources */,
 				F66C50F618D7CAF000637EFE /* UIImage+ProportionalFill.m in Sources */,
 				761852A91851E664001671BF /* ServesNotchSliderView.m in Sources */,
+				7691985319C67EA90034E4D3 /* NSData+ImageContentType.m in Sources */,
 				F64E465B17DA0DE600F99A5A /* CKPhotoFilterSliderView.m in Sources */,
 				762AEF751928CC4300B3AD6C /* PaginationHelper.m in Sources */,
 				76D2BF6817B9097A00BA46A1 /* NSData+GIF.m in Sources */,
@@ -9223,6 +9239,7 @@
 				76D0A3C717C9B34500B046F8 /* CKPhotoManager.m in Sources */,
 				769880CB17F16AAC00D1E760 /* RecipeSocialLayout.m in Sources */,
 				76D6E7EA16D5EEE8007B1851 /* ImageHelper.m in Sources */,
+				7691985619C67EB60034E4D3 /* UIImageView+HighlightedWebCache.m in Sources */,
 				7643B8C916D7037B001A2452 /* TTTAddressFormatter.m in Sources */,
 				7643B8CA16D7037B001A2452 /* TTTArrayFormatter.m in Sources */,
 				7643B8CB16D7037B001A2452 /* TTTLocationFormatter.m in Sources */,
@@ -9278,6 +9295,7 @@
 				76EA65F417A639D10093B9D9 /* CKImageDecorationView.m in Sources */,
 				767EEA5717BE5E59001E7D0B /* DashboardTutorialViewController.m in Sources */,
 				7603DB6D1807A90A00D011AB /* BookCoverPhotoViewController.m in Sources */,
+				7691985919C67EC00034E4D3 /* UIView+WebCacheOperation.m in Sources */,
 				7647853B17A697D800387A7B /* CKPrivacySliderView.m in Sources */,
 				7619515A179382C3008AB495 /* BookProfileHeaderView.m in Sources */,
 				76D2BF6F17B90A3700BA46A1 /* UIImage+GIF.m in Sources */,
