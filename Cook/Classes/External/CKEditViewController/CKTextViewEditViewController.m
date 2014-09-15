@@ -294,7 +294,10 @@
     self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
     
     if (appear) {
-        [self updateContentSize];
+        if (self.numLines > 5) {
+            //Only update contentSize if keyboard blocks it
+            [self updateContentSize];
+        }
         [self scrollToCursorIfRequired];
     } else {
         //Trim whitespace and newlines when dismissing keyboard to circumvent iOS7.0 UITextView crash bug
@@ -323,7 +326,7 @@
         accessoryViewHeight = self.accessoryView.view.frame.size.height;
     }
     DLog("Keyboard origin: %f, accessory height: %f, min Height: %f", self.keyboardFrame.origin.y - self.textView.frame.origin.y - 10, accessoryViewHeight, minHeight);
-    minHeight = MIN(minHeight, self.keyboardFrame.origin.y - self.textView.frame.origin.y - 10);
+    minHeight = self.keyboardFrame.origin.y - self.textView.frame.origin.y - 10;
     
     // Updates the textView frame.
     CGRect textViewFrame = self.textView.frame;
@@ -332,7 +335,7 @@
     if (self.numLines > 5) {
         textViewFrame.size.height = minHeight;
     } else {
-        textViewFrame.size.height = MIN(requiredHeight, minHeight);
+        textViewFrame.size.height = MAX(requiredHeight, minHeight);
     }
     
     self.textView.frame = textViewFrame;
