@@ -149,7 +149,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 #pragma mark ImageCache
 
 - (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk {
-    [self storeImage:image recalculateFromImage:recalculate imageData:imageData forKey:key toDisk:toDisk skipMemory:NO];
+    [self storeImage:image recalculateFromImage:recalculate imageData:imageData forKey:key toDisk:toDisk skipMemory:YES];
 }
 
 - (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
@@ -241,7 +241,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 }
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key {
-    return [self imageFromDiskCacheForKey:key skipMemory:NO];
+    return [self imageFromDiskCacheForKey:key skipMemory:YES];
 }
 
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key skipMemory:(BOOL)skipMemory {
