@@ -153,6 +153,10 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 }
 
 - (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
+    [self storeImage:image recalculateFromImage:recalculate imageData:imageData forKey:key png:NO toDisk:toDisk skipMemory:skipMemory];
+}
+
+- (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
     if (!image || !key) {
         return;
     }
@@ -174,12 +178,16 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 
                 // We assume the image is PNG, in case the imageData is nil (i.e. if trying to save a UIImage directly),
                 // we will consider it PNG to avoid loosing the transparency
-                BOOL imageIsPng = YES;
+                
+                // Cook - we know if it's PNG
+                // BOOL imageIsPng = YES;
+                BOOL imageIsPng = png;
 
+                // Cook - we know if it's PNG.
                 // But if we have an image data, we will look at the preffix
-                if ([imageData length] >= [kPNGSignatureData length]) {
-                    imageIsPng = ImageDataHasPNGPreffix(imageData);
-                }
+//                if ([imageData length] >= [kPNGSignatureData length]) {
+//                    imageIsPng = ImageDataHasPNGPreffix(imageData);
+//                }
 
                 if (imageIsPng) {
                     data = UIImagePNGRepresentation(image);
@@ -213,6 +221,10 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
     [self storeImage:image recalculateFromImage:YES imageData:nil forKey:key toDisk:toDisk skipMemory:skipMemory];
+}
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory {
+    [self storeImage:image recalculateFromImage:YES imageData:nil forKey:key png:png toDisk:toDisk skipMemory:skipMemory];
 }
 
 - (BOOL)diskImageExistsWithKey:(NSString *)key {

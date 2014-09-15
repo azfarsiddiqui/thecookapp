@@ -97,9 +97,19 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  * @param key    The unique image cache key, usually it's image absolute URL
  * @param png    PNG?
  * @param toDisk Store the image to disk cache if YES
+ */
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk;
+
+/**
+ * Cook - Store an image into memory and optionally disk cache at the given key.
+ *
+ * @param image  The image to store
+ * @param key    The unique image cache key, usually it's image absolute URL
+ * @param png    PNG?
+ * @param toDisk Store the image to disk cache if YES
  * @param skipMemory Skip memory?
  */
-- (void)storeImage:(UIImage *)image forKey:(NSString *)key toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk skipMemory:(BOOL)skipMemory;
 
 /**
  * Store an image into memory and optionally disk cache at the given key.
