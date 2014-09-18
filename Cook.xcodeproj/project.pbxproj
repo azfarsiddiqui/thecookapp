@@ -9475,7 +9475,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gerald Kim (873HD4Z7JW)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9554,6 +9554,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = ReleaseDev;
@@ -9680,6 +9681,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = ReleaseDemo;
@@ -9746,7 +9748,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "fc17734f-3d8a-444f-b107-2c299d820828";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "a18f62f7-93e7-464d-838d-d63ea2a52be9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -9789,8 +9791,8 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cook/Cook.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -9806,6 +9808,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
