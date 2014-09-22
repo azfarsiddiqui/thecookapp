@@ -17,6 +17,7 @@
 #import "EventHelper.h"
 #import "AppHelper.h"
 #import "CloudCodeHelper.h"
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 @interface CKUser ()
 

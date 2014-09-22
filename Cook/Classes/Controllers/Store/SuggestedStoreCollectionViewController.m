@@ -14,6 +14,7 @@
 #import "FacebookSuggestButtonView.h"
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 @interface SuggestedStoreCollectionViewController () <UICollectionViewDelegateFlowLayout,
     FacebookSuggestButtonViewDelegate>

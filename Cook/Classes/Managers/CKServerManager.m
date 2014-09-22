@@ -16,6 +16,7 @@
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 #import "Flurry.h"
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 @interface CKServerManager ()
 

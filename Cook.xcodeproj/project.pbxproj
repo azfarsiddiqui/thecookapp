@@ -1637,6 +1637,8 @@
 		F6DD42531810B29200AD3803 /* cook_customise_icon_page@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DD424F1810B29200AD3803 /* cook_customise_icon_page@2x.png */; };
 		F6DD42541810B29200AD3803 /* cook_customise_icon_tag.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DD42501810B29200AD3803 /* cook_customise_icon_tag.png */; };
 		F6DD42551810B29200AD3803 /* cook_customise_icon_tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DD42511810B29200AD3803 /* cook_customise_icon_tag@2x.png */; };
+		F6E9204C19CFF51C00291FEB /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */; };
+		F6E9204E19CFF6D900291FEB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204D19CFF6D900291FEB /* Bolts.framework */; };
 		F6F593051817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F592D51817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png */; };
 		F6F593061817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F592D61817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png */; };
 		F6F593071817F32400998795 /* cook_book_inner_icon_add_light_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F592D71817F32400998795 /* cook_book_inner_icon_add_light_onpress.png */; };
@@ -4103,6 +4105,8 @@
 		F6DD424F1810B29200AD3803 /* cook_customise_icon_page@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_page@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_page@2x.png"; sourceTree = "<group>"; };
 		F6DD42501810B29200AD3803 /* cook_customise_icon_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_customise_icon_tag.png; path = ../../../../Resources/recipes/cook_customise_icon_tag.png; sourceTree = "<group>"; };
 		F6DD42511810B29200AD3803 /* cook_customise_icon_tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_tag@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_tag@2x.png"; sourceTree = "<group>"; };
+		F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
+		F6E9204D19CFF6D900291FEB /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		F6F592D51817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_add_dark_onpress.png; sourceTree = "<group>"; };
 		F6F592D61817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_add_dark_onpress@2x.png"; sourceTree = "<group>"; };
 		F6F592D71817F32400998795 /* cook_book_inner_icon_add_light_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_add_light_onpress.png; sourceTree = "<group>"; };
@@ -4163,6 +4167,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6E9204E19CFF6D900291FEB /* Bolts.framework in Frameworks */,
+				F6E9204C19CFF51C00291FEB /* ParseFacebookUtils.framework in Frameworks */,
 				F694149A18A8792B002F3F64 /* Pinterest.framework in Frameworks */,
 				F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */,
 				F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */,
@@ -6016,6 +6022,8 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6E9204D19CFF6D900291FEB /* Bolts.framework */,
+				F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */,
 				F684F5E418AB45DF00FCD0E3 /* External */,
 				F694149918A8792B002F3F64 /* Pinterest.framework */,
 				F6526BB917D1D575000DDD95 /* MessageUI.framework */,
@@ -9480,6 +9488,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9543,6 +9552,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9607,6 +9617,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9670,6 +9681,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9766,6 +9778,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
@@ -9797,6 +9810,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
