@@ -25,7 +25,6 @@
 		76091F49175069C400018E6E /* cook_dash_dot_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F44175069C400018E6E /* cook_dash_dot_on@2x.png */; };
 		76091F4B17506A9600018E6E /* CKEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76091F4A17506A9600018E6E /* CKEditViewController.m */; };
 		760BB12117EFFE2700F2FD05 /* OverlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 760BB12017EFFE2700F2FD05 /* OverlayViewController.m */; };
-		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		761186BF16F04831004F631B /* StoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761186BE16F04830004F631B /* StoreBookViewController.m */; };
 		7612454E17CE18A900E69ECF /* cook_book_demo_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7612454C17CE18A900E69ECF /* cook_book_demo_overlay.png */; };
 		7612454F17CE18A900E69ECF /* cook_book_demo_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7612454D17CE18A900E69ECF /* cook_book_demo_overlay@2x.png */; };
@@ -1434,6 +1433,14 @@
 		F61BC47118A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61BC46D18A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress@2x.png */; };
 		F61BC47218A45EAD006B4D4D /* cook_book_share_icon_pinterest.png in Resources */ = {isa = PBXBuildFile; fileRef = F61BC46E18A45EAD006B4D4D /* cook_book_share_icon_pinterest.png */; };
 		F61BC47318A45EAD006B4D4D /* cook_book_share_icon_pinterest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F61BC46F18A45EAD006B4D4D /* cook_book_share_icon_pinterest@2x.png */; };
+		F62A7F3C19DA8BAF002CCB1C /* TTTAddressFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F2D19DA8BAF002CCB1C /* TTTAddressFormatter.m */; };
+		F62A7F3D19DA8BAF002CCB1C /* TTTArrayFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F2F19DA8BAF002CCB1C /* TTTArrayFormatter.m */; };
+		F62A7F3E19DA8BAF002CCB1C /* TTTColorFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F3119DA8BAF002CCB1C /* TTTColorFormatter.m */; };
+		F62A7F3F19DA8BAF002CCB1C /* TTTLocationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F3319DA8BAF002CCB1C /* TTTLocationFormatter.m */; };
+		F62A7F4019DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F3519DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.m */; };
+		F62A7F4119DA8BAF002CCB1C /* TTTTimeIntervalFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F3719DA8BAF002CCB1C /* TTTTimeIntervalFormatter.m */; };
+		F62A7F4219DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F3919DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.m */; };
+		F62A7F4319DA8BAF002CCB1C /* TTTURLRequestFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F62A7F3B19DA8BAF002CCB1C /* TTTURLRequestFormatter.m */; };
 		F6335E3D192DC43E00A434A3 /* cook_customise_toggle_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = F6335E3B192DC43E00A434A3 /* cook_customise_toggle_bg.png */; };
 		F6335E3E192DC43E00A434A3 /* cook_customise_toggle_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6335E3C192DC43E00A434A3 /* cook_customise_toggle_bg@2x.png */; };
 		F63615C919186902000B0839 /* methodConversions.plist in Resources */ = {isa = PBXBuildFile; fileRef = F63615C819186902000B0839 /* methodConversions.plist */; };
@@ -1492,6 +1499,7 @@
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
 		F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */; };
 		F66C50F618D7CAF000637EFE /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C50F518D7CAF000637EFE /* UIImage+ProportionalFill.m */; };
+		F67023EE19D5433400976F03 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
@@ -1639,6 +1647,28 @@
 		F6DD42551810B29200AD3803 /* cook_customise_icon_tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DD42511810B29200AD3803 /* cook_customise_icon_tag@2x.png */; };
 		F6E9204C19CFF51C00291FEB /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */; };
 		F6E9204E19CFF6D900291FEB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204D19CFF6D900291FEB /* Bolts.framework */; };
+		F6E9205519D2559700291FEB /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9205419D2559700291FEB /* NotificationCenter.framework */; };
+		F6E9205B19D2559700291FEB /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9205A19D2559700291FEB /* TodayViewController.m */; };
+		F6E9205D19D2559700291FEB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6E9205C19D2559700291FEB /* MainInterface.storyboard */; };
+		F6E9206019D2559700291FEB /* CookToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F6E9205319D2559700291FEB /* CookToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F6E9207119D2560900291FEB /* cook_book_today_serves.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206B19D2560900291FEB /* cook_book_today_serves.png */; };
+		F6E9207219D2560900291FEB /* cook_book_today_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206C19D2560900291FEB /* cook_book_today_serves@2x.png */; };
+		F6E9207319D2560900291FEB /* cook_book_today_time.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206D19D2560900291FEB /* cook_book_today_time.png */; };
+		F6E9207419D2560900291FEB /* cook_book_today_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206E19D2560900291FEB /* cook_book_today_time@2x.png */; };
+		F6E9207519D2560900291FEB /* TodayRecipeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9207019D2560900291FEB /* TodayRecipeCell.m */; };
+		F6E9207819D2564200291FEB /* CKTodayRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9207719D2564200291FEB /* CKTodayRecipe.m */; };
+		F6E9207919D258E900291FEB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204D19CFF6D900291FEB /* Bolts.framework */; };
+		F6E9207A19D258E900291FEB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27641612DC720012E479 /* Parse.framework */; };
+		F6E9207C19D2596A00291FEB /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27661612DCC60012E479 /* AudioToolbox.framework */; };
+		F6E9207D19D2596A00291FEB /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27671612DCC60012E479 /* CFNetwork.framework */; };
+		F6E9207E19D2596A00291FEB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
+		F6E9207F19D2596A00291FEB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 763D2776166C293800A43DF9 /* CoreLocation.framework */; };
+		F6E9208119D2597500291FEB /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9208019D2597500291FEB /* libz.dylib */; };
+		F6E9208219D2598000291FEB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276A1612DCC60012E479 /* MobileCoreServices.framework */; };
+		F6E9208319D2599700291FEB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276B1612DCC60012E479 /* QuartzCore.framework */; };
+		F6E9208419D2599700291FEB /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276C1612DCC60012E479 /* Security.framework */; };
+		F6E9208519D2599700291FEB /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276D1612DCC60012E479 /* StoreKit.framework */; };
+		F6E9208619D2599700291FEB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276E1612DCC60012E479 /* SystemConfiguration.framework */; };
 		F6F593051817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F592D51817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png */; };
 		F6F593061817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F592D61817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png */; };
 		F6F593071817F32400998795 /* cook_book_inner_icon_add_light_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F592D71817F32400998795 /* cook_book_inner_icon_add_light_onpress.png */; };
@@ -1691,6 +1721,37 @@
 		F6FF203818DA716F00565253 /* CKMeasureConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6FF203618DA716F00565253 /* CKMeasureConverter.m */; };
 		F6FF203918DA716F00565253 /* conversions.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6FF203718DA716F00565253 /* conversions.plist */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F6E9205E19D2559700291FEB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 76ED27341612DC180012E479 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6E9205219D2559700291FEB;
+			remoteInfo = CookToday;
+		};
+		F6E9206119D2559700291FEB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 76ED27341612DC180012E479 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6E9205219D2559700291FEB;
+			remoteInfo = CookToday;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F6E9206A19D2559800291FEB /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F6E9206019D2559700291FEB /* CookToday.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7600972B17A0E8B7001DFC9F /* CKListLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListLayout.m; sourceTree = "<group>"; };
@@ -3393,6 +3454,22 @@
 		F61BC46D18A45EAD006B4D4D /* cook_book_share_icon_pinterest_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_pinterest_onpress@2x.png"; sourceTree = "<group>"; };
 		F61BC46E18A45EAD006B4D4D /* cook_book_share_icon_pinterest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_pinterest.png; sourceTree = "<group>"; };
 		F61BC46F18A45EAD006B4D4D /* cook_book_share_icon_pinterest@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_pinterest@2x.png"; sourceTree = "<group>"; };
+		F62A7F2C19DA8BAF002CCB1C /* TTTAddressFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAddressFormatter.h; sourceTree = "<group>"; };
+		F62A7F2D19DA8BAF002CCB1C /* TTTAddressFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAddressFormatter.m; sourceTree = "<group>"; };
+		F62A7F2E19DA8BAF002CCB1C /* TTTArrayFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTArrayFormatter.h; sourceTree = "<group>"; };
+		F62A7F2F19DA8BAF002CCB1C /* TTTArrayFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTArrayFormatter.m; sourceTree = "<group>"; };
+		F62A7F3019DA8BAF002CCB1C /* TTTColorFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTColorFormatter.h; sourceTree = "<group>"; };
+		F62A7F3119DA8BAF002CCB1C /* TTTColorFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTColorFormatter.m; sourceTree = "<group>"; };
+		F62A7F3219DA8BAF002CCB1C /* TTTLocationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTLocationFormatter.h; sourceTree = "<group>"; };
+		F62A7F3319DA8BAF002CCB1C /* TTTLocationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTLocationFormatter.m; sourceTree = "<group>"; };
+		F62A7F3419DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTOrdinalNumberFormatter.h; sourceTree = "<group>"; };
+		F62A7F3519DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTOrdinalNumberFormatter.m; sourceTree = "<group>"; };
+		F62A7F3619DA8BAF002CCB1C /* TTTTimeIntervalFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTTimeIntervalFormatter.h; sourceTree = "<group>"; };
+		F62A7F3719DA8BAF002CCB1C /* TTTTimeIntervalFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTTimeIntervalFormatter.m; sourceTree = "<group>"; };
+		F62A7F3819DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTUnitOfInformationFormatter.h; sourceTree = "<group>"; };
+		F62A7F3919DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTUnitOfInformationFormatter.m; sourceTree = "<group>"; };
+		F62A7F3A19DA8BAF002CCB1C /* TTTURLRequestFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTURLRequestFormatter.h; sourceTree = "<group>"; };
+		F62A7F3B19DA8BAF002CCB1C /* TTTURLRequestFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTURLRequestFormatter.m; sourceTree = "<group>"; };
 		F6335E3B192DC43E00A434A3 /* cook_customise_toggle_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_toggle_bg.png; sourceTree = "<group>"; };
 		F6335E3C192DC43E00A434A3 /* cook_customise_toggle_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_toggle_bg@2x.png"; sourceTree = "<group>"; };
 		F63615C819186902000B0839 /* methodConversions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = methodConversions.plist; sourceTree = "<group>"; };
@@ -4071,6 +4148,7 @@
 		F6944B1C184DA33D007AF965 /* cook_tags_savoury_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_tags_savoury_onpress@2x.png"; sourceTree = "<group>"; };
 		F695F4DA1883B52700A63D8E /* CKGrowingTextViewEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKGrowingTextViewEditViewController.h; sourceTree = "<group>"; };
 		F695F4DB1883B52700A63D8E /* CKGrowingTextViewEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKGrowingTextViewEditViewController.m; sourceTree = "<group>"; };
+		F699F87619D540430056C3A3 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		F69DA098192DD0D00027985D /* cook_customise_toggle_left_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_toggle_left_onpress.png; sourceTree = "<group>"; };
 		F69DA099192DD0D00027985D /* cook_customise_toggle_left_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_toggle_left_onpress@2x.png"; sourceTree = "<group>"; };
 		F69DA09A192DD0D00027985D /* cook_customise_toggle_right_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_toggle_right_onpress.png; sourceTree = "<group>"; };
@@ -4107,6 +4185,21 @@
 		F6DD42511810B29200AD3803 /* cook_customise_icon_tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_tag@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_tag@2x.png"; sourceTree = "<group>"; };
 		F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		F6E9204D19CFF6D900291FEB /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		F6E9205319D2559700291FEB /* CookToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CookToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6E9205419D2559700291FEB /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		F6E9205819D2559700291FEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F6E9205919D2559700291FEB /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
+		F6E9205A19D2559700291FEB /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
+		F6E9205C19D2559700291FEB /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		F6E9206B19D2560900291FEB /* cook_book_today_serves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_today_serves.png; sourceTree = "<group>"; };
+		F6E9206C19D2560900291FEB /* cook_book_today_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_today_serves@2x.png"; sourceTree = "<group>"; };
+		F6E9206D19D2560900291FEB /* cook_book_today_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_today_time.png; sourceTree = "<group>"; };
+		F6E9206E19D2560900291FEB /* cook_book_today_time@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_today_time@2x.png"; sourceTree = "<group>"; };
+		F6E9206F19D2560900291FEB /* TodayRecipeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayRecipeCell.h; sourceTree = "<group>"; };
+		F6E9207019D2560900291FEB /* TodayRecipeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayRecipeCell.m; sourceTree = "<group>"; };
+		F6E9207619D2564200291FEB /* CKTodayRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTodayRecipe.h; sourceTree = "<group>"; };
+		F6E9207719D2564200291FEB /* CKTodayRecipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTodayRecipe.m; sourceTree = "<group>"; };
+		F6E9208019D2597500291FEB /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		F6F592D51817F32400998795 /* cook_book_inner_icon_add_dark_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_add_dark_onpress.png; sourceTree = "<group>"; };
 		F6F592D61817F32400998795 /* cook_book_inner_icon_add_dark_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_add_dark_onpress@2x.png"; sourceTree = "<group>"; };
 		F6F592D71817F32400998795 /* cook_book_inner_icon_add_light_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_add_light_onpress.png; sourceTree = "<group>"; };
@@ -4167,11 +4260,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F67023EE19D5433400976F03 /* FacebookSDK.framework in Frameworks */,
+				F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */,
 				F6E9204E19CFF6D900291FEB /* Bolts.framework in Frameworks */,
 				F6E9204C19CFF51C00291FEB /* ParseFacebookUtils.framework in Frameworks */,
 				F694149A18A8792B002F3F64 /* Pinterest.framework in Frameworks */,
 				F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */,
-				F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */,
 				76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */,
 				76EE2CDF170AEADF0043D128 /* ImageIO.framework in Frameworks */,
 				76EE2CDD170AEAB80043D128 /* CoreImage.framework in Frameworks */,
@@ -4193,8 +4287,27 @@
 				76ED27421612DC180012E479 /* UIKit.framework in Frameworks */,
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
-				761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */,
 				76E0AE8B18A87A3300F8A73D /* libFlurry_4.3.2.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6E9205019D2559700291FEB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6E9208319D2599700291FEB /* QuartzCore.framework in Frameworks */,
+				F6E9208419D2599700291FEB /* Security.framework in Frameworks */,
+				F6E9208519D2599700291FEB /* StoreKit.framework in Frameworks */,
+				F6E9208619D2599700291FEB /* SystemConfiguration.framework in Frameworks */,
+				F6E9208219D2598000291FEB /* MobileCoreServices.framework in Frameworks */,
+				F6E9208119D2597500291FEB /* libz.dylib in Frameworks */,
+				F6E9207C19D2596A00291FEB /* AudioToolbox.framework in Frameworks */,
+				F6E9207D19D2596A00291FEB /* CFNetwork.framework in Frameworks */,
+				F6E9207E19D2596A00291FEB /* CoreGraphics.framework in Frameworks */,
+				F6E9207F19D2596A00291FEB /* CoreLocation.framework in Frameworks */,
+				F6E9207919D258E900291FEB /* Bolts.framework in Frameworks */,
+				F6E9207A19D258E900291FEB /* Parse.framework in Frameworks */,
+				F6E9205519D2559700291FEB /* NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6006,6 +6119,7 @@
 			children = (
 				F6526BAD17D0D49F000DDD95 /* Configurations */,
 				76ED27471612DC180012E479 /* Cook */,
+				F6E9205619D2559700291FEB /* CookToday */,
 				76ED27401612DC180012E479 /* Frameworks */,
 				76ED273E1612DC180012E479 /* Products */,
 			);
@@ -6015,6 +6129,7 @@
 			isa = PBXGroup;
 			children = (
 				76ED273D1612DC180012E479 /* Cook.app */,
+				F6E9205319D2559700291FEB /* CookToday.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -6022,6 +6137,8 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F699F87619D540430056C3A3 /* Accounts.framework */,
+				F6E9208019D2597500291FEB /* libz.dylib */,
 				F6E9204D19CFF6D900291FEB /* Bolts.framework */,
 				F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */,
 				F684F5E418AB45DF00FCD0E3 /* External */,
@@ -6051,6 +6168,7 @@
 				76ED27411612DC180012E479 /* UIKit.framework */,
 				76ED27431612DC180012E479 /* Foundation.framework */,
 				76ED27451612DC180012E479 /* CoreGraphics.framework */,
+				F6E9205419D2559700291FEB /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -6547,6 +6665,29 @@
 				76558EC817BFD3E600644036 /* ingredientsKeyboard.plist */,
 			);
 			path = recipes;
+			sourceTree = "<group>";
+		};
+		F62A7F2B19DA8BAF002CCB1C /* FormatterKit */ = {
+			isa = PBXGroup;
+			children = (
+				F62A7F2C19DA8BAF002CCB1C /* TTTAddressFormatter.h */,
+				F62A7F2D19DA8BAF002CCB1C /* TTTAddressFormatter.m */,
+				F62A7F2E19DA8BAF002CCB1C /* TTTArrayFormatter.h */,
+				F62A7F2F19DA8BAF002CCB1C /* TTTArrayFormatter.m */,
+				F62A7F3019DA8BAF002CCB1C /* TTTColorFormatter.h */,
+				F62A7F3119DA8BAF002CCB1C /* TTTColorFormatter.m */,
+				F62A7F3219DA8BAF002CCB1C /* TTTLocationFormatter.h */,
+				F62A7F3319DA8BAF002CCB1C /* TTTLocationFormatter.m */,
+				F62A7F3419DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.h */,
+				F62A7F3519DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.m */,
+				F62A7F3619DA8BAF002CCB1C /* TTTTimeIntervalFormatter.h */,
+				F62A7F3719DA8BAF002CCB1C /* TTTTimeIntervalFormatter.m */,
+				F62A7F3819DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.h */,
+				F62A7F3919DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.m */,
+				F62A7F3A19DA8BAF002CCB1C /* TTTURLRequestFormatter.h */,
+				F62A7F3B19DA8BAF002CCB1C /* TTTURLRequestFormatter.m */,
+			);
+			path = FormatterKit;
 			sourceTree = "<group>";
 		};
 		F63C9569183A54F9000361EA /* tags */ = {
@@ -7621,6 +7762,34 @@
 			name = tags;
 			sourceTree = "<group>";
 		};
+		F6E9205619D2559700291FEB /* CookToday */ = {
+			isa = PBXGroup;
+			children = (
+				F62A7F2B19DA8BAF002CCB1C /* FormatterKit */,
+				F6E9206B19D2560900291FEB /* cook_book_today_serves.png */,
+				F6E9206C19D2560900291FEB /* cook_book_today_serves@2x.png */,
+				F6E9206D19D2560900291FEB /* cook_book_today_time.png */,
+				F6E9206E19D2560900291FEB /* cook_book_today_time@2x.png */,
+				F6E9206F19D2560900291FEB /* TodayRecipeCell.h */,
+				F6E9207019D2560900291FEB /* TodayRecipeCell.m */,
+				F6E9205919D2559700291FEB /* TodayViewController.h */,
+				F6E9205A19D2559700291FEB /* TodayViewController.m */,
+				F6E9205C19D2559700291FEB /* MainInterface.storyboard */,
+				F6E9205719D2559700291FEB /* Supporting Files */,
+				F6E9207619D2564200291FEB /* CKTodayRecipe.h */,
+				F6E9207719D2564200291FEB /* CKTodayRecipe.m */,
+			);
+			path = CookToday;
+			sourceTree = "<group>";
+		};
+		F6E9205719D2559700291FEB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F6E9205819D2559700291FEB /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F6FF203418DA716F00565253 /* CKMeasureConverter */ = {
 			isa = PBXGroup;
 			children = (
@@ -7645,15 +7814,35 @@
 				76ED273A1612DC180012E479 /* Frameworks */,
 				76ED273B1612DC180012E479 /* Resources */,
 				7632F24F17AF4CB100E80952 /* ShellScript */,
+				F6E9206A19D2559800291FEB /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F6E9205F19D2559700291FEB /* PBXTargetDependency */,
+				F6E9206219D2559700291FEB /* PBXTargetDependency */,
 			);
 			name = Cook;
 			productName = Cook;
 			productReference = 76ED273D1612DC180012E479 /* Cook.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F6E9205219D2559700291FEB /* CookToday */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6E9206319D2559800291FEB /* Build configuration list for PBXNativeTarget "CookToday" */;
+			buildPhases = (
+				F6E9204F19D2559700291FEB /* Sources */,
+				F6E9205019D2559700291FEB /* Frameworks */,
+				F6E9205119D2559700291FEB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CookToday;
+			productName = CookToday;
+			productReference = F6E9205319D2559700291FEB /* CookToday.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -7675,6 +7864,10 @@
 								enabled = 1;
 							};
 						};
+					};
+					F6E9205219D2559700291FEB = {
+						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = NW9NKBHY74;
 					};
 				};
 			};
@@ -7699,6 +7892,7 @@
 			projectRoot = "";
 			targets = (
 				76ED273C1612DC180012E479 /* Cook */,
+				F6E9205219D2559700291FEB /* CookToday */,
 			);
 		};
 /* End PBXProject section */
@@ -9108,6 +9302,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6E9205119D2559700291FEB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6E9207419D2560900291FEB /* cook_book_today_time@2x.png in Resources */,
+				F6E9207219D2560900291FEB /* cook_book_today_serves@2x.png in Resources */,
+				F6E9207119D2560900291FEB /* cook_book_today_serves.png in Resources */,
+				F6E9205D19D2559700291FEB /* MainInterface.storyboard in Resources */,
+				F6E9207319D2560900291FEB /* cook_book_today_time.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -9392,7 +9598,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6E9204F19D2559700291FEB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F62A7F4019DA8BAF002CCB1C /* TTTOrdinalNumberFormatter.m in Sources */,
+				F62A7F3D19DA8BAF002CCB1C /* TTTArrayFormatter.m in Sources */,
+				F62A7F4319DA8BAF002CCB1C /* TTTURLRequestFormatter.m in Sources */,
+				F6E9207819D2564200291FEB /* CKTodayRecipe.m in Sources */,
+				F6E9205B19D2559700291FEB /* TodayViewController.m in Sources */,
+				F62A7F3C19DA8BAF002CCB1C /* TTTAddressFormatter.m in Sources */,
+				F6E9207519D2560900291FEB /* TodayRecipeCell.m in Sources */,
+				F62A7F3F19DA8BAF002CCB1C /* TTTLocationFormatter.m in Sources */,
+				F62A7F4219DA8BAF002CCB1C /* TTTUnitOfInformationFormatter.m in Sources */,
+				F62A7F4119DA8BAF002CCB1C /* TTTTimeIntervalFormatter.m in Sources */,
+				F62A7F3E19DA8BAF002CCB1C /* TTTColorFormatter.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F6E9205F19D2559700291FEB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6E9205219D2559700291FEB /* CookToday */;
+			targetProxy = F6E9205E19D2559700291FEB /* PBXContainerItemProxy */;
+		};
+		F6E9206219D2559700291FEB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6E9205219D2559700291FEB /* CookToday */;
+			targetProxy = F6E9206119D2559700291FEB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		76B89B6E1973BB6900FAF0DF /* FormatterKit.strings */ = {
@@ -9827,6 +10064,228 @@
 			};
 			name = Release;
 		};
+		F6E9206419D2559800291FEB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CookToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F6E9206519D2559800291FEB /* DebugDemo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CookToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = DebugDemo;
+		};
+		F6E9206619D2559800291FEB /* DebugDev */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CookToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = DebugDev;
+		};
+		F6E9206719D2559800291FEB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CookToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		F6E9206819D2559800291FEB /* ReleaseDemo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CookToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = ReleaseDemo;
+		};
+		F6E9206919D2559800291FEB /* ReleaseDev */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CookToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = ReleaseDev;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -9852,6 +10311,19 @@
 				76ED27631612DC180012E479 /* Release */,
 				7615ADCE18C8933A00CBD7CA /* ReleaseDemo */,
 				760534EC17E956C500EBC54F /* ReleaseDev */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6E9206319D2559800291FEB /* Build configuration list for PBXNativeTarget "CookToday" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6E9206419D2559800291FEB /* Debug */,
+				F6E9206519D2559800291FEB /* DebugDemo */,
+				F6E9206619D2559800291FEB /* DebugDev */,
+				F6E9206719D2559800291FEB /* Release */,
+				F6E9206819D2559800291FEB /* ReleaseDemo */,
+				F6E9206919D2559800291FEB /* ReleaseDev */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
