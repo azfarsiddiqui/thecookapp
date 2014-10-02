@@ -37,6 +37,8 @@
     
     self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
     [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
+    
+//    self.preferredContentSize = CGSizeMake(800, 200);
     // Do any additional setup after loading the view from its nib.
     
 }
@@ -55,6 +57,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - NCWidgetProviding methods
+
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Perform any setup necessary in order to update the view.
     
@@ -68,6 +72,10 @@
         completionHandler(NCUpdateResultFailed);
     }];
 //    completionHandler(NCUpdateResultNewData);
+}
+
+- (UIEdgeInsets)widgetMarginInsetsForProposedMarginInsets:(UIEdgeInsets)defaultMarginInsets {
+    return UIEdgeInsetsZero;
 }
 
 - (void)loadDataWithCompletion:(void (^)())completion failure:(void (^)())failure {
@@ -157,11 +165,13 @@
         }];
         
         cell.servesLabel.text = recipe.numServes;
-        cell.timeLabel.attributedText = [self formattedShortDurationDisplayForMinutes:[recipe.makeTimeMins intValue]];
-        cell.titleLabel.text = recipe.recipeName;
-        cell.regionLabel.text = recipe.countryName;
+        if (recipe.makeTimeMins != (id)[NSNull null]) {
+            cell.timeLabel.attributedText = [self formattedShortDurationDisplayForMinutes:[recipe.makeTimeMins integerValue]];
+        }
+        cell.titleLabel.text = recipe.recipeName.uppercaseString;
+        cell.regionLabel.text = recipe.countryName.uppercaseString;
         if (recipe.recipeUpdatedAt) {
-            cell.timestampLabel.text = [self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:recipe.recipeUpdatedAt];
+            cell.timestampLabel.text = [self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:recipe.recipeUpdatedAt].uppercaseString;
         }
     }
     

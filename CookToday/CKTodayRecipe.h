@@ -20,7 +20,7 @@ typedef void(^ObjectFailureBlock)(NSError *error);
 @property (nonatomic, strong) NSString *recipeName;
 @property (nonatomic, strong) NSDate *recipeUpdatedAt;
 @property (nonatomic, strong) NSString *numServes;
-@property (nonatomic, assign) NSNumber *makeTimeMins;
+@property (nonatomic, strong) NSNumber *makeTimeMins;
 
 + (void)latestRecipesWithSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
