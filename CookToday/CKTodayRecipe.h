@@ -12,15 +12,18 @@
 typedef void(^GetObjectSuccessBlock)(id object);
 typedef void(^ObjectFailureBlock)(NSError *error);
 
+@class PFFile;
+
 @interface CKTodayRecipe : NSObject
 
 @property (nonatomic, strong) NSString *profilePicUrl;
-@property (nonatomic, strong) NSString *recipePicUrl;
+@property (nonatomic, strong) PFFile *recipePic;
 @property (nonatomic, strong) NSString *countryName;
 @property (nonatomic, strong) NSString *recipeName;
 @property (nonatomic, strong) NSDate *recipeUpdatedAt;
 @property (nonatomic, strong) NSString *numServes;
 @property (nonatomic, strong) NSNumber *makeTimeMins;
+@property (nonatomic, strong) NSNumber *quantityType;
 
 + (void)latestRecipesWithSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 

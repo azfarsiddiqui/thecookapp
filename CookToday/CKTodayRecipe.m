@@ -31,12 +31,13 @@
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super init]) {
         self.profilePicUrl = [parseObject objectForKey:@"profilePicUrl"];
-        self.recipePicUrl = [parseObject objectForKey:@"recipePicUrl"];
+        self.recipePic = [parseObject objectForKey:@"recipePic"];
         self.countryName = [parseObject objectForKey:@"countryName"];
         self.recipeName = [parseObject objectForKey:@"name"];
         self.recipeUpdatedAt = [parseObject objectForKey:@"recipeUpdatedAt"];
         self.numServes = [parseObject objectForKey:@"numServes"];
         self.makeTimeMins = [parseObject objectForKey:@"makeTimeMins"];
+        self.quantityType = [parseObject objectForKey:@"quantityType"];
     }
     return self;
 }

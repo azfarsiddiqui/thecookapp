@@ -1501,6 +1501,25 @@
 		F66C50F618D7CAF000637EFE /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C50F518D7CAF000637EFE /* UIImage+ProportionalFill.m */; };
 		F67023EE19D5433400976F03 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */; };
+		F67D564F19DD280300E61E60 /* Application License.txt in Resources */ = {isa = PBXBuildFile; fileRef = F67D564219DD280300E61E60 /* Application License.txt */; };
+		F67D565019DD280300E61E60 /* Brandon_bld.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564319DD280300E61E60 /* Brandon_bld.otf */; };
+		F67D565119DD280300E61E60 /* Brandon_bld_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564419DD280300E61E60 /* Brandon_bld_it.otf */; };
+		F67D565219DD280300E61E60 /* Brandon_blk.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564519DD280300E61E60 /* Brandon_blk.otf */; };
+		F67D565319DD280300E61E60 /* Brandon_blk_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564619DD280300E61E60 /* Brandon_blk_it.otf */; };
+		F67D565419DD280300E61E60 /* Brandon_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564719DD280300E61E60 /* Brandon_light.otf */; };
+		F67D565519DD280300E61E60 /* Brandon_light_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564819DD280300E61E60 /* Brandon_light_it.otf */; };
+		F67D565619DD280300E61E60 /* Brandon_med.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564919DD280300E61E60 /* Brandon_med.otf */; };
+		F67D565719DD280300E61E60 /* Brandon_med_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564A19DD280300E61E60 /* Brandon_med_it.otf */; };
+		F67D565819DD280300E61E60 /* Brandon_reg.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564B19DD280300E61E60 /* Brandon_reg.otf */; };
+		F67D565919DD280300E61E60 /* Brandon_reg_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564C19DD280300E61E60 /* Brandon_reg_it.otf */; };
+		F67D565A19DD280300E61E60 /* Brandon_thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564D19DD280300E61E60 /* Brandon_thin.otf */; };
+		F67D565B19DD280300E61E60 /* Brandon_thin_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = F67D564E19DD280300E61E60 /* Brandon_thin_it.otf */; };
+		F67D566219DE255800E61E60 /* cook_widget_icon_makes.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D565C19DE255800E61E60 /* cook_widget_icon_makes.png */; };
+		F67D566319DE255800E61E60 /* cook_widget_icon_makes@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D565D19DE255800E61E60 /* cook_widget_icon_makes@2x.png */; };
+		F67D566419DE255800E61E60 /* cook_widget_icon_serves.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D565E19DE255800E61E60 /* cook_widget_icon_serves.png */; };
+		F67D566519DE255800E61E60 /* cook_widget_icon_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D565F19DE255800E61E60 /* cook_widget_icon_serves@2x.png */; };
+		F67D566619DE255800E61E60 /* cook_widget_icon_time.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D566019DE255800E61E60 /* cook_widget_icon_time.png */; };
+		F67D566719DE255800E61E60 /* cook_widget_icon_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D566119DE255800E61E60 /* cook_widget_icon_time@2x.png */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
@@ -1628,6 +1647,7 @@
 		F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB917D1D575000DDD95 /* MessageUI.framework */; };
 		F6B4739F1851B571006D2ED4 /* cook_customise_icon_hint.png in Resources */ = {isa = PBXBuildFile; fileRef = F6B4739D1851B571006D2ED4 /* cook_customise_icon_hint.png */; };
 		F6B473A01851B571006D2ED4 /* cook_customise_icon_hint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6B4739E1851B571006D2ED4 /* cook_customise_icon_hint@2x.png */; };
+		F6BB91DE19DE78FE00EF792E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6BB91DD19DE78FE00EF792E /* MainInterface.storyboard */; };
 		F6BC0EE2180B5B4000B0F506 /* CKRecipeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */; };
 		F6C6772E182371B0000897A6 /* cook_library_icon_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6772C182371B0000897A6 /* cook_library_icon_facebook.png */; };
 		F6C6772F182371B0000897A6 /* cook_library_icon_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C6772D182371B0000897A6 /* cook_library_icon_facebook@2x.png */; };
@@ -1649,12 +1669,7 @@
 		F6E9204E19CFF6D900291FEB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204D19CFF6D900291FEB /* Bolts.framework */; };
 		F6E9205519D2559700291FEB /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9205419D2559700291FEB /* NotificationCenter.framework */; };
 		F6E9205B19D2559700291FEB /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9205A19D2559700291FEB /* TodayViewController.m */; };
-		F6E9205D19D2559700291FEB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6E9205C19D2559700291FEB /* MainInterface.storyboard */; };
 		F6E9206019D2559700291FEB /* CookToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F6E9205319D2559700291FEB /* CookToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		F6E9207119D2560900291FEB /* cook_book_today_serves.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206B19D2560900291FEB /* cook_book_today_serves.png */; };
-		F6E9207219D2560900291FEB /* cook_book_today_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206C19D2560900291FEB /* cook_book_today_serves@2x.png */; };
-		F6E9207319D2560900291FEB /* cook_book_today_time.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206D19D2560900291FEB /* cook_book_today_time.png */; };
-		F6E9207419D2560900291FEB /* cook_book_today_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6E9206E19D2560900291FEB /* cook_book_today_time@2x.png */; };
 		F6E9207519D2560900291FEB /* TodayRecipeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9207019D2560900291FEB /* TodayRecipeCell.m */; };
 		F6E9207819D2564200291FEB /* CKTodayRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9207719D2564200291FEB /* CKTodayRecipe.m */; };
 		F6E9207919D258E900291FEB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9204D19CFF6D900291FEB /* Bolts.framework */; };
@@ -3539,6 +3554,25 @@
 		F66C50F518D7CAF000637EFE /* UIImage+ProportionalFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ProportionalFill.m"; sourceTree = "<group>"; };
 		F67CE0EC187FB07500FE7AD0 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
 		F67CE0ED187FB07500FE7AD0 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
+		F67D564219DD280300E61E60 /* Application License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Application License.txt"; sourceTree = "<group>"; };
+		F67D564319DD280300E61E60 /* Brandon_bld.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_bld.otf; sourceTree = "<group>"; };
+		F67D564419DD280300E61E60 /* Brandon_bld_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_bld_it.otf; sourceTree = "<group>"; };
+		F67D564519DD280300E61E60 /* Brandon_blk.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_blk.otf; sourceTree = "<group>"; };
+		F67D564619DD280300E61E60 /* Brandon_blk_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_blk_it.otf; sourceTree = "<group>"; };
+		F67D564719DD280300E61E60 /* Brandon_light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_light.otf; sourceTree = "<group>"; };
+		F67D564819DD280300E61E60 /* Brandon_light_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_light_it.otf; sourceTree = "<group>"; };
+		F67D564919DD280300E61E60 /* Brandon_med.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_med.otf; sourceTree = "<group>"; };
+		F67D564A19DD280300E61E60 /* Brandon_med_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_med_it.otf; sourceTree = "<group>"; };
+		F67D564B19DD280300E61E60 /* Brandon_reg.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_reg.otf; sourceTree = "<group>"; };
+		F67D564C19DD280300E61E60 /* Brandon_reg_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_reg_it.otf; sourceTree = "<group>"; };
+		F67D564D19DD280300E61E60 /* Brandon_thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_thin.otf; sourceTree = "<group>"; };
+		F67D564E19DD280300E61E60 /* Brandon_thin_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_thin_it.otf; sourceTree = "<group>"; };
+		F67D565C19DE255800E61E60 /* cook_widget_icon_makes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_widget_icon_makes.png; sourceTree = "<group>"; };
+		F67D565D19DE255800E61E60 /* cook_widget_icon_makes@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_widget_icon_makes@2x.png"; sourceTree = "<group>"; };
+		F67D565E19DE255800E61E60 /* cook_widget_icon_serves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_widget_icon_serves.png; sourceTree = "<group>"; };
+		F67D565F19DE255800E61E60 /* cook_widget_icon_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_widget_icon_serves@2x.png"; sourceTree = "<group>"; };
+		F67D566019DE255800E61E60 /* cook_widget_icon_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_widget_icon_time.png; sourceTree = "<group>"; };
+		F67D566119DE255800E61E60 /* cook_widget_icon_time@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_widget_icon_time@2x.png"; sourceTree = "<group>"; };
 		F684F5E618AB45DF00FCD0E3 /* CKActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKActivityIndicatorView.h; sourceTree = "<group>"; };
 		F684F5E718AB45DF00FCD0E3 /* CKActivityIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKActivityIndicatorView.m; sourceTree = "<group>"; };
 		F684F5E918AB45DF00FCD0E3 /* cook_book_inner_loading_large_inner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_loading_large_inner.png; sourceTree = "<group>"; };
@@ -4161,6 +4195,7 @@
 		F6B29B4E1803AB360056513F /* AnalyticsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsHelper.m; sourceTree = "<group>"; };
 		F6B4739D1851B571006D2ED4 /* cook_customise_icon_hint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_icon_hint.png; sourceTree = "<group>"; };
 		F6B4739E1851B571006D2ED4 /* cook_customise_icon_hint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_icon_hint@2x.png"; sourceTree = "<group>"; };
+		F6BB91DD19DE78FE00EF792E /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		F6BC0EE0180B5B4000B0F506 /* CKRecipeTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeTag.h; sourceTree = "<group>"; };
 		F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeTag.m; sourceTree = "<group>"; };
 		F6C6772C182371B0000897A6 /* cook_library_icon_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_icon_facebook.png; sourceTree = "<group>"; };
@@ -4190,11 +4225,6 @@
 		F6E9205819D2559700291FEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F6E9205919D2559700291FEB /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
 		F6E9205A19D2559700291FEB /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
-		F6E9205C19D2559700291FEB /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
-		F6E9206B19D2560900291FEB /* cook_book_today_serves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_today_serves.png; sourceTree = "<group>"; };
-		F6E9206C19D2560900291FEB /* cook_book_today_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_today_serves@2x.png"; sourceTree = "<group>"; };
-		F6E9206D19D2560900291FEB /* cook_book_today_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_today_time.png; sourceTree = "<group>"; };
-		F6E9206E19D2560900291FEB /* cook_book_today_time@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_today_time@2x.png"; sourceTree = "<group>"; };
 		F6E9206F19D2560900291FEB /* TodayRecipeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayRecipeCell.h; sourceTree = "<group>"; };
 		F6E9207019D2560900291FEB /* TodayRecipeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayRecipeCell.m; sourceTree = "<group>"; };
 		F6E9207619D2564200291FEB /* CKTodayRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTodayRecipe.h; sourceTree = "<group>"; };
@@ -6898,6 +6928,26 @@
 			path = PSPDFTextView;
 			sourceTree = "<group>";
 		};
+		F67D564119DD280300E61E60 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F67D564219DD280300E61E60 /* Application License.txt */,
+				F67D564319DD280300E61E60 /* Brandon_bld.otf */,
+				F67D564419DD280300E61E60 /* Brandon_bld_it.otf */,
+				F67D564519DD280300E61E60 /* Brandon_blk.otf */,
+				F67D564619DD280300E61E60 /* Brandon_blk_it.otf */,
+				F67D564719DD280300E61E60 /* Brandon_light.otf */,
+				F67D564819DD280300E61E60 /* Brandon_light_it.otf */,
+				F67D564919DD280300E61E60 /* Brandon_med.otf */,
+				F67D564A19DD280300E61E60 /* Brandon_med_it.otf */,
+				F67D564B19DD280300E61E60 /* Brandon_reg.otf */,
+				F67D564C19DD280300E61E60 /* Brandon_reg_it.otf */,
+				F67D564D19DD280300E61E60 /* Brandon_thin.otf */,
+				F67D564E19DD280300E61E60 /* Brandon_thin_it.otf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		F684F5E418AB45DF00FCD0E3 /* External */ = {
 			isa = PBXGroup;
 			children = (
@@ -7765,16 +7815,19 @@
 		F6E9205619D2559700291FEB /* CookToday */ = {
 			isa = PBXGroup;
 			children = (
+				F6BB91DD19DE78FE00EF792E /* MainInterface.storyboard */,
+				F67D565C19DE255800E61E60 /* cook_widget_icon_makes.png */,
+				F67D565D19DE255800E61E60 /* cook_widget_icon_makes@2x.png */,
+				F67D565E19DE255800E61E60 /* cook_widget_icon_serves.png */,
+				F67D565F19DE255800E61E60 /* cook_widget_icon_serves@2x.png */,
+				F67D566019DE255800E61E60 /* cook_widget_icon_time.png */,
+				F67D566119DE255800E61E60 /* cook_widget_icon_time@2x.png */,
+				F67D564119DD280300E61E60 /* fonts */,
 				F62A7F2B19DA8BAF002CCB1C /* FormatterKit */,
-				F6E9206B19D2560900291FEB /* cook_book_today_serves.png */,
-				F6E9206C19D2560900291FEB /* cook_book_today_serves@2x.png */,
-				F6E9206D19D2560900291FEB /* cook_book_today_time.png */,
-				F6E9206E19D2560900291FEB /* cook_book_today_time@2x.png */,
 				F6E9206F19D2560900291FEB /* TodayRecipeCell.h */,
 				F6E9207019D2560900291FEB /* TodayRecipeCell.m */,
 				F6E9205919D2559700291FEB /* TodayViewController.h */,
 				F6E9205A19D2559700291FEB /* TodayViewController.m */,
-				F6E9205C19D2559700291FEB /* MainInterface.storyboard */,
 				F6E9205719D2559700291FEB /* Supporting Files */,
 				F6E9207619D2564200291FEB /* CKTodayRecipe.h */,
 				F6E9207719D2564200291FEB /* CKTodayRecipe.m */,
@@ -9306,11 +9359,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6E9207419D2560900291FEB /* cook_book_today_time@2x.png in Resources */,
-				F6E9207219D2560900291FEB /* cook_book_today_serves@2x.png in Resources */,
-				F6E9207119D2560900291FEB /* cook_book_today_serves.png in Resources */,
-				F6E9205D19D2559700291FEB /* MainInterface.storyboard in Resources */,
-				F6E9207319D2560900291FEB /* cook_book_today_time.png in Resources */,
+				F67D564F19DD280300E61E60 /* Application License.txt in Resources */,
+				F6BB91DE19DE78FE00EF792E /* MainInterface.storyboard in Resources */,
+				F67D566319DE255800E61E60 /* cook_widget_icon_makes@2x.png in Resources */,
+				F67D565219DD280300E61E60 /* Brandon_blk.otf in Resources */,
+				F67D566619DE255800E61E60 /* cook_widget_icon_time.png in Resources */,
+				F67D565419DD280300E61E60 /* Brandon_light.otf in Resources */,
+				F67D565119DD280300E61E60 /* Brandon_bld_it.otf in Resources */,
+				F67D565819DD280300E61E60 /* Brandon_reg.otf in Resources */,
+				F67D565B19DD280300E61E60 /* Brandon_thin_it.otf in Resources */,
+				F67D565919DD280300E61E60 /* Brandon_reg_it.otf in Resources */,
+				F67D565619DD280300E61E60 /* Brandon_med.otf in Resources */,
+				F67D565019DD280300E61E60 /* Brandon_bld.otf in Resources */,
+				F67D566419DE255800E61E60 /* cook_widget_icon_serves.png in Resources */,
+				F67D565519DD280300E61E60 /* Brandon_light_it.otf in Resources */,
+				F67D565719DD280300E61E60 /* Brandon_med_it.otf in Resources */,
+				F67D566719DE255800E61E60 /* cook_widget_icon_time@2x.png in Resources */,
+				F67D566519DE255800E61E60 /* cook_widget_icon_serves@2x.png in Resources */,
+				F67D566219DE255800E61E60 /* cook_widget_icon_makes.png in Resources */,
+				F67D565319DD280300E61E60 /* Brandon_blk_it.otf in Resources */,
+				F67D565A19DD280300E61E60 /* Brandon_thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

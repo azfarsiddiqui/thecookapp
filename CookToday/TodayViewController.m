@@ -24,6 +24,8 @@
 
 @implementation TodayViewController
 
+#define LAST_UPDATED_KEY @"lastUpdated"
+
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
@@ -65,12 +67,16 @@
     // If an error is encoutered, use NCUpdateResultFailed
     // If there's no update required, use NCUpdateResultNoData
     // If there's an update, use NCUpdateResultNewData
-    
-    [self loadDataWithCompletion:^{
-        completionHandler(NCUpdateResultNewData);
-    } failure:^{
-        completionHandler(NCUpdateResultFailed);
-    }];
+    NSDate *lastUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_UPDATED_KEY];
+    if ([lastUpdated timeIntervalSinceNow] > 600) {
+        [self loadDataWithCompletion:^{
+            completionHandler(NCUpdateResultNewData);
+        } failure:^{
+            completionHandler(NCUpdateResultFailed);
+        }];
+    } else {
+        completionHandler(NCUpdateResultNoData);
+    }
 //    completionHandler(NCUpdateResultNewData);
 }
 
@@ -80,6 +86,7 @@
 
 - (void)loadDataWithCompletion:(void (^)())completion failure:(void (^)())failure {
     [CKTodayRecipe latestRecipesWithSuccess:^(NSArray *object) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:LAST_UPDATED_KEY];
         self.dataSource = object;
         [self.tabelView reloadData];
         completion();
@@ -90,15 +97,15 @@
 
 - (NSAttributedString *)formattedShortDurationDisplayForMinutes:(NSInteger)minutes {
     NSMutableAttributedString *formattedDisplay = [[NSMutableAttributedString alloc] init];
-    NSDictionary *bigAttributes = @{NSFontAttributeName : [UIFont fontWithName:@"AvenirNext-Regular" size:14], NSForegroundColorAttributeName : [UIColor whiteColor] };
-    NSDictionary *smallAttributes = @{NSFontAttributeName : [UIFont fontWithName:@"AvenirNext-Regular" size:11], NSForegroundColorAttributeName : [UIColor whiteColor] };
+    NSDictionary *bigAttributes = @{NSFontAttributeName : [UIFont fontWithName:@"AvenirNext-Regular" size:12], NSForegroundColorAttributeName : [UIColor whiteColor] };
+    NSDictionary *smallAttributes = @{NSFontAttributeName : [UIFont fontWithName:@"AvenirNext-Regular" size:10], NSForegroundColorAttributeName : [UIColor whiteColor] };
     NSInteger hours = (minutes / 60);
     if (hours > 0) {
         NSInteger remainderMinutes = minutes % 60;
         NSAttributedString *hourNumber = [[NSAttributedString alloc] initWithString:[@(hours) stringValue] attributes:bigAttributes];
         NSAttributedString *hourString = [[NSAttributedString alloc] initWithString:@"h" attributes:smallAttributes];
-        [formattedDisplay appendAttributedString:hourString];
         [formattedDisplay appendAttributedString:hourNumber];
+        [formattedDisplay appendAttributedString:hourString];
         
         if (remainderMinutes > 0) {
             NSAttributedString *minuteNumber = [[NSAttributedString alloc] initWithString:[@(remainderMinutes) stringValue] attributes:bigAttributes];
@@ -149,7 +156,7 @@
     TodayRecipeCell *cell = [self.tabelView dequeueReusableCellWithIdentifier:@"TodayRecipeCell"];
     CKTodayRecipe *recipe = [self.dataSource objectAtIndex:indexPath.row];
     if (recipe) {
-        [self imageWithURL:[NSURL URLWithString:recipe.recipePicUrl] success:^(UIImage *image) {
+        [self imageWithURL:[NSURL URLWithString:recipe.recipePic.url] success:^(UIImage *image) {
             if (image) {
                 cell.backgroundImageView.image = image;
             }
@@ -172,6 +179,19 @@
         cell.regionLabel.text = recipe.countryName.uppercaseString;
         if (recipe.recipeUpdatedAt) {
             cell.timestampLabel.text = [self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:recipe.recipeUpdatedAt].uppercaseString;
+        }
+        
+        if ([recipe.quantityType isEqual:@0]) {
+            cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_serves"];
+        } else if ([recipe.quantityType isEqual:@1]) {
+            cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_makes"];
+        }
+        
+        if (recipe.numServes <= 0) {
+            cell.makesTypeImageView.alpha = 0.0;
+        }
+        if (recipe.makeTimeMins <= 0) {
+            cell.makesTimeImageView.alpha = 0.0;
         }
     }
     
