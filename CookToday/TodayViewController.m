@@ -16,9 +16,10 @@
 
 @interface TodayViewController () <NCWidgetProviding, UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) NSArray *dataSource;
+@property (nonatomic, strong) NSMutableArray *dataSource;
 @property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
 @property (strong, nonatomic) IBOutlet UITableView *tabelView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableHeight;
 
 @end
 
@@ -36,7 +37,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.dataSource = [NSMutableArray new];
     self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
     [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
     
@@ -87,8 +88,32 @@
 - (void)loadDataWithCompletion:(void (^)())completion failure:(void (^)())failure {
     [CKTodayRecipe latestRecipesWithSuccess:^(NSArray *object) {
         [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:LAST_UPDATED_KEY];
-        self.dataSource = object;
-        [self.tabelView reloadData];
+        
+        //Iterate through array of Recipes and grab background images
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [object enumerateObjectsUsingBlock:^(CKTodayRecipe *obj, NSUInteger idx, BOOL *stop) {
+                if (!obj.backgroundImage) {
+                    [self imageWithURL:[NSURL URLWithString:obj.recipePic.url] success:^(UIImage *image) {
+                        if (image) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                obj.backgroundImage = image;
+                                [self.dataSource addObject:obj];
+                                self.tableHeight.constant = [self.dataSource count] * 100;
+                                [self.dataSource sortUsingComparator:^NSComparisonResult(CKTodayRecipe *obj1, CKTodayRecipe *obj2) {
+                                    return [obj2.recipeUpdatedAt compare:obj1.recipeUpdatedAt];
+                                }];
+                                [self.tabelView reloadData];
+                            });
+                        }
+                    } failure:^(NSError *error) {
+                        NSLog(@"Failed background image");
+                    }];
+                } else { //How does fresh recipe already have data? Just in case...
+                    [self.dataSource addObject:obj];
+                    [self.tabelView reloadData];
+                }
+            }];
+        });
         completion();
     } failure:^(NSError *error) {
         failure();
@@ -156,20 +181,21 @@
     TodayRecipeCell *cell = [self.tabelView dequeueReusableCellWithIdentifier:@"TodayRecipeCell"];
     CKTodayRecipe *recipe = [self.dataSource objectAtIndex:indexPath.row];
     if (recipe) {
-        [self imageWithURL:[NSURL URLWithString:recipe.recipePic.url] success:^(UIImage *image) {
-            if (image) {
-                cell.backgroundImageView.image = image;
-            }
-        } failure:^(NSError *error) {
-            cell.backgroundImageView.image = nil;
-        }];
-        [self imageWithURL:[NSURL URLWithString:recipe.profilePicUrl] success:^(UIImage *image) {
-            if (image) {
-                cell.profileImageView.image = image;
-            }
-        } failure:^(NSError *error) {
-            cell.profileImageView.image = nil;
-        }];
+        cell.backgroundImageView.image = recipe.backgroundImage;
+        if (recipe.profileImage) {
+            cell.profileImageView.image = recipe.profileImage;
+        } else {
+            cell.profileImageView.image = [UIImage imageNamed:@"cook_default_profile"];
+            [self imageWithURL:[NSURL URLWithString:recipe.profilePicUrl] success:^(UIImage *image) {
+                if (image) {
+                    recipe.profileImage = image;
+                    cell.profileImageView.image = image;
+                }
+            } failure:^(NSError *error) {
+                NSLog(@"Failed profile image");
+                cell.profileImageView.image = nil;
+            }];
+        }
         
         cell.servesLabel.text = recipe.numServes;
         if (recipe.makeTimeMins != (id)[NSNull null]) {
@@ -206,6 +232,7 @@
     
     NSURLSessionDownloadTask *task = [[NSURLSession sharedSession] downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         if (error) {
+            NSLog(@"Failed to download image");
             return failure(error);
         } else if (response) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

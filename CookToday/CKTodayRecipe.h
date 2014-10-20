@@ -25,6 +25,10 @@ typedef void(^ObjectFailureBlock)(NSError *error);
 @property (nonatomic, strong) NSNumber *makeTimeMins;
 @property (nonatomic, strong) NSNumber *quantityType;
 
+//Placeholder properties
+@property (nonatomic, strong) UIImage *backgroundImage;
+@property (nonatomic, strong) UIImage *profileImage;
+
 + (void)latestRecipesWithSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

@@ -1520,6 +1520,8 @@
 		F67D566519DE255800E61E60 /* cook_widget_icon_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D565F19DE255800E61E60 /* cook_widget_icon_serves@2x.png */; };
 		F67D566619DE255800E61E60 /* cook_widget_icon_time.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D566019DE255800E61E60 /* cook_widget_icon_time.png */; };
 		F67D566719DE255800E61E60 /* cook_widget_icon_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D566119DE255800E61E60 /* cook_widget_icon_time@2x.png */; };
+		F67FF5D519F4BDF200344048 /* cook_default_profile.png in Resources */ = {isa = PBXBuildFile; fileRef = F67FF5D319F4BDF200344048 /* cook_default_profile.png */; };
+		F67FF5D619F4BDF200344048 /* cook_default_profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67FF5D419F4BDF200344048 /* cook_default_profile@2x.png */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
@@ -3573,6 +3575,8 @@
 		F67D565F19DE255800E61E60 /* cook_widget_icon_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_widget_icon_serves@2x.png"; sourceTree = "<group>"; };
 		F67D566019DE255800E61E60 /* cook_widget_icon_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_widget_icon_time.png; sourceTree = "<group>"; };
 		F67D566119DE255800E61E60 /* cook_widget_icon_time@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_widget_icon_time@2x.png"; sourceTree = "<group>"; };
+		F67FF5D319F4BDF200344048 /* cook_default_profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_default_profile.png; sourceTree = "<group>"; };
+		F67FF5D419F4BDF200344048 /* cook_default_profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_default_profile@2x.png"; sourceTree = "<group>"; };
 		F684F5E618AB45DF00FCD0E3 /* CKActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKActivityIndicatorView.h; sourceTree = "<group>"; };
 		F684F5E718AB45DF00FCD0E3 /* CKActivityIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKActivityIndicatorView.m; sourceTree = "<group>"; };
 		F684F5E918AB45DF00FCD0E3 /* cook_book_inner_loading_large_inner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_loading_large_inner.png; sourceTree = "<group>"; };
@@ -7815,6 +7819,8 @@
 		F6E9205619D2559700291FEB /* CookToday */ = {
 			isa = PBXGroup;
 			children = (
+				F67FF5D319F4BDF200344048 /* cook_default_profile.png */,
+				F67FF5D419F4BDF200344048 /* cook_default_profile@2x.png */,
 				F6BB91DD19DE78FE00EF792E /* MainInterface.storyboard */,
 				F67D565C19DE255800E61E60 /* cook_widget_icon_makes.png */,
 				F67D565D19DE255800E61E60 /* cook_widget_icon_makes@2x.png */,
@@ -9363,6 +9369,7 @@
 				F6BB91DE19DE78FE00EF792E /* MainInterface.storyboard in Resources */,
 				F67D566319DE255800E61E60 /* cook_widget_icon_makes@2x.png in Resources */,
 				F67D565219DD280300E61E60 /* Brandon_blk.otf in Resources */,
+				F67FF5D619F4BDF200344048 /* cook_default_profile@2x.png in Resources */,
 				F67D566619DE255800E61E60 /* cook_widget_icon_time.png in Resources */,
 				F67D565419DD280300E61E60 /* Brandon_light.otf in Resources */,
 				F67D565119DD280300E61E60 /* Brandon_bld_it.otf in Resources */,
@@ -9372,6 +9379,7 @@
 				F67D565619DD280300E61E60 /* Brandon_med.otf in Resources */,
 				F67D565019DD280300E61E60 /* Brandon_bld.otf in Resources */,
 				F67D566419DE255800E61E60 /* cook_widget_icon_serves.png in Resources */,
+				F67FF5D519F4BDF200344048 /* cook_default_profile.png in Resources */,
 				F67D565519DD280300E61E60 /* Brandon_light_it.otf in Resources */,
 				F67D565719DD280300E61E60 /* Brandon_med_it.otf in Resources */,
 				F67D566719DE255800E61E60 /* cook_widget_icon_time@2x.png in Resources */,
