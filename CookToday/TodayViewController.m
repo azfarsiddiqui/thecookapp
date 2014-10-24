@@ -31,7 +31,7 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [Parse setApplicationId:@"fYp3YAuFHXpdYNTdjfvZtkbJOXrAL4FGCtj4kMIN" clientKey:@"0Tsu1RPH7tfLXcpzERyfVaCCoV9nZwwowFD3Vewx"];
+        [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS" clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];
     }
     return self;
 }

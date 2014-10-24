@@ -10146,7 +10146,7 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "101268c7-9fd7-4c12-a378-442ec3a48a1d";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -10298,7 +10298,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "0ab74a4c-2108-4138-91e2-9f99ef12785b";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
