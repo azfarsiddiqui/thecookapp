@@ -28,6 +28,11 @@
     }];
 }
 
+//+ (NSArray *)getCachedRecipes {
+//    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc]initWithSuiteName:@"com.cook.thecookapp"];
+//    NSArray *cachedRecipes = [sharedDefaults objectForKey:@"cachedRecipes"];
+//}
+
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super init]) {
         self.profilePicUrl = [parseObject objectForKey:@"profilePicUrl"];
@@ -38,8 +43,19 @@
         self.numServes = [parseObject objectForKey:@"numServes"];
         self.makeTimeMins = [parseObject objectForKey:@"makeTimeMins"];
         self.quantityType = [parseObject objectForKey:@"quantityType"];
+        self.recipeObjectId = [parseObject objectForKey:@"recipeObjectId"];
     }
     return self;
 }
+
+//- (NSDictionary *)dictionaryRepresentation {
+//    return @{@"profilePicURL": self.profilePicUrl,
+//             @"countryName": self.countryName,
+//             @"recipeName": self.recipeName,
+//             @"recipeUpdatedAt": self.recipeUpdatedAt,
+//             @"numServes": self.numServes,
+//             @"makeTimeMins": self.makeTimeMins,
+//             @"quantityType": self.quantityType
+//}
 
 @end

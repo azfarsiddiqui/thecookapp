@@ -6576,10 +6576,10 @@
 				76C07FC117389134005915D5 /* CKProgressView */,
 				76BE37281717A8E9000C0755 /* CKEditViewController */,
 				7602540F170EFDAD00950571 /* CKPhotoPickerViewController */,
-				76EE2CBC170AE7A30043D128 /* SDWebImage */,
 				7643B8BA16D7037A001A2452 /* FormatterKit */,
 				76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */,
 				76BEE6EB165DEE600065B97B /* CKBookCoverView */,
+				76EE2CBC170AE7A30043D128 /* SDWebImage */,
 				89622187161EA6610023EC30 /* MRCEnumerable */,
 			);
 			path = External;
@@ -7916,6 +7916,9 @@
 					76ED273C1612DC180012E479 = {
 						DevelopmentTeam = NW9NKBHY74;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 0;
 							};
@@ -7927,6 +7930,14 @@
 					F6E9205219D2559700291FEB = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = NW9NKBHY74;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.SafariKeychain = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -10268,8 +10279,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (

@@ -16,6 +16,7 @@ typedef void(^ObjectFailureBlock)(NSError *error);
 
 @interface CKTodayRecipe : NSObject
 
+@property (nonatomic, strong) NSString *recipeObjectId;
 @property (nonatomic, strong) NSString *profilePicUrl;
 @property (nonatomic, strong) PFFile *recipePic;
 @property (nonatomic, strong) NSString *countryName;
@@ -28,6 +29,7 @@ typedef void(^ObjectFailureBlock)(NSError *error);
 //Placeholder properties
 @property (nonatomic, strong) UIImage *backgroundImage;
 @property (nonatomic, strong) UIImage *profileImage;
+@property (nonatomic, strong) NSURL *backgroundImageURL;
 
 + (void)latestRecipesWithSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 

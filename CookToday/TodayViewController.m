@@ -20,6 +20,7 @@
 @property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
 @property (strong, nonatomic) IBOutlet UITableView *tabelView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableHeight;
+//@property (nonatomic, strong) NSURLSession *session;
 
 @end
 
@@ -41,6 +42,12 @@
     self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
     [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
     
+//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    //[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.cook.thecookapp.config"];
+//    configuration.sharedContainerIdentifier = @"group.com.cook.thecookapp";
+//    configuration.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
+//    self.session = [NSURLSession sessionWithConfiguration:configuration];
+    
 //    self.preferredContentSize = CGSizeMake(800, 200);
     // Do any additional setup after loading the view from its nib.
     
@@ -48,6 +55,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+//    sleep(0.5);
     [self loadDataWithCompletion:^{
         NSLog(@"Success");
     } failure:^{
@@ -68,7 +76,8 @@
     // If an error is encoutered, use NCUpdateResultFailed
     // If there's no update required, use NCUpdateResultNoData
     // If there's an update, use NCUpdateResultNewData
-    NSDate *lastUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_UPDATED_KEY];
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc]initWithSuiteName:@"com.cook.thecookapp"];
+    NSDate *lastUpdated = [sharedDefaults objectForKey:LAST_UPDATED_KEY];
     if ([lastUpdated timeIntervalSinceNow] > 600) {
         [self loadDataWithCompletion:^{
             completionHandler(NCUpdateResultNewData);
@@ -87,14 +96,18 @@
 
 - (void)loadDataWithCompletion:(void (^)())completion failure:(void (^)())failure {
     [CKTodayRecipe latestRecipesWithSuccess:^(NSArray *object) {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:LAST_UPDATED_KEY];
+        NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc]initWithSuiteName:@"com.cook.thecookapp"];
+        [sharedDefaults setObject:[NSDate date] forKey:LAST_UPDATED_KEY];
+        [sharedDefaults synchronize];
         
         //Iterate through array of Recipes and grab background images
+        [self.dataSource removeAllObjects];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [object enumerateObjectsUsingBlock:^(CKTodayRecipe *obj, NSUInteger idx, BOOL *stop) {
                 if (!obj.backgroundImage) {
                     [self imageWithURL:[NSURL URLWithString:obj.recipePic.url] success:^(UIImage *image) {
                         if (image) {
+//                            NSLog(@"Loaded image for %@", obj.recipeName);
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 obj.backgroundImage = image;
                                 [self.dataSource addObject:obj];
@@ -224,12 +237,21 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    CKTodayRecipe *recipe = [self.dataSource objectAtIndex:indexPath.row];
+    // Recipe App URL
+    NSString *appURL = [NSString stringWithFormat:@"cookapp:///recipe/%@", recipe.recipeObjectId];
+    [[self extensionContext] openURL:[NSURL URLWithString:appURL] completionHandler:nil];
+}
+
 #pragma mark - Helper methods for images
 
 - (NSURLSessionTask *)imageWithURL:(NSURL *)url
-                           success:(void (^)(UIImage *image))success
-                           failure:(void (^)(NSError *error))failure {
-    
+             success:(void (^)(UIImage *image))success
+             failure:(void (^)(NSError *error))failure {
+//    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.cook.thecookapp.config"];
+//    sessionConfig.sharedContainerIdentifier = @"group.com.cook.thecookapp";
+//    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionDownloadTask *task = [[NSURLSession sharedSession] downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         if (error) {
             NSLog(@"Failed to download image");
@@ -237,9 +259,11 @@
         } else if (response) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 //useless optimization as it seems to be decoded while UIImageView is displayed
+//                NSLog(@"Downloaded to: %@", location.absoluteString);
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (image) {
+                        //Cache image
                         success(image);
                     }
                 });
