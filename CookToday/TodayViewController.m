@@ -201,12 +201,18 @@
             cell.profileImageView.image = [UIImage imageNamed:@"cook_default_profile"];
             [self imageWithURL:[NSURL URLWithString:recipe.profilePicUrl] success:^(UIImage *image) {
                 if (image) {
+                    //Cell originally associated with recipe mgiht hve changed order
+                    
+                    //Get new indexPath
+                    NSInteger newIndex = [self.dataSource indexOfObject:recipe];
+                    TodayRecipeCell *newCell = (TodayRecipeCell *)[self.tabelView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
+                    NSLog(@"Got an image for: %@", recipe.recipeName);
                     recipe.profileImage = image;
-                    cell.profileImageView.image = image;
+                    newCell.profileImageView.image = image;
                 }
             } failure:^(NSError *error) {
                 NSLog(@"Failed profile image");
-                cell.profileImageView.image = nil;
+                cell.profileImageView.image = [UIImage imageNamed:@"cook_default_profile"];
             }];
         }
         
@@ -224,6 +230,8 @@
             cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_serves"];
         } else if ([recipe.quantityType isEqual:@1]) {
             cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_makes"];
+        } else {
+            cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_serves"];
         }
         
         if (!recipe.numServes) {
