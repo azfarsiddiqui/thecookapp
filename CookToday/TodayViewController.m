@@ -226,11 +226,16 @@
             cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_makes"];
         }
         
-        if (recipe.numServes <= 0) {
+        if (!recipe.numServes) {
             cell.makesTypeImageView.alpha = 0.0;
+        } else {
+            cell.makesTypeImageView.alpha = 1.0;
         }
+        
         if (recipe.makeTimeMins <= 0) {
             cell.makesTimeImageView.alpha = 0.0;
+        } else {
+            cell.makesTimeImageView.alpha = 1.0;
         }
     }
     
