@@ -19,5 +19,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *timestampLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *makesTypeImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *makesTimeImageView;
+@property (weak, nonatomic) IBOutlet UIView *recipeContentView;
 
 @end

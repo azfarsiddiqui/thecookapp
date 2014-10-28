@@ -25,8 +25,20 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
+    if (selected) {
+        [self.recipeContentView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+    } else {
+        [self.recipeContentView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
+    }
+}
 
-    // Configure the view for the selected state
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    if (highlighted) {
+        [self.recipeContentView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+    } else {
+        [self.recipeContentView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
+    }
 }
 
 @end
