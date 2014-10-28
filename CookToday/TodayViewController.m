@@ -206,7 +206,6 @@
                     //Get new indexPath
                     NSInteger newIndex = [self.dataSource indexOfObject:recipe];
                     TodayRecipeCell *newCell = (TodayRecipeCell *)[self.tabelView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
-                    NSLog(@"Got an image for: %@", recipe.recipeName);
                     recipe.profileImage = image;
                     newCell.profileImageView.image = image;
                 }
@@ -216,10 +215,6 @@
             }];
         }
         
-        cell.servesLabel.text = recipe.numServes;
-        if (recipe.makeTimeMins != (id)[NSNull null]) {
-            cell.timeLabel.attributedText = [self formattedShortDurationDisplayForMinutes:[recipe.makeTimeMins integerValue]];
-        }
         cell.titleLabel.text = recipe.recipeName.uppercaseString;
         cell.regionLabel.text = recipe.countryName.uppercaseString;
         if (recipe.recipeUpdatedAt) {
@@ -234,16 +229,26 @@
             cell.makesTypeImageView.image = [UIImage imageNamed:@"cook_widget_icon_serves"];
         }
         
-        if (!recipe.numServes) {
-            cell.makesTypeImageView.alpha = 0.0;
+        //Hide and adjust constraint priority to properly center elements
+        if (!recipe.numServes || [recipe.numServes isEqualToString:@"0"]) {
+            cell.makesTypeImageView.hidden = YES;
+            cell.timeFrontConstraint.priority = 901;
         } else {
-            cell.makesTypeImageView.alpha = 1.0;
+            cell.makesTypeImageView.hidden = NO;
+            cell.timeFrontConstraint.priority = 50;
         }
         
-        if (recipe.makeTimeMins <= 0) {
-            cell.makesTimeImageView.alpha = 0.0;
+        if ([recipe.makeTimeMins integerValue] <= 0) {
+            cell.makesTimeImageView.hidden = YES;
+            cell.makesEndConstraint.priority = 901;
         } else {
-            cell.makesTimeImageView.alpha = 1.0;
+            cell.makesTimeImageView.hidden = NO;
+            cell.makesEndConstraint.priority = 50;
+        }
+
+        cell.servesLabel.text = recipe.numServes;
+        if (recipe.makeTimeMins != (id)[NSNull null]) {
+            cell.timeLabel.attributedText = [self formattedShortDurationDisplayForMinutes:[recipe.makeTimeMins integerValue]];
         }
     }
     

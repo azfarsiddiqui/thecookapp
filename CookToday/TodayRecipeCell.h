@@ -21,4 +21,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *makesTimeImageView;
 @property (weak, nonatomic) IBOutlet UIView *recipeContentView;
 
+// Horizontal constraints for Makes/Time icons and labels
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *makesEndConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *timeFrontConstraint;
+
 @end
