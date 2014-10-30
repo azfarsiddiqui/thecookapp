@@ -29,8 +29,11 @@ typedef void(^ObjectFailureBlock)(NSError *error);
 //Placeholder properties
 @property (nonatomic, strong) UIImage *backgroundImage;
 @property (nonatomic, strong) UIImage *profileImage;
-@property (nonatomic, strong) NSURL *backgroundImageURL;
+@property (nonatomic, strong) NSData *recipeImageData;
 
 + (void)latestRecipesWithSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (NSArray *)getCachedRecipes;
+
+- (NSDictionary *)dictionaryRepresentation;
 
 @end

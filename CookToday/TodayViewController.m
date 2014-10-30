@@ -27,6 +27,7 @@
 @implementation TodayViewController
 
 #define LAST_UPDATED_KEY @"lastUpdated"
+#define RECIPE_CACHE_KEY @"cachedRecipes"
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
@@ -42,12 +43,6 @@
     self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
     [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
     
-//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    //[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.cook.thecookapp.config"];
-//    configuration.sharedContainerIdentifier = @"group.com.cook.thecookapp";
-//    configuration.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
-//    self.session = [NSURLSession sessionWithConfiguration:configuration];
-    
 //    self.preferredContentSize = CGSizeMake(800, 200);
     // Do any additional setup after loading the view from its nib.
     
@@ -55,7 +50,19 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-//    sleep(0.5);
+    //Load data from cache
+    NSArray *recipeArray = [CKTodayRecipe getCachedRecipes];
+//    //Grab images for all recipes
+//    [recipeArray enumerateObjectsUsingBlock:^(CKTodayRecipe *obj, NSUInteger idx, BOOL *stop) {
+//        obj.backgroundImage = [UIImage imageWithData:obj.recipeImageData];
+//    }];
+    self.dataSource = [NSMutableArray arrayWithArray:recipeArray];
+    [self.dataSource sortUsingComparator:^NSComparisonResult(CKTodayRecipe *obj1, CKTodayRecipe *obj2) {
+        return [obj2.recipeUpdatedAt compare:obj1.recipeUpdatedAt];
+    }];
+    self.tableHeight.constant = [self.dataSource count] * 100;
+    [self.tabelView reloadData];
+    
     [self loadDataWithCompletion:^{
         NSLog(@"Success");
     } failure:^{
@@ -104,26 +111,42 @@
         [self.dataSource removeAllObjects];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [object enumerateObjectsUsingBlock:^(CKTodayRecipe *obj, NSUInteger idx, BOOL *stop) {
-                if (!obj.backgroundImage) {
-                    [self imageWithURL:[NSURL URLWithString:obj.recipePic.url] success:^(UIImage *image) {
-                        if (image) {
-//                            NSLog(@"Loaded image for %@", obj.recipeName);
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                obj.backgroundImage = image;
-                                [self.dataSource addObject:obj];
-                                self.tableHeight.constant = [self.dataSource count] * 100;
-                                [self.dataSource sortUsingComparator:^NSComparisonResult(CKTodayRecipe *obj1, CKTodayRecipe *obj2) {
-                                    return [obj2.recipeUpdatedAt compare:obj1.recipeUpdatedAt];
-                                }];
-                                [self.tabelView reloadData];
-                            });
-                        }
-                    } failure:^(NSError *error) {
-                        NSLog(@"Failed background image");
-                    }];
-                } else { //How does fresh recipe already have data? Just in case...
-                    [self.dataSource addObject:obj];
-                    [self.tabelView reloadData];
+                // Check if downloaded recipe already exists in cache
+                __block BOOL containsRecipe = NO;
+                [self.dataSource enumerateObjectsUsingBlock:^(CKTodayRecipe *obj2, NSUInteger idx, BOOL *stop) {
+                    if ([obj.recipeObjectId isEqualToString:obj2.recipeObjectId]) {
+                        containsRecipe = YES;
+                    }
+                }];
+                
+                // If recipe isn't contained, download new background image if needed
+                if (!containsRecipe) {
+                    if (!obj.backgroundImage && !obj.recipeImageData) {
+                        [self imageWithURL:[NSURL URLWithString:obj.recipePic.url] success:^(UIImage *image) {
+                            if (image) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    obj.backgroundImage = image;
+                                    obj.recipeImageData = UIImageJPEGRepresentation(image, 0.8);
+                                    [self cacheRecipe:obj];
+                                    
+                                    [self.dataSource addObject:obj];
+                                    self.tableHeight.constant = [self.dataSource count] * 100;
+                                    
+                                    //Shuffle data by date
+                                    [self.dataSource sortUsingComparator:^NSComparisonResult(CKTodayRecipe *obj1, CKTodayRecipe *obj2) {
+                                        return [obj2.recipeUpdatedAt compare:obj1.recipeUpdatedAt];
+                                    }];
+                                    [self.tabelView reloadData];
+                                });
+                            }
+                        } failure:^(NSError *error) {
+                            NSLog(@"Failed background image");
+                        }];
+                    }
+                    else { //How does fresh recipe already have data? Just in case...
+                        [self.dataSource addObject:obj];
+                        [self.tabelView reloadData];
+                    }
                 }
             }];
         });
@@ -180,6 +203,38 @@
     return makesDisplay;
 }
 
+- (void)cacheRecipe:(CKTodayRecipe *)recipe {
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc]initWithSuiteName:@"com.cook.thecookapp"];
+    NSMutableArray *currentCacheArray = [NSMutableArray arrayWithArray:[sharedDefaults objectForKey:RECIPE_CACHE_KEY]];
+    
+    __block BOOL containsRecipe = NO;
+    [currentCacheArray enumerateObjectsUsingBlock:^(NSDictionary *obj2, NSUInteger idx, BOOL *stop) {
+        if ([recipe.recipeObjectId isEqualToString:[obj2 objectForKey:@"recipeObjectId"]]) {
+            containsRecipe = YES;
+        }
+    }];
+    
+    if (!containsRecipe){
+        NSLog(@"Caching recipe: %@", recipe.recipeName);
+        [currentCacheArray addObject:[recipe dictionaryRepresentation]];
+    } else {
+        NSLog(@"NOT CACHING: %@", recipe.recipeName);
+    }
+    
+    NSInteger maxRange = MIN([currentCacheArray count], 3);
+    [currentCacheArray sortUsingComparator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+        NSDate *date1 = (NSDate *)[obj1 objectForKey:@"recipeUpdatedAt"];
+        NSDate *date2 = (NSDate *)[obj2 objectForKey:@"recipeUpdatedAt"];
+        return [date2 compare:date1];
+    }];
+    
+    NSLog(@"Count of current array is: %i", [currentCacheArray count]);
+    
+    NSArray *subArray = [currentCacheArray subarrayWithRange:NSMakeRange(0, maxRange)];
+    [sharedDefaults setObject:subArray forKey:RECIPE_CACHE_KEY];
+    [sharedDefaults synchronize];
+}
+
 #pragma mark - UITableView delegate and datasource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -194,7 +249,12 @@
     TodayRecipeCell *cell = [self.tabelView dequeueReusableCellWithIdentifier:@"TodayRecipeCell"];
     CKTodayRecipe *recipe = [self.dataSource objectAtIndex:indexPath.row];
     if (recipe) {
-        cell.backgroundImageView.image = recipe.backgroundImage;
+        if (recipe.backgroundImage) {
+            cell.backgroundImageView.image = recipe.backgroundImage;
+        } else if (recipe.recipeImageData) {
+            UIImage *recipeImage = [UIImage imageWithData:recipe.recipeImageData];
+            cell.backgroundImageView.image = recipeImage;
+        }
         if (recipe.profileImage) {
             cell.profileImageView.image = recipe.profileImage;
         } else {
@@ -267,9 +327,6 @@
 - (NSURLSessionTask *)imageWithURL:(NSURL *)url
              success:(void (^)(UIImage *image))success
              failure:(void (^)(NSError *error))failure {
-//    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.cook.thecookapp.config"];
-//    sessionConfig.sharedContainerIdentifier = @"group.com.cook.thecookapp";
-//    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionDownloadTask *task = [[NSURLSession sharedSession] downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         if (error) {
             NSLog(@"Failed to download image");

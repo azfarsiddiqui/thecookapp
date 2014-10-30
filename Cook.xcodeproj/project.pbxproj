@@ -4222,6 +4222,7 @@
 		F6DD424F1810B29200AD3803 /* cook_customise_icon_page@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_page@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_page@2x.png"; sourceTree = "<group>"; };
 		F6DD42501810B29200AD3803 /* cook_customise_icon_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_customise_icon_tag.png; path = ../../../../Resources/recipes/cook_customise_icon_tag.png; sourceTree = "<group>"; };
 		F6DD42511810B29200AD3803 /* cook_customise_icon_tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_customise_icon_tag@2x.png"; path = "../../../../Resources/recipes/cook_customise_icon_tag@2x.png"; sourceTree = "<group>"; };
+		F6DE74E31A00938C002E3625 /* CookToday.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = CookToday.entitlements; sourceTree = "<group>"; };
 		F6E9204B19CFF51C00291FEB /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		F6E9204D19CFF6D900291FEB /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		F6E9205319D2559700291FEB /* CookToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CookToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7819,6 +7820,7 @@
 		F6E9205619D2559700291FEB /* CookToday */ = {
 			isa = PBXGroup;
 			children = (
+				F6DE74E31A00938C002E3625 /* CookToday.entitlements */,
 				F67FF5D319F4BDF200344048 /* cook_default_profile.png */,
 				F67FF5D419F4BDF200344048 /* cook_default_profile@2x.png */,
 				F6BB91DD19DE78FE00EF792E /* MainInterface.storyboard */,
@@ -10298,7 +10300,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0ab74a4c-2108-4138-91e2-9f99ef12785b";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
