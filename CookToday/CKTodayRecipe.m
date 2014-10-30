@@ -46,9 +46,9 @@
         self.countryName = [parseObject objectForKey:@"countryName"];
         self.recipeName = [parseObject objectForKey:@"name"];
         self.recipeUpdatedAt = [parseObject objectForKey:@"recipeUpdatedAt"];
-        self.numServes = @"12+";//[parseObject objectForKey:@"numServes"];
-        self.makeTimeMins = @20;//[parseObject objectForKey:@"makeTimeMins"];
-        self.quantityType = @1;//[parseObject objectForKey:@"quantityType"];
+        self.numServes = [parseObject objectForKey:@"numServes"];
+        self.makeTimeMins = [parseObject objectForKey:@"makeTimeMins"];
+        self.quantityType = [parseObject objectForKey:@"quantityType"];
         self.recipeObjectId = [parseObject objectForKey:@"recipeObjectId"];
     }
     return self;
