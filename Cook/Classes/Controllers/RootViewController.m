@@ -171,6 +171,11 @@
 }
 
 - (void)showModalWithRecipeID:(NSString *)recipeID {
+    // If welcome screen is still visible, don't show recipe to avoid crashing
+    if (self.welcomeViewController) {
+        return;
+    }
+    
     //Clear all views
     [self.view.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
         [obj removeFromSuperview];

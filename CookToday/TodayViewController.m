@@ -61,7 +61,8 @@
         return [obj2.recipeUpdatedAt compare:obj1.recipeUpdatedAt];
     }];
     self.tableHeight.constant = [self.dataSource count] * 100;
-    [self.tabelView reloadData];
+    
+//    [self.tabelView reloadData];
     
     [self loadDataWithCompletion:^{
         NSLog(@"Success");
@@ -92,9 +93,15 @@
             completionHandler(NCUpdateResultFailed);
         }];
     } else {
+        NSArray *recipeArray = [CKTodayRecipe getCachedRecipes];
+        self.dataSource = [NSMutableArray arrayWithArray:recipeArray];
+        [self.dataSource sortUsingComparator:^NSComparisonResult(CKTodayRecipe *obj1, CKTodayRecipe *obj2) {
+            return [obj2.recipeUpdatedAt compare:obj1.recipeUpdatedAt];
+        }];
+        self.tableHeight.constant = [self.dataSource count] * 100;
+        //    NSLog(@"Datasource count: %i", [self.dataSource count]);
         completionHandler(NCUpdateResultNoData);
     }
-//    completionHandler(NCUpdateResultNewData);
 }
 
 - (UIEdgeInsets)widgetMarginInsetsForProposedMarginInsets:(UIEdgeInsets)defaultMarginInsets {
@@ -108,7 +115,6 @@
         [sharedDefaults synchronize];
         
         //Iterate through array of Recipes and grab background images
-        [self.dataSource removeAllObjects];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [object enumerateObjectsUsingBlock:^(CKTodayRecipe *obj, NSUInteger idx, BOOL *stop) {
                 // Check if downloaded recipe already exists in cache
@@ -121,6 +127,7 @@
                 
                 // If recipe isn't contained, download new background image if needed
                 if (!containsRecipe) {
+//                    NSLog(@"Loading data for: %@", obj.recipeName);
                     if (!obj.backgroundImage && !obj.recipeImageData) {
                         [self imageWithURL:[NSURL URLWithString:obj.recipePic.url] success:^(UIImage *image) {
                             if (image) {
@@ -145,7 +152,6 @@
                     }
                     else { //How does fresh recipe already have data? Just in case...
                         [self.dataSource addObject:obj];
-                        [self.tabelView reloadData];
                     }
                 }
             }];
@@ -215,10 +221,8 @@
     }];
     
     if (!containsRecipe){
-        NSLog(@"Caching recipe: %@", recipe.recipeName);
+//        NSLog(@"Caching recipe: %@", recipe.recipeName);
         [currentCacheArray addObject:[recipe dictionaryRepresentation]];
-    } else {
-        NSLog(@"NOT CACHING: %@", recipe.recipeName);
     }
     
     NSInteger maxRange = MIN([currentCacheArray count], 3);
@@ -227,8 +231,6 @@
         NSDate *date2 = (NSDate *)[obj2 objectForKey:@"recipeUpdatedAt"];
         return [date2 compare:date1];
     }];
-    
-    NSLog(@"Count of current array is: %i", [currentCacheArray count]);
     
     NSArray *subArray = [currentCacheArray subarrayWithRange:NSMakeRange(0, maxRange)];
     [sharedDefaults setObject:subArray forKey:RECIPE_CACHE_KEY];
@@ -334,7 +336,6 @@
         } else if (response) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 //useless optimization as it seems to be decoded while UIImageView is displayed
-//                NSLog(@"Downloaded to: %@", location.absoluteString);
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (image) {
