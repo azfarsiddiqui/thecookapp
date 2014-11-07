@@ -241,7 +241,7 @@
         }
         
     } else { //Name field
-        if (self.focusName) {
+        if (self.focusName || self.textField.editing) {
             self.focusName = NO;
             return YES;
         } else {
