@@ -18,6 +18,7 @@
 @property (nonatomic, assign) BOOL followed;
 @property (nonatomic, assign) BOOL locked;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL wasActioned;
 
 @end
 
@@ -25,6 +26,7 @@
 
 - (id)init {
     if (self = [super init]) {
+        self.wasActioned = NO;
     }
     return self;
 }
@@ -79,7 +81,8 @@
 }
 
 - (void)showLoading:(BOOL)loading {
-    if (loading) {
+    //Figure out why action button is still disabled when adding extra clause to this if statement
+    if (loading && !self.wasActioned) {
         if (!self.bookActionActivityView.superview) {
             CGRect actionActivityFrame = self.bookActionActivityView.frame;
             actionActivityFrame.origin = (CGPoint) {
@@ -93,10 +96,10 @@
         [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_blank.png"]
                                          forState:UIControlStateNormal];
         [self.bookActionActivityView startAnimating];
+        [self enable:!loading interactable:!loading];
     } else {
         [self.bookActionActivityView stopAnimating];
     }
-    [self enable:!loading interactable:!loading];
 }
 
 - (void)showAdd {
@@ -174,6 +177,7 @@
         [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash_onpress.png"]
                                          forState:UIControlStateHighlighted];
     }
+    self.wasActioned = YES;
 }
 
 - (void)actionButtonTapped:(id)sender {
