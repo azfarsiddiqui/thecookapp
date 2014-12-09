@@ -211,6 +211,8 @@
 "Check out this recipe" = "Echa un vistazo a esta receta";
 "Shared from Cook" = "Compartido con Cook";
 "SHARE RECIPE" = "COMPARTIR RECETA";
+"SHARE BOOK" = "COMPARTIR LIBRO";
+"SHARE PAGE" = "COMPARTIR PÁGINA";
 "SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "LAS RECETAS COMPARTIDAS SON VISIBLES PÚBLICAMENTE EN LA WEB";
 "REPORT" = "DENUNCIAR";
 "Couldn’t Add Facebook" = "Error al añadir cuenta de Facebook";
@@ -221,7 +223,12 @@
 "Message" = "Mensaje";
 "Please set up iMessage in Settings" = "Configura iMessage en los ajustes de tu iPad";
 "%@ shared a recipe from Cook" = "%@ ha compartido una receta de Cook";
+"%@ shared a book from Cook" = "%@ ha compartido un libro de Cook";
+"%@ shared a page from Cook" = "%@ ha compartido una página de Cook";
 "A recipe from Cook" = "Una receta de Cook";
+"A book from Cook" = "Un libro de Cook";
+"A page from Cook" = "Una página de Cook";
+"A page from %@" = "Una página de Cook";
 "Error in posting to Facebook" = "Error al publicar en Facebook";
 "Please set up a Twitter account in the Settings app" = "Configura una cuenta de Twitter en los ajustes de tu iPad";
 "Error in posting to Mail" = "Error al compartir por correo";
@@ -230,6 +237,7 @@
 "Error in sharing" = "Error al compartir la receta";
 "Check out my recipe" = "Echa un vistazo a mi receta";
 "via @thecookapp" = "a través de @thecookapp";
+"on @thecookapp" = "en @thecookapp";
 
 // Welcome
 "WELCOME" = "BIENVENIDO";

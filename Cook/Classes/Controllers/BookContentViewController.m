@@ -34,10 +34,11 @@
 #import "SDImageCache.h"
 #import "CKRecipePin.h"
 #import "CKError.h"
+#import "PageShareViewController.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    RecipeGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
-    UIGestureRecognizerDelegate> {
+    RecipeGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, ShareViewControllerDelegate,
+    UIAlertViewDelegate, UIGestureRecognizerDelegate> {
         
     BOOL _isFastForward;
 }
@@ -68,6 +69,8 @@
 // To keep track of scroll direction.
 @property (nonatomic, assign) CGPoint startContentOffset;
 @property (nonatomic, assign) BOOL disableInformScrollOffset;
+
+@property (nonatomic, strong) PageShareViewController *shareViewController;
 
 @end
 
@@ -573,6 +576,37 @@
     }
 }
 
+#pragma mark - ShareViewController delegate methods
+
+- (void)shareViewControllerCloseRequested {
+    [self showShareOverlay:NO];
+    [self.delegate bookContentViewControllerShareDismissed];
+}
+
+- (UIImage *)shareViewControllerImageRequested {
+    CKRecipe *recipe = [self.delegate featuredRecipeForBookContentViewControllerForPage:self.page];
+    //FIGURE OUT HOW TO RETURN AN UIIMAGE HERE
+    UIImage *image = nil;
+    if ([recipe hasPhotos]) {
+        image = self.imageView.image;
+    }
+    return image;
+}
+
+/*
+ - (void)shareViewControllerCloseRequested {
+ [self showShareOverlay:NO];
+ }
+ 
+ - (UIImage *)shareViewControllerImageRequested {
+ UIImage *image = nil;
+ if ([self.recipe hasPhotos]) {
+ image = self.imageView.image;
+ }
+ return image;
+ }
+ */
+
 #pragma mark - Properties
 
 - (BookContentTitleView *)contentTitleView {
@@ -835,6 +869,33 @@
     } else {
         return (CKRecipe *)recipeOrPin;
     }
+}
+
+//- (void)shareTapped:(id)sender {
+//    [self showShareOverlay:YES];
+//}
+
+- (void)showShareOverlay:(BOOL)show {
+    if (show) {
+        CKRecipe *featuredRecipe = [self.delegate featuredRecipeForBookContentViewControllerForPage:self.page];
+        NSURL *featuredImageURL = [NSURL URLWithString:featuredRecipe.imageFile.url];
+        self.shareViewController = [[PageShareViewController alloc] initWithBook:self.book pageName:self.page featuredImageURL:featuredImageURL delegate:self];
+        self.shareViewController.view.frame = self.view.bounds;
+        self.shareViewController.view.alpha = 0.0;
+        [self.view addSubview:self.shareViewController.view];
+    }
+    [UIView animateWithDuration:show? 0.3 : 0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.shareViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.shareViewController.view removeFromSuperview];
+                             self.shareViewController = nil;
+                         }
+                     }];
 }
 
 @end

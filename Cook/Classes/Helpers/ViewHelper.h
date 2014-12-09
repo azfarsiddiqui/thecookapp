@@ -23,6 +23,7 @@
 + (void)updateButton:(UIButton *)button withImage:(UIImage *)image selectedImage:(UIImage *)selectedImage;
 + (UIButton *)closeButtonLight:(BOOL)light target:(id)target selector:(SEL)selector;
 + (UIButton *)backButtonLight:(BOOL)light target:(id)target selector:(SEL)selector;
++ (UIButton *)shareButtonLight:(BOOL)light target:(id)target selector:(SEL)selector;
 + (UIButton *)addBackButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector;
 + (UIButton *)addCloseButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector;
 

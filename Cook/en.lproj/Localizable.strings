@@ -211,6 +211,8 @@
 "Check out this recipe" = "Check out this recipe";
 "Shared from Cook" = "Shared from Cook";
 "SHARE RECIPE" = "SHARE RECIPE";
+"SHARE BOOK" = "SHARE BOOK";
+"SHARE PAGE" = "SHARE PAGE";
 "SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB";
 "REPORT" = "REPORT";
 "Couldn’t Add Facebook" = "Couldn’t Add Facebook";
@@ -221,7 +223,12 @@
 "Message" = "Message";
 "Please set up iMessage in Settings" = "Please set up iMessage in your iPad Settings";
 "%@ shared a recipe from Cook" = "%@ shared a recipe from Cook";
+"%@ shared a book from Cook" = "%@ shared a book from Cook";
+"%@ shared a page from Cook" = "%@ shared a page from Cook";
 "A recipe from Cook" = "A recipe from Cook";
+"A book from Cook" = "A book from Cook";
+"A page from Cook" = "A page from Cook";
+"A page from %@" = "A page from %@";
 "Error in posting to Facebook" = "Couldn’t post to Facebook";
 "Please set up a Twitter account in the Settings app" = "Please set up a Twitter account in your iPad Settings";
 "Error in posting to Mail" = "Couldn’t share to Mail";
@@ -230,6 +237,7 @@
 "Error in sharing" = "Couldn’t Share Recipe";
 "Check out my recipe" = "Check out my recipe";
 "via @thecookapp" = "via @thecookapp";
+"on @thecookapp" = "on @thecookapp";
 
 // Welcome
 "WELCOME" = "WELCOME";

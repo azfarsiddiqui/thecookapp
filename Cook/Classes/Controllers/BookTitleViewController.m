@@ -33,9 +33,10 @@
 #import "CKPhotoView.h"
 #import "CKError.h"
 #import "CardViewHelper.h"
+#import "ProfileShareViewController.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
-    CKEditViewControllerDelegate, BooKTitlePhotoViewDelegate>
+    CKEditViewControllerDelegate, BooKTitlePhotoViewDelegate, ShareViewControllerDelegate>
 
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
@@ -49,6 +50,7 @@
 @property (nonatomic, strong) BookTitlePhotoView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CKProgressView *progressView;
+@property (nonatomic, strong) UIButton *shareButton;
 
 // Directional arrows.
 @property (nonatomic, strong) UIImageView *leftArrowImageView;
@@ -58,6 +60,8 @@
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPageTitleEditViewController *editViewController;
 @property (nonatomic, strong) NSString *editingPageName;
+
+@property (nonatomic, strong) ProfileShareViewController *shareViewController;
 
 @end
 
@@ -77,6 +81,7 @@
 #define kHeaderHeight           420.0
 #define kHeaderCellGap          135.0
 #define BLUR_TINT_COLOUR        0.58
+#define kContentInsets  (UIEdgeInsets){ 35.0, 30.0, 0.0, 10.0 }
 
 - (void)dealloc {
     [self.photoView cleanImageViews];
@@ -129,6 +134,7 @@
     }
     
     [self addCloseButtonLight:YES];
+    [self addShareButtonLight:YES];
 }
 
 - (void)configureLoading:(BOOL)loading {
@@ -595,6 +601,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return canSave;
 }
 
+#pragma mark - ShareViewControllerDelegate methods
+
+- (void)shareViewControllerCloseRequested {
+    [self showShareOverlay:NO];
+}
+
+- (UIImage *)shareViewControllerImageRequested {
+    UIImage *image = nil;
+    if (self.photoView.thumbnailView.image) {
+        image = self.photoView.thumbnailView.image;
+    }
+    return image;
+}
+
 #pragma mark - Properties
 
 - (BookTitlePhotoView *)bookTitleView {
@@ -875,6 +895,29 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (BOOL)hasPages {
     return [self.collectionView numberOfItemsInSection:0];
+}
+
+- (void)showShareOverlay:(BOOL)show {
+    if (show) {
+        self.shareViewController = [[ProfileShareViewController alloc] initWithBook:self.book delegate:self];
+        self.shareViewController.view.frame = self.view.bounds;
+        self.shareViewController.view.alpha = 0.0;
+        [self.view addSubview:self.shareViewController.view];
+    }
+    [UIView animateWithDuration:show? 0.3 : 0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.shareViewController.view.alpha = show ? 1.0 : 0.0;
+                         self.shareButton.alpha = show ? 0 : 1;
+                         self.closeButton.alpha = show ? 0 : 1;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.shareViewController.view removeFromSuperview];
+                             self.shareViewController = nil;
+                         }
+                     }];
 }
 
 @end

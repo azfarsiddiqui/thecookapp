@@ -70,6 +70,7 @@
 @property (nonatomic, strong) NSString *currentNavigationPageName;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
+@property (nonatomic, strong) CKSupplementaryContainerView *bookNavigationContainerView;
 
 // Jump to cell
 @property NSArray *destinationIndexes;
@@ -658,6 +659,12 @@
     }
 }
 
+- (void)bookNavigationShareTapped {
+    BookContentViewController *categoryController = [self.contentControllers objectForKey:[self currentPage]];
+    [categoryController showShareOverlay:YES];
+    [self showNavigationView:NO slide:NO];
+}
+
 #pragma mark - BookContentViewControllerDelegate methods
 
 - (NSArray *)recipesForBookContentViewControllerForPage:(NSString *)page {
@@ -757,7 +764,10 @@
         }
         
     }
-    
+}
+
+- (void)bookContentViewControllerShareDismissed {
+    [self showNavigationView:YES slide:NO];
 }
 
 #pragma mark - BookTitleViewControllerDelegate methods
@@ -1632,6 +1642,7 @@
         [self.bookNavigationView setTitle:[self bookNavigationAuthorName] editable:[self.book isOwner] book:self.book];
     }
     [containerView configureContentView:self.bookNavigationView];
+    self.bookNavigationContainerView = containerView;
     return headerView;
 }
 
@@ -2279,6 +2290,7 @@
                          }
                          completion:^(BOOL finished) {
                              self.navBarAnimating = NO;
+                             self.bookNavigationContainerView.userInteractionEnabled = show;
                              if (!show) {
                                  self.bookNavigationView.hidden = YES;
                              }

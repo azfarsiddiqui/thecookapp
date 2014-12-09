@@ -1494,7 +1494,7 @@
 		F650AE9218F22D8F00DDFC10 /* upscale.plist in Resources */ = {isa = PBXBuildFile; fileRef = F650AE9118F22D8F00DDFC10 /* upscale.plist */; };
 		F6526BB017D0D49F000DDD95 /* Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAE17D0D49F000DDD95 /* Debug.plist */; };
 		F6526BB117D0D49F000DDD95 /* Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAF17D0D49F000DDD95 /* Release.plist */; };
-		F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */; };
+		F6526BB417D15E01000DDD95 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6526BB317D15E01000DDD95 /* ShareViewController.m */; };
 		F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB717D1C998000DDD95 /* Social.framework */; };
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
 		F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */; };
@@ -1522,6 +1522,7 @@
 		F67D566719DE255800E61E60 /* cook_widget_icon_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67D566119DE255800E61E60 /* cook_widget_icon_time@2x.png */; };
 		F67FF5D519F4BDF200344048 /* cook_default_profile.png in Resources */ = {isa = PBXBuildFile; fileRef = F67FF5D319F4BDF200344048 /* cook_default_profile.png */; };
 		F67FF5D619F4BDF200344048 /* cook_default_profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F67FF5D419F4BDF200344048 /* cook_default_profile@2x.png */; };
+		F68638151A1AF75300A22DE9 /* RecipeShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F68638141A1AF75300A22DE9 /* RecipeShareViewController.m */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
@@ -1643,6 +1644,8 @@
 		F69DA09D192DD0D00027985D /* cook_customise_toggle_left_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F69DA099192DD0D00027985D /* cook_customise_toggle_left_onpress@2x.png */; };
 		F69DA09E192DD0D00027985D /* cook_customise_toggle_right_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F69DA09A192DD0D00027985D /* cook_customise_toggle_right_onpress.png */; };
 		F69DA09F192DD0D00027985D /* cook_customise_toggle_right_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F69DA09B192DD0D00027985D /* cook_customise_toggle_right_onpress@2x.png */; };
+		F6A07CD71A2D6D7E00C644C9 /* ProfileShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A07CD61A2D6D7E00C644C9 /* ProfileShareViewController.m */; };
+		F6A07CDA1A2FEE1900C644C9 /* PageShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A07CD91A2FEE1900C644C9 /* PageShareViewController.m */; };
 		F6AF887918EA35E500193BD9 /* TimeSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6AF887818EA35E500193BD9 /* TimeSliderView.m */; };
 		F6B169DA1855897200D3FBB6 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B169D91855897200D3FBB6 /* TTTAttributedLabel.m */; };
 		F6B29B4F1803AB360056513F /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B29B4E1803AB360056513F /* AnalyticsHelper.m */; };
@@ -3542,8 +3545,8 @@
 		F650AE9118F22D8F00DDFC10 /* upscale.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = upscale.plist; sourceTree = "<group>"; };
 		F6526BAE17D0D49F000DDD95 /* Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Debug.plist; sourceTree = "<group>"; };
 		F6526BAF17D0D49F000DDD95 /* Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Release.plist; sourceTree = "<group>"; };
-		F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeShareViewController.h; sourceTree = "<group>"; };
-		F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeShareViewController.m; sourceTree = "<group>"; };
+		F6526BB217D15E01000DDD95 /* ShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareViewController.h; path = ../Recipe/ShareViewController.h; sourceTree = "<group>"; };
+		F6526BB317D15E01000DDD95 /* ShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareViewController.m; path = ../Recipe/ShareViewController.m; sourceTree = "<group>"; };
 		F6526BB717D1C998000DDD95 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		F6526BB917D1D575000DDD95 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		F652ECC21813731C00D73AF9 /* CKListHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListHeaderView.h; sourceTree = "<group>"; };
@@ -4065,6 +4068,8 @@
 		F684F7F118AB45E100FCD0E3 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		F684F81D18AB45E100FCD0E3 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		F684F81E18AB45E100FCD0E3 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
+		F68638131A1AF75300A22DE9 /* RecipeShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeShareViewController.h; sourceTree = "<group>"; };
+		F68638141A1AF75300A22DE9 /* RecipeShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeShareViewController.m; sourceTree = "<group>"; };
 		F686ED471817787600746A49 /* CKCommentEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCommentEditViewController.h; sourceTree = "<group>"; };
 		F686ED481817787600746A49 /* CKCommentEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCommentEditViewController.m; sourceTree = "<group>"; };
 		F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_email.png; sourceTree = "<group>"; };
@@ -4189,6 +4194,10 @@
 		F69DA099192DD0D00027985D /* cook_customise_toggle_left_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_toggle_left_onpress@2x.png"; sourceTree = "<group>"; };
 		F69DA09A192DD0D00027985D /* cook_customise_toggle_right_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_toggle_right_onpress.png; sourceTree = "<group>"; };
 		F69DA09B192DD0D00027985D /* cook_customise_toggle_right_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_toggle_right_onpress@2x.png"; sourceTree = "<group>"; };
+		F6A07CD51A2D6D7E00C644C9 /* ProfileShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileShareViewController.h; sourceTree = "<group>"; };
+		F6A07CD61A2D6D7E00C644C9 /* ProfileShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileShareViewController.m; sourceTree = "<group>"; };
+		F6A07CD81A2FEE1900C644C9 /* PageShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageShareViewController.h; sourceTree = "<group>"; };
+		F6A07CD91A2FEE1900C644C9 /* PageShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageShareViewController.m; sourceTree = "<group>"; };
 		F6AF887718EA35E500193BD9 /* TimeSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSliderView.h; sourceTree = "<group>"; };
 		F6AF887818EA35E500193BD9 /* TimeSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeSliderView.m; sourceTree = "<group>"; };
 		F6B169D81855897200D3FBB6 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
@@ -4430,6 +4439,8 @@
 		7614D6B117DAE1ED001CF052 /* General */ = {
 			isa = PBXGroup;
 			children = (
+				F6526BB217D15E01000DDD95 /* ShareViewController.h */,
+				F6526BB317D15E01000DDD95 /* ShareViewController.m */,
 				7614D6B217DAE216001CF052 /* ProgressOverlayViewController.h */,
 				7614D6B317DAE216001CF052 /* ProgressOverlayViewController.m */,
 				760BB11F17EFFE2700F2FD05 /* OverlayViewController.h */,
@@ -5149,8 +5160,8 @@
 				76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */,
 				76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */,
 				76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */,
-				F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */,
-				F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */,
+				F68638131A1AF75300A22DE9 /* RecipeShareViewController.h */,
+				F68638141A1AF75300A22DE9 /* RecipeShareViewController.m */,
 				76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */,
 				76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */,
 				7635A2CC17A9F2A0002F30F2 /* IngredientListEditViewController.h */,
@@ -6543,6 +6554,10 @@
 				76888D0E17CF7D5900904F15 /* BookTitleView.m */,
 				7692830A1848B9F3002D9E8A /* BookTitlePhotoView.h */,
 				7692830B1848B9F3002D9E8A /* BookTitlePhotoView.m */,
+				F6A07CD51A2D6D7E00C644C9 /* ProfileShareViewController.h */,
+				F6A07CD61A2D6D7E00C644C9 /* ProfileShareViewController.m */,
+				F6A07CD81A2FEE1900C644C9 /* PageShareViewController.h */,
+				F6A07CD91A2FEE1900C644C9 /* PageShareViewController.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -9473,10 +9488,11 @@
 				769226051647863A00752128 /* IllustrationBookCell.m in Sources */,
 				7612B46317B34FB30093B4FD /* RecipeDetailsViewController.m in Sources */,
 				76D2BF5917B8BB5700BA46A1 /* BookContentCell.m in Sources */,
+				F6A07CDA1A2FEE1900C644C9 /* PageShareViewController.m in Sources */,
 				76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */,
 				76A0E48217B4B82F0027F927 /* RecipeDetails.m in Sources */,
 				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
-				F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */,
+				F6526BB417D15E01000DDD95 /* ShareViewController.m in Sources */,
 				F6DD424D180BBD3300AD3803 /* TagListCell.m in Sources */,
 				F67CE0EE187FB07500FE7AD0 /* PSPDFTextView.m in Sources */,
 				764F4D07179CE85A00821221 /* UICollectionView+Draggable.m in Sources */,
@@ -9496,6 +9512,7 @@
 				76BEE77F165DEE600065B97B /* CKBookCover.m in Sources */,
 				76D2BF7117B90A3700BA46A1 /* UIImage+WebP.m in Sources */,
 				F6AF887918EA35E500193BD9 /* TimeSliderView.m in Sources */,
+				F6A07CD71A2D6D7E00C644C9 /* ProfileShareViewController.m in Sources */,
 				76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */,
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
@@ -9677,6 +9694,7 @@
 				76C8FAF91796737700488A80 /* BookSocialHeaderView.m in Sources */,
 				7692C749177807A200A5CA5C /* BenchtopViewController.m in Sources */,
 				7698ED5017D37368003898A4 /* DateHelper.m in Sources */,
+				F68638151A1AF75300A22DE9 /* RecipeShareViewController.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,
 				7680103717A92A370065B2C6 /* MeasureTabView.m in Sources */,
 				7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */,
@@ -10277,8 +10295,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: COOK APP PTY LTD (NW9NKBHY74)";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (

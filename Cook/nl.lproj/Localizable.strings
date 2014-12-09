@@ -211,6 +211,8 @@
 "Check out this recipe" = "Probeer dit recept";
 "Shared from Cook" = "Gedeeld van Cook";
 "SHARE RECIPE" = "RECEPT DELEN";
+"SHARE BOOK" = "BOEK DELEN";
+"SHARE PAGE" = "PAGINA DELEN";
 "SHARED RECIPES ARE PUBLICLY VISIBLE ON THE WEB" = "GEDEELDE RECEPTEN ZIJN OPENBAAR ZICHTBAAR OP HET WEB";
 "REPORT" = "RAPPORT";
 "Couldn’t Add Facebook" = "Kan Facebook niet toevoegen";
@@ -221,7 +223,12 @@
 "Message" = "Bericht";
 "Please set up iMessage in Settings" = "Stel iMessage in uw iPad-instellingen in";
 "%@ shared a recipe from Cook" = "%@ heeft een recept van Cook gedeeld";
+"%@ shared a book from Cook" = "%@ heeft een boek van Cook gedeeld";
+"%@ shared a page from Cook" = "%@ heeft een pagina van Cook gedeeld";
 "A recipe from Cook" = "Een recept van Cook";
+"A book from Cook" = "Een boek van Cook";
+"A page from Cook" = "Een pagina van Cook";
+"A page from %@" = "Een pagina van %@";
 "Error in posting to Facebook" = "Kan niet publiceren op Facebook";
 "Please set up a Twitter account in the Settings app" = "Stel een Twitter-account in uw iPad-instellingen in";
 "Error in posting to Mail" = "Kan niet delen met Mail";
@@ -230,6 +237,7 @@
 "Error in sharing" = "Kan recept niet delen";
 "Check out my recipe" = "Bekijk mijn recept";
 "via @thecookapp" = "via @thecookapp";
+"on @thecookapp" = "op @thecookapp";
 
 // Welcome
 "WELCOME" = "WELKOM";

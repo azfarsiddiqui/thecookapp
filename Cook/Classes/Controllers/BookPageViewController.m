@@ -9,10 +9,10 @@
 #import "BookPageViewController.h"
 #import "ViewHelper.h"
 #import "CardViewHelper.h"
+#import "ShareViewController.h"
 
 @interface BookPageViewController ()
 
-@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIImageView *leftShadowView;
 @property (nonatomic, strong) UIImageView *rightShadowView;
 
@@ -44,6 +44,19 @@
     };
     self.closeButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleRightMargin;
     [self.view addSubview:self.closeButton];
+}
+
+- (void)addShareButtonLight:(BOOL)white {
+    [self.shareButton removeFromSuperview];
+    self.shareButton = [ViewHelper shareButtonLight:white target:self selector:@selector(shareTapped:)];
+    self.shareButton.frame = (CGRect){
+        self.view.bounds.size.width - kContentInsets.right - self.shareButton.frame.size.width - 20.0,
+        kContentInsets.top,
+        self.shareButton.frame.size.width,
+        self.shareButton.frame.size.height
+    };
+    self.shareButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleRightMargin;
+    [self.view addSubview:self.shareButton];
 }
 
 - (void)applyPageEdgeShadows {
@@ -116,6 +129,13 @@
 - (void)closeTapped:(id)sender {
     DLog();
     [self.bookPageDelegate bookPageViewControllerCloseRequested];
+}
+
+- (void)shareTapped:(id)sender {
+    [self showShareOverlay:YES];
+}
+
+- (void)showShareOverlay:(BOOL)show {
 }
 
 @end

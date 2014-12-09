@@ -108,6 +108,12 @@
     return closeButton;
 }
 
++ (UIButton *)shareButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_share_dark.png"];
+    UIImage *imageSelected = light ? [UIImage imageNamed:@"cook_book_inner_icon_share_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_share_dark_onpress.png"];
+    return [self buttonWithImage:image selectedImage:imageSelected target:target selector:selector];
+}
+
 #pragma mark - Sizes
 
 + (CGSize)bookSize {

@@ -2,31 +2,15 @@
 //  RecipeShareViewController.h
 //  Cook
 //
-//  Created by Gerald Kim on 31/08/13.
-//  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Gerald on 18/11/2014.
+//  Copyright (c) 2014 Cook Apps Pty Ltd. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "ShareViewController.h"
 
-@class CKRecipe;
+@interface RecipeShareViewController : ShareViewController
 
-typedef enum {
-    CKShareTwitter = 0,
-    CKShareFacebook,
-    CKShareMail,
-    CKShareMessage,
-    CKSharePinterest,
-} CKShareType;
-
-@protocol RecipeShareViewControllerDelegate <NSObject>
-
-- (void)recipeShareViewControllerCloseRequested;
-- (UIImage *)recipeShareViewControllerImageRequested;
-
-@end
-
-@interface RecipeShareViewController : UIViewController
-
-- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeShareViewControllerDelegate>)delegate;
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<ShareViewControllerDelegate>)delegate;
 
 @end

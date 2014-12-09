@@ -48,7 +48,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
-    RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate, CKNavigationControllerDelegate,
+    RecipeImageViewDelegate, UIAlertViewDelegate, ShareViewControllerDelegate, CKNavigationControllerDelegate,
     PinRecipeViewControllerDelegate, ProfileViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
@@ -391,13 +391,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     return self.likeButton;
 }
 
-#pragma mark - RecipeShareViewControllerDelegate method6s
+#pragma mark - ShareViewControllerDelegate method6s
 
-- (void)recipeShareViewControllerCloseRequested {
+- (void)shareViewControllerCloseRequested {
     [self showShareOverlay:NO];
 }
 
-- (UIImage *)recipeShareViewControllerImageRequested {
+- (UIImage *)shareViewControllerImageRequested {
     UIImage *image = nil;
     if ([self.recipe hasPhotos]) {
         image = self.imageView.image;

@@ -51,6 +51,7 @@
     self.book = book;
     
     [self addSubview:self.homeButton];
+//    [self addSubview:self.shareButton];
     [self updateTitle:title];
     
     if (editable) {
@@ -149,6 +150,17 @@
     return _editButton;
 }
 
+- (UIButton *)shareButton {
+    if (!_shareButton) {
+        _shareButton = [ViewHelper shareButtonLight:NO target:self selector:@selector(shareTapped:)];
+        _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _shareButton.frame = CGRectMake(self.editButton.frame.origin.x - 11.0 - _shareButton.frame.size.width,
+                                        kContentInsets.top,
+                                        _shareButton.frame.size.width,
+                                        _shareButton.frame.size.height);
+    }
+    return _shareButton;
+}
 
 #pragma mark - Private methods
 
@@ -162,6 +174,10 @@
 
 - (void)editTapped:(id)sender {
     [self.delegate bookNavigationViewEditTapped];
+}
+
+- (void)shareTapped:(id)sender {
+    [self.delegate bookNavigationShareTapped];
 }
 
 - (UIImage *)backgroundImageForDark:(BOOL)dark {

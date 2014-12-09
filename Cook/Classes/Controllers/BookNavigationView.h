@@ -16,12 +16,14 @@
 - (void)bookNavigationViewHomeTapped;
 - (void)bookNavigationViewAddTapped;
 - (void)bookNavigationViewEditTapped;
+- (void)bookNavigationShareTapped;
 
 @end
 
 @interface BookNavigationView : UICollectionReusableView
 
 @property (nonatomic, weak) id<BookNavigationViewDelegate> delegate;
+@property (nonatomic, strong) UIButton *shareButton;
 
 + (CGFloat)navigationHeight;
 + (CGFloat)darkNavigationHeight;

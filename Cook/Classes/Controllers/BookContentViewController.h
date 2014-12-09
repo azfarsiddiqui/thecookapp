@@ -24,6 +24,7 @@
 - (NSInteger)bookContentViewControllerCurrentBatchIndexForPage:(NSString *)page;
 - (BOOL)bookContentViewControllerLoadMoreEnabledForPage:(NSString *)page;
 - (void)bookContentViewControllerLoadMoreForPage:(NSString *)page;
+- (void)bookContentViewControllerShareDismissed;
 
 @end
 
@@ -39,5 +40,6 @@
 - (void)scrollToRecipe:(CKRecipe *)recipe;
 - (void)applyOverlayAlpha:(CGFloat)alpha;
 - (void)loadMoreRecipes:(NSArray *)recipes;
+- (void)showShareOverlay:(BOOL)show;
 
 @end
