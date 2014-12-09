@@ -134,7 +134,16 @@
     }
     
     [self addCloseButtonLight:YES];
-    [self addShareButtonLight:YES];
+    __block PFConfig *currentConfig = [PFConfig currentConfig];
+    [PFConfig getConfigInBackgroundWithBlock:^(PFConfig *config, NSError *error) {
+        if (error == nil) {
+            currentConfig = config;
+        }
+        BOOL isShow = [currentConfig[@"showShareBook"] boolValue];
+        if (isShow) {
+            [self addShareButtonLight:YES];
+        }
+    }];
 }
 
 - (void)configureLoading:(BOOL)loading {
@@ -909,13 +918,22 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.shareViewController.view.alpha = show ? 1.0 : 0.0;
-                         self.shareButton.alpha = show ? 0 : 1;
-                         self.closeButton.alpha = show ? 0 : 1;
+                         if (show) {
+                             self.shareButton.alpha = 0;
+                             self.closeButton.alpha = 0;
+                         }
                      }
                      completion:^(BOOL finished) {
                          if (!show) {
                              [self.shareViewController.view removeFromSuperview];
                              self.shareViewController = nil;
+                             [UIView animateWithDuration:0.2
+                                                   delay:0.0
+                                                 options:UIViewAnimationOptionCurveEaseIn
+                                              animations:^{
+                                                  self.shareButton.alpha = 1;
+                                                  self.closeButton.alpha = 1;
+                                              } completion:nil];
                          }
                      }];
 }

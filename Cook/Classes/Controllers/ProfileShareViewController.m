@@ -23,6 +23,8 @@
 
 @implementation ProfileShareViewController
 
+#define kContentInsets  (UIEdgeInsets){ 25.0, 20.0, 0.0, 10.0 }
+
 - (id)initWithBook:(CKBook *)book delegate:(id<ShareViewControllerDelegate>)delegate {
     if (self = [super initWithDelegate:delegate]) {
         self.currentUser = [CKUser currentUser];
@@ -33,7 +35,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    self.closeButton.frame = (CGRect){
+        kContentInsets.left,
+        kContentInsets.top,
+        self.closeButton.frame.size.width,
+        self.closeButton.frame.size.height
+    };
 }
 
 #pragma mark - Share properties

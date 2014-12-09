@@ -26,7 +26,6 @@
 @property (nonatomic, strong) UIButton *mailShareButton;
 @property (nonatomic, strong) UIButton *messageShareButton;
 @property (nonatomic, strong) UIButton *pinterestShareButton;
-@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) Pinterest *pinterest;
 
 @end

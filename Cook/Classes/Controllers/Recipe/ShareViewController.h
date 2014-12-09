@@ -27,6 +27,8 @@ typedef enum {
 
 @interface ShareViewController : UIViewController
 
+@property (nonatomic, strong) UIButton *closeButton;
+
 - (id)initWithDelegate:(id<ShareViewControllerDelegate>)delegate;
 - (NSString *)screenTitleString;
 - (NSString *)shareTitle;
