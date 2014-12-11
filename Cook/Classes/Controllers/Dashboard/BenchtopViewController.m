@@ -1101,7 +1101,7 @@
     [CKBook dashboardBooksForUser:self.currentUser success:^(CKBook *myBook, NSArray *followBooks, NSDictionary *followBookUpdates) {
         
         // Stop spinner but don't show reload button.
-        [self.followReloadView enableActivity:NO hideReload:YES];
+        [self.followReloadView enableActivity:NO hideReload:([followBooks count] > 0)];
         
         // My book.
         if (myBook) {
@@ -1416,13 +1416,15 @@
             if (self.signUpViewController) {
                 
                 [self hideLoginViewCompletion:^{
-                    [self deleteFollowBooks];
-                    [self loadBooks];
+                    [self deleteFollowBooksCompletion:^{
+                        [self loadBooks];
+                    }];
                 }];
                 
             } else {
-                [self deleteFollowBooks];
-                [self loadBooks];
+                [self deleteFollowBooksCompletion:^{
+                    [self loadBooks];
+                }];
             }
             
         }];

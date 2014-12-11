@@ -124,6 +124,7 @@
 
 - (void)hideProgress {
     [self.progressView removeFromSuperview];
+    [self.progressLabel removeFromSuperview];
 }
 
 #pragma mark - Properties

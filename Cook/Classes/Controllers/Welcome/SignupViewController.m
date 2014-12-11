@@ -731,10 +731,9 @@
                      password:password
                    completion:^{
                        
-                       [self.emailButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
-                       
                        // Wait before informing login successful.
                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                           [self.emailButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
                            [self informLoginSuccessful:YES newUser:YES];
                        });
                        
