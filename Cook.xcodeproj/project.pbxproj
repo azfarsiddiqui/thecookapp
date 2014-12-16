@@ -9874,7 +9874,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "0F0ACA25-FB50-4981-AEBA-D5EC63567A4C";
+				PROVISIONING_PROFILE = "8cd50a6d-1edc-4905-a499-cdc2ae915341";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -9904,7 +9904,6 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = ReleaseDev;
@@ -10100,7 +10099,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Cook;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "a18f62f7-93e7-464d-838d-d63ea2a52be9";
+				PROVISIONING_PROFILE = "00fb6d5e-50eb-422e-bbc9-404bc60b03e5";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -10162,7 +10161,6 @@
 					"$(PROJECT_DIR)/Cook/Classes/External/TilingPhoto/libturbojpeg",
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "101268c7-9fd7-4c12-a378-442ec3a48a1d";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -10314,7 +10312,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "28b67385-7d92-4b9e-b7e9-6aa4e1b86b73";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -10384,7 +10382,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "c53b5f0e-20b6-4022-8605-cbee7f760265";
 				SKIP_INSTALL = YES;
 			};
 			name = ReleaseDev;
