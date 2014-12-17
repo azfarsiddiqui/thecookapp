@@ -19,10 +19,20 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>CookToday.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>76ED273C1612DC180012E479</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F6E9205219D2559700291FEB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
