@@ -31,6 +31,30 @@
     return [[CKRecipeImage alloc] initWithParseObject:parseRecipeImage];
 }
 
++ (CKRecipeImage *)existingRecipeImageForRecipeObject:(PFObject *)recipeObject {
+    
+    // Check preconditions.
+    if (recipeObject != nil && [recipeObject isEqual:[NSNull null]]) {
+        return nil;
+    }
+    
+    CKRecipeImage *resolvedRecipeImage = nil;
+    NSArray *photos = [recipeObject objectForKey:kRecipeAttrRecipePhotos];
+    if ([photos count] > 0) {
+        
+        // Get the photo object.
+        id photoObject = [photos objectAtIndex:0];
+        
+        // Check for non-existent image.
+        if (![photoObject isEqual:[NSNull null]]) {
+            resolvedRecipeImage = [CKRecipeImage recipeImageForParseRecipeImage:photoObject];
+        }
+        
+    }
+    
+    return resolvedRecipeImage;
+}
+
 + (CKRecipeImage*)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName {
     
     // Least compression on fullsize image.

@@ -71,12 +71,7 @@
     recipe.numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
     recipe.cookingTimeInMinutes = [parseRecipe objectForKey:kRecipeAttrCookingTimeInMinutes];
     recipe.prepTimeInMinutes = [parseRecipe objectForKey:kRecipeAttrPrepTimeInMinutes];
-
-    // At the moment, only support one image even though database supports multiple.
-    NSArray *photos = [parseRecipe objectForKey:kRecipeAttrRecipePhotos];
-    if ([photos count] > 0) {
-        recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
-    }
+    recipe.recipeImage = [CKRecipeImage existingRecipeImageForRecipeObject:parseRecipe];
     
     if (user) {
         recipe.user = user;
@@ -686,10 +681,10 @@
 
 - (CKRecipeImage *)recipeImage {
     if (!_recipeImage) {
-        NSArray *photos = [self.parseObject objectForKey:kRecipeAttrRecipePhotos];
-        if ([photos count] > 0) {
-            _recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
-        }
+        
+        // Attempt to resolve it.
+        _recipeImage = [CKRecipeImage existingRecipeImageForRecipeObject:self.parseObject];
+
     }
     return _recipeImage;
 }
@@ -811,7 +806,7 @@
 #pragma mark - Existence methods
 
 - (BOOL)hasPhotos {
-    return (self.recipeImage.imageFile != nil || [self.recipeImage.imageUuid CK_containsText]);
+    return ((self.recipeImage != nil && self.recipeImage.imageFile != nil) || [self.recipeImage.imageUuid CK_containsText]);
 }
 
 - (BOOL)hasTitle {

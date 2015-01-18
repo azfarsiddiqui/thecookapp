@@ -25,6 +25,7 @@
 
 + (CKRecipeImage *)recipeImage;
 + (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe;
++ (CKRecipeImage *)existingRecipeImageForRecipeObject:(PFObject *)recipeObject;
 + (CKRecipeImage *)recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage;
 + (CKRecipeImage *)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
 
