@@ -240,14 +240,19 @@
             return [super textFieldShouldEndEditing:textField];
         }
         
-    } else { //Name field
-        if (self.focusName || self.textField.editing) {
-            self.focusName = NO;
-            return YES;
-        } else {
-            self.focusName = NO;
-            return [super textFieldShouldEndEditing:textField];
-        }
+    } else {
+        
+        self.focusName = NO;
+        return [super textFieldShouldEndEditing:textField];
+        
+        //Name field
+//        if (self.focusName || self.textField.editing) {
+//            self.focusName = NO;
+//            return YES;
+//        } else {
+//            self.focusName = NO;
+//            return [super textFieldShouldEndEditing:textField];
+//        }
     }
     
 }

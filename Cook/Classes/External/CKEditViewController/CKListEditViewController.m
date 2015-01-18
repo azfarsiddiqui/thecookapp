@@ -558,6 +558,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)listItemFocused:(BOOL)focused cell:(CKListCell *)cell {
+    
+    // Check for invalid states.
+    if (cell == nil && self.editingCell == nil) {
+        return;
+    }
+    
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
 
     if (focused) {
@@ -582,9 +588,15 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                 cell = self.editingCell;
             }
             
+            // Get the current cell value and check for nil.
+            id currentValue = [cell currentValue];
+            if (currentValue == nil) {
+                return;
+            }
+            
             if (indexPath.item < [self.items count] && [self.items objectAtIndex:indexPath.item]) {
                 // Save current value if it was not empty.
-                [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
+                [self.items replaceObjectAtIndex:indexPath.item withObject:currentValue];
             }
         } else {
             //Remove resigning cell if it's blank
