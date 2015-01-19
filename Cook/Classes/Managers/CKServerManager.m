@@ -15,6 +15,7 @@
 #import "AppHelper.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
+#import <Fabric/Fabric.h>
 #import "Flurry.h"
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 
@@ -71,7 +72,7 @@
     [PFFacebookUtils initializeFacebook];
     
     // Crashlytics.
-    [Crashlytics startWithAPIKey:@"78b5ee31da5ef077dd802aa93ca267444ea27b07"];
+    [Fabric with:@[CrashlyticsKit]];
     
     // Flurry.
     [Flurry setCrashReportingEnabled:NO];

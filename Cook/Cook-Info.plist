@@ -56,6 +56,20 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.8.5</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>78b5ee31da5ef077dd802aa93ca267444ea27b07</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>FacebookAppID</key>
 	<string>${COOK_FACEBOOK_APP_ID}</string>
 	<key>LSRequiresIPhoneOS</key>

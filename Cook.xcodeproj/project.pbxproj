@@ -619,6 +619,7 @@
 		7684618D1814FFD500C621DC /* CKBookInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7684618C1814FFD500C621DC /* CKBookInfoView.m */; };
 		768527CB190F695800FCC7CF /* cook_updatescreen_15.png in Resources */ = {isa = PBXBuildFile; fileRef = 768527C9190F695800FCC7CF /* cook_updatescreen_15.png */; };
 		768527CC190F695800FCC7CF /* cook_updatescreen_15@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 768527CA190F695800FCC7CF /* cook_updatescreen_15@2x.png */; };
+		768596AE1A6C8F08007477A3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768596AD1A6C8F08007477A3 /* Fabric.framework */; };
 		76871BE117420DA40030BDE4 /* CKItemCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BD817420DA40030BDE4 /* CKItemCollectionViewCell.m */; };
 		76871BE217420DA40030BDE4 /* CKItemsCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BDA17420DA40030BDE4 /* CKItemsCollectionViewFlowLayout.m */; };
 		76871BE317420DA40030BDE4 /* CKItemsEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BDC17420DA40030BDE4 /* CKItemsEditViewController.m */; };
@@ -2501,6 +2502,7 @@
 		7684618C1814FFD500C621DC /* CKBookInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBookInfoView.m; sourceTree = "<group>"; };
 		768527C9190F695800FCC7CF /* cook_updatescreen_15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_updatescreen_15.png; sourceTree = "<group>"; };
 		768527CA190F695800FCC7CF /* cook_updatescreen_15@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_updatescreen_15@2x.png"; sourceTree = "<group>"; };
+		768596AD1A6C8F08007477A3 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		76871BD717420DA40030BDE4 /* CKItemCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKItemCollectionViewCell.h; sourceTree = "<group>"; };
 		76871BD817420DA40030BDE4 /* CKItemCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKItemCollectionViewCell.m; sourceTree = "<group>"; };
 		76871BD917420DA40030BDE4 /* CKItemsCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKItemsCollectionViewFlowLayout.h; sourceTree = "<group>"; };
@@ -4309,6 +4311,7 @@
 				F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */,
 				76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */,
 				76EE2CDF170AEADF0043D128 /* ImageIO.framework in Frameworks */,
+				768596AE1A6C8F08007477A3 /* Fabric.framework in Frameworks */,
 				76EE2CDD170AEAB80043D128 /* CoreImage.framework in Frameworks */,
 				7632F25117AF4CFA00E80952 /* Crashlytics.framework in Frameworks */,
 				76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */,
@@ -6180,6 +6183,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				768596AD1A6C8F08007477A3 /* Fabric.framework */,
 				F6D04FD91A01F3D300ACCC79 /* FacebookSDK.framework */,
 				F699F87619D540430056C3A3 /* Accounts.framework */,
 				F6E9208019D2597500291FEB /* libz.dylib */,
@@ -9428,7 +9432,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Copying ${CONFIGURATION}.plist from ${SRCROOT}/Configurations/${CONFIGURATION}.plist to ${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app/Configuration.plist\"\ncp \"${SRCROOT}/Configurations/${CONFIGURATION}.plist\" \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app/Configuration.plist\"\n\nreleaseConfig=\"Release\"\nif [ \"$releaseConfig\" = \"${CONFIGURATION}\" ]; then\necho \"Running Crashlytics\"\n./Crashlytics.framework/run 78b5ee31da5ef077dd802aa93ca267444ea27b07\nfi\n\n\n";
+			shellScript = "echo \"Copying ${CONFIGURATION}.plist from ${SRCROOT}/Configurations/${CONFIGURATION}.plist to ${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app/Configuration.plist\"\ncp \"${SRCROOT}/Configurations/${CONFIGURATION}.plist\" \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app/Configuration.plist\"\n\nreleaseConfig=\"Release\"\n#if [ \"$releaseConfig\" = \"${CONFIGURATION}\" ]; then\necho \"Running Crashlytics\"\n./Fabric.framework/run 78b5ee31da5ef077dd802aa93ca267444ea27b07 e9689853a01facd6cbb0b538c5326afd5e7daa9d9f1cf4d2cc2cda581844137d\n#fi\n\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
