@@ -14,7 +14,8 @@
 #import "FacebookSuggestButtonView.h"
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseFacebookUtilsV4/ParseFacebookUtilsV4.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @interface SuggestedStoreCollectionViewController () <UICollectionViewDelegateFlowLayout,
     FacebookSuggestButtonViewDelegate>
@@ -46,7 +47,8 @@
                                           [self showNoConnectionCardIfApplicableError:error];
                                       }];
         
-    } else if ([self.currentUser isSignedIn] && FBSession.activeSession.isOpen) {
+    }
+    else if ([self.currentUser isSignedIn] && [FBSDKAccessToken currentAccessToken]) {
         
         // Only fetch when signed in.
         [self fetchFacebookFriends];
@@ -70,7 +72,7 @@
     [super isLoggedOut];
     
     if (self.facebookConnected) {
-        [FBSession.activeSession closeAndClearTokenInformation];
+        [FBSDKAccessToken setCurrentAccessToken:nil];        
         self.facebookConnected = NO;
     }
     
@@ -168,53 +170,59 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)connectAndFetchFacebookFriends {
     
-    if (FBSession.activeSession.isOpen) {
+    if ([FBSDKAccessToken currentAccessToken]) {
         [self fetchFacebookFriends];
-    } else {
-        [FBSession openActiveSessionWithReadPermissions:nil
-                                           allowLoginUI:YES
-                                      completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-                                          if (session.isOpen) {
-                                              [self fetchFacebookFriends];
-                                          } else if (status == FBSessionStateClosedLoginFailed) {
-                                              [self handleFacebookError:error];
-                                          }
-                                      }];
+    }
+    else {
+        [[PFFacebookUtils facebookLoginManager] logInWithPublishPermissions:nil fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+            if (!error && [FBSDKAccessToken currentAccessToken]) {
+                [self fetchFacebookFriends];
+            }
+            else {
+                [self handleFacebookError:error];
+            }
+        } ];
     }
 }
 
 - (void)fetchFacebookFriends {
-    [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection,
-                                                                  NSDictionary *jsonDictionary, NSError *error) {
-        
-        [self.facebookButtonView enableActivity:NO];
-        
-        if (!error) {
-            
-            // Mark as facebook connected and remove the FB icon.
-            self.facebookConnected = YES;
-            [self.collectionView reloadData];
-            [super loadData];
-            
-            // Grab the facebook ids of friends.
-            NSArray *friendIds = [[jsonDictionary objectForKey:@"data"] collect:^id(NSDictionary<FBGraphUser> *friendData) {
-                return [friendData objectForKey:@"id"];
-            }];
-            
-            // Now call our endpoint to check Cook accounts for facebook Ids.
-            [CKBook facebookSuggestedBooksForFacebookIds:friendIds
-                                                 success:^(NSArray *suggestedBooks) {
-                                                     [self loadBooks:suggestedBooks];
-                                                 }
-                                                 failure:^(NSError *error) {
-                                                     DLog(@"Error: %@", [error localizedDescription]);
-                                                     [self showNoConnectionCardIfApplicableError:error];
-                                                 }];
-        } else {
-            [self handleFacebookError:error];
-        }
-        
-    }];
+    
+    NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
+    [parameters setValue:@"id,name,email,first_name,last_name" forKey:@"fields"];
+    
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends" parameters:parameters]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+       
+         
+                [self.facebookButtonView enableActivity:NO];
+         
+                 if (!error) {
+         
+                     // Mark as facebook connected and remove the FB icon.
+                     self.facebookConnected = YES;
+                     [self.collectionView reloadData];
+                     [super loadData];
+         
+                     // Grab the facebook ids of friends.
+                     NSArray *friendIds = [[result objectForKey:@"data"] collect:^id(NSDictionary *friendData) {
+                         return [friendData objectForKey:@"id"];
+                     }];
+         
+                     // Now call our endpoint to check Cook accounts for facebook Ids.
+                     [CKBook facebookSuggestedBooksForFacebookIds:friendIds
+                                                          success:^(NSArray *suggestedBooks) {
+                                                              [self loadBooks:suggestedBooks];
+                                                          }
+                                                          failure:^(NSError *error) {
+                                                              DLog(@"Error: %@", [error localizedDescription]);
+                                                              [self showNoConnectionCardIfApplicableError:error];
+                                                          }];
+                 } else {
+                     [self handleFacebookError:error];
+                 }
+
+         
+     }];
 }
 
 - (void)handleFacebookError:(NSError *)error {

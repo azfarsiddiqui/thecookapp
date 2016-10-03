@@ -11,13 +11,15 @@
 #import "CKRecipe.h"
 #import "AppHelper.h"
 #import "NSString+Utilities.h"
-#import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
 #import "AnalyticsHelper.h"
 #import <Pinterest/Pinterest.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface ShareViewController () <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate>
+@interface ShareViewController () <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic, weak) id<ShareViewControllerDelegate> delegate;
 
@@ -214,45 +216,22 @@
 
 - (void)shareFacebook
 {
-    FBShareDialogParams *shareParams = [[FBShareDialogParams alloc] init];
-    shareParams.link = self.shareURL;
-    if ([FBDialogs canPresentOSIntegratedShareDialogWithSession:nil])
-    { //Present OS dialog
-        [FBDialogs presentOSIntegratedShareDialogModallyFrom:self initialText:[self shareTextWithURL:NO] image:nil
-                                                         url:self.shareURL
-                                                     handler:^(FBOSIntegratedShareDialogResult result, NSError *error) {
-            if (error) {
-                [self errorWithType:CKShareFacebook error:error];
-            } else {
-                [self successWithType:CKShareFacebook];
-            }
-        }];
-    }
-    else if ([FBDialogs canPresentShareDialogWithParams:shareParams])
-    { //Present dialog in Facebook app
-        [FBDialogs presentShareDialogWithLink:self.shareURL name:[self shareTextWithURL:NO]
-                                      handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
-            if (error) {
-                [self errorWithType:CKShareFacebook error:error];
-            } else {
-                [self successWithType:CKShareFacebook];
-            }
-        }];
-    }
-    else
-    { //Present web dialog
-        NSDictionary *webParameters = @{
-                                        @"name" : [self shareTextWithURL:NO],
-                                        @"link" : [self.shareURL absoluteString]
-                                        };
-        [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:webParameters handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-            if (error) {
-                [self errorWithType:CKShareFacebook error:error];
-            } else {
-                [self successWithType:CKShareFacebook];
-            }
-        }];
-    }
+    FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+    content.contentURL = self.shareURL;
+    
+    FBSDKShareDialog *shareDialog = [[FBSDKShareDialog alloc] init];
+    shareDialog.shareContent = content;
+    
+    [FBSDKShareDialog showFromViewController:self withContent:content delegate:self];
+    
+}
+
+- (void) sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+    [self successWithType:CKShareFacebook];
+}
+
+- (void) sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    [self errorWithType:CKShareFacebook error:error];
 }
 
 - (void)shareTwitter
