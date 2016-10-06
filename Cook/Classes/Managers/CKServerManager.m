@@ -17,7 +17,8 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
 #import "Flurry.h"
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseFacebookUtilsV4/ParseFacebookUtilsV4.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @interface CKServerManager ()
 
@@ -69,7 +70,7 @@
     }
     
     // Set up Facebook
-    [PFFacebookUtils initializeFacebook];
+    [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
     
     // Crashlytics.
     [Fabric with:@[CrashlyticsKit]];
@@ -127,7 +128,8 @@
     
     // Re-activate FB.
     if ([currentUser isFacebookUser]) {
-        [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+//        [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+        [FBSDKAppEvents activateApp];
     }
     
     // Post app active
@@ -139,7 +141,11 @@
 }
 
 - (BOOL)handleFacebookCallback:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
+//    return [FBSDK handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
+    return [[FBSDKApplicationDelegate sharedInstance] application:sourceApplication
+                                                          openURL:url
+                                                sourceApplication:sourceApplication
+                                                       annotation:annotation];
 }
 
 #pragma mark - Push notifications
