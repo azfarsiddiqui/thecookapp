@@ -19,6 +19,7 @@
 #import "Flurry.h"
 #import <ParseFacebookUtilsV4/ParseFacebookUtilsV4.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <Parse/ParseClientConfiguration.h>
 
 @interface CKServerManager ()
 
@@ -51,7 +52,10 @@
 - (void)startWithLaunchOptions:(NSDictionary *)launchOptions {
     
     // Set up Parse
-    [Parse setApplicationId:[AppHelper configValueForKey:@"PARSE_APP_ID"] clientKey:[AppHelper configValueForKey:@"PARSE_CLIENT_KEY"]];
+    [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
+        configuration.applicationId = [AppHelper configValueForKey:@"PARSE_APP_ID"];
+        configuration.server= [AppHelper configValueForKey:@"PARSE_SERVER_URL"];
+    }]];
     
     // Set up Parse analytics.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
