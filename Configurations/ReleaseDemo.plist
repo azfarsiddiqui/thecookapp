@@ -10,5 +10,7 @@
 	<string>36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS</string>
 	<key>PARSE_CLIENT_KEY</key>
 	<string>c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN</string>
+	<key>PARSE_SERVER_URL</key>
+	<string></string>
 </dict>
 </plist>
