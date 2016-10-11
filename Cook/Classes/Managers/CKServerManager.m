@@ -55,22 +55,12 @@
     // Setup parse
     [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
         configuration.applicationId = [AppHelper configValueForKey:@"PARSE_APP_ID"];
-        configuration.clientKey = @"";
+        configuration.clientKey = [AppHelper configValueForKey:@"PARSE_CLIENT_KEY"];
         configuration.server = [AppHelper configValueForKey:@"PARSE_SERVER_URL"];
 
     }]];
     
-    
-    //        configuration.server = @"http://localhost:1337/parse";
-    
-    // Set up Parse
-//    [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
-//        configuration.applicationId = [AppHelper configValueForKey:@"PARSE_APP_ID"];
-//        configuration.server= [AppHelper configValueForKey:@"PARSE_SERVER_URL"];
-//    }]];
-//    
-//     [Parse setApplicationId:[AppHelper configValueForKey:@"PARSE_APP_ID"] clientKey:[AppHelper configValueForKey:@"PARSE_CLIENT_KEY"]];
-    
+
     // Set up Parse analytics.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
