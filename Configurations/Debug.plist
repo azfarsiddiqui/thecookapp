@@ -9,10 +9,10 @@
 	<key>COOK_SHARE_BASE_URL</key>
 	<string>http://www.worldscookbook.com/</string>
 	<key>PARSE_APP_ID</key>
-	<string>36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS</string>
+	<string>fYp3YAuFHXpdYNTdjfvZtkbJOXrAL4FGCtj4kMIN</string>
 	<key>PARSE_CLIENT_KEY</key>
-	<string>c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN</string>
+	<string>0Tsu1RPH7tfLXcpzERyfVaCCoV9nZwwowFD3Vewx</string>
 	<key>PARSE_SERVER_URL</key>
-	<string></string>
+	<string>https://api.parse.com/1/</string>
 </dict>
 </plist>

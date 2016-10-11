@@ -51,12 +51,16 @@
 
 - (void)startWithLaunchOptions:(NSDictionary *)launchOptions {
     
-    // Set up Parse
-    [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
+    
+    // Setup parse
+    [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
         configuration.applicationId = [AppHelper configValueForKey:@"PARSE_APP_ID"];
-        configuration.server= [AppHelper configValueForKey:@"PARSE_SERVER_URL"];
+        configuration.clientKey = [AppHelper configValueForKey:@"PARSE_CLIENT_KEY"];
+        configuration.server = [AppHelper configValueForKey:@"PARSE_SERVER_URL"];
+
     }]];
     
+
     // Set up Parse analytics.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
