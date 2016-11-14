@@ -51,7 +51,6 @@
 
 - (void)startWithLaunchOptions:(NSDictionary *)launchOptions {
     
-    
     // Setup parse
     [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
         configuration.applicationId = [AppHelper configValueForKey:@"PARSE_APP_ID"];
@@ -60,7 +59,6 @@
 
     }]];
     
-
     // Set up Parse analytics.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
@@ -78,7 +76,9 @@
     }
     
     // Set up Facebook
-    [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+    });
     
     // Crashlytics.
     [Fabric with:@[CrashlyticsKit]];
