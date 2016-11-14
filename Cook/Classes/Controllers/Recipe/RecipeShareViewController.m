@@ -12,8 +12,9 @@
 #import <MessageUI/MessageUI.h>
 #import "AppHelper.h"
 #import "NSString+Utilities.h"
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface RecipeShareViewController () <MFMailComposeViewControllerDelegate>
+@interface RecipeShareViewController () <MFMailComposeViewControllerDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) CKRecipe *recipe;
@@ -171,6 +172,10 @@
     }
     
     return shareText;
+}
+
+- (void) sharerDidCancel :(id<FBSDKSharing>)sharer {
+    NSLog(@"Share cancelled..");
 }
 
 @end
