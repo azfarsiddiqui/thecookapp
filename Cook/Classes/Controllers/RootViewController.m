@@ -112,7 +112,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initViewControllers];
+    if (!self.benchtopViewController.isUserSigningIn) {
+        [self initViewControllers];        
+    }
 //    [self loadSampleRecipe];
 }
 

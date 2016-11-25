@@ -826,11 +826,8 @@
             
             [self.facebookButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
             
-            // Wait before informing login successful.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [self informLoginSuccessful:YES newUser:isNewUser];
-            });
-        }        
+            [self informLoginSuccessful:YES newUser:isNewUser];
+        }
         
     } failure:^(NSError *error) {
         DLog(@"Error logging in: %@", [error localizedDescription]);

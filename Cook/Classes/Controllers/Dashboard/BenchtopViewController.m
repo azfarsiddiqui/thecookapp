@@ -217,9 +217,13 @@
                      }
                      completion:^(BOOL finished) {
                      }];
+    
+    self.isUserSigningIn = YES;
 }
 
 - (void)hideLoginViewCompletion:(void (^)())completion {
+    self.isUserSigningIn = NO;
+    
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn

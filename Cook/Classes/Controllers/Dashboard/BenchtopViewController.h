@@ -15,6 +15,7 @@
 
 @property (nonatomic, weak) id<BenchtopViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL allowDelete;
+@property (nonatomic, assign) BOOL isUserSigningIn;
 
 - (void)loadBenchtop;
 - (void)enable:(BOOL)enable;
