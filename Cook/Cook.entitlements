@@ -7,5 +7,7 @@
 		<string>activitycontinuation:www.worldscookbook.com</string>
 		<string>activitycontinuation:www.cook.directory</string>
 	</array>
+	<key>beta-reports-active</key>
+	<true/>
 </dict>
 </plist>
