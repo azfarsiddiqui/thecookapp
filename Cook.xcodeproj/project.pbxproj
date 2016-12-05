@@ -10166,7 +10166,7 @@
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lsqlite3.0";
-				PROVISIONING_PROFILE = "40532463-4517-4b17-be07-f7ad13077d60";
+				PROVISIONING_PROFILE = "fad17e28-40dd-4a23-8594-79025d593395";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
