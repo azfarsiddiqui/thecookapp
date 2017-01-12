@@ -174,14 +174,14 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         [self fetchFacebookFriends];
     }
     else {
-        [[PFFacebookUtils facebookLoginManager] logInWithPublishPermissions:nil fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-            if (!error && [FBSDKAccessToken currentAccessToken]) {
+        [PFFacebookUtils logInInBackgroundWithPublishPermissions:nil block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+            if (!error && user) {
                 [self fetchFacebookFriends];
             }
             else {
                 [self handleFacebookError:error];
             }
-        } ];
+        }];
     }
 }
 

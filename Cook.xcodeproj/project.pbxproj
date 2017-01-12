@@ -9876,7 +9876,7 @@
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lsqlite3.0";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "40532463-4517-4b17-be07-f7ad13077d60";
 				WRAPPER_EXTENSION = app;
 			};
 			name = DebugDev;
@@ -9938,7 +9938,7 @@
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lsqlite3.0";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fad17e28-40dd-4a23-8594-79025d593395";
 				WRAPPER_EXTENSION = app;
 			};
 			name = ReleaseDev;
@@ -10005,7 +10005,7 @@
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lsqlite3.0";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "40532463-4517-4b17-be07-f7ad13077d60";
 				WRAPPER_EXTENSION = app;
 			};
 			name = DebugDemo;
@@ -10067,7 +10067,7 @@
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lsqlite3.0";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fad17e28-40dd-4a23-8594-79025d593395";
 				WRAPPER_EXTENSION = app;
 			};
 			name = ReleaseDemo;
@@ -10196,7 +10196,7 @@
 				);
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lsqlite3.0";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fad17e28-40dd-4a23-8594-79025d593395";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -10348,7 +10348,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "8c8ad9d6-e289-44c5-826b-dd8c233fdc46";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -10383,7 +10383,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "8c8ad9d6-e289-44c5-826b-dd8c233fdc46";
 				SKIP_INSTALL = YES;
 			};
 			name = ReleaseDemo;
@@ -10418,7 +10418,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "8c8ad9d6-e289-44c5-826b-dd8c233fdc46";
 				SKIP_INSTALL = YES;
 			};
 			name = ReleaseDev;

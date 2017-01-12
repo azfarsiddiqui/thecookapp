@@ -32,7 +32,12 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS" clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];
+        [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
+            configuration.applicationId = @"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS";
+            configuration.clientKey = @"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN";
+            configuration.server = @"https://pg-app-pgajndhfkya28qd545dzexybadqt8h.scalabl.cloud/1/";
+            
+        }]];
     }
     return self;
 }
